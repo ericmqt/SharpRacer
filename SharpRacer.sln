@@ -3,12 +3,35 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRacer.Core", "src\libraries\SharpRacer.Core\SharpRacer.Core.csproj", "{C8DF996C-CAC7-431F-8E39-B9196D37DEA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRacer.Simulator", "src\libraries\SharpRacer.Simulator\SharpRacer.Simulator.csproj", "{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C8DF996C-CAC7-431F-8E39-B9196D37DEA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8DF996C-CAC7-431F-8E39-B9196D37DEA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8DF996C-CAC7-431F-8E39-B9196D37DEA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8DF996C-CAC7-431F-8E39-B9196D37DEA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C8DF996C-CAC7-431F-8E39-B9196D37DEA3} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
+		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A81F0632-5D52-4663-A142-2E7EB2B9174D}
 	EndGlobalSection
 EndGlobal
