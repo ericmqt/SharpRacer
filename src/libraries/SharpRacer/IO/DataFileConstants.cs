@@ -26,6 +26,11 @@ public static class DataFileConstants
     public const int DataVariableHeaderLength = 144;
 
     /// <summary>
+    /// The length, in bytes, of <see cref="DiskSubHeader"/>.
+    /// </summary>
+    public const int DiskSubHeaderLength = 32;
+
+    /// <summary>
     /// The maximum length of a native string field, in characters.
     /// </summary>
     public const int MaxStringLength = 32;

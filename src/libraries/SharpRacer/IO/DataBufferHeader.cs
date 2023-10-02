@@ -5,6 +5,9 @@ namespace SharpRacer.IO;
 /// <summary>
 /// Describes a telemetry data buffer in a simulator data file.
 /// </summary>
+/// <remarks>
+/// See: irsdk_varBuf
+/// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = DataFileConstants.DataBufferHeaderLength)]
 public struct DataBufferHeader
 {

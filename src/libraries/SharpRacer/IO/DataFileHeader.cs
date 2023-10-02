@@ -5,6 +5,9 @@ namespace SharpRacer.IO;
 /// <summary>
 /// Describes the values of a simulator data file header.
 /// </summary>
+/// <remarks>
+/// See: irsdk_header
+/// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = DataFileConstants.HeaderLength)]
 public struct DataFileHeader
 {

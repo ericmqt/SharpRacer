@@ -5,6 +5,9 @@ namespace SharpRacer.IO;
 /// <summary>
 /// Describes a telemetry variable in a simulator data file.
 /// </summary>
+/// <remarks>
+/// See: irsdk_varHeader
+/// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = DataFileConstants.DataVariableHeaderLength)]
 public unsafe struct DataVariableHeader
 {
