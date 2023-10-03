@@ -1,3 +1,4 @@
 CreateEvent
 PostMessage
 RegisterWindowMessage
+SendNotifyMessage
