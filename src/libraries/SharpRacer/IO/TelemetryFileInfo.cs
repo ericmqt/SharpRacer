@@ -1,6 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 using System.Text;
 using SharpRacer.Interop;
+using SharpRacer.Telemetry;
 
 namespace SharpRacer.IO;
 public class TelemetryFileInfo
@@ -48,6 +50,7 @@ public class TelemetryFileInfo
         }
     }
 
+    public ImmutableArray<DataVariableInfo> DataVariables { get; }
     public FileInfo FileInfo { get; }
     public string FileName => FileInfo.FullName;
     public DateTimeOffset SessionEnd { get; }
