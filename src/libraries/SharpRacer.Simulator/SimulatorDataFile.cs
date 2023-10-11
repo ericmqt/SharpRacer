@@ -1,7 +1,6 @@
 ﻿using System.IO.MemoryMappedFiles;
 using DotNext.IO.MemoryMappedFiles;
 using Nito.AsyncEx.Interop;
-using SharpRacer.Simulator.Interop;
 
 namespace SharpRacer.Simulator;
 internal sealed class SimulatorDataFile : ISimulatorDataFile

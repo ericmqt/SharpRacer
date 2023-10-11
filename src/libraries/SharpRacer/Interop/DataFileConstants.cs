@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.IO;
+﻿namespace SharpRacer.Interop;
 
 /// <summary>
 /// Provides constant values that may be used when reading from simulator data files.

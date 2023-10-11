@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Interop;
 
 /// <summary>
 /// Inline <see cref="DataBufferHeader"/> array of <see cref="DataFileConstants.MaxDataVariableBuffers"/> elements.

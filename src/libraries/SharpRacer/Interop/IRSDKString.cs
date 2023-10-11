@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace SharpRacer.IO.Primitives;
+namespace SharpRacer.Interop;
 
 /// <summary>
 /// A fixed 32-byte array that represents the iRacing SDK native character arrays of length IRSDK_MAX_STRING.

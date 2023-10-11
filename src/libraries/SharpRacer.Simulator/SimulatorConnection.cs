@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using SharpRacer.IO;
-using SharpRacer.Simulator.Interop;
+using SharpRacer.Interop;
 
 namespace SharpRacer.Simulator;
 internal sealed class SimulatorConnection : ISimulatorConnection

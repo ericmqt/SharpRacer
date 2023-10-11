@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Interop;
 
 /// <summary>
 /// Describes a telemetry data buffer in a simulator data file.
@@ -8,13 +8,24 @@ namespace SharpRacer.IO;
 /// <remarks>
 /// See: irsdk_varBuf
 /// </remarks>
-[StructLayout(LayoutKind.Explicit, Size = DataBufferHeader.Size)]
+[StructLayout(LayoutKind.Explicit, Size = Size)]
 public readonly struct DataBufferHeader
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DataBufferHeader"/>.
     /// </summary>
     public const int Size = 16;
+
+    public DataBufferHeader()
+    {
+
+    }
+
+    public DataBufferHeader(int tickCount, int bufferOffset)
+    {
+        TickCount = tickCount;
+        BufferOffset = bufferOffset;
+    }
 
     /// <summary>
     /// The session 'tick' when the buffer described by this header was updated.

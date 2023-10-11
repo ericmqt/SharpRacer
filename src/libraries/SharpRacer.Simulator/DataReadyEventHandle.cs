@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using Windows.Win32;
 
-namespace SharpRacer.Simulator.Interop;
+namespace SharpRacer.Simulator;
 internal static class DataReadyEventHandle
 {
     internal const string EventName = "Local\\IRSDKDataValidEvent";

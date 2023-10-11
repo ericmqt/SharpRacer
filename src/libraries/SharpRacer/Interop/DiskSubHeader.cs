@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Interop;
 
 /// <summary>
 /// Describes a sub-header used for telemetry written to disk (*.IBT files).
@@ -8,13 +8,27 @@ namespace SharpRacer.IO;
 /// <remarks>
 /// See: irsdk_diskSubHeader
 /// </remarks>
-[StructLayout(LayoutKind.Explicit, Size = DiskSubHeader.Size)]
+[StructLayout(LayoutKind.Explicit, Size = Size)]
 public struct DiskSubHeader
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DiskSubHeader"/>.
     /// </summary>
     public const int Size = 32;
+
+    public DiskSubHeader()
+    {
+
+    }
+
+    public DiskSubHeader(long sessionStartDate, double sessionStartTime, double sessionEndTime, int sessionLapCount, int sessionRecordCount)
+    {
+        SessionStartDate = sessionStartDate;
+        SessionStartTime = sessionStartTime;
+        SessionEndTime = sessionEndTime;
+        SessionLapCount = sessionLapCount;
+        SessionRecordCount = sessionRecordCount;
+    }
 
     /// <summary>
     /// The session start date, described as the number of seconds since the UNIX epoch.

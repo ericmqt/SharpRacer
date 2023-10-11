@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using SharpRacer.Interop;
 
 namespace SharpRacer.IO;
 public class TelemetryFileInfo

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Interop;
 
 /// <summary>
 /// Describes the values of a simulator data file header.
@@ -8,7 +8,7 @@ namespace SharpRacer.IO;
 /// <remarks>
 /// See: irsdk_header
 /// </remarks>
-[StructLayout(LayoutKind.Explicit, Size = DataFileHeader.Size)]
+[StructLayout(LayoutKind.Explicit, Size = Size)]
 public readonly struct DataFileHeader
 {
     /// <summary>
@@ -67,13 +67,13 @@ public readonly struct DataFileHeader
     /// <summary>
     /// The number of data buffers.
     /// </summary>
-    [FieldOffset(FieldOffsets.BufferCount)]
+    [FieldOffset(FieldOffsets.DataBufferCount)]
     public readonly int DataBufferCount;
 
     /// <summary>
     /// The length, in bytes, of a single data buffer.
     /// </summary>
-    [FieldOffset(FieldOffsets.BufferLength)]
+    [FieldOffset(FieldOffsets.DataBufferElementLength)]
     public readonly int DataBufferElementLength;
 
     /// <summary>
@@ -136,12 +136,12 @@ public readonly struct DataFileHeader
         /// <summary>
         /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DataBufferCount"/> field is located.
         /// </summary>
-        public const int BufferCount = 32;
+        public const int DataBufferCount = 32;
 
         /// <summary>
         /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DataBufferElementLength"/> field is located.
         /// </summary>
-        public const int BufferLength = 36;
+        public const int DataBufferElementLength = 36;
 
         /// <summary>
         /// The offset into a <see cref="DataFileHeader"/> structure where the padding field is located.
