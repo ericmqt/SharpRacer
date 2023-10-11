@@ -8,72 +8,154 @@ namespace SharpRacer.IO;
 /// <remarks>
 /// See: irsdk_header
 /// </remarks>
-[StructLayout(LayoutKind.Explicit, Size = DataFileConstants.HeaderLength)]
-public struct DataFileHeader
+[StructLayout(LayoutKind.Explicit, Size = DataFileHeader.Size)]
+public readonly struct DataFileHeader
 {
+    /// <summary>
+    /// The length, in bytes, of an instance of <see cref="DataFileHeader"/>.
+    /// </summary>
+    public const int Size = 144;
+
     /// <summary>
     /// Header version. See IRSDK_VER.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.HeaderVersion)]
-    public int HeaderVersion;
+    [FieldOffset(FieldOffsets.HeaderVersion)]
+    public readonly int HeaderVersion;
 
     /// <summary>
     /// Indicates if the simulator is active. See irsdk_StatusField.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.Status)]
-    public int Status;
+    [FieldOffset(FieldOffsets.Status)]
+    public readonly int Status;
 
     /// <summary>
     /// Ticks per second.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.TickRate)]
-    public int TickRate;
+    [FieldOffset(FieldOffsets.TickRate)]
+    public readonly int TickRate;
 
     /// <summary>
     /// Incremented when session info changes.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.SessionInfoVersion)]
-    public int SessionInfoVersion;
+    [FieldOffset(FieldOffsets.SessionInfoVersion)]
+    public readonly int SessionInfoVersion;
 
     /// <summary>
     /// The length of the session info string.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.SessionInfoLength)]
-    public int SessionInfoLength;
+    [FieldOffset(FieldOffsets.SessionInfoLength)]
+    public readonly int SessionInfoLength;
 
     /// <summary>
     /// The offset from the beginning of the data file where the session info string is located.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.SessionInfoOffset)]
-    public int SessionInfoOffset;
+    [FieldOffset(FieldOffsets.SessionInfoOffset)]
+    public readonly int SessionInfoOffset;
 
     /// <summary>
     /// The length of the array of <see cref="DataVariableHeader"/> entries pointed to by <see cref="VariableHeaderOffset"/>.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.VariableCount)]
-    public int VariableCount;
+    [FieldOffset(FieldOffsets.VariableCount)]
+    public readonly int VariableCount;
 
     /// <summary>
     /// The offset from the beginning of the data file where the array of <see cref="DataVariableHeader"/> entries is located.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.VariableHeaderOffset)]
-    public int VariableHeaderOffset;
+    [FieldOffset(FieldOffsets.VariableHeaderOffset)]
+    public readonly int VariableHeaderOffset;
 
     /// <summary>
     /// The number of data buffers.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.BufferCount)]
-    public int BufferCount;
+    [FieldOffset(FieldOffsets.BufferCount)]
+    public readonly int DataBufferCount;
 
     /// <summary>
     /// The length, in bytes, of a single data buffer.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.BufferLength)]
-    public int BufferLength;
+    [FieldOffset(FieldOffsets.BufferLength)]
+    public readonly int DataBufferElementLength;
 
     /// <summary>
-    /// Padding.
+    /// An inline array of <see cref="DataBufferHeader"/> elements.
     /// </summary>
-    [FieldOffset(DataFileHeaderOffsets.Padding)]
-    public ulong Padding;
+    [FieldOffset(FieldOffsets.DataBufferHeaderArray)]
+    public readonly DataBufferHeaderArray DataBufferHeaders;
+
+    /// <summary>
+    /// The sub-header used by telemetry files.
+    /// </summary>
+    [FieldOffset(FieldOffsets.DiskSubHeader)]
+    public readonly DiskSubHeader DiskSubHeader;
+
+    /// <summary>
+    /// Provides field offsets for a <see cref="DataFileHeader"/> structure.
+    /// </summary>
+    public static class FieldOffsets
+    {
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.HeaderVersion"/> field is located.
+        /// </summary>
+        public const int HeaderVersion = 0;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.Status"/> field is located.
+        /// </summary>
+        public const int Status = 4;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.TickRate"/> field is located.
+        /// </summary>
+        public const int TickRate = 8;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.SessionInfoVersion"/> field is located.
+        /// </summary>
+        public const int SessionInfoVersion = 12;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.SessionInfoLength"/> field is located.
+        /// </summary>
+        public const int SessionInfoLength = 16;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.SessionInfoOffset"/> field is located.
+        /// </summary>
+        public const int SessionInfoOffset = 20;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.VariableCount"/> field is located.
+        /// </summary>
+        public const int VariableCount = 24;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.VariableHeaderOffset"/> field is located.
+        /// </summary>
+        public const int VariableHeaderOffset = 28;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DataBufferCount"/> field is located.
+        /// </summary>
+        public const int BufferCount = 32;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DataBufferElementLength"/> field is located.
+        /// </summary>
+        public const int BufferLength = 36;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the padding field is located.
+        /// </summary>
+        public const int Padding = 40;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataBufferHeader"/> array field is located.
+        /// </summary>
+        public const int DataBufferHeaderArray = 48;
+
+        /// <summary>
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DiskSubHeader"/> field is located.
+        /// </summary>
+        public const int DiskSubHeader = 112;
+    }
 }

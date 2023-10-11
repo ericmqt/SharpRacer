@@ -8,24 +8,44 @@ namespace SharpRacer.IO;
 /// <remarks>
 /// See: irsdk_varBuf
 /// </remarks>
-[StructLayout(LayoutKind.Explicit, Size = DataFileConstants.DataBufferHeaderLength)]
-public struct DataBufferHeader
+[StructLayout(LayoutKind.Explicit, Size = DataBufferHeader.Size)]
+public readonly struct DataBufferHeader
 {
+    /// <summary>
+    /// The length, in bytes, of an instance of <see cref="DataBufferHeader"/>.
+    /// </summary>
+    public const int Size = 16;
+
     /// <summary>
     /// The session 'tick' when the buffer described by this header was updated.
     /// </summary>
-    [FieldOffset(DataBufferHeaderOffsets.TickCount)]
-    public int TickCount;
+    [FieldOffset(FieldOffsets.TickCount)]
+    public readonly int TickCount;
 
     /// <summary>
     /// The offset from the beginning of the <see cref="DataFileHeader"/> to the location of the buffer.
     /// </summary>
-    [FieldOffset(DataBufferHeaderOffsets.BufferOffset)]
-    public int BufferOffset;
+    [FieldOffset(FieldOffsets.BufferOffset)]
+    public readonly int BufferOffset;
 
     /// <summary>
-    /// Padding.
+    /// Provides field offsets for a <see cref="DataBufferHeader"/> structure.
     /// </summary>
-    [FieldOffset(DataBufferHeaderOffsets.Padding)]
-    public ulong Padding;
+    public static class FieldOffsets
+    {
+        /// <summary>
+        /// The offset into a <see cref="DataBufferHeader"/> structure where the <see cref="DataBufferHeader.TickCount"/> field is located.
+        /// </summary>
+        public const int TickCount = 0;
+
+        /// <summary>
+        /// The offset into a <see cref="DataBufferHeader"/> structure where the <see cref="DataBufferHeader.BufferOffset"/> field is located.
+        /// </summary>
+        public const int BufferOffset = 4;
+
+        /// <summary>
+        /// The offset into a <see cref="DataBufferHeader"/> structure where the padding field is located.
+        /// </summary>
+        public const int Padding = 8;
+    }
 }

@@ -127,7 +127,7 @@ internal sealed class SimulatorConnection : ISimulatorConnection
             // Wait for data-ready signal, cancellation, or timeout
             var waitIndex = WaitHandle.WaitAny(waitHandles, _connectionTimeoutMs);
 
-            var header = MemoryMarshal.Read<DataFileHeader>(_dataFile.Span[..DataFileConstants.HeaderLength]);
+            var header = MemoryMarshal.Read<DataFileHeader>(_dataFile.Span[..DataFileHeader.Size]);
 
             // Toggle IsActive based on current header value
             IsActive = header.Status == 1;
