@@ -5,9 +5,11 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRacer.Simulator", "src\libraries\SharpRacer.Simulator\SharpRacer.Simulator.csproj", "{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Simulator", "src\libraries\SharpRacer.Simulator\SharpRacer.Simulator.csproj", "{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRacer", "src\libraries\SharpRacer\SharpRacer.csproj", "{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer", "src\libraries\SharpRacer\SharpRacer.csproj", "{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6B9D1423-882C-4C28-8F2B-ADA63F59349F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
