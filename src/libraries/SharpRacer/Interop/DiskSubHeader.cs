@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// See: irsdk_diskSubHeader
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public struct DiskSubHeader
+public readonly struct DiskSubHeader
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DiskSubHeader"/>.
@@ -34,31 +34,53 @@ public struct DiskSubHeader
     /// The session start date, described as the number of seconds since the UNIX epoch.
     /// </summary>
     [FieldOffset(FieldOffsets.SessionStartDate)]
-    public long SessionStartDate;
+    public readonly long SessionStartDate;
 
     /// <summary>
     /// The session start time, described as the number of seconds since <see cref="SessionStartDate"/>.
     /// </summary>
     [FieldOffset(FieldOffsets.SessionStartTime)]
-    public double SessionStartTime;
+    public readonly double SessionStartTime;
 
     /// <summary>
     /// The session end time, described as the number of seconds since <see cref="SessionStartDate"/>.
     /// </summary>
     [FieldOffset(FieldOffsets.SessionEndTime)]
-    public double SessionEndTime;
+    public readonly double SessionEndTime;
 
     /// <summary>
     /// The number of laps in the session.
     /// </summary>
     [FieldOffset(FieldOffsets.SessionLapCount)]
-    public int SessionLapCount;
+    public readonly int SessionLapCount;
 
     /// <summary>
     /// The number of "frames" of telemetry data buffers in the file.
     /// </summary>
     [FieldOffset(FieldOffsets.SessionRecordCount)]
-    public int SessionRecordCount;
+    public readonly int SessionRecordCount;
+
+    /// <summary>
+    /// Gets a <see cref="DateTimeOffset"/> describing the date and time the session ended.
+    /// </summary>
+    /// <returns></returns>
+    public readonly DateTimeOffset GetSessionEndDateTimeOffset()
+    {
+        return DateTimeOffset.UnixEpoch
+            .AddSeconds(SessionStartDate)
+            .AddSeconds(SessionEndTime);
+    }
+
+    /// <summary>
+    /// Gets a <see cref="DateTimeOffset"/> describing the date and time the session started.
+    /// </summary>
+    /// <returns></returns>
+    public readonly DateTimeOffset GetSessionStartDateTimeOffset()
+    {
+        return DateTimeOffset.UnixEpoch
+            .AddSeconds(SessionStartDate)
+            .AddSeconds(SessionStartTime);
+    }
 
     /// <summary>
     /// Provides field offsets for a <see cref="DiskSubHeader"/> structure.
