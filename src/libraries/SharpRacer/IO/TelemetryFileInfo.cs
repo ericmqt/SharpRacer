@@ -12,7 +12,7 @@ public class TelemetryFileInfo
     private readonly DataFileHeader _fileHeader;
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of <see cref="TelemetryFileInfo"/> from the specified file name.
     /// </summary>
     /// <exception cref="FileNotFoundException">
     /// The file specified by <paramref name="fileName"/> was not found or is inaccessible.
