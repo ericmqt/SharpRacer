@@ -10,7 +10,8 @@
 	</PropertyGroup>
 	
 	<PropertyGroup>
-		<OutputPath>$(RepositoryDefaultOutputPath)\$(MSBuildProjectName)</OutputPath>
+		<ArtifactsPath>$(RepositoryRootDirectory)\artifacts</ArtifactsPath>
+		<!-- <OutputPath>$(RepositoryDefaultOutputPath)\$(MSBuildProjectName)</OutputPath> -->
 	</PropertyGroup>
 
 	<PropertyGroup>
