@@ -1,4 +1,8 @@
 ﻿namespace SharpRacer.Telemetry;
+
+/// <summary>
+/// Defines the value types that may be used by telemetry variables.
+/// </summary>
 public enum DataVariableValueType : int
 {
     /// <summary>

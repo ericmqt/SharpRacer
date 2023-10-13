@@ -20,6 +20,8 @@ public sealed class DataVariableInfo
         ValueCount = variableHeader.Count;
         ValueType = (DataVariableValueType)variableHeader.Type;
         ValueUnit = variableHeader.Unit.GetLength() > 0 ? variableHeader.Unit.ToString() : null;
+
+        ValueSize = ValueType.GetSize();
     }
 
     /// <summary>
@@ -48,6 +50,12 @@ public sealed class DataVariableInfo
     public int ValueCount { get; }
 
     /// <summary>
+    /// Gets the size, in bytes, of the value represented by the variable. If the variable is an array, gets the size of an individual
+    /// element of the array.
+    /// </summary>
+    public int ValueSize { get; }
+
+    /// <summary>
     /// Gets the type of variable.
     /// </summary>
     public DataVariableValueType ValueType { get; }
@@ -56,4 +64,16 @@ public sealed class DataVariableInfo
     /// Gets the unit of the variable value, if present.
     /// </summary>
     public string? ValueUnit { get; }
+
+    /// <summary>
+    /// Gets a span over the specified <see cref="IDataFrame"/> that contains the value represented by the variable.
+    /// </summary>
+    /// <param name="dataFrame"></param>
+    /// <returns>A read-only span of bytes over the variable value.</returns>
+    public ReadOnlySpan<byte> GetValueSpan(IDataFrame dataFrame)
+    {
+        ArgumentNullException.ThrowIfNull(dataFrame);
+
+        return dataFrame.Data.Slice(Offset, ValueSize * ValueCount);
+    }
 }
