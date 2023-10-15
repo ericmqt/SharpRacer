@@ -11,17 +11,18 @@ public class TelemetryFileDataFrame : IDataFrame
     /// Initializes a new <see cref="TelemetryFileDataFrame"/>.
     /// </summary>
     /// <param name="data"></param>
-    /// <param name="tick"></param>
-    internal TelemetryFileDataFrame(byte[] data, int tick)
+    /// <param name="frameIndex"></param>
+    internal TelemetryFileDataFrame(byte[] data, int frameIndex)
     {
         _data = data;
-
-        Tick = tick;
+        FrameIndex = frameIndex;
     }
 
     /// <inheritdoc />
     public ReadOnlySpan<byte> Data => _data;
 
-    /// <inheritdoc />
-    public int Tick { get; }
+    /// <summary>
+    /// Gets the index of the frame in the telemetry file.
+    /// </summary>
+    public int FrameIndex { get; }
 }
