@@ -32,13 +32,13 @@ public class TelemetryFileInfo
         FileInfo = new FileInfo(fileName);
 
         // Read file information
-        using (var fileStream = FileInfo.OpenRead())
+        using (var fileReader = new TelemetryFileReader(fileName))
         {
-            _fileHeader = TelemetryFileStreamHelpers.ReadHeader(fileStream);
+            _fileHeader = fileReader.FileHeader;
 
-            SessionInfo = TelemetryFileStreamHelpers.ReadSessionInfo(fileStream, _fileHeader);
+            SessionInfo = fileReader.ReadSessionInfo();
 
-            var variableHeaders = TelemetryFileStreamHelpers.ReadDataVariableHeaders(fileStream, _fileHeader);
+            var variableHeaders = fileReader.ReadDataVariableHeaders();
             var variableInfoArray = variableHeaders.Select(x => new DataVariableInfo(x)).ToArray();
 
             DataVariables = ImmutableArray.Create(variableInfoArray);
