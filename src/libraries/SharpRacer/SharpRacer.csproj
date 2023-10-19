@@ -7,4 +7,8 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="YamlDotNet" Version="13.7.1" />
+	</ItemGroup>
+
 </Project>
