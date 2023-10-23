@@ -16,11 +16,22 @@ public readonly struct DiskSubHeader
     /// </summary>
     public const int Size = 32;
 
+    /// <summary>
+    /// Initializes an instance of <see cref="DiskSubHeader"/> with default values.
+    /// </summary>
     public DiskSubHeader()
     {
 
     }
 
+    /// <summary>
+    /// Initializes an instance of <see cref="DiskSubHeader"/> with the specified values.
+    /// </summary>
+    /// <param name="sessionStartDate">The value to assign to the <see cref="SessionStartDate"/> field.</param>
+    /// <param name="sessionStartTime">The value to assign to the <see cref="SessionStartTime"/> field.</param>
+    /// <param name="sessionEndTime">The value to assign to the <see cref="SessionEndTime"/> field.</param>
+    /// <param name="sessionLapCount">The value to assign to the <see cref="SessionLapCount"/> field.</param>
+    /// <param name="sessionRecordCount">The value to assign to the <see cref="SessionRecordCount"/> field.</param>
     public DiskSubHeader(long sessionStartDate, double sessionStartTime, double sessionEndTime, int sessionLapCount, int sessionRecordCount)
     {
         SessionStartDate = sessionStartDate;

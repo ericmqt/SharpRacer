@@ -63,6 +63,11 @@ public class TelemetryFileReader : IDisposable
 
         _fileHeader = ReadHeader();
 
+        if (!TelemetryFile.ValidateHeader(_fileHeader))
+        {
+            throw new IOException("Invalid file header.");
+        }
+
         // An IBT file only contains one data buffer header, the remainder will be empty
         _dataBufferHeader = _fileHeader.DataBufferHeaders[0];
 

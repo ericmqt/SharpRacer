@@ -17,6 +17,61 @@ public readonly struct DataFileHeader
     public const int Size = 144;
 
     /// <summary>
+    /// Initializes an instance of <see cref="DataFileHeader"/> with default values.
+    /// </summary>
+    public DataFileHeader()
+    {
+
+    }
+
+    /// <summary>
+    /// Initializes an instance of <see cref="DataFileHeader"/> with the specified values.
+    /// </summary>
+    /// <param name="headerVersion">The value to assign to the <see cref="HeaderVersion"/> field.</param>
+    /// <param name="status">The value to assign to the <see cref="Status"/> field.</param>
+    /// <param name="tickRate">The value to assign to the <see cref="TickRate"/> field.</param>
+    /// <param name="sessionInfoVersion">The value to assign to the <see cref="SessionInfoVersion"/> field.</param>
+    /// <param name="sessionInfoLength">The value to assign to the <see cref="SessionInfoLength"/> field.</param>
+    /// <param name="sessionInfoOffset">The value to assign to the <see cref="SessionInfoOffset"/> field.</param>
+    /// <param name="variableCount">The value to assign to the <see cref="VariableCount"/> field.</param>
+    /// <param name="variableHeaderOffset">The value to assign to the <see cref="VariableHeaderOffset"/> field.</param>
+    /// <param name="dataBufferCount">The value to assign to the <see cref="DataBufferCount"/> field.</param>
+    /// <param name="dataBufferElementLength">The value to assign to the <see cref="DataBufferElementLength"/> field.</param>
+    /// <param name="dataBufferHeaders">The value to assign to the <see cref="DataBufferHeaders"/> field.</param>
+    /// <param name="diskSubHeader">The value to assign to the <see cref="DiskSubHeader"/> field.</param>
+    public DataFileHeader(
+        int headerVersion,
+        int status,
+        int tickRate,
+        int sessionInfoVersion,
+        int sessionInfoLength,
+        int sessionInfoOffset,
+        int variableCount,
+        int variableHeaderOffset,
+        int dataBufferCount,
+        int dataBufferElementLength,
+        DataBufferHeaderArray dataBufferHeaders,
+        DiskSubHeader diskSubHeader)
+    {
+        HeaderVersion = headerVersion;
+        Status = status;
+        TickRate = tickRate;
+
+        SessionInfoVersion = sessionInfoVersion;
+        SessionInfoLength = sessionInfoLength;
+        SessionInfoOffset = sessionInfoOffset;
+
+        VariableCount = variableCount;
+        VariableHeaderOffset = variableHeaderOffset;
+
+        DataBufferCount = dataBufferCount;
+        DataBufferElementLength = dataBufferElementLength;
+        DataBufferHeaders = dataBufferHeaders;
+
+        DiskSubHeader = diskSubHeader;
+    }
+
+    /// <summary>
     /// Header version. See IRSDK_VER.
     /// </summary>
     [FieldOffset(FieldOffsets.HeaderVersion)]

@@ -11,6 +11,11 @@ public static class DataFileConstants
     public const int HeaderOffset = 0;
 
     /// <summary>
+    /// Header version. See IRSDK_VER.
+    /// </summary>
+    public static int HeaderVersion = 2;
+
+    /// <summary>
     /// The maximum length of a native string field, in characters.
     /// </summary>
     public const int MaxStringLength = 32;
