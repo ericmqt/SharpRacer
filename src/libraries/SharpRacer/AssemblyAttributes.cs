@@ -1,3 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("SharpRacer.Tests")]
+[assembly: InternalsVisibleTo("SharpRacer.IntegrationTests")]
+[assembly: InternalsVisibleTo("SharpRacer.UnitTests")]

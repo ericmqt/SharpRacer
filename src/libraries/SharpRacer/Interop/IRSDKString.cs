@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SharpRacer.Interop;
 
@@ -17,6 +19,26 @@ public struct IRSDKString
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Field is required for inline arrays.")]
     [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Inline arrays do not allow readonly fields.")]
     private byte _first;
+
+    internal static IRSDKString FromString(string? value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            var emptyBytes = new byte[Size];
+
+            return MemoryMarshal.Read<IRSDKString>(emptyBytes);
+        }
+
+        if (value.Length > Size)
+        {
+            throw new ArgumentException($"'{nameof(value)}' cannot be longer than {Size} characters.");
+        }
+
+        var strBytes = new byte[Size];
+        Encoding.UTF8.GetBytes(value, strBytes);
+
+        return MemoryMarshal.Read<IRSDKString>(strBytes);
+    }
 
     /// <summary>
     /// Gets the length, in characters, of the string, excluding the null terminator.
