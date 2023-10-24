@@ -7,4 +7,8 @@
 public interface IArrayDataVariable<T> : IDataVariable
     where T : unmanaged
 {
+    /// <summary>
+    /// Gets the number of elements in the array.
+    /// </summary>
+    public int ValueCount { get; }
 }
