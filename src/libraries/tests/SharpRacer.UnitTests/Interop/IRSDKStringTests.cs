@@ -5,7 +5,38 @@ namespace SharpRacer.Interop;
 public class IRSDKStringTests
 {
     [Fact]
-    public void EmptyTest()
+    public void FromString_Test()
+    {
+        var valueStr = "foo";
+        var value = IRSDKString.FromString(valueStr);
+
+        Assert.Equal(valueStr.Length, value.GetLength());
+        Assert.Equal(valueStr, value.ToString());
+    }
+
+    [Fact]
+    public void FromString_NullOrEmptyValueTest()
+    {
+        var nullValue = IRSDKString.FromString(null);
+        var emptyValue = IRSDKString.FromString(string.Empty);
+
+        Assert.Equal(0, nullValue.GetLength());
+        Assert.Equal(0, emptyValue.GetLength());
+
+        Assert.Equal(string.Empty, nullValue.ToString());
+        Assert.Equal(string.Empty, emptyValue.ToString());
+    }
+
+    [Fact]
+    public void FromString_OversizeValueTest()
+    {
+        var chars = string.Join(null, Enumerable.Repeat('a', IRSDKString.Size + 1));
+
+        Assert.Throws<ArgumentException>(() => IRSDKString.FromString(chars));
+    }
+
+    [Fact]
+    public void MemoryMarshalRead_EmptyTest()
     {
         var charBuf = new byte[IRSDKString.Size];
         Array.Fill(charBuf, byte.MinValue);
@@ -17,7 +48,7 @@ public class IRSDKStringTests
     }
 
     [Fact]
-    public void MaxLengthTest()
+    public void MemoryMarshalRead_MaxLengthTest()
     {
         var string32 = "abcdefghijklmnopqrstuvwxyzABCDEF";
         var stringBytes = Encoding.ASCII.GetBytes(string32);
@@ -31,7 +62,7 @@ public class IRSDKStringTests
     }
 
     [Fact]
-    public void NullTerminatedTest()
+    public void MemoryMarshalRead_NullTerminatedTest()
     {
         var testString = "foo";
 

@@ -16,11 +16,19 @@ public readonly struct DataBufferHeader
     /// </summary>
     public const int Size = 16;
 
+    /// <summary>
+    /// Initializes an instance of <see cref="DataBufferHeader"/> to default values.
+    /// </summary>
     public DataBufferHeader()
     {
 
     }
 
+    /// <summary>
+    /// Initializes an instance of <see cref="DataBufferHeader"/> with the specified values.
+    /// </summary>
+    /// <param name="tickCount">The tick count.</param>
+    /// <param name="bufferOffset">The offset to the location of the buffer from the beginning of the <see cref="DataFileHeader"/>.</param>
     public DataBufferHeader(int tickCount, int bufferOffset)
     {
         TickCount = tickCount;
@@ -34,7 +42,7 @@ public readonly struct DataBufferHeader
     public readonly int TickCount;
 
     /// <summary>
-    /// The offset from the beginning of the <see cref="DataFileHeader"/> to the location of the buffer.
+    /// The offset to the location of the buffer from the beginning of the <see cref="DataFileHeader"/>.
     /// </summary>
     [FieldOffset(FieldOffsets.BufferOffset)]
     public readonly int BufferOffset;
