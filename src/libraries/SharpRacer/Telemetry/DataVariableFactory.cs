@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace SharpRacer.Telemetry;
+
+/// <inheritdoc cref="IDataVariableFactory" />
 internal class DataVariableFactory : IDataVariableFactory
 {
     private readonly IEnumerable<DataVariableInfo> _dataVariables;
@@ -49,6 +51,7 @@ internal class DataVariableFactory : IDataVariableFactory
     /// <typeparam name="T">The telemetry variable array element type.</typeparam>
     /// <param name="name">The name of the telemetry variable.</param>
     /// <param name="arrayLength">The length of the array of values represented by the telemetry variable.</param>
+    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <see cref="IArrayDataVariable{T}"/> that represents the specified array telemetry variable.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="name"/> is null or empty
@@ -56,9 +59,13 @@ internal class DataVariableFactory : IDataVariableFactory
     /// -OR-
     /// 
     /// <paramref name="arrayLength"/> does not match the telemetry variable obtained from the current simulator session or telemetry file.
+    /// 
+    /// -OR-
+    /// 
+    /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
-    public IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength)
+    public IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength, bool isTimeSliceArray)
         where T : unmanaged
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
@@ -73,10 +80,17 @@ internal class DataVariableFactory : IDataVariableFactory
                     nameof(arrayLength));
             }
 
+            if (dataVariableInfo.IsTimeSliceArray != isTimeSliceArray)
+            {
+                throw new ArgumentException(
+                    $"'{nameof(isTimeSliceArray)}' is {isTimeSliceArray} but does not match the value for telemetry variable '{name}'.",
+                    nameof(isTimeSliceArray));
+            }
+
             return new ArrayDataVariable<T>(dataVariableInfo);
         }
 
-        return new ArrayDataVariable<T>(name, arrayLength);
+        return new ArrayDataVariable<T>(name, arrayLength, isTimeSliceArray);
     }
 
     /// <summary>
@@ -121,6 +135,7 @@ internal class DataVariableFactory : IDataVariableFactory
     /// <typeparam name="T"></typeparam>
     /// <param name="name">The name of the telemetry variable.</param>
     /// <param name="arrayLength">The length of the array of values represented by the telemetry variable.</param>
+    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <typeparamref name="TImplementation"/> that represents the specified array telemetry variable.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="name"/> is null or empty
@@ -128,9 +143,13 @@ internal class DataVariableFactory : IDataVariableFactory
     /// -OR-
     /// 
     /// <paramref name="arrayLength"/> does not match the telemetry variable obtained from the current simulator session or telemetry file.
+    /// 
+    /// -OR-
+    /// 
+    /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
-    public TImplementation CreateArray<TImplementation, T>(string name, int arrayLength)
+    public TImplementation CreateArray<TImplementation, T>(string name, int arrayLength, bool isTimeSliceArray)
         where TImplementation : IArrayDataVariable<T>, ICreateArrayDataVariable<TImplementation, T>
         where T : unmanaged
     {
@@ -146,10 +165,17 @@ internal class DataVariableFactory : IDataVariableFactory
                     nameof(arrayLength));
             }
 
+            if (dataVariableInfo.IsTimeSliceArray != isTimeSliceArray)
+            {
+                throw new ArgumentException(
+                    $"'{nameof(isTimeSliceArray)}' is {isTimeSliceArray} but does not match the value for telemetry variable '{name}'.",
+                    nameof(isTimeSliceArray));
+            }
+
             return TImplementation.Create(dataVariableInfo);
         }
 
-        return TImplementation.Create(name, arrayLength);
+        return TImplementation.Create(name, arrayLength, isTimeSliceArray);
     }
 
     private bool TryGetDataVariableInfo(string name, [NotNullWhen(true)] out DataVariableInfo? dataVariable)

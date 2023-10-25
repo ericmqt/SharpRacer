@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer.Telemetry;
 
 /// <summary>
-/// Provides static factory methods for creating instances of strongly-typed implementations of <see cref="IArrayDataVariable{T}"/>.
+/// Provides static factory methods for creating instances of concrete implementations of <see cref="IArrayDataVariable{T}"/>.
 /// </summary>
 /// <typeparam name="TSelf">The <see cref="IArrayDataVariable{T}"/> implementation to create.</typeparam>
 /// <typeparam name="T">
@@ -19,20 +19,15 @@ public interface ICreateArrayDataVariable<TSelf, T>
     /// The <see cref="DataVariableInfo"/> from which to create an instance of <typeparamref name="TSelf"/>.
     /// </param>
     /// <returns>An instance of <typeparamref name="TSelf"/> created from the specified <see cref="DataVariableInfo"/>.</returns>
-    /// <remarks>
-    /// This method exists to assist <see cref="IDataVariableFactory"/> implementations and should not be called by user code.
-    /// </remarks>
     static abstract TSelf Create(DataVariableInfo dataVariableInfo);
 
     /// <summary>
     /// Creates a placeholder instance of <typeparamref name="TSelf"/> that represents a telemetry variable which is unavailable in the
     /// current simulator session or telemetry file.
     /// </summary>
-    /// <param name="variableName">The telemetry variable name.</param>
+    /// <param name="variableName">The name of the telemetry variable.</param>
     /// <param name="valueCount">The number of elements in the value array represented by the telemetry variable.</param>
+    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <typeparamref name="TSelf"/> created from the specified variable name and value count.</returns>
-    /// <remarks>
-    /// This method exists to assist <see cref="IDataVariableFactory"/> implementations and should not be called by user code.
-    /// </remarks>
-    static abstract TSelf Create(string variableName, int valueCount);
+    static abstract TSelf Create(string variableName, int valueCount, bool isTimeSliceArray);
 }

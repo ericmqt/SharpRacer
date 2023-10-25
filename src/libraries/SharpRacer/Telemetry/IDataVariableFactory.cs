@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer.Telemetry;
 
 /// <summary>
-/// Creates strongly-typed telemetry variables implementing <see cref="IDataVariable"/> from a simulator session or telemetry file.
+/// Creates strongly-typed telemetry variable objects implementing <see cref="IDataVariable"/> from a simulator session or telemetry file.
 /// </summary>
 /// <remarks>
 /// If a given telemetry variable is not available in the associated simulator session or telemetry file, a placeholder is created which
@@ -32,6 +32,7 @@ public interface IDataVariableFactory
     /// <typeparam name="T">The telemetry variable array element type.</typeparam>
     /// <param name="name">The name of the telemetry variable.</param>
     /// <param name="arrayLength">The length of the array of values represented by the telemetry variable.</param>
+    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <see cref="IArrayDataVariable{T}"/> that represents the specified array telemetry variable.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="name"/> is null or empty
@@ -39,9 +40,13 @@ public interface IDataVariableFactory
     /// -OR-
     /// 
     /// <paramref name="arrayLength"/> does not match the telemetry variable obtained from the current simulator session or telemetry file.
+    /// 
+    /// -OR-
+    /// 
+    /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
-    IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength)
+    IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength, bool isTimeSliceArray)
         where T : unmanaged;
 
     /// <summary>
@@ -70,6 +75,7 @@ public interface IDataVariableFactory
     /// <typeparam name="T"></typeparam>
     /// <param name="name">The name of the telemetry variable.</param>
     /// <param name="arrayLength">The length of the array of values represented by the telemetry variable.</param>
+    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <typeparamref name="TImplementation"/> that represents the specified array telemetry variable.</returns>
     /// <exception cref="ArgumentException">
     /// <paramref name="name"/> is null or empty
@@ -77,9 +83,13 @@ public interface IDataVariableFactory
     /// -OR-
     /// 
     /// <paramref name="arrayLength"/> does not match the telemetry variable obtained from the current simulator session or telemetry file.
+    /// 
+    /// -OR-
+    /// 
+    /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
-    TImplementation CreateArray<TImplementation, T>(string name, int arrayLength)
+    TImplementation CreateArray<TImplementation, T>(string name, int arrayLength, bool isTimeSliceArray)
         where TImplementation : IArrayDataVariable<T>, ICreateArrayDataVariable<TImplementation, T>
         where T : unmanaged;
 }
