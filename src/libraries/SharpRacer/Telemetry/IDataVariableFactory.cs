@@ -16,12 +16,17 @@ public interface IDataVariableFactory
     /// <param name="name">The name of the telemetry variable.</param>
     /// <returns>An instance of <see cref="IDataVariable{T}"/> that represents the telemetry variable.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is null or empty
+    /// <paramref name="name"/> is an empty string.
     /// 
     /// -OR-
     /// 
     /// The telemetry variable matched by <paramref name="name"/> is an array variable.
+    /// 
+    /// -OR-
+    /// 
+    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
     /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
     IDataVariable<T> Create<T>(string name)
         where T : unmanaged;
 
@@ -35,7 +40,7 @@ public interface IDataVariableFactory
     /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <see cref="IArrayDataVariable{T}"/> that represents the specified array telemetry variable.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is null or empty
+    /// <paramref name="name"/> is an empty string.
     /// 
     /// -OR-
     /// 
@@ -44,7 +49,12 @@ public interface IDataVariableFactory
     /// -OR-
     /// 
     /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
+    /// 
+    /// -OR-
+    /// 
+    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
     /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
     IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength, bool isTimeSliceArray)
         where T : unmanaged;
@@ -57,12 +67,17 @@ public interface IDataVariableFactory
     /// <param name="name"></param>
     /// <returns>An instance of <typeparamref name="TImplementation"/> that represents the specified telemetry variable.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is null or empty
+    /// <paramref name="name"/> is an empty string.
     /// 
     /// -OR-
     /// 
     /// The telemetry variable matched by <paramref name="name"/> is an array variable.
+    /// 
+    /// -OR-
+    /// 
+    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
     /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
     TImplementation Create<TImplementation, T>(string name)
         where TImplementation : IDataVariable<T>, ICreateDataVariable<TImplementation, T>
         where T : unmanaged;
@@ -78,7 +93,7 @@ public interface IDataVariableFactory
     /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
     /// <returns>An instance of <typeparamref name="TImplementation"/> that represents the specified array telemetry variable.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is null or empty
+    /// <paramref name="name"/> is an empty string.
     /// 
     /// -OR-
     /// 
@@ -87,7 +102,12 @@ public interface IDataVariableFactory
     /// -OR-
     /// 
     /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
+    /// 
+    /// -OR-
+    /// 
+    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
     /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
     TImplementation CreateArray<TImplementation, T>(string name, int arrayLength, bool isTimeSliceArray)
         where TImplementation : IArrayDataVariable<T>, ICreateArrayDataVariable<TImplementation, T>

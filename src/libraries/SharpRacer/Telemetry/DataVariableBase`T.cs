@@ -40,7 +40,7 @@ public abstract class DataVariableBase<T> : IDataVariable
     /// <exception cref="ArgumentNullException"><paramref name="dataVariableInfo"/> is <see langword="null" />.</exception>
     protected DataVariableBase(DataVariableInfo dataVariableInfo)
     {
-        ArgumentNullException.ThrowIfNull(dataVariableInfo);
+        VariableInfo = dataVariableInfo ?? throw new ArgumentNullException(nameof(dataVariableInfo));
 
         Name = dataVariableInfo.Name;
         IsAvailable = true;
