@@ -22,7 +22,6 @@ public class DataVariableHeaderTests
         var isTimeSliceArray = false;
         var offset = 1024;
 
-
         var header = new DataVariableHeader(
             varName,
             valueType,
