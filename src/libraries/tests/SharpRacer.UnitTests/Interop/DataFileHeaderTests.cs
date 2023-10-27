@@ -4,7 +4,26 @@ namespace SharpRacer.Interop;
 public class DataFileHeaderTests
 {
     [Fact]
-    public void Ctor_Test()
+    public void Ctor_DefaultTest()
+    {
+        var header = new DataFileHeader();
+
+        Assert.Equal(default, header.DataBufferCount);
+        Assert.Equal(default, header.DataBufferElementLength);
+        Assert.Equal(default, header.DataBufferHeaders);
+        Assert.Equal(default, header.DiskSubHeader);
+        Assert.Equal(default, header.HeaderVersion);
+        Assert.Equal(default, header.SessionInfoLength);
+        Assert.Equal(default, header.SessionInfoOffset);
+        Assert.Equal(default, header.SessionInfoVersion);
+        Assert.Equal(default, header.Status);
+        Assert.Equal(default, header.TickRate);
+        Assert.Equal(default, header.VariableCount);
+        Assert.Equal(default, header.VariableHeaderOffset);
+    }
+
+    [Fact]
+    public void Ctor_ParameterizedTest()
     {
         int headerVersion = 1;
         int status = 1;

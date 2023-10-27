@@ -2,6 +2,20 @@
 public class DataVariableFactoryTests
 {
     [Fact]
+    public void Ctor_Test()
+    {
+        var fooVar = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Int);
+
+        var factory = new DataVariableFactory(new[] { fooVar });
+    }
+
+    [Fact]
+    public void Ctor_NullDataVariablesTest()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DataVariableFactory(null!));
+    }
+
+    [Fact]
     public void Create_Test()
     {
         var fooVar = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Int);
@@ -138,7 +152,7 @@ public class DataVariableFactoryTests
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<int>("Foo", arrayLength, isTimeSliceArray));
+        Assert.Throws<ArgumentException>(() => factory.CreateArray<bool>("Foo", arrayLength, isTimeSliceArray));
     }
 
     [Fact]
@@ -197,5 +211,7 @@ public class DataVariableFactoryTests
         Assert.False(DataVariableFactory.IsValueTypeMatch<double>(DataVariableValueType.Bitfield));
         Assert.False(DataVariableFactory.IsValueTypeMatch<double>(DataVariableValueType.Int));
         Assert.False(DataVariableFactory.IsValueTypeMatch<double>(DataVariableValueType.Float));
+
+        Assert.False(DataVariableFactory.IsValueTypeMatch<double>((DataVariableValueType)9999));
     }
 }

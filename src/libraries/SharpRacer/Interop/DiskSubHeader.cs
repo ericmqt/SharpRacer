@@ -77,9 +77,7 @@ public readonly struct DiskSubHeader
     /// <returns></returns>
     public readonly DateTimeOffset GetSessionEndDateTimeOffset()
     {
-        return DateTimeOffset.UnixEpoch
-            .AddSeconds(SessionStartDate)
-            .AddSeconds(SessionEndTime);
+        return DateTimeOffset.FromUnixTimeSeconds(SessionStartDate).AddSeconds(SessionEndTime);
     }
 
     /// <summary>
@@ -88,9 +86,7 @@ public readonly struct DiskSubHeader
     /// <returns></returns>
     public readonly DateTimeOffset GetSessionStartDateTimeOffset()
     {
-        return DateTimeOffset.UnixEpoch
-            .AddSeconds(SessionStartDate)
-            .AddSeconds(SessionStartTime);
+        return DateTimeOffset.FromUnixTimeSeconds(SessionStartDate).AddSeconds(SessionStartTime);
     }
 
     /// <summary>

@@ -10,14 +10,24 @@ internal static class DataVariableInfoFactory
 
     public static DataVariableInfo CreateArray(string variableName, DataVariableValueType valueType, int valueCount, bool isTimeSliceArray)
     {
-        var header = CreateArrayHeader(variableName, valueType, valueCount, isTimeSliceArray, 2048, "Description", "Unit");
+        return CreateArray(variableName, valueType, valueCount, isTimeSliceArray, 2048);
+    }
+
+    public static DataVariableInfo CreateArray(string variableName, DataVariableValueType valueType, int valueCount, bool isTimeSliceArray, int offset)
+    {
+        var header = CreateArrayHeader(variableName, valueType, valueCount, isTimeSliceArray, offset, "Description", "Unit");
 
         return new DataVariableInfo(header);
     }
 
     public static DataVariableInfo CreateScalar(string variableName, DataVariableValueType valueType)
     {
-        var header = CreateScalarHeader(variableName, valueType, 1024, "Description", "Unit");
+        return CreateScalar(variableName, valueType, 1024);
+    }
+
+    public static DataVariableInfo CreateScalar(string variableName, DataVariableValueType valueType, int offset)
+    {
+        var header = CreateScalarHeader(variableName, valueType, offset, "Description", "Unit");
 
         return new DataVariableInfo(header);
     }

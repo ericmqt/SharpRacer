@@ -6,7 +6,21 @@ namespace SharpRacer.Interop;
 public class DataVariableHeaderTests
 {
     [Fact]
-    public void Ctor_Test()
+    public void Ctor_DefaultTest()
+    {
+        var header = new DataVariableHeader();
+
+        Assert.Equal(default, header.Count);
+        Assert.Equal(default, header.CountAsTime);
+        Assert.Equal(default, header.Description);
+        Assert.Equal(default, header.Name);
+        Assert.Equal(default, header.Offset);
+        Assert.Equal(default, header.Type);
+        Assert.Equal(default, header.Unit);
+    }
+
+    [Fact]
+    public void Ctor_ParameterizedTest()
     {
         var varNameStr = "Foo";
         var varName = IRSDKString.FromString(varNameStr);

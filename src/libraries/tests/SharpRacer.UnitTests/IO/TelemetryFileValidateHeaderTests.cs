@@ -34,6 +34,20 @@ public class TelemetryFileValidateHeaderTests
     }
 
     [Fact]
+    public void TelemetryFile_ValidateHeader_InvalidDataBufferElementLengthTest()
+    {
+        var validHeader = CreateValidHeader(
+            variableCount: 42,
+            sessionInfoLength: 256,
+            dataBufferElementLength: 1024,
+            dataBufferFrameCount: 4096);
+
+        Assert.False(
+            TelemetryFile.ValidateHeader(
+                CopyHeader(validHeader, dataBufferElementLength: 0)));
+    }
+
+    [Fact]
     public void TelemetryFile_ValidateHeader_InvalidHeaderVersionTest()
     {
         var validHeader = CreateValidHeader(

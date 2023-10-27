@@ -4,7 +4,19 @@ namespace SharpRacer.Interop;
 public class DiskSubHeaderTests
 {
     [Fact]
-    public void Ctor_Test()
+    public void Ctor_DefaultTest()
+    {
+        var header = new DiskSubHeader();
+
+        Assert.Equal(default, header.SessionEndTime);
+        Assert.Equal(default, header.SessionLapCount);
+        Assert.Equal(default, header.SessionRecordCount);
+        Assert.Equal(default, header.SessionStartDate);
+        Assert.Equal(default, header.SessionStartTime);
+    }
+
+    [Fact]
+    public void Ctor_ParameterizedTest()
     {
         long sessionStartDate = 1234;
         double sessionStartTime = 42.7;
@@ -50,5 +62,49 @@ public class DiskSubHeaderTests
         Assert.Equal(sessionEndTime, header.SessionEndTime);
         Assert.Equal(sessionLapCount, header.SessionLapCount);
         Assert.Equal(sessionRecordCount, header.SessionRecordCount);
+    }
+
+    [Fact]
+    public void GetSessionEndDateTimeOffset_Test()
+    {
+        var sessionStartDate = new DateOnly(2023, 9, 22);
+        var sessionStartTime = new TimeOnly(14, 05, 0);
+        var sessionEndTime = new TimeOnly(14, 33, 0);
+
+        var sessionStartDate_DateTimeOffset = new DateTimeOffset(sessionStartDate, TimeOnly.MinValue, TimeSpan.FromHours(0));
+        var sessionEndDateTimeOffset = new DateTimeOffset(sessionStartDate, sessionEndTime, TimeSpan.FromHours(0));
+
+        var unixSessionStartDate = (long)sessionStartDate_DateTimeOffset.Subtract(DateTimeOffset.UnixEpoch).TotalSeconds;
+
+        var header = new DiskSubHeader(
+            unixSessionStartDate,
+            sessionStartTime.ToTimeSpan().TotalSeconds,
+            sessionEndTime.ToTimeSpan().TotalSeconds,
+            5,
+            1024);
+
+        Assert.Equal(sessionEndDateTimeOffset, header.GetSessionEndDateTimeOffset());
+    }
+
+    [Fact]
+    public void GetSessionStartDateTimeOffset_Test()
+    {
+        var sessionStartDate = new DateOnly(2023, 9, 22);
+        var sessionStartTime = new TimeOnly(14, 05, 0);
+        var sessionEndTime = new TimeOnly(14, 33, 0);
+
+        var sessionStartDate_DateTimeOffset = new DateTimeOffset(sessionStartDate, TimeOnly.MinValue, TimeSpan.FromHours(0));
+        var sessionStartDateTimeOffset = new DateTimeOffset(sessionStartDate, sessionStartTime, TimeSpan.FromHours(0));
+
+        var unixSessionStartDate = (long)sessionStartDate_DateTimeOffset.Subtract(DateTimeOffset.UnixEpoch).TotalSeconds;
+
+        var header = new DiskSubHeader(
+            unixSessionStartDate,
+            sessionStartTime.ToTimeSpan().TotalSeconds,
+            sessionEndTime.ToTimeSpan().TotalSeconds,
+            5,
+            1024);
+
+        Assert.Equal(sessionStartDateTimeOffset, header.GetSessionStartDateTimeOffset());
     }
 }

@@ -4,7 +4,16 @@ namespace SharpRacer.Interop;
 public class DataBufferHeaderTests
 {
     [Fact]
-    public void Ctor_Test()
+    public void Ctor_DefaultTest()
+    {
+        var header = new DataBufferHeader();
+
+        Assert.Equal(default, header.BufferOffset);
+        Assert.Equal(default, header.TickCount);
+    }
+
+    [Fact]
+    public void Ctor_ParameterizedTest()
     {
         int tickCount = 1234;
         int bufferOffset = 98765;
