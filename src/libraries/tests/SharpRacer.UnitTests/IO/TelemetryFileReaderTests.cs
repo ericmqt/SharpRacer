@@ -31,14 +31,15 @@ public class TelemetryFileReaderTests
         fileBuilder.Write(fileName, out var writtenHeader);
 
         // Read and assert
-        using var reader = new TelemetryFileReader(fileName);
+        using (var reader = new TelemetryFileReader(fileName))
+        {
+            Assert.Equal(writtenHeader, reader.FileHeader);
 
-        Assert.Equal(writtenHeader, reader.FileHeader);
+            var testVariableHeaders = new[] { intVarHeader, float3ArrayVarHeader };
+            var fileVariableHeaders = reader.ReadDataVariableHeaders();
 
-        var testVariableHeaders = new[] { intVarHeader, float3ArrayVarHeader };
-        var fileVariableHeaders = reader.ReadDataVariableHeaders();
-
-        Assert.True(testVariableHeaders.SequenceEqual(fileVariableHeaders));
+            Assert.True(testVariableHeaders.SequenceEqual(fileVariableHeaders));
+        }
 
         File.Delete(fileName);
     }
