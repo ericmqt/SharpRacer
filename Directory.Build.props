@@ -1,17 +1,17 @@
 <Project>
 	<PropertyGroup>
 		<RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
+		<RepositoryArtifactsDirectory>$(RepositoryRootDirectory)\artifacts</RepositoryArtifactsDirectory>
 		<RepositoryAssetsDirectory>$(RepositoryRootDirectory)\assets</RepositoryAssetsDirectory>
 		<RepositoryBinDirectory>$(RepositoryRootDirectory)\bin</RepositoryBinDirectory>
 		<RepositoryDefaultOutputPath>$(RepositoryBinDirectory)\$(Configuration)-$(Platform)</RepositoryDefaultOutputPath>
 		<RepositoryPackageOutputDirectory>$(RepositoryDefaultOutputPath)\bin\nupkg</RepositoryPackageOutputDirectory>
 		<RepositorySourceDirectory>$(RepositoryRootDirectory)\src</RepositorySourceDirectory>
-		<RepositoryTestOutputPath>$(RepositoryDefaultOutputPath)\tests</RepositoryTestOutputPath>
+		<RepositoryTestOutputPath>$(RepositoryArtifactsDirectory)\test</RepositoryTestOutputPath>
 	</PropertyGroup>
 	
 	<PropertyGroup>
-		<ArtifactsPath>$(RepositoryRootDirectory)\artifacts</ArtifactsPath>
-		<!-- <OutputPath>$(RepositoryDefaultOutputPath)\$(MSBuildProjectName)</OutputPath> -->
+		<ArtifactsPath>$(RepositoryArtifactsDirectory)</ArtifactsPath>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -28,5 +28,10 @@
 	<!-- NuGet packaging -->
 	<PropertyGroup>
 		<PackageOutputPath>$(RepositoryPackageOutputDirectory)</PackageOutputPath>
+	</PropertyGroup>
+
+	<!-- Coverlet -->
+	<PropertyGroup>
+		<CoverletOutput>$([MSBuild]::EnsureTrailingSlash('$(RepositoryTestOutputPath)\$(MSBuildProjectName)'))</CoverletOutput>
 	</PropertyGroup>
 </Project>
