@@ -34,6 +34,24 @@ public class TelemetryFileValidateHeaderTests
     }
 
     [Fact]
+    public void TelemetryFile_ValidateHeader_InvalidDataBufferHeaderBufferOffsetTest()
+    {
+        var fileHeader = CreateValidHeader(
+            variableCount: 42,
+            sessionInfoLength: 256,
+            dataBufferElementLength: 1024,
+            dataBufferFrameCount: 4096);
+
+        var bufferHeaderArray = DataBufferHeaderArray.FromArray(
+            [new DataBufferHeader(43, DataFileHeader.Size - 3), default, default, default]);
+
+        fileHeader = fileHeader.WithDataBufferHeaders(bufferHeaderArray);
+
+        Assert.False(
+            TelemetryFile.ValidateHeader(fileHeader));
+    }
+
+    [Fact]
     public void TelemetryFile_ValidateHeader_InvalidDataBufferElementLengthTest()
     {
         var validHeader = CreateValidHeader(

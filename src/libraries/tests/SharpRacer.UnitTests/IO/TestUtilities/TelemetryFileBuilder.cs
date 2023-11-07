@@ -25,6 +25,11 @@ internal class TelemetryFileBuilder
             .WithVariableCount(_variableHeaders.Length);
     }
 
+    public static TelemetryFileBuilder Create()
+    {
+        return new TelemetryFileBuilder(null);
+    }
+
     public static TelemetryFileBuilder Create(Action<TelemetryFileDataVariablesBuilder>? configureVariables)
     {
         var variablesBuilder = new TelemetryFileDataVariablesBuilder();
@@ -51,11 +56,25 @@ internal class TelemetryFileBuilder
         return this;
     }
 
+    public TelemetryFileBuilder SetHeaderVersion(int headerVersion)
+    {
+        _fileHeader = _fileHeader.WithHeaderVersion(headerVersion);
+
+        return this;
+    }
+
     public TelemetryFileBuilder SetSessionInfo(string? sessionInfo, int version)
     {
         _sessionInfo = sessionInfo;
 
         _fileHeader = _fileHeader.WithSessionInfoVersion(version);
+
+        return this;
+    }
+
+    public TelemetryFileBuilder SetSessionStartAndDuration(DateTimeOffset sessionStart, TimeSpan duration)
+    {
+        _fileHeader = _fileHeader.WithDiskSubHeader(_fileHeader.DiskSubHeader.WithSessionStartDateAndDuration(sessionStart, duration));
 
         return this;
     }

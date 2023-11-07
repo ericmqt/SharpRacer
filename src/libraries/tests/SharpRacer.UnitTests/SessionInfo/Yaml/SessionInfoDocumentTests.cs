@@ -8,6 +8,7 @@ public class SessionInfoDocumentTests
 
         Assert.NotNull(sessionInfo.CameraInfo);
         Assert.NotNull(sessionInfo.DriverInfo);
+        Assert.Null(sessionInfo.QualifyResultsInfo);
         Assert.NotNull(sessionInfo.RadioInfo);
         Assert.NotNull(sessionInfo.SessionInfo);
         Assert.NotNull(sessionInfo.SplitTimeInfo);

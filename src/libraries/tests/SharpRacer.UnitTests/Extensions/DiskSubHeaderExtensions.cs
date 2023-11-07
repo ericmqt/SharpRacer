@@ -23,4 +23,13 @@ internal static class DiskSubHeaderExtensions
     {
         return header.With(sessionRecordCount: sessionRecordCount);
     }
+
+    public static DiskSubHeader WithSessionStartDateAndDuration(this in DiskSubHeader header, DateTimeOffset sessionStart, TimeSpan sessionDuration)
+    {
+        var startTime = (int)sessionStart.ToUniversalTime().TimeOfDay.TotalSeconds;
+        var startDate = sessionStart.ToUniversalTime().ToUnixTimeSeconds() - startTime;
+        var endTime = startTime + (int)sessionDuration.TotalSeconds;
+
+        return header.With(sessionStartDate: startDate, sessionStartTime: startTime, sessionEndTime: endTime);
+    }
 }

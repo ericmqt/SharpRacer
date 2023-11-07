@@ -6,6 +6,10 @@ public class DriverNodeTests
     {
         var node = new DriverNode();
 
+        Assert.Null(node.AbbrevName);
+        Assert.Null(node.CarClassShortName);
+        Assert.Null(node.Initials);
+
         Assert.Equal(default, node.CarClassColor);
         Assert.Equal(default, node.CarClassEstLapTime);
         Assert.Equal(default, node.CarClassID);
