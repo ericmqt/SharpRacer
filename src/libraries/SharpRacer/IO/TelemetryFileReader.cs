@@ -14,6 +14,7 @@ public class TelemetryFileReader : IDisposable
     private readonly SafeFileHandle _fileHandle;
     private readonly DataFileHeader _fileHeader;
     private bool _isDisposed;
+    private readonly bool _isFileHandleOwner;
 
     /// <summary>
     /// Initializes an instance of <see cref="TelemetryFileReader"/> from the specified file name.
@@ -23,7 +24,9 @@ public class TelemetryFileReader : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="fileName"/> is null.</exception>
     /// <exception cref="IOException">The file has an invalid size or format.</exception>
     public TelemetryFileReader(string fileName)
-        : this(File.OpenHandle(fileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+        : this(
+              File.OpenHandle(fileName, FileMode.Open, FileAccess.Read, FileShare.Read),
+              ownsHandle: true)
     {
 
     }
@@ -36,8 +39,25 @@ public class TelemetryFileReader : IDisposable
     /// <exception cref="ArgumentNullException"><paramref name="fileHandle"/> is null.</exception>
     /// <exception cref="IOException">The file has an invalid size or format.</exception>
     public TelemetryFileReader(SafeFileHandle fileHandle)
+        : this(fileHandle, ownsHandle: true)
     {
-        _fileHandle = fileHandle ?? throw new ArgumentNullException(nameof(fileHandle));
+
+    }
+
+    /// <summary>
+    /// Initializes an instance of <see cref="TelemetryFileReader"/> from the specified file handle and optionally assumes responsibility
+    /// for disposing the file handle.
+    /// </summary>
+    /// <param name="fileHandle">A <see cref="SafeFileHandle"/> with read access to a telemetry file.</param>
+    /// <param name="ownsHandle">If <see langword="true" />, this instance is responsible for disposing <paramref name="fileHandle"/>.</param>
+    /// <exception cref="ArgumentException"><paramref name="fileHandle"/> is invalid or closed.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="fileHandle"/> is null.</exception>
+    /// <exception cref="IOException">The file has an invalid size or format.</exception>
+    public TelemetryFileReader(SafeFileHandle fileHandle, bool ownsHandle)
+    {
+        // Validate file handle
+        ArgumentNullException.ThrowIfNull(fileHandle);
+        _isFileHandleOwner = ownsHandle;
 
         if (fileHandle.IsClosed)
         {
@@ -49,22 +69,30 @@ public class TelemetryFileReader : IDisposable
             throw new ArgumentException($"The specified file handle is invalid.");
         }
 
-        // TODO: Determine if FileOptions.SequentialScan should be optionally specified for potential consumers like a data frame reader.
-        // Especially check that SequentialScan is a good option for seeking backwards and scanning forward multiple times.
-
         // Ensure the file is long enough to read the header
-        var fileLength = RandomAccess.GetLength(_fileHandle);
+        var fileLength = RandomAccess.GetLength(fileHandle);
 
         if (fileLength < DataFileHeader.Size)
         {
+            if (ownsHandle)
+            {
+                fileHandle.Dispose();
+            }
+
             throw new IOException(
                 $"The specified file has a length ({fileLength}) which is smaller than the size of the file header ({DataFileHeader.Size}).");
         }
 
-        _fileHeader = ReadHeader();
+        // Read and validate header
+        _fileHeader = TelemetryFile.ReadHeader(fileHandle);
 
         if (!TelemetryFile.ValidateHeader(_fileHeader))
         {
+            if (ownsHandle)
+            {
+                fileHandle.Dispose();
+            }
+
             throw new IOException("Invalid file header.");
         }
 
@@ -72,11 +100,19 @@ public class TelemetryFileReader : IDisposable
         _dataBufferHeader = _fileHeader.DataBufferHeaders[0];
 
         // Calculate the minimum size of the file and check against the actual length of the file
-        if (!CheckFileSize(_fileHandle, _fileHeader, _dataBufferHeader, out fileLength, out var expectedLength))
+        if (!CheckFileSize(fileHandle, _fileHeader, _dataBufferHeader, out fileLength, out var expectedLength))
         {
+            if (ownsHandle)
+            {
+                fileHandle.Dispose();
+            }
+
             throw new IOException(
                 $"The specified file has a length ({fileLength}) which is smaller than the expected size based on file header information ({expectedLength}).");
         }
+
+        // Assign file handle
+        _fileHandle = fileHandle;
     }
 
     /// <summary>
@@ -187,19 +223,6 @@ public class TelemetryFileReader : IDisposable
         return Encoding.Latin1.GetString(sessionInfoBlob);
     }
 
-    private DataFileHeader ReadHeader()
-    {
-        VerifyCanRead();
-
-        Span<byte> headerBlob = new byte[DataFileHeader.Size];
-
-        var bytesRead = RandomAccess.Read(_fileHandle, headerBlob, DataFileConstants.HeaderOffset);
-
-        VerifyBytesRead(bytesRead, headerBlob.Length);
-
-        return MemoryMarshal.Read<DataFileHeader>(headerBlob);
-    }
-
     private static bool CheckFileSize(
         SafeFileHandle fileHandle,
         in DataFileHeader fileHeader,
@@ -255,7 +278,10 @@ public class TelemetryFileReader : IDisposable
         {
             if (disposing)
             {
-                _fileHandle.Dispose();
+                if (_isFileHandleOwner)
+                {
+                    _fileHandle.Dispose();
+                }
             }
 
             _isDisposed = true;
