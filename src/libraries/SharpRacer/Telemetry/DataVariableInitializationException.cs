@@ -4,11 +4,6 @@ namespace SharpRacer.Telemetry;
 
 public class DataVariableInitializationException : Exception
 {
-    public DataVariableInitializationException()
-    {
-
-    }
-
     public DataVariableInitializationException(string message)
         : base(message)
     {

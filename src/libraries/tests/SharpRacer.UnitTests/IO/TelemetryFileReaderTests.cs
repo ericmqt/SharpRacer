@@ -251,7 +251,7 @@ public class TelemetryFileReaderTests
 
         fileBuilder.Write(fileName, out var writtenHeader);
 
-        using (var reader = new TelemetryFileReader(fileName))
+        using (var reader = new TelemetryFileReader(TelemetryFile.OpenHandle(fileName)))
         {
             Assert.Throws<ArgumentException>(() =>
             {

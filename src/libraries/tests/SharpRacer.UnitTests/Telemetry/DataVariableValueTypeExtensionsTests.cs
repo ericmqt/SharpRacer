@@ -31,4 +31,12 @@ public class DataVariableValueTypeExtensionsTests
 
         Assert.False(DataVariableValueType.Float.IsCompatibleValueTypeArgument<double>());
     }
+
+    [Fact]
+    public void IsCompatibleValueTypeArgumentTest_InvalidDataVariableValueTypeValueReturnsFalseTest()
+    {
+        var impossibleValue = (DataVariableValueType)9000;
+
+        Assert.False(impossibleValue.IsCompatibleValueTypeArgument<double>());
+    }
 }
