@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace SharpRacer.Telemetry;
 
@@ -12,39 +13,28 @@ internal class DataVariableFactory : IDataVariableFactory
         _dataVariables = dataVariables ?? throw new ArgumentNullException(nameof(dataVariables));
     }
 
-    /// <summary>
-    /// Creates an instance of <see cref="IDataVariable{T}"/> that represents the telemetry variable with the specified name.
-    /// </summary>
-    /// <typeparam name="T">The telemetry variable value type.</typeparam>
-    /// <param name="name">The name of the telemetry variable.</param>
-    /// <returns>An instance of <see cref="IDataVariable{T}"/> that represents the telemetry variable.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is an empty string.
-    /// 
-    /// -OR-
-    /// 
-    /// The telemetry variable matched by <paramref name="name"/> is an array variable.
-    /// 
-    /// -OR-
-    /// 
-    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
-    /// </exception>
-    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
-    public IDataVariable<T> Create<T>(string name)
+    public IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength)
+        where T : unmanaged
+    {
+        ArgumentException.ThrowIfNullOrEmpty(name);
+
+        if (TryGetDataVariableInfo(name, out var dataVariableInfo))
+        {
+            return new ArrayDataVariable<T>(dataVariableInfo);
+        }
+
+        // Create unavailable variable
+        return new ArrayDataVariable<T>(name, arrayLength, variableInfo: null);
+    }
+
+    public IScalarDataVariable<T> CreateScalar<T>(string name)
         where T : unmanaged
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
         if (!TryGetDataVariableInfo(name, out DataVariableInfo? dataVariableInfo))
         {
-            return new DataVariable<T>(name);
-        }
-
-        if (!IsValueTypeMatch<T>(dataVariableInfo.ValueType))
-        {
-            throw new ArgumentException(
-                $"Type parameter '{typeof(T)}' is invalid for telemetry variable '{name}' with value type '{dataVariableInfo.ValueType}'.",
-                nameof(name));
+            return new ScalarDataVariable<T>(name, null);
         }
 
         if (dataVariableInfo.ValueCount > 1)
@@ -53,175 +43,28 @@ internal class DataVariableFactory : IDataVariableFactory
                 $"Telemetry variable matching the value of parameter '{nameof(name)}' ({name}) is an array variable.", nameof(name));
         }
 
-        return new DataVariable<T>(dataVariableInfo);
-
+        return new ScalarDataVariable<T>(dataVariableInfo);
     }
 
     /// <summary>
-    /// Creates an instance of <see cref="IArrayDataVariable{T}"/> that represents the array telemetry variable with the specified name
-    /// and array length.
+    /// Creates an instance of a typed telemetry variable from the specified variable name.
     /// </summary>
-    /// <typeparam name="T">The telemetry variable array element type.</typeparam>
+    /// <typeparam name="TImplementation">
+    /// The type of the telemetry variable class which implements <see cref="IDataVariable"/> and <see cref="ICreateDataVariable{TSelf}"/>
+    /// and has a default parameterless constructor.
+    /// </typeparam>
     /// <param name="name">The name of the telemetry variable.</param>
-    /// <param name="arrayLength">The length of the array of values represented by the telemetry variable.</param>
-    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
-    /// <returns>An instance of <see cref="IArrayDataVariable{T}"/> that represents the specified array telemetry variable.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is an empty string.
-    /// 
-    /// -OR-
-    /// 
-    /// <paramref name="arrayLength"/> does not match the telemetry variable obtained from the current simulator session or telemetry file.
-    /// 
-    /// -OR-
-    /// 
-    /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
-    /// 
-    /// -OR-
-    /// 
-    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
-    /// </exception>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
-    public IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength, bool isTimeSliceArray)
-        where T : unmanaged
-    {
-        ArgumentException.ThrowIfNullOrEmpty(name);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(arrayLength, 1);
-
-        if (!TryGetDataVariableInfo(name, out var dataVariableInfo))
-        {
-            return new ArrayDataVariable<T>(name, arrayLength, isTimeSliceArray);
-        }
-
-        if (!IsValueTypeMatch<T>(dataVariableInfo.ValueType))
-        {
-            throw new ArgumentException(
-                $"Type parameter '{typeof(T)}' is invalid for telemetry variable '{name}' with value type '{dataVariableInfo.ValueType}'.",
-                nameof(name));
-        }
-
-        if (dataVariableInfo.ValueCount != arrayLength)
-        {
-            throw new ArgumentException(
-                $"'{nameof(arrayLength)}' ({arrayLength}) is not equal to the value count of telemetry variable '{name}'.",
-                nameof(arrayLength));
-        }
-
-        if (dataVariableInfo.IsTimeSliceArray != isTimeSliceArray)
-        {
-            throw new ArgumentException(
-                $"'{nameof(isTimeSliceArray)}' is {isTimeSliceArray} but does not match the value for telemetry variable '{name}'.",
-                nameof(isTimeSliceArray));
-        }
-
-        return new ArrayDataVariable<T>(dataVariableInfo);
-    }
-
-    /// <summary>
-    /// Creates an instance of <typeparamref name="TImplementation"/> that represents the telemetry variable with the specified name.
-    /// </summary>
-    /// <typeparam name="TImplementation">A type implementing <see cref="IDataVariable{T}"/> and <see cref="ICreateDataVariable{TSelf, T}"/>.</typeparam>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="name"></param>
-    /// <returns>An instance of <typeparamref name="TImplementation"/> that represents the specified telemetry variable.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is an empty string.
-    /// 
-    /// -OR-
-    /// 
-    /// The telemetry variable matched by <paramref name="name"/> is an array variable.
-    /// 
-    /// -OR-
-    /// 
-    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
-    /// </exception>
-    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
-    public TImplementation Create<TImplementation, T>(string name)
-        where TImplementation : IDataVariable<T>, ICreateDataVariable<TImplementation, T>
-        where T : unmanaged
+    public TImplementation CreateType<TImplementation>(string name)
+        where TImplementation : class, IDataVariable, ICreateDataVariable<TImplementation>, new()
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
         if (!TryGetDataVariableInfo(name, out var dataVariableInfo))
         {
-            return TImplementation.Create(name);
-        }
-
-        if (!IsValueTypeMatch<T>(dataVariableInfo.ValueType))
-        {
-            throw new ArgumentException(
-                $"Type parameter '{typeof(T)}' is invalid for telemetry variable '{name}' with value type '{dataVariableInfo.ValueType}'.",
-                nameof(name));
-        }
-
-        if (dataVariableInfo.ValueCount > 1)
-        {
-            throw new ArgumentException(
-                $"Telemetry variable matching the value of parameter '{nameof(name)}' ({name}) is an array variable.", nameof(name));
-        }
-
-        return TImplementation.Create(dataVariableInfo);
-    }
-
-    /// <summary>
-    /// Creates an instance of <typeparamref name="TImplementation"/> that represents the array telemetry variable with the specified name
-    /// and array length.
-    /// </summary>
-    /// <typeparam name="TImplementation"></typeparam>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="name">The name of the telemetry variable.</param>
-    /// <param name="arrayLength">The length of the array of values represented by the telemetry variable.</param>
-    /// <param name="isTimeSliceArray">If <see langword="true" />, the array represents a single value over time.</param>
-    /// <returns>An instance of <typeparamref name="TImplementation"/> that represents the specified array telemetry variable.</returns>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="name"/> is an empty string.
-    /// 
-    /// -OR-
-    /// 
-    /// <paramref name="arrayLength"/> does not match the telemetry variable obtained from the current simulator session or telemetry file.
-    /// 
-    /// -OR-
-    /// 
-    /// <paramref name="isTimeSliceArray"/> does not match telemetry variable obtained from the current simulator session or telemetry file.
-    /// 
-    /// -OR-
-    /// 
-    /// Type parameter <typeparamref name="T"/> is not compatible with the telemetry variable matched by <paramref name="name"/>.
-    /// </exception>
-    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is not greater than 1.</exception>
-    public TImplementation CreateArray<TImplementation, T>(string name, int arrayLength, bool isTimeSliceArray)
-        where TImplementation : IArrayDataVariable<T>, ICreateArrayDataVariable<TImplementation, T>
-        where T : unmanaged
-    {
-        ArgumentException.ThrowIfNullOrEmpty(name);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(arrayLength, 1);
-
-        if (!TryGetDataVariableInfo(name, out var dataVariableInfo))
-        {
-            return TImplementation.Create(name, arrayLength, isTimeSliceArray);
-        }
-
-        if (!IsValueTypeMatch<T>(dataVariableInfo.ValueType))
-        {
-            throw new ArgumentException(
-                $"Type parameter '{typeof(T)}' is invalid for telemetry variable '{name}' with value type '{dataVariableInfo.ValueType}'.",
-                nameof(name));
-        }
-
-        if (dataVariableInfo.ValueCount != arrayLength)
-        {
-            throw new ArgumentException(
-                $"'{nameof(arrayLength)}' ({arrayLength}) is not equal to the value count of telemetry variable '{name}'.",
-                nameof(arrayLength));
-        }
-
-        if (dataVariableInfo.IsTimeSliceArray != isTimeSliceArray)
-        {
-            throw new ArgumentException(
-                $"'{nameof(isTimeSliceArray)}' is {isTimeSliceArray} but does not match the value for telemetry variable '{name}'.",
-                nameof(isTimeSliceArray));
+            return new TImplementation();
         }
 
         return TImplementation.Create(dataVariableInfo);
@@ -230,29 +73,41 @@ internal class DataVariableFactory : IDataVariableFactory
     internal static bool IsValueTypeMatch<T>(DataVariableValueType valueType)
         where T : unmanaged
     {
+        var typeArg = typeof(T);
+
+        if (valueType == DataVariableValueType.Bitfield)
+        {
+            if (typeArg == typeof(float) || typeArg == typeof(double))
+            {
+                return false;
+            }
+
+            return Unsafe.SizeOf<T>() == Unsafe.SizeOf<int>();
+        }
+
         if (valueType == DataVariableValueType.Bool)
         {
-            return typeof(T) == typeof(bool);
+            return typeArg == typeof(bool);
         }
 
         if (valueType == DataVariableValueType.Byte)
         {
-            return typeof(T) == typeof(byte);
+            return typeArg == typeof(byte);
         }
 
-        if (valueType == DataVariableValueType.Int || valueType == DataVariableValueType.Bitfield)
+        if (valueType == DataVariableValueType.Int)
         {
-            return typeof(T) == typeof(int);
+            return typeArg == typeof(int);
         }
 
         if (valueType == DataVariableValueType.Float)
         {
-            return typeof(T) == typeof(float);
+            return typeArg == typeof(float);
         }
 
         if (valueType == DataVariableValueType.Double)
         {
-            return typeof(T) == typeof(double);
+            return typeArg == typeof(double);
         }
 
         return false;

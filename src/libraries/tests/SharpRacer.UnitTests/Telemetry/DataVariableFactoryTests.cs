@@ -1,4 +1,6 @@
-﻿namespace SharpRacer.Telemetry;
+﻿using SharpRacer.Telemetry.TestVariables;
+
+namespace SharpRacer.Telemetry;
 public class DataVariableFactoryTests
 {
     [Fact]
@@ -16,143 +18,147 @@ public class DataVariableFactoryTests
     }
 
     [Fact]
-    public void Create_Test()
+    public void CreateScalar_Test()
     {
         var fooVar = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Int);
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        var variable = factory.Create<int>("Foo");
+        var variable = factory.CreateScalar<int>("Foo");
 
         Assert.True(variable.IsAvailable);
         Assert.Equal(fooVar, variable.VariableInfo);
     }
 
     [Fact]
-    public void Create_ThrowOnArrayVariableTest()
+    public void CreateScalar_ThrowOnArrayVariableTest()
     {
-        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, 4);
+        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Float, 4);
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        Assert.Throws<ArgumentException>(() => factory.Create<int>("Foo"));
+        Assert.Throws<ArgumentException>(() => factory.CreateScalar<float>("Foo"));
     }
 
     [Fact]
-    public void Create_ThrowOnValueTypeMismatchTest()
+    public void CreateScalar_UnavailableTest()
     {
         var fooVar = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Int);
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        Assert.Throws<ArgumentException>(() => factory.Create<bool>("Foo"));
-    }
+        var variable = factory.CreateScalar<int>("Bar");
 
-    [Fact]
-    public void CreatePlaceholder_Test()
-    {
-        var factory = new DataVariableFactory(Enumerable.Empty<DataVariableInfo>());
-
-        var boolPlaceholder = factory.Create<bool>("DoesntExist");
-        var floatArrayPlaceholder = factory.CreateArray<float>("Nope", 23, false);
-
-        Assert.NotNull(boolPlaceholder);
-        Assert.False(boolPlaceholder.IsAvailable);
-
-        Assert.NotNull(floatArrayPlaceholder);
-        Assert.False(floatArrayPlaceholder.IsAvailable);
-    }
-
-    [Fact]
-    public void CreateT_ThrowsOnNullOrEmptyNameTest()
-    {
-        var factory = new DataVariableFactory(Enumerable.Empty<DataVariableInfo>());
-
-        Assert.Throws<ArgumentNullException>(() => factory.Create<bool>(null!));
-        Assert.Throws<ArgumentException>(() => factory.Create<bool>(string.Empty));
+        Assert.False(variable.IsAvailable);
+        Assert.Null(variable.VariableInfo);
     }
 
     [Fact]
     public void CreateArray_Test()
     {
-        var arrayLength = 4;
+        var arrayLength = 3;
         var isTimeSliceArray = false;
-        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, arrayLength, isTimeSliceArray);
+        var barVar = DataVariableInfoFactory.CreateArray("Bar", DataVariableValueType.Float, arrayLength, isTimeSliceArray);
 
-        var factory = new DataVariableFactory(new[] { fooVar });
-        var variable = factory.CreateArray<int>("Foo", arrayLength, isTimeSliceArray);
+        var factory = new DataVariableFactory(new[] { barVar });
+
+        var variable = factory.CreateArray<float>("Bar", arrayLength);
 
         Assert.True(variable.IsAvailable);
-        Assert.Equal(arrayLength, variable.ArrayLength);
-        Assert.Equal(isTimeSliceArray, variable.IsTimeSliceArray);
-        Assert.Equal(fooVar, variable.VariableInfo);
+        Assert.Equal(barVar, variable.VariableInfo);
+        Assert.Equal(arrayLength, variable.ValueCount);
     }
 
     [Fact]
-    public void CreateArray_ThrowsOnArrayLengthNotGreaterThan1Test()
+    public void CreateArray_UnavailableTest()
     {
-        var factory = new DataVariableFactory(Enumerable.Empty<DataVariableInfo>());
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => factory.CreateArray<bool>("Foo", 1, false));
-        Assert.Throws<ArgumentOutOfRangeException>(() => factory.CreateArray<bool>("Bar", 0, true));
-        Assert.Throws<ArgumentOutOfRangeException>(() => factory.CreateArray<bool>("Moo", -1, true));
-    }
-
-    [Fact]
-    public void CreateArray_ThrowsOnArrayLengthMismatchTest()
-    {
-        var arrayLength = 4;
+        var arrayLength = 3;
         var isTimeSliceArray = false;
-        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, arrayLength, isTimeSliceArray);
+        var barVar = DataVariableInfoFactory.CreateArray("Bar", DataVariableValueType.Float, arrayLength, isTimeSliceArray);
+
+        var factory = new DataVariableFactory(new[] { barVar });
+
+        var variable = factory.CreateArray<float>("Foo", arrayLength);
+
+        Assert.False(variable.IsAvailable);
+        Assert.Null(variable.VariableInfo);
+    }
+
+    [Fact]
+    public void CreateType_UnavailableTest()
+    {
+        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Float, 3);
 
         var factory = new DataVariableFactory(new[] { fooVar });
+        var variable = factory.CreateType<BarVariable>("Bar");
 
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<int>("Foo", arrayLength + 9, isTimeSliceArray));
+        Assert.False(variable.IsAvailable);
+        Assert.Null(variable.VariableInfo);
     }
 
     [Fact]
-    public void CreateArray_ThrowsOnNullOrEmptyNameTest()
+    public void CreateTypedArray_Test()
     {
-        var factory = new DataVariableFactory(Enumerable.Empty<DataVariableInfo>());
+        var arrayLength = 3;
+        var isTimeSliceArray = false;
+        var barVar = DataVariableInfoFactory.CreateArray("Bar", DataVariableValueType.Float, arrayLength, isTimeSliceArray);
 
-        Assert.Throws<ArgumentNullException>(() => factory.CreateArray<bool>(null!, 9, false));
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<bool>(string.Empty, 32, true));
+        var factory = new DataVariableFactory(new[] { barVar });
+        var variable = factory.CreateType<BarVariable>("Bar");
+
+        Assert.NotNull(variable);
+        Assert.NotNull(variable.VariableInfo);
+        Assert.True(variable.IsAvailable);
+        Assert.Equal("Bar", variable.Name);
+        Assert.Equal(arrayLength, variable.ValueCount);
+        Assert.Equal(barVar, variable.VariableInfo);
     }
 
     [Fact]
-    public void CreateArray_ThrowOnScalarVariableTest()
+    public void CreateTypedScalar_Test()
     {
         var fooVar = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Int);
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<int>("Foo", 4, false));
+        var variable = factory.CreateType<FooVariable>("Foo");
+
+        Assert.NotNull(variable);
+        Assert.NotNull(variable.VariableInfo);
+        Assert.True(variable.IsAvailable);
+        Assert.Equal("Foo", variable.Name);
+        Assert.Equal(fooVar, variable.VariableInfo);
     }
 
     [Fact]
-    public void CreateArray_ThrowOnTimeSliceMismatchTest()
+    public void CreateTypedScalar_ThrowOnArrayVariableTest()
     {
-        var arrayLength = 4;
-
-        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, arrayLength, false);
-        var barVar = DataVariableInfoFactory.CreateArray("Bar", DataVariableValueType.Int, arrayLength, true);
-
-        var factory = new DataVariableFactory(new[] { fooVar, barVar });
-
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<int>("Foo", arrayLength, true));
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<int>("Bar", arrayLength, false));
-    }
-
-    [Fact]
-    public void CreateArray_ThrowOnValueTypeMismatchTest()
-    {
-        var arrayLength = 4;
-        var isTimeSliceArray = false;
-        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, arrayLength, isTimeSliceArray);
+        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, 4);
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        Assert.Throws<ArgumentException>(() => factory.CreateArray<bool>("Foo", arrayLength, isTimeSliceArray));
+        Assert.Throws<DataVariableInitializationException>(() => factory.CreateType<FooVariable>("Foo"));
+    }
+
+    [Fact]
+    public void CreateTypedScalar_ThrowOnNullOrEmptyNameTest()
+    {
+        var fooVar = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, 4);
+
+        var factory = new DataVariableFactory(new[] { fooVar });
+
+        Assert.Throws<ArgumentNullException>(() => factory.CreateType<FooVariable>(null!));
+        Assert.Throws<ArgumentException>(() => factory.CreateType<FooVariable>(string.Empty));
+    }
+
+    [Fact]
+    public void CreateTypedScalar_ThrowOnValueTypeMismatchTest()
+    {
+        var fooVar = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Float);
+
+        var factory = new DataVariableFactory(new[] { fooVar });
+
+        Assert.Throws<DataVariableInitializationException>(() => factory.CreateType<FooVariable>("Foo"));
     }
 
     [Fact]

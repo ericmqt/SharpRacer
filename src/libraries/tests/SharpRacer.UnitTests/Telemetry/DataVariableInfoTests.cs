@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using SharpRacer.Interop;
+using SharpRacer.IO.TestUtilities;
 
 namespace SharpRacer.Telemetry;
 public class DataVariableInfoTests
@@ -89,6 +90,39 @@ public class DataVariableInfoTests
 
             return new DataVariableInfo(header);
         }
+    }
+
+    [Fact]
+    public void GetValueSpan_Test()
+    {
+        var varHeader = CreateScalarHeader("Foo", DataVariableValueType.Int, offset: 8, description: "Test", unit: "test/s");
+        int varHeaderValue = 123;
+
+        var variableInfo = new DataVariableInfo(varHeader);
+
+        var frameBlob = new byte[256];
+        var frameMemory = new Memory<byte>(frameBlob);
+        var frameWriter = new DataFrameWriter(frameMemory);
+        frameWriter.Write(varHeader, varHeaderValue);
+
+        var varHeaderValueSpan = frameMemory.Span.Slice(varHeader.Offset, varHeader.GetDataLength());
+
+        var dataFrame = new TelemetryFileDataFrame(frameBlob, frameIndex: 3);
+
+        var valueSpan = variableInfo.GetValueSpan(dataFrame);
+
+        Assert.True(varHeaderValueSpan.SequenceEqual(valueSpan));
+    }
+
+    [Fact]
+    public void GetValueSpan_ThrowOnNullDataFrameTest()
+    {
+        var varHeader = CreateScalarHeader("Foo", DataVariableValueType.Int, offset: 8, description: "Test", unit: "test/s");
+        var variableInfo = new DataVariableInfo(varHeader);
+
+        IDataFrame dataFrame = null!;
+
+        Assert.Throws<ArgumentNullException>(() => variableInfo.GetValueSpan(dataFrame));
     }
 
     private static DataVariableHeader CreateArrayHeader(

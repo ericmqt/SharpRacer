@@ -1,10 +1,15 @@
 ﻿namespace SharpRacer.Telemetry;
 
 /// <summary>
-/// Provides a base interface for type-safe telemetry variable implementations.
+/// Defines a base interface for type-safe telemetry variable implementations.
 /// </summary>
 public interface IDataVariable
 {
+    /// <summary>
+    /// Gets the length, in bytes, of the data represented by the variable.
+    /// </summary>
+    int DataLength { get; }
+
     /// <summary>
     /// Gets the offset into the data frame where the variable data is located.
     /// context.
@@ -13,11 +18,6 @@ public interface IDataVariable
     /// If the variable is not available in the current context, returns -1.
     /// </remarks>
     int DataOffset { get; }
-
-    /// <summary>
-    /// Gets the length of the data represented by the variable. If the variable is an array, returns the length, in bytes, of the array.
-    /// </summary>
-    int DataLength { get; }
 
     /// <summary>
     /// Gets a value indicating if the telemetry variable is available in the current context.
