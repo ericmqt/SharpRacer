@@ -1,4 +1,6 @@
-﻿namespace SharpRacer.Telemetry.TestVariables;
+﻿using SharpRacer.Telemetry.Variables;
+
+namespace SharpRacer.Telemetry.Variables.TestVariables;
 
 internal class FooVariable : ScalarDataVariable<int>, ICreateDataVariable<FooVariable>
 {

@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Creates strongly-typed telemetry variable objects implementing <see cref="IDataVariable"/> from a simulator session or telemetry file.

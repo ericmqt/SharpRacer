@@ -1,6 +1,6 @@
 ﻿using SharpRacer.Interop;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 internal static class DataVariableInfoFactory
 {
     public static DataVariableInfo CreateArray(string variableName, DataVariableValueType valueType, int valueCount)

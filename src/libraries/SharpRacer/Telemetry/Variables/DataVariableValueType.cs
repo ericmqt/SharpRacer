@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Defines the value types that may be used by telemetry variables.

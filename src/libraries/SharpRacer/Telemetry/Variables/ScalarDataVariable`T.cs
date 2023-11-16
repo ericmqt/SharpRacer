@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 /// <summary>
 /// Provides a type-safe representation of a telemetry variable whose value is a single value of type <typeparamref name="T"/>.
 /// </summary>

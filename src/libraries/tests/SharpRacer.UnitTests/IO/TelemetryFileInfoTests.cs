@@ -1,5 +1,6 @@
 ﻿using SharpRacer.Interop;
 using SharpRacer.IO.TestUtilities;
+using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer.IO;
 public class TelemetryFileInfoTests
@@ -17,9 +18,9 @@ public class TelemetryFileInfoTests
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>
             {
-                varBuilder.AddScalarVariable("Foo", Telemetry.DataVariableValueType.Int, "test", "Description", out intVarHeader);
+                varBuilder.AddScalarVariable("Foo", DataVariableValueType.Int, "test", "Description", out intVarHeader);
 
-                varBuilder.AddArrayVariable("Bar", Telemetry.DataVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
+                varBuilder.AddArrayVariable("Bar", DataVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
             })
             .SetSessionInfo(sessionInfo, 1)
             .SetSessionStartAndDuration(sessionStart, sessionDuration)

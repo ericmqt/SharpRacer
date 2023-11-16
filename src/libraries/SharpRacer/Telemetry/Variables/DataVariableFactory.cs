@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 
 /// <inheritdoc cref="IDataVariableFactory" />
 internal class DataVariableFactory : IDataVariableFactory

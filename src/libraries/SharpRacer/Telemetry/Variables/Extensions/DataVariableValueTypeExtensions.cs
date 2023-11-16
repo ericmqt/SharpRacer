@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
+
 internal static class DataVariableValueTypeExtensions
 {
     public static int GetSize(this DataVariableValueType valueType)

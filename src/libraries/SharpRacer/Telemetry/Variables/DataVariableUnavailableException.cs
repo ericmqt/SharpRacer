@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// The exception that is thrown when attempting to perform a data operation with a <see cref="IDataVariable"/> instance that is not

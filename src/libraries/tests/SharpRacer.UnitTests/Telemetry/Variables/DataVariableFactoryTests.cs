@@ -1,6 +1,6 @@
-﻿using SharpRacer.Telemetry.TestVariables;
+﻿using SharpRacer.Telemetry.Variables.TestVariables;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 public class DataVariableFactoryTests
 {
     [Fact]

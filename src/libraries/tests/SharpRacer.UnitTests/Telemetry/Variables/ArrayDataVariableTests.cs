@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 public class ArrayDataVariableTests
 {
     [Fact]

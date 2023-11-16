@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Defines a base interface for type-safe telemetry variable implementations.

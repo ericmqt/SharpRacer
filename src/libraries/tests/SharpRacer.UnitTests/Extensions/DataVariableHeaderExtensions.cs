@@ -1,5 +1,6 @@
 ﻿using SharpRacer.Interop;
 using SharpRacer.Telemetry;
+using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer;
 internal static class DataVariableHeaderExtensions

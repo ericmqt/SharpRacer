@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Defines a type-safe representation of a telemetry variable whose value is a single value of type <typeparamref name="T"/>.

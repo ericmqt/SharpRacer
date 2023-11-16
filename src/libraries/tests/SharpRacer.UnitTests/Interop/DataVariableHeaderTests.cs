@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using SharpRacer.Telemetry;
+using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer.Interop;
 

@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Defines a contract for reading a value of type <typeparamref name="TValue"/> from a telemetry variable.

@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 internal static class DataVariableAssert
 {
     public static void IsAvailable(IDataVariable dataVariable)

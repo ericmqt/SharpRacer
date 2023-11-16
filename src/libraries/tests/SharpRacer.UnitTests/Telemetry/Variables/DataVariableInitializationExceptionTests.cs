@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer.Telemetry.Variables;
 public class DataVariableInitializationExceptionTests
 {
     [Fact]

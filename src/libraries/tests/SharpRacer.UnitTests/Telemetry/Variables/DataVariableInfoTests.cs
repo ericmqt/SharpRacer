@@ -2,7 +2,7 @@
 using SharpRacer.Interop;
 using SharpRacer.IO.TestUtilities;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 public class DataVariableInfoTests
 {
     [Fact]

@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Provides a base class for type-safe <see cref="IDataVariable{T}"/> implementations.

@@ -1,5 +1,5 @@
 ﻿using SharpRacer.Interop;
-using SharpRacer.Telemetry;
+using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer.IO.TestUtilities;
 internal class TelemetryFileDataVariablesBuilder

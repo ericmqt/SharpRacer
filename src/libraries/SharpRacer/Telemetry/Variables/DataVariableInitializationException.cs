@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// The exception that is thrown when a data variable object cannot be initialized due to the violation of an invariant of the object

@@ -1,6 +1,6 @@
 ﻿using SharpRacer.Interop;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.Telemetry.Variables;
 
 /// <summary>
 /// Provides information about a telemetry variable exposed by the simulator.
