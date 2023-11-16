@@ -272,6 +272,10 @@ public class TelemetryFileReader : IDisposable
 
     #region IDisposable Implementation
 
+    /// <summary>
+    /// Releases all resources used by the <see cref="TelemetryFileReader"/> class.
+    /// </summary>
+    /// <param name="disposing">If <see langword="true" />, indicates that managed resources should be released.</param>
     protected virtual void Dispose(bool disposing)
     {
         if (!_isDisposed)
@@ -288,6 +292,9 @@ public class TelemetryFileReader : IDisposable
         }
     }
 
+    /// <summary>
+    /// Releases all resources used by the <see cref="TelemetryFileReader"/> class.
+    /// </summary>
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
