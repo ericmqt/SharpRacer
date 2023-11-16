@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Win32.SafeHandles;
 using SharpRacer.Interop;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Telemetry;
 
 /// <summary>
 /// Reads information from a telemetry file (*.IBT).

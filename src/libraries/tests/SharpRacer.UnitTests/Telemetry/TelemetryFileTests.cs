@@ -1,8 +1,8 @@
 ﻿using SharpRacer.Interop;
-using SharpRacer.IO.TestUtilities;
+using SharpRacer.Telemetry.TestUtilities;
 using SharpRacer.Telemetry.Variables;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Telemetry;
 
 public class TelemetryFileTests
 {

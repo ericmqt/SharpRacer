@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using SharpRacer.Interop;
-using SharpRacer.IO.TestUtilities;
+using SharpRacer.Telemetry.TestUtilities;
 
 namespace SharpRacer.Telemetry.Variables;
 public class DataVariableInfoTests

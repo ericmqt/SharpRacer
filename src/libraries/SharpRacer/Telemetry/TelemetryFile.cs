@@ -2,7 +2,7 @@
 using Microsoft.Win32.SafeHandles;
 using SharpRacer.Interop;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Telemetry;
 
 /// <summary>
 /// Provides helper methods for handling telemetry files.

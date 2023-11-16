@@ -1,6 +1,6 @@
 ﻿using SharpRacer.Interop;
 
-namespace SharpRacer.IO.TestUtilities;
+namespace SharpRacer.Telemetry.TestUtilities;
 internal class TelemetryFileBuilder
 {
     private List<Memory<byte>> _dataFrames;

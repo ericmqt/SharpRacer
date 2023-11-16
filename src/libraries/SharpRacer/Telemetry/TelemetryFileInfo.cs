@@ -2,7 +2,7 @@
 using SharpRacer.Interop;
 using SharpRacer.Telemetry.Variables;
 
-namespace SharpRacer.IO;
+namespace SharpRacer.Telemetry;
 
 /// <summary>
 /// Provides information about a telemetry file (*.IBT).

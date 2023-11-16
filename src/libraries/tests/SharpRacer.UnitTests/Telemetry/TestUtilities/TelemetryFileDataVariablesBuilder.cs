@@ -1,7 +1,7 @@
 ﻿using SharpRacer.Interop;
 using SharpRacer.Telemetry.Variables;
 
-namespace SharpRacer.IO.TestUtilities;
+namespace SharpRacer.Telemetry.TestUtilities;
 internal class TelemetryFileDataVariablesBuilder
 {
     private int _nextVariableOffset;

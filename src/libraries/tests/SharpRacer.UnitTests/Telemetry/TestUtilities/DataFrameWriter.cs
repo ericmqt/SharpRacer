@@ -1,9 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using SharpRacer.Interop;
-using SharpRacer.Telemetry;
 using SharpRacer.Telemetry.Variables;
 
-namespace SharpRacer.IO.TestUtilities;
+namespace SharpRacer.Telemetry.TestUtilities;
 internal class DataFrameWriter
 {
     private readonly Memory<byte> _dataFrame;

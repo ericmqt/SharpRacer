@@ -2,7 +2,7 @@
 using System.Text;
 using SharpRacer.Interop;
 
-namespace SharpRacer.IO.TestUtilities;
+namespace SharpRacer.Telemetry.TestUtilities;
 internal class TelemetryFileWriter
 {
     public static void Write(
