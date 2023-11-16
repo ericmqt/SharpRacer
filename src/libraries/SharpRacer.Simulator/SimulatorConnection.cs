@@ -66,7 +66,7 @@ internal sealed class SimulatorConnection : ISimulatorConnection
     /// <inheritdoc />
     public bool WaitForDataReady()
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         if (!IsOpen)
         {
@@ -80,7 +80,7 @@ internal sealed class SimulatorConnection : ISimulatorConnection
     /// <inheritdoc />
     public ValueTask<bool> WaitForDataReadyAsync()
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         if (!IsOpen)
         {
@@ -93,7 +93,7 @@ internal sealed class SimulatorConnection : ISimulatorConnection
     /// <inheritdoc />
     public async ValueTask<bool> WaitForDataReadyAsync(CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         if (!IsOpen)
         {
@@ -180,13 +180,5 @@ internal sealed class SimulatorConnection : ISimulatorConnection
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    private void ThrowIfDisposed()
-    {
-        if (_isDisposed)
-        {
-            throw new ObjectDisposedException(nameof(SimulatorConnection));
-        }
     }
 }
