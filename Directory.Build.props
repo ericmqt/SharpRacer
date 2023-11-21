@@ -1,12 +1,10 @@
 <Project>
 	<PropertyGroup>
 		<RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
-		<RepositoryArtifactsDirectory>$(RepositoryRootDirectory)\artifacts</RepositoryArtifactsDirectory>
-		<RepositoryAssetsDirectory>$(RepositoryRootDirectory)\assets</RepositoryAssetsDirectory>
-		<RepositoryBinDirectory>$(RepositoryRootDirectory)\bin</RepositoryBinDirectory>
-		<RepositoryDefaultOutputPath>$(RepositoryBinDirectory)\$(Configuration)-$(Platform)</RepositoryDefaultOutputPath>
-		<RepositoryPackageOutputDirectory>$(RepositoryDefaultOutputPath)\bin\nupkg</RepositoryPackageOutputDirectory>
 		<RepositorySourceDirectory>$(RepositoryRootDirectory)\src</RepositorySourceDirectory>
+		<RepositoryArtifactsDirectory>$(RepositoryRootDirectory)\artifacts</RepositoryArtifactsDirectory>
+		<RepositoryBinDirectory>$(RepositoryArtifactsDirectory)\bin</RepositoryBinDirectory>
+		<RepositoryPackageOutputDirectory>$(RepositoryArtifactsDirectory)\nupkg</RepositoryPackageOutputDirectory>
 		<RepositoryTestOutputPath>$(RepositoryArtifactsDirectory)\test</RepositoryTestOutputPath>
 	</PropertyGroup>
 	
@@ -22,7 +20,7 @@
 	<!-- Assembly information -->
 	<PropertyGroup>
 		<Authors>Eric Smith</Authors>
-		<Copyright>Copyright © 2022 Eric Smith.</Copyright>
+		<Copyright>Copyright © 2023 Eric Smith.</Copyright>
 	</PropertyGroup>
 
 	<!-- NuGet packaging -->

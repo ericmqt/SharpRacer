@@ -1,0 +1,16 @@
+{
+  "Database": {
+    "Path": "config\\TelemetryVariables.db"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Microsoft": "None"
+    },
+    "Console": {
+      "FormatterName": "simple",
+      "FormatterOptions": {
+        "SingleLine": false
+      }
+    }
+  }
+}

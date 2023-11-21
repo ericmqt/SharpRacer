@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "irtvars": {
+      "commandName": "Project",
+      "commandLineArgs": "import telemetry",
+      "workingDirectory": "$(RepositoryRootDirectory)"
+    }
+  }
+}
