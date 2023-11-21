@@ -13,6 +13,7 @@ internal class DataVariableFactory : IDataVariableFactory
         _dataVariables = dataVariables ?? throw new ArgumentNullException(nameof(dataVariables));
     }
 
+    /// <inheritdoc />
     public IArrayDataVariable<T> CreateArray<T>(string name, int arrayLength)
         where T : unmanaged
     {
@@ -27,6 +28,7 @@ internal class DataVariableFactory : IDataVariableFactory
         return new ArrayDataVariable<T>(name, arrayLength, variableInfo: null);
     }
 
+    /// <inheritdoc />
     public IScalarDataVariable<T> CreateScalar<T>(string name)
         where T : unmanaged
     {
@@ -46,17 +48,7 @@ internal class DataVariableFactory : IDataVariableFactory
         return new ScalarDataVariable<T>(dataVariableInfo);
     }
 
-    /// <summary>
-    /// Creates an instance of a typed telemetry variable from the specified variable name.
-    /// </summary>
-    /// <typeparam name="TImplementation">
-    /// The type of the telemetry variable class which implements <see cref="IDataVariable"/> and <see cref="ICreateDataVariable{TSelf}"/>
-    /// and has a default parameterless constructor.
-    /// </typeparam>
-    /// <param name="name">The name of the telemetry variable.</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
+    /// <inheritdoc />
     public TImplementation CreateType<TImplementation>(string name)
         where TImplementation : class, IDataVariable, ICreateDataVariable<TImplementation>, new()
     {
