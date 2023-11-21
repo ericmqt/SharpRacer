@@ -1,5 +1,8 @@
 ﻿namespace SharpRacer.Simulator;
 
+/// <summary>
+/// Represents a connection to a simulator session.
+/// </summary>
 public interface ISimulatorConnection : IDisposable
 {
     /// <summary>
@@ -7,6 +10,9 @@ public interface ISimulatorConnection : IDisposable
     /// </summary>
     TimeSpan ConnectionTimeout { get; set; }
 
+    /// <summary>
+    /// Gets a read-only span of bytes over the simulator data file.
+    /// </summary>
     ReadOnlySpan<byte> Data { get; }
 
     /// <summary>
@@ -36,7 +42,6 @@ public interface ISimulatorConnection : IDisposable
     /// Waits for the simulator to fire the data-ready event by blocking the current thread until the event is signaled or the connection
     /// is closed. Returns <see langword="true"/> if the data-ready event was fired, otherwise <see langword="false"/>.
     /// </summary>
-    /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for canceling the wait operation.</param>
     /// <returns><see langword="true"/> if the data-ready event was fired, otherwise <see langword="false"/>.</returns>
     /// <exception cref="ObjectDisposedException">The <see cref="ISimulatorConnection"/> instance has been disposed.</exception>
     ValueTask<bool> WaitForDataReadyAsync();

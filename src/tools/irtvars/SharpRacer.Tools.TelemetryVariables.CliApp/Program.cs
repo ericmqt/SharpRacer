@@ -14,7 +14,7 @@ namespace SharpRacer.Tools.TelemetryVariables;
 
 internal class Program
 {
-    static Task<int> Main(string[] args)
+    public static Task<int> Main(string[] args)
     {
         var cliConfig = new CliConfiguration(CreateRootCommand());
 

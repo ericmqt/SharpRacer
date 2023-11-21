@@ -5,8 +5,6 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libraries", "libraries", "{1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Simulator", "src\libraries\SharpRacer.Simulator\SharpRacer.Simulator.csproj", "{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer", "src\libraries\SharpRacer\SharpRacer.csproj", "{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6B9D1423-882C-4C28-8F2B-ADA63F59349F}"
@@ -19,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.UnitTests", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Tools.TelemetryVariables.CliApp", "src\tools\irtvars\SharpRacer.Tools.TelemetryVariables.CliApp\SharpRacer.Tools.TelemetryVariables.CliApp.csproj", "{81FB67DD-D7A5-451D-BBE8-65A7DBCF7BF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpRacer.Tools.TelemetryVariables.Data", "src\tools\irtvars\SharpRacer.Tools.TelemetryVariables.Data\SharpRacer.Tools.TelemetryVariables.Data.csproj", "{C34303F5-1210-40F8-ABC7-EB09E3266493}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Tools.TelemetryVariables.Data", "src\tools\irtvars\SharpRacer.Tools.TelemetryVariables.Data\SharpRacer.Tools.TelemetryVariables.Data.csproj", "{C34303F5-1210-40F8-ABC7-EB09E3266493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,7 +50,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E49C2B8D-1742-4FA8-B4E8-11CA123DB1D9} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
 		{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
 		{46F84494-F21C-47E5-BB50-62DE6EF54B86} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
 		{765E158F-3378-4A3B-B4EE-19983810589E} = {46F84494-F21C-47E5-BB50-62DE6EF54B86}

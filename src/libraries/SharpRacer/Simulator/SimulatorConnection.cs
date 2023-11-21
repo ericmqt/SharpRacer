@@ -1,7 +1,10 @@
 ﻿using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using SharpRacer.Interop;
 
 namespace SharpRacer.Simulator;
+
+[SupportedOSPlatform("windows5.1.2600")]
 internal sealed class SimulatorConnection : ISimulatorConnection
 {
     private int _connectionTimeoutMs;
@@ -61,6 +64,7 @@ internal sealed class SimulatorConnection : ISimulatorConnection
 
     #endregion Properties
 
+    /// <inheritdoc />
     public event EventHandler<EventArgs>? ConnectionClosed;
 
     /// <inheritdoc />

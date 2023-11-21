@@ -1,11 +1,15 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 
-namespace SharpRacer.Simulator.Interop;
+namespace SharpRacer.Simulator;
+
+[SupportedOSPlatform("windows5.1.2600")]
 internal static class BroadcastMessage
 {
     private static readonly HWND HWND_BROADCAST = new(0xFFFF);
+
     private static readonly uint IRSDK_BROADCASTMSG = PInvoke.RegisterWindowMessage("IRSDK_BROADCASTMSG");
 
     public static void Send(SimulatorCommandId commandId, int param1, int param2)

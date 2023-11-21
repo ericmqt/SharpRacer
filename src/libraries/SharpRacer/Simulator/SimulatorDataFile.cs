@@ -1,8 +1,10 @@
 ﻿using System.IO.MemoryMappedFiles;
+using System.Runtime.Versioning;
 using DotNext.IO.MemoryMappedFiles;
 using Nito.AsyncEx.Interop;
 
 namespace SharpRacer.Simulator;
+[SupportedOSPlatform("windows5.1.2600")]
 internal sealed class SimulatorDataFile : ISimulatorDataFile
 {
     public const string MemoryMappedFileName = "Local\\IRSDKMemMapFileName";
@@ -42,11 +44,7 @@ internal sealed class SimulatorDataFile : ISimulatorDataFile
     {
         get
         {
-            if (_isDisposed)
-            {
-                throw new ObjectDisposedException(nameof(SimulatorDataFile));
-            }
-
+            ObjectDisposedException.ThrowIf(_isDisposed, this);
             return _dataAccessor.Bytes;
         }
     }

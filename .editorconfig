@@ -229,6 +229,7 @@ csharp_style_prefer_parameter_null_checking = false:suggestion
 csharp_style_prefer_pattern_matching = true:silent
 csharp_style_prefer_not_pattern = true:suggestion
 csharp_style_prefer_extended_property_pattern = true:suggestion
+csharp_style_prefer_primary_constructors = false
 dotnet_diagnostic.CA1507.severity = warning
 
 [*.{cs,vb}]
