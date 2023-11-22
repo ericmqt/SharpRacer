@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SharpRacer.SourceGenerators": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\sourcegendebug\\sourcegendebug.csproj"
+    }
+  }
+}
