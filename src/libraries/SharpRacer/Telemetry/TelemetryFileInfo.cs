@@ -7,7 +7,7 @@ namespace SharpRacer.Telemetry;
 /// <summary>
 /// Provides information about a telemetry file (*.IBT).
 /// </summary>
-public class TelemetryFileInfo
+public class TelemetryFileInfo : IDataVariableInfoProvider
 {
     private readonly DataFileHeader _fileHeader;
 
@@ -77,4 +77,9 @@ public class TelemetryFileInfo
     /// Gets a <see cref="DateTimeOffset"/> value in local time describing the date and time the session started.
     /// </summary>
     public DateTimeOffset SessionStart { get; }
+
+    IEnumerable<DataVariableInfo> IDataVariableInfoProvider.GetDataVariables()
+    {
+        return DataVariables;
+    }
 }

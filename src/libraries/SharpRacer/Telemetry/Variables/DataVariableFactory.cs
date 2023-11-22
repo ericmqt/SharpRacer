@@ -4,13 +4,32 @@ using System.Runtime.CompilerServices;
 namespace SharpRacer.Telemetry.Variables;
 
 /// <inheritdoc cref="IDataVariableFactory" />
-internal class DataVariableFactory : IDataVariableFactory
+public sealed class DataVariableFactory : IDataVariableFactory
 {
     private readonly IEnumerable<DataVariableInfo> _dataVariables;
 
+    /// <summary>
+    /// Initializes an instance of <see cref="DataVariableFactory"/>.
+    /// </summary>
+    /// <param name="variableInfoProvider">The <see cref="IDataVariableInfoProvider" /> to use as a source for variable information.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="variableInfoProvider"/> is <see langword="null" />.</exception>
+    public DataVariableFactory(IDataVariableInfoProvider variableInfoProvider)
+    {
+        ArgumentNullException.ThrowIfNull(variableInfoProvider);
+
+        _dataVariables = variableInfoProvider.GetDataVariables().ToList();
+    }
+
+    /// <summary>
+    /// Initializes an instance of <see cref="DataVariableFactory"/>.
+    /// </summary>
+    /// <param name="dataVariables">
+    /// The collection of <see cref="DataVariableInfo"/> objects from which to create telemetry variable objects.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="dataVariables"/> is <see langword="null" />.</exception>
     public DataVariableFactory(IEnumerable<DataVariableInfo> dataVariables)
     {
-        _dataVariables = dataVariables ?? throw new ArgumentNullException(nameof(dataVariables));
+        _dataVariables = dataVariables?.ToList() ?? throw new ArgumentNullException(nameof(dataVariables));
     }
 
     /// <inheritdoc />
