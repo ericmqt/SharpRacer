@@ -53,10 +53,10 @@ internal static class ImportCommandFactory
     {
         var cmd = new CliCommand("simulator");
 
-        cmd.SetAction((parseResult) =>
+        cmd.SetAction((parseResult, cancellationToken) =>
         {
             Console.WriteLine("Not implemented");
-            return -1;
+            return Task.FromResult(-1);
         });
 
         return cmd;

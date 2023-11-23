@@ -28,23 +28,63 @@ internal class ExportCommandHandler
 
     public async Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
     {
+        var exportFileInfo = GetExportFileInfo();
+
+        var exportTask = Options.ExportVariablesOnly
+            ? ExportVariablesAsync(exportFileInfo, cancellationToken)
+            : ExportAllAsync(exportFileInfo, cancellationToken);
+
+        try
+        {
+            await exportTask.ConfigureAwait(false);
+
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error exporting variables database.");
+
+            return -1;
+        }
+    }
+
+    private async Task ExportAllAsync(FileInfo exportFile, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(exportFile);
+
         var variableModels = await GetVariableModelsAsync(cancellationToken).ConfigureAwait(false);
         var carModels = await GetCarModelsAsync(cancellationToken).ConfigureAwait(false);
 
-        var exportFileInfo = GetExportFileInfo();
-
-        using (var exportFileStream = exportFileInfo.Create())
+        var documentModel = new TelemetryVariablesDataModel()
         {
-            var documentModel = new TelemetryVariablesDataModel()
-            {
-                Cars = carModels.ToList(),
-                Variables = variableModels.ToList()
-            };
+            Cars = carModels.ToList(),
+            Variables = variableModels.ToList()
+        };
 
-            await JsonSerializer.SerializeAsync(exportFileStream, documentModel, JsonSerializerConfiguration.SerializerOptions, cancellationToken).ConfigureAwait(false);
-        }
+        using var exportFileStream = exportFile.Create();
 
-        return 0;
+        await JsonSerializer.SerializeAsync(
+            exportFileStream,
+            documentModel,
+            JsonSerializerConfiguration.SerializerOptions,
+            cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    private async Task ExportVariablesAsync(FileInfo exportFile, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(exportFile);
+
+        var variableModels = await GetVariableModelsAsync(cancellationToken).ConfigureAwait(false);
+
+        using var exportFileStream = exportFile.Create();
+
+        await JsonSerializer.SerializeAsync(
+            exportFileStream,
+            variableModels,
+            JsonSerializerConfiguration.SerializerOptions,
+            cancellationToken)
+            .ConfigureAwait(false);
     }
 
     private async Task<IEnumerable<CarModel>> GetCarModelsAsync(CancellationToken cancellationToken = default)
@@ -76,7 +116,7 @@ internal class ExportCommandHandler
     {
         if (Options.OutputFileOrDirectory is DirectoryInfo outputDirectory)
         {
-            return new FileInfo(Path.Combine(outputDirectory.FullName, "TelemetryVariables.json"));
+            return new FileInfo(Path.Combine(outputDirectory.FullName, GetDefaultExportFileName()));
         }
         else if (Options.OutputFileOrDirectory is FileInfo outputFile)
         {
@@ -85,5 +125,15 @@ internal class ExportCommandHandler
 
         throw new InvalidOperationException(
             $"{nameof(Options)}.{nameof(Options.OutputFileOrDirectory)} is neither {nameof(DirectoryInfo)} nor {nameof(FileInfo)}.");
+    }
+
+    private string GetDefaultExportFileName()
+    {
+        if (Options.ExportVariablesOnly)
+        {
+            return "TelemetryVariables.json";
+        }
+
+        return "TelemetryVariablesDb.json";
     }
 }

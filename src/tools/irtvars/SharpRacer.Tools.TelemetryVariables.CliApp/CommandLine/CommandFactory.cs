@@ -55,10 +55,17 @@ internal static class CommandFactory
             DefaultValueFactory = _ => false
         };
 
+        var exportVariablesOnlyOption = new CliOption<bool>("--variables-only") // TODO: Need a better name for this flag
+        {
+            Description = "Export variables only.",
+            DefaultValueFactory = _ => false
+        };
+
         var cmd = new CliCommand("export", "Exports telemetry variable information.");
 
         cmd.Arguments.Add(outputFileOrDirectoryArg);
         cmd.Options.Add(includeDeprecatedOption);
+        cmd.Options.Add(exportVariablesOnlyOption);
 
         cmd.SetAction((parseResult, cancellationToken) =>
         {
@@ -67,6 +74,7 @@ internal static class CommandFactory
 
             var commandOptions = new ExportCommandOptions()
             {
+                ExportVariablesOnly = parseResult.GetValue(exportVariablesOnlyOption),
                 IncludeDeprecated = parseResult.GetValue(includeDeprecatedOption),
                 OutputFileOrDirectory = parseResult.GetValue(outputFileOrDirectoryArg)!
             };
