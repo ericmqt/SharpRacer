@@ -7,23 +7,28 @@
 public sealed class GenerateDataVariablesContextAttribute : Attribute
 {
     /// <summary>
-    /// Initializes an instance of <see cref="GenerateDataVariablesContextAttribute"/> with the specified telemetry variables JSON file name.
+    /// Initializes an instance of <see cref="GenerateDataVariablesContextAttribute"/>.
     /// </summary>
-    /// <param name="variablesFileName">The file name of the telemetry variables JSON file to use as input to the source generator.</param>
-    public GenerateDataVariablesContextAttribute(string variablesFileName)
+    public GenerateDataVariablesContextAttribute()
     {
-        ArgumentException.ThrowIfNullOrEmpty(variablesFileName);
 
-        VariablesFileName = variablesFileName;
     }
 
     /// <summary>
-    /// Gets the file name of a configuration file used to customize source generator output.
+    /// Initializes an instance of <see cref="GenerateDataVariablesContextAttribute"/> with the specified variable names file.
     /// </summary>
-    public string? ConfigurationFileName { get; set; }
+    /// <param name="includedVariableNamesFile">
+    /// The file name of a JSON file containing an array of strings representing the name of each variable to include in the generated context.
+    /// </param>
+    public GenerateDataVariablesContextAttribute(string includedVariableNamesFile)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(includedVariableNamesFile);
+
+        IncludedVariableNamesFile = includedVariableNamesFile;
+    }
 
     /// <summary>
     /// Gets the file name of the telemetry variables JSON file to use as input to the source generator.
     /// </summary>
-    public string VariablesFileName { get; }
+    public string? IncludedVariableNamesFile { get; }
 }

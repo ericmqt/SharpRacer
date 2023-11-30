@@ -1,0 +1,14 @@
+{
+  "VariablesGenerator": {
+    "GenerateTypedVariableClasses": true
+  },
+  "VariableOptions": {
+    "ChanLatency": {
+      "ContextPropertyName": "ChannelLatency",
+      "DescriptorName": "ChannelLatency"
+    },
+    "Lon": {
+      "Name": "Longitude"
+    }
+  }
+}

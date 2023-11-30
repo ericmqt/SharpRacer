@@ -1,0 +1,3182 @@
+[
+  {
+    "DeprecatedBy": null,
+    "Description": "Seconds since session start",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionTime",
+    "ValueCount": 1,
+    "ValueType": "Double",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Current update number",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionTick",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Session number",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionNum",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Session state",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionState",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": "irsdk_SessionState"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Session ID",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionUniqueID",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Session flags",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionFlags",
+    "ValueCount": 1,
+    "ValueType": "Bitfield",
+    "ValueUnit": "irsdk_Flags"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Seconds left till session ends",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionTimeRemain",
+    "ValueCount": 1,
+    "ValueType": "Double",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": "SessionLapsRemainEx",
+    "Description": "Old laps left till session ends use SessionLapsRemainEx",
+    "IsDeprecated": true,
+    "IsTimeSliceArray": false,
+    "Name": "SessionLapsRemain",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "New improved laps left till session ends",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionLapsRemainEx",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Total number of seconds in session",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionTimeTotal",
+    "ValueCount": 1,
+    "ValueType": "Double",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Total number of laps in session",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionLapsTotal",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Joker laps remaining to be taken",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionJokerLapsRemain",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Player is currently completing a joker lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionOnJokerLap",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Time of day in seconds",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SessionTimeOfDay",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Driver activated flag",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "DriverMarker",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Push to talk button state",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PushToTalk",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Push to pass button state",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PushToPass",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Hybrid manual boost state",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ManualBoost",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Hybrid manual no boost state",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ManualNoBoost",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "1=Car on track physics running with player in car",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "IsOnTrack",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Average frames per second",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FrameRate",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "fps"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Percent of available tim fg thread took with a 1 sec avg",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "CpuUsageFG",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Percent of available tim gpu took with a 1 sec avg",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "GpuUsage",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Communications average latency",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ChanAvgLatency",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Communications latency",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ChanLatency",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Communications quality",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ChanQuality",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Partner communications quality",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ChanPartnerQuality",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Percent of available tim bg thread took with a 1 sec avg",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "CpuUsageBG",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Communications server clock skew",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ChanClockSkew",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Memory page faults per second",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "MemPageFaultSec",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Memory soft page faults per second",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "MemSoftPageFaultSec",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players position in race",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarPosition",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players class position in race",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarClassPosition",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Player car class id",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarClass",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car track surface type",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerTrackSurface",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": "irsdk_TrkLoc"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car track surface material type",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerTrackSurfaceMaterial",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": "irsdk_TrkSurf"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players carIdx",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarIdx",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players team incident count for this session",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarTeamIncidentCount",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players own incident count for this session",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarMyIncidentCount",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Teams current drivers incident count for this session",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarDriverIncidentCount",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players weight penalty",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarWeightPenalty",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kg"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players power adjust",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarPowerAdjust",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players dry tire set limit",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarDryTireSetLimit",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car is being towed if time is greater than zero",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarTowTime",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car is properly in there pitstall",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarInPitStall",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car pit service status bits",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerCarPitSvStatus",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": "irsdk_PitSvStatus"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car current tire compound",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerTireCompound",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players car number of fast repairs used",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PlayerFastRepairsUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Are we pacing or not",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PaceMode",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": "irsdk_PaceMode"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Is the player car on pit road between the cones",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "OnPitRoad",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Steering wheel angle",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelAngle",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "0=off throttle to 1=full throttle",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Throttle",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "0=brake released to 1=max pedal force",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Brake",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "0=disengaged to 1=fully engaged",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Clutch",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "-1=reverse  0=neutral  1..n=current gear",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Gear",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine rpm",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RPM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "revs/min"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Laps started count",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Lap",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Laps completed count",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapCompleted",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Meters traveled from S/F this lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDist",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Percentage distance around lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDistPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players best lap number",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapBestLap",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players best lap time",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapBestLapTime",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players last lap time",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapLastLapTime",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Estimate of players current lap time as shown in F3 box",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapCurrentLapTime",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Player num consecutive clean laps completed for N average",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapLasNLapSeq",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Player last N average lap time",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapLastNLapTime",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Player last lap in best N average lap time",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapBestNLapLap",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Player best N average lap time",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapBestNLapTime",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for best lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToBestLap",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Rate of change of delta time for best lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToBestLap_DD",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for best lap is valid",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToBestLap_OK",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for optimal lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToOptimalLap",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Rate of change of delta time for optimal lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToOptimalLap_DD",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for optimal lap is valid",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToOptimalLap_OK",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for session best lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionBestLap",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Rate of change of delta time for session best lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionBestLap_DD",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for session best lap is valid",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionBestLap_OK",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for session optimal lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionOptimalLap",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Rate of change of delta time for session optimal lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionOptimalLap_DD",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for session optimal lap is valid",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionOptimalLap_OK",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for session last lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionLastlLap",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Rate of change of delta time for session last lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionLastlLap_DD",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Delta time for session last lap is valid",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LapDeltaToSessionLastlLap_OK",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "GPS vehicle speed",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Speed",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Yaw orientation",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Yaw",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Yaw orientation relative to north",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "YawNorth",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitch orientation",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Pitch",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Roll orientation",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Roll",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Indicate action the reset key will take 0 enter 1 exit 2 reset",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "EnterExitReset",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Latitude in decimal degrees",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Lat",
+    "ValueCount": 1,
+    "ValueType": "Double",
+    "ValueUnit": "deg"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Longitude in decimal degrees",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Lon",
+    "ValueCount": 1,
+    "ValueType": "Double",
+    "ValueUnit": "deg"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Altitude in meters",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Alt",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": "TrackTempCrew",
+    "Description": "Deprecated  set to TrackTempCrew",
+    "IsDeprecated": true,
+    "IsTimeSliceArray": false,
+    "Name": "TrackTemp",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Temperature of track measured by crew around track",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TrackTempCrew",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Temperature of air at start/finish line",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "AirTemp",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Weather type (0=constant  1=dynamic)",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "WeatherType",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Skies (0=clear/1=p cloudy/2=m cloudy/3=overcast)",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Skies",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Density of air at start/finish line",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "AirDensity",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kg/m^3"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pressure of air at start/finish line",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "AirPressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Hg"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Wind velocity at start/finish line",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "WindVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Wind direction at start/finish line",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "WindDir",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Relative Humidity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RelativeHumidity",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Fog level",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FogLevel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Sun angle above horizon in radians",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SolarAltitude",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Sun angle clockwise from north in radians",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SolarAzimuth",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "True if pit stop is allowed for the current player",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitsOpen",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Time left for mandatory pit repairs if repairs are active",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitRepairLeft",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Time left for optional repairs if repairs are active",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitOptRepairLeft",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Is the player getting pit stop service",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitstopActive",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many fast repairs used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FastRepairUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many fast repairs left  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FastRepairAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many left front tires used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFTiresUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many right front tires used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFTiresUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many left rear tires used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRTiresUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many right rear tires used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRTiresUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many left tire sets used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LeftTireSetsUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many right tire sets used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RightTireSetsUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many front tire sets used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FrontTireSetsUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many rear tire sets used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RearTireSetsUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many tire sets used so far",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TireSetsUsed",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many left front tires are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFTiresAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many right front tires are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFTiresAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many left rear tires are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRTiresAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many right rear tires are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRTiresAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many left tire sets are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LeftTireSetsAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many right tire sets are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RightTireSetsAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many front tire sets are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FrontTireSetsAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many rear tire sets are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RearTireSetsAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "How many tire sets are remaining  255 is unlimited",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TireSetsAvailable",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "1=Car on track physics running",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "IsOnTrackCar",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Steering wheel max angle",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelAngleMax",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Friction torque applied to gears when shifting or grinding",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ShiftPowerPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RPM of shifter grinding noise",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ShiftGrindRPM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "RPM"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Raw throttle input 0=off throttle to 1=full throttle",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ThrottleRaw",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Raw brake input 0=brake released to 1=max pedal force",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "BrakeRaw",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Raw clutch input 0=disengaged to 1=fully engaged",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ClutchRaw",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Raw handbrake input 0=handbrake released to 1=max force",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "HandbrakeRaw",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "true if abs is currently reducing brake force pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "BrakeABSactive",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Bitfield for warning lights",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "EngineWarnings",
+    "ValueCount": 1,
+    "ValueType": "Bitfield",
+    "ValueUnit": "irsdk_EngineWarnings"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Percent fuel remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FuelLevelPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Bitfield of pit service checkboxes",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvFlags",
+    "ValueCount": 1,
+    "ValueType": "Bitfield",
+    "ValueUnit": "irsdk_PitSvFlags"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pit service left front tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvLFP",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pit service right front tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvRFP",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pit service left rear tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvLRP",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pit service right rear tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvRRP",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pit service fuel add amount",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvFuel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "l or kWh"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pit service pending tire compound",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitSvTireCompound",
+    "ValueCount": 1,
+    "ValueType": "Int",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Force feedback % max torque on steering shaft unsigned",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelPctTorque",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Force feedback % max torque on steering shaft signed",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelPctTorqueSign",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Force feedback % max torque on steering shaft signed stops",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelPctTorqueSignStops",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Force feedback % max smoothing",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelPctSmoothing",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Force feedback % max damping",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelPctDamper",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Force feedback limiter strength limits impacts and oscillation",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelLimiter",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Value of strength or max force slider in Nm for FFB",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelMaxForceNm",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "N*m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "True if steering wheel force is using linear mode",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelUseLinear",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "DEPRECATED use DriverCarSLBlinkRPM instead",
+    "IsDeprecated": true,
+    "IsTimeSliceArray": false,
+    "Name": "ShiftIndicatorPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players LF Tire Sound rumblestrip pitch",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TireLF_RumblePitch",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Hz"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players RF Tire Sound rumblestrip pitch",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TireRF_RumblePitch",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Hz"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players LR Tire Sound rumblestrip pitch",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TireLR_RumblePitch",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Hz"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Players RR Tire Sound rumblestrip pitch",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TireRR_RumblePitch",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Hz"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Output torque on steering shaft at 360 Hz",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": true,
+    "Name": "SteeringWheelTorque_ST",
+    "ValueCount": 6,
+    "ValueType": "Float",
+    "ValueUnit": "N*m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Output torque on steering shaft",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "SteeringWheelTorque",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "N*m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Z velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "VelocityZ",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Y velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "VelocityY",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "X velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "VelocityX",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Yaw rate",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "YawRate",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitch rate",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PitchRate",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Roll rate",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RollRate",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "rad/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Vertical acceleration (including gravity)",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "VertAccel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s^2"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Lateral acceleration (including gravity)",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LatAccel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s^2"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Longitudinal acceleration (including gravity)",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LongAccel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s^2"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car trigger car starter",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcStarter",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop fuel fill flag",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpFuelFill",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop fuel add amount",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpFuelAddKg",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kg"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop fast repair set",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpFastRepair",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop lf tire cold pressure adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpLFTireColdPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Pa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop rf cold tire pressure adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpRFTireColdPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Pa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop lr tire cold pressure adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpLRTireColdPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Pa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop rr cold tire pressure adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpRRTireColdPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Pa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF brake line pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFbrakeLinePress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF wheel speed",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFspeed",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFpressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire cold pressure  as set in the garage",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFcoldPressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire left surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFtempL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire middle surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFtempM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire right surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFtempR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire left carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFtempCL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire middle carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFtempCM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire right carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFtempCR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire left percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFwearL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire middle percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFwearM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF tire right percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFwearR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF brake line pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFbrakeLinePress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF wheel speed",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFspeed",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFpressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire cold pressure  as set in the garage",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFcoldPressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire left surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFtempL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire middle surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFtempM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire right surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFtempR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire left carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFtempCL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire middle carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFtempCM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire right carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFtempCR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire left percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFwearL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire middle percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFwearM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF tire right percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFwearR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine fuel used instantaneous",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FuelUsePerHour",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kg/h"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine voltage",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Voltage",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "V"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine coolant temp",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "WaterTemp",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine coolant level",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "WaterLevel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "l"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine fuel pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FuelPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine oil temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "OilTemp",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine oil pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "OilPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine oil level",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "OilLevel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "l"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine manifold pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ManifoldPress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Liters of fuel remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "FuelLevel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "l"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine0Engine rpm",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "Engine0_RPM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "revs/min"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR brake line pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRbrakeLinePress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR wheel speed",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRspeed",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRpressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire cold pressure  as set in the garage",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRcoldPressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire left surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRtempL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire middle surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRtempM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire right surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRtempR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire left carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRtempCL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire middle carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRtempCM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire right carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRtempCR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire left percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRwearL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire middle percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRwearM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR tire right percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRwearR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR brake line pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRbrakeLinePress",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "bar"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR wheel speed",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRspeed",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire pressure",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRpressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire cold pressure  as set in the garage",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRcoldPressure",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "kPa"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire left surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRtempL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire middle surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRtempM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire right surface temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRtempR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire left carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRtempCL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire middle carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRtempCM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire right carcass temperature",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRtempCR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "C"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire left percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRwearL",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire middle percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRwearM",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR tire right percent tread remaining",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRwearR",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF ride height",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFrideHeight",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF ride height",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFrideHeight",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR ride height",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRrideHeight",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR ride height",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRrideHeight",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Percent of brake force reduction caused by ABS system",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "BrakeABScutPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car dash display page adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcDashPage",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car tear off visor film",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTearOffVisor",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop all tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car brake bias adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcBrakeBias",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "CR shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "CRshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "CR shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "CRshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LR shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RR shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LF shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RF shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car traction control active",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcPitSpeedLimiterToggle",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car traction control active",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTractionControlToggle",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car headlight flash control active",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcHeadlightFlash",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop windshield tearoff",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpWindshieldTearoff",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop rf tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpRFTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop lf tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpLFTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop rr tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpRRTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop lr tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpLRTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car throttle shape adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcThrottleShape",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car traction control adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTractionControl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Center front splitter ride height",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "CFSRrideHeight",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car abs adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcABS",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car turn wipers on or off",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcToggleWindshieldWipers",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car momentarily turn on wipers",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTriggerWindshieldWipers",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car low fuel accept",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcLowFuelAccept",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car fuel mixture adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcFuelMixture",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop right tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpRTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop left tire change request",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpLTireChange",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LRSH shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRSHshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LRSH shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LRSHshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RRSH shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRSHshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RRSH shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RRSHshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LFSH shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFSHshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "LFSH shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "LFSHshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RFSH shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFSHshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "RFSH shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "RFSHshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car toggle in lap settings",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcInLapToggle",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car toggle full course yellow mode",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcFCYToggle",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car adv end straight fuel cut",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcFuelCutPosition",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car fuel cut on straight active",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcFuelNoCutToggle",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car engine power adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcEnginePower",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car MUG-K re-gen gain adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcMGUKRegenGain",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car MGU-K deployment mode level adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcMGUKDeployMode",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car MGU-K fixed deployment level adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcMGUKDeployFixed",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car hold HYS deploy",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcHysBoostHold",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car disable HYS deploy",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcHysNoBoostToggle",
+    "ValueCount": 1,
+    "ValueType": "Bool",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Pitstop power steering adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dpPowerSteering",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car traction control 4 adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTractionControl4",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car traction control 3 adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTractionControl3",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car traction control 2 adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcTractionControl2",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine MGU-K mechanical power",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PowerMGU_K",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "W"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine MGU-K mechanical torque",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "TorqueMGU_K",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "Nm"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine MGU-H mechanical power",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "PowerMGU_H",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "W"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine ERS battery charge",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "EnergyERSBattery",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "J"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Engine ERS battery charge as a percent",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "EnergyERSBatteryPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Electrical energy from battery to MGU-K per lap",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "EnergyBatteryToMGU_KLap",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "J"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "Electrical energy available to MGU-K per lap as a percent",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "EnergyMGU_KLapDeployPct",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "%"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "HF shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "HFshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "HF shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "HFshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "ROLLF shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ROLLFshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "ROLLF shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ROLLFshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "HR shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "HRshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "HR shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "HRshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "ROLLR shock deflection",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ROLLRshockDefl",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "ROLLR shock velocity",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "ROLLRshockVel",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": "m/s"
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car front anti roll bar adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcAntiRollFront",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  },
+  {
+    "DeprecatedBy": null,
+    "Description": "In car rear anti roll bar adjustment",
+    "IsDeprecated": false,
+    "IsTimeSliceArray": false,
+    "Name": "dcAntiRollRear",
+    "ValueCount": 1,
+    "ValueType": "Float",
+    "ValueUnit": null
+  }
+]

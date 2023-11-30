@@ -14,7 +14,7 @@ public class DataVariableFactoryTests
     [Fact]
     public void Ctor_NullDataVariablesTest()
     {
-        Assert.Throws<ArgumentNullException>(() => new DataVariableFactory(null!));
+        Assert.Throws<ArgumentNullException>(() => new DataVariableFactory(dataVariables: null!));
     }
 
     [Fact]
