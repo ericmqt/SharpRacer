@@ -1,32 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<RootNamespace>SourceGeneratorDebugApp</RootNamespace>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Remove="TelemetryVariables.config.json" />
+		<None Remove="TelemetryVariables.json" />
+		<None Remove="TelemetryVariables_VariableNames.json" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<AdditionalFiles Include="TelemetryVariables.json" />
+		<AdditionalFiles Include="TelemetryVariables.config.json" />
+		<AdditionalFiles Include="TelemetryVariables_VariableNames.json" />
+	</ItemGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  <RootNamespace>SourceGeneratorDebugApp</RootNamespace>
-  </PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
 
-  <ItemGroup>
-    <None Remove="TelemetryVariables.config.json" />
-    <None Remove="TelemetryVariables.json" />
-    <None Remove="TelemetryVariables_VariableNames.json" />
-  </ItemGroup>
+		<ProjectReference Include="..\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" SetTargetFramework="TargetFramework=netstandard2.0" />
+		
+	</ItemGroup>
 
-  <ItemGroup>
-    <AdditionalFiles Include="TelemetryVariables.config.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AdditionalFiles Include="TelemetryVariables.json" />
-    <AdditionalFiles Include="TelemetryVariables_VariableNames.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
-	  
-    <ProjectReference Include="..\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" SetTargetFramework="TargetFramework=netstandard2.0" />
-  </ItemGroup>
+	<Import Project="..\SharpRacer.SourceGenerators\TelemetryVariablesGenerator.props" />
 
 </Project>

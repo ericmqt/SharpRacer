@@ -1,8 +1,8 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables;
-using SharpRacer.SourceGenerators.TelemetryVariables.Configuration;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
@@ -15,237 +15,143 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        // TODO: Document the generator pipeline
-        var descriptorClassTargets = DescriptorClassGeneratorInfo.GetValuesProvider(context.SyntaxProvider)
-            //.Select(static (x, _) => new DescriptorClassGeneratorTarget(x))
-            // TODO: WithComparer()
-            .Collect();
+        var generatorConfiguration = context.AnalyzerConfigOptionsProvider
+            .Select(static (item, ct) => GeneratorConfiguration.FromAnalyzerConfigOptionsProvider(item));
 
-        var variableClassTargets = VariableContextClassGeneratorInfo.GetValuesProvider(context.SyntaxProvider)
+        var variableModels = VariableModelsValueProvider.Get(ref context, generatorConfiguration);
+
+        // Create descriptor generator models
+        var descriptorGeneratorModelProvider = GetDescriptorClassGeneratorModelProvider(context.SyntaxProvider, variableModels);
+
+        // Get variable context generator models
+        var variableContextClassInfo = context.SyntaxProvider.ForClassWithAttribute(
+            GenerateDataVariablesContextAttributeInfo.FullTypeName,
+            static classDecl => classDecl.HasAttributes() && classDecl.IsPartialClass() && !classDecl.IsStaticClass());
+
+        var includedVariables = GetIncludedVariableFilesArray(variableContextClassInfo, ref context);
+
+        var variableContextClassTargets = variableContextClassInfo.Combine(includedVariables.Collect())
+            .Select(static (item, ct) =>
+            {
+                var includedVariablesFileName = GenerateDataVariablesContextAttributeInfo.GetIncludedVariablesFileNameOrDefault(item.Left.AttributeData);
+
+                if (includedVariablesFileName == default)
+                {
+                    return new PipelineValueResult<VariableContextClassResult>(new VariableContextClassResult(item.Left, default));
+                }
+
+                var matchingIncludes = item.Right.Where(x => x.FileName == includedVariablesFileName);
+
+                // If unable to locate the specified includes, return a valid value so the class gets generated with all variables
+                if (!matchingIncludes.Any())
+                {
+                    return new PipelineValueResult<VariableContextClassResult>(
+                        new VariableContextClassResult(item.Left, default),
+                        IncludedVariablesDiagnostics.FileNotFound(includedVariablesFileName, item.Left.AttributeLocation));
+                }
+
+                if (matchingIncludes.Count() > 1)
+                {
+                    return new PipelineValueResult<VariableContextClassResult>(
+                        new VariableContextClassResult(item.Left, default),
+                        IncludedVariablesDiagnostics.AmbiguousFileName(includedVariablesFileName, item.Left.AttributeLocation));
+                }
+
+                return new PipelineValueResult<VariableContextClassResult>(new VariableContextClassResult(item.Left, matchingIncludes.Single()));
+            });
+
+        context.ReportDiagnostics(variableContextClassTargets.SelectMany(static (x, _) => x.Diagnostics));
+
+        // TODO: Combine context includes with variable models, and also combine with DescriptorPropertyReferences
+
+        // Generate
+        context.RegisterSourceOutput(descriptorGeneratorModelProvider, GenerateDescriptorClass);
+    }
+
+    private static IncrementalValuesProvider<IncludedVariables> GetIncludedVariableFilesArray(
+        IncrementalValuesProvider<ClassWithGeneratorAttribute> variableContextClassResults,
+        ref IncrementalGeneratorInitializationContext context)
+    {
+        var includedVariableFileNames = variableContextClassResults
+            .Select(static (x, _) => GenerateDataVariablesContextAttributeInfo.GetIncludedVariablesFileNameOrDefault(x.AttributeData))
+            .Where(static x => !x.IsDefault);
+
+        var includedVariableFilesResult = includedVariableFileNames
             .Combine(context.AdditionalTextsProvider.Collect())
-            .Select(static (x, ct) => VariableContextClassGeneratorTarget.Create(x.Left, x.Right, ct))
-            // TODO: WithComparer()
-            .Collect();
+            .Select(static (item, ct) =>
+            {
+                var file = InputFileFactory.IncludedVariablesFile(item.Left, item.Right, ct, out var diagnostic);
 
-        var generatorSettings = context.AnalyzerConfigOptionsProvider
-            .Select(static (x, _) => new GeneratorSettings(x.GlobalOptions))
-            .WithComparer(GeneratorSettings.EqualityComparer.Default);
+                if (diagnostic != null)
+                {
+                    return new PipelineValueResult<IncludedVariables>(diagnostic);
+                }
 
-        var generatorSettingsAndTexts = context.AdditionalTextsProvider.Combine(generatorSettings);
+                var includedNames = IncludedVariableNameFactory.Create(file, ct, out var factoryDiagnostics);
 
-        var generatorOptionsFiles = generatorSettingsAndTexts
-            .Where(static x => x.Right.IsConfigurationFile(x.Left))
-            .Select(static (x, ct) => GeneratorOptionsFile.Create(x.Left, ct))
-            .WithComparer(GeneratorOptionsFile.EqualityComparer.Default)
-            .Collect();
+                if (factoryDiagnostics.HasErrors())
+                {
+                    return new PipelineValueResult<IncludedVariables>(factoryDiagnostics);
+                }
 
-        var variableFiles = generatorSettingsAndTexts
-            .Where(static x => x.Right.IsTelemetryVariablesFile(x.Left))
-            .Select(static (x, ct) => VariableInfoFile.Create(x.Left, ct))
-            .WithComparer(VariableInfoFile.EqualityComparer.Default)
-            .Collect();
+                var includedVariables = new IncludedVariables(item.Left, includedNames);
 
-        var pipelineResult = GeneratorPipelineResult.Get(
-            generatorOptionsFiles.Combine(variableFiles).Combine(generatorSettings),
-            descriptorClassTargets.Combine(variableClassTargets));
+                return new PipelineValueResult<IncludedVariables>(includedVariables);
+            });
 
-        context.RegisterSourceOutput(pipelineResult, static (ctx, model) => GenerateSource(ctx, model, ctx.CancellationToken));
+        context.ReportDiagnostics(includedVariableFilesResult.SelectMany(static (x, _) => x.Diagnostics));
+
+        return includedVariableFilesResult.Select(static (x, _) => x.Value);
     }
 
-    private static void GenerateSource(
-        SourceProductionContext context,
-        GeneratorPipelineResult pipelineResult,
-        CancellationToken cancellationToken = default)
+    private static IncrementalValueProvider<DescriptorClassGeneratorProvider> GetDescriptorClassGeneratorModelProvider(
+        SyntaxValueProvider syntaxValueProvider,
+        IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
     {
-        if (pipelineResult is null)
+        var classTargets = syntaxValueProvider.ForClassWithAttribute(
+            GenerateDataVariableDescriptorsAttributeInfo.FullTypeName,
+            static classDecl => classDecl.HasAttributes() && classDecl.IsStaticPartialClass());
+
+        return classTargets.Collect()
+            .Combine(variableModelsProvider)
+            .Select(static (x, ct) => DescriptorClassGeneratorProvider.Create(x.Left, x.Right, ct))
+            .WithComparer(DescriptorClassGeneratorProvider.EqualityComparer.Default);
+    }
+
+    private static void GetTypedVariableGeneratorModelProvider(
+        IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
+        IncrementalValueProvider<DescriptorClassGeneratorProvider> descriptorGeneratorProvider,
+        IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
+    {
+        generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
+            .Select(static (x, _) => TypedVariableClassesDescriptorOptions.Create(x.Left, x.Right));
+    }
+
+    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassGeneratorProvider modelProvider)
+    {
+        if (modelProvider.Diagnostics.Any())
         {
-            throw new ArgumentNullException(nameof(pipelineResult));
+            foreach (var diagnostic in modelProvider.Diagnostics)
+            {
+                context.ReportDiagnostic(diagnostic);
+            }
         }
 
-        var diagnosticReporter = new DiagnosticReporter(context.ReportDiagnostic);
-
-        // Check if we have any classes to generate
-        if (!pipelineResult.DescriptorClassGeneratorTargets.Any() && !pipelineResult.VariableContextGeneratorTargets.Any())
+        if (modelProvider.GeneratorModel is null)
         {
-            // TODO: return message diagnostic maybe?
             return;
         }
 
-        if (!TryCreateGeneratorModel(pipelineResult, diagnosticReporter, out var generatorModel))
-        {
-            return;
-        }
+        var generatorModel = modelProvider.GeneratorModel;
+        var generator = new DescriptorClassGenerator(generatorModel);
 
-        cancellationToken.ThrowIfCancellationRequested();
+        var descriptorClassCompilationUnit = generator.CreateCompilationUnit(context.CancellationToken)
+            .NormalizeWhitespace(eol: "\n");
 
-        // Generate descriptor class, if needed
-        if (generatorModel.DescriptorClassGeneratorModel != null)
-        {
-            var generator = new DescriptorClassGenerator(generatorModel.DescriptorClassGeneratorModel);
+        var generatedSourceText = descriptorClassCompilationUnit.GetText(Encoding.UTF8);
 
-            var descriptorClassCompilationUnit = generator.CreateCompilationUnit(context.CancellationToken)
-                .NormalizeWhitespace(eol: "\n");
+        var generatedSourceTextStr = generatedSourceText.ToString();
 
-            var generatedSourceText = descriptorClassCompilationUnit.GetText(Encoding.UTF8);
-
-            var generatedSourceTextStr = generatedSourceText.ToString();
-
-            context.AddSource($"{generatorModel.DescriptorClassGeneratorModel.TypeName}.g.cs", generatedSourceText);
-        }
-    }
-
-    private static bool TryCreateGeneratorModel(GeneratorPipelineResult pipelineResult, DiagnosticReporter diagnosticReporter, out GeneratorModel generatorModel)
-    {
-        generatorModel = null!;
-
-        if (!pipelineResult.TryGetDescriptorClassGeneratorTarget(diagnosticReporter, out var descriptorGeneratorTarget))
-        {
-            return false;
-        }
-
-        // Read generator options or use default value
-        if (!pipelineResult.TryGetGeneratorOptionsOrDefault(diagnosticReporter, out var generatorOptions))
-        {
-            return false;
-        }
-
-        if (!TryGetVariableInfoCollection(pipelineResult, diagnosticReporter, out var variableInfoFile, out var variableInfoCollection))
-        {
-            return false;
-        }
-
-        if (!ValidateInputVariables(variableInfoFile, variableInfoCollection, diagnosticReporter))
-        {
-            return false;
-        }
-
-        var variableModels = GetVariableModels(variableInfoCollection, generatorOptions);
-
-        if (!ValidateVariableModels(variableModels, diagnosticReporter))
-        {
-            return false;
-        }
-
-        generatorModel = GeneratorModel.Create(descriptorGeneratorTarget, variableModels);
-        return true;
-    }
-
-    private static ImmutableArray<VariableModel> GetVariableModels(ImmutableArray<VariableInfo> variableInfos, GeneratorOptions generatorOptions)
-    {
-        var resultsBuilder = ImmutableArray.CreateBuilder<VariableModel>(variableInfos.Length);
-
-        foreach (var variableInfo in variableInfos)
-        {
-            if (generatorOptions.VariableOptions.TryGetValue(variableInfo.Name, out var variableOptions))
-            {
-                resultsBuilder.Add(new VariableModel(variableInfo, variableOptions));
-            }
-            else
-            {
-                resultsBuilder.Add(new VariableModel(variableInfo));
-            }
-        }
-
-        return resultsBuilder.ToImmutableArray();
-    }
-
-    private static bool TryGetVariableInfoCollection(
-        GeneratorPipelineResult pipelineResult,
-        DiagnosticReporter diagnosticReporter,
-        out VariableInfoFile variableInfoFile,
-        out ImmutableArray<VariableInfo> collection)
-    {
-        collection = ImmutableArray<VariableInfo>.Empty;
-
-        if (!pipelineResult.TryGetVariableInfoFile(diagnosticReporter, out variableInfoFile))
-        {
-            return false;
-        }
-
-        collection = variableInfoFile.GetVariablesOrDefault(out var readVariablesDiagnostic);
-
-        if (readVariablesDiagnostic != null)
-        {
-            diagnosticReporter.Report(readVariablesDiagnostic);
-
-            return false;
-        }
-
-        // Warn if no variables
-        if (collection.Length == 0)
-        {
-            diagnosticReporter.Report(
-                VariablesFileDiagnostics.WarnZeroVariablesInFile(variableInfoFile.Path));
-        }
-
-        return true;
-    }
-
-    private static bool ValidateInputVariables(VariableInfoFile variablesFile, ImmutableArray<VariableInfo> source, DiagnosticReporter diagnosticReporter)
-    {
-        if (variablesFile is null)
-        {
-            throw new ArgumentNullException(nameof(variablesFile));
-        }
-
-        var duplicatedNames = source.Select(x => x.Name)
-            .GroupBy(x => x)
-            .Where(g => g.Count() > 1)
-            .Select(x => x.Key)
-            .ToList();
-
-        if (duplicatedNames.Any())
-        {
-            foreach (var name in duplicatedNames)
-            {
-                diagnosticReporter.Report(VariablesFileDiagnostics.DuplicateVariable(name, variablesFile.Path));
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    private static bool ValidateVariableModels(IEnumerable<VariableModel> source, DiagnosticReporter diagnosticReporter)
-    {
-        if (source is null)
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
-
-        var duplicatedDescriptorNames = source.Select(x => x.DescriptorName)
-            .GroupBy(x => x)
-            .Where(g => g.Count() > 1)
-            .Select(x => x.Key)
-            .ToList();
-
-        if (duplicatedDescriptorNames.Any())
-        {
-            foreach (var descriptorName in duplicatedDescriptorNames)
-            {
-                // TODO: Report duplicate
-            }
-
-            return false;
-        }
-
-        var duplicatedContextPropertyNames = source.Select(x => x.ContextPropertyName)
-            .GroupBy(x => x)
-            .Where(g => g.Count() > 1)
-            .Select(x => x.Key)
-            .ToList();
-
-        if (duplicatedContextPropertyNames.Any())
-        {
-            foreach (var propertyName in duplicatedContextPropertyNames)
-            {
-                // TODO: Report
-            }
-
-            return false;
-        }
-
-        return true;
+        context.AddSource($"{generatorModel.TypeName}.g.cs", generatedSourceText);
     }
 }

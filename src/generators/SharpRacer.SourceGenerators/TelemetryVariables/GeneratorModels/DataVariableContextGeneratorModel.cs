@@ -1,12 +1,13 @@
-﻿using Microsoft.CodeAnalysis;
-using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
+﻿using System.Collections.Immutable;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class DataVariableContextGeneratorModel
 {
-    public DataVariableContextGeneratorModel(VariableContextClassGeneratorTarget contextGeneratorTarget)
+    public DataVariableContextGeneratorModel(ImmutableArray<VariableModel> variables)
     {
-        ClassGeneratorTarget = contextGeneratorTarget ?? throw new ArgumentNullException(nameof(contextGeneratorTarget));
+        Variables = variables;
+
+        /*ClassGeneratorTarget = contextGeneratorTarget ?? throw new ArgumentNullException(nameof(contextGeneratorTarget));
 
         // TODO: Change this to deserialized names
         VariableNamesFile = contextGeneratorTarget.IncludedVariableNamesFile;
@@ -14,11 +15,13 @@ internal class DataVariableContextGeneratorModel
         HasDataVariablesContextInterface = ClassGeneratorTarget
             .TargetClassSymbol
             .Interfaces
-            .FirstOrDefault(x => string.Equals(x.Name, "IDataVariablesContext", StringComparison.Ordinal)) != null;
+            .FirstOrDefault(x => string.Equals(x.Name, "IDataVariablesContext", StringComparison.Ordinal)) != null;*/
+
     }
 
-    public VariableContextClassGeneratorTarget ClassGeneratorTarget { get; }
     public bool HasDataVariablesContextInterface { get; }
-    public IncludedVariableNamesFile? VariableNamesFile { get; }
+    public string TypeName { get; }
+    public string TypeNamespace { get; }
+    public ImmutableArray<VariableModel> Variables { get; }
 
 }

@@ -50,7 +50,7 @@ internal static class VariablesFileDiagnostics
             isEnabledByDefault: true);
 
     private static readonly DiagnosticDescriptor _DuplicateVariable
-        = new DiagnosticDescriptor(
+        = new(
             "SR1105",
             "Telemetry variables file has multiple variables of the same name",
             "Telemetry variables file has more than one entry for variable '{0}': '{1}'",

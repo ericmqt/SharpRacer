@@ -56,12 +56,47 @@ internal class DescriptorClassGenerator
 
     private IEnumerable<MemberDeclarationSyntax> EnumerateMembers(CancellationToken cancellationToken = default)
     {
-        foreach (var variable in Model.Variables)
+        for (int i = 0; i < Model.DescriptorProperties.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            yield return DataVariableDescriptorSyntaxFactory.ReadOnlyStaticPropertyWithInitializer(variable);
+            var property = Model.DescriptorProperties[i];
+
+            yield return DescriptorProperty(ref property);
         }
     }
 
+    private static PropertyDeclarationSyntax DescriptorProperty(
+        ref readonly DescriptorPropertyModel descriptorPropertyModel,
+        Accessibility accessibility = Accessibility.Public)
+    {
+        if (descriptorPropertyModel == default)
+        {
+            throw new ArgumentException($"'{nameof(descriptorPropertyModel)}' cannot be a default value.", nameof(descriptorPropertyModel));
+        }
+
+        var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(), Identifier(descriptorPropertyModel.PropertyName))
+            .WithModifiers(accessibility, isStatic: true)
+            .WithGetOnlyAutoAccessor();
+
+        // Initializer
+        var variableNameArgument = Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(descriptorPropertyModel.VariableName)));
+        var valueTypeArgument = Argument(DataVariableValueTypeSyntaxFactory.EnumMemberAccessExpression(descriptorPropertyModel.VariableValueType));
+        var valueCountArgument = Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(descriptorPropertyModel.VariableValueCount)));
+
+        var argumentList = ArgumentList(
+            SeparatedList(
+                new ArgumentSyntax[]
+                {
+                    variableNameArgument,
+                    valueTypeArgument,
+                    valueCountArgument
+                }));
+
+        return decl.WithInitializer(
+            EqualsValueClause(
+                ObjectCreationExpression(SharpRacerTypes.DataVariableDescriptor())
+                    .WithArgumentList(argumentList)))
+            .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+    }
 }

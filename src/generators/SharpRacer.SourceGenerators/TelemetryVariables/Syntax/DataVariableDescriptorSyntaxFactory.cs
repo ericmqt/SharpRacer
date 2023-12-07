@@ -24,7 +24,7 @@ internal static class DataVariableDescriptorSyntaxFactory
 
     internal static PropertyDeclarationSyntax ReadOnlyStaticPropertyWithInitializer(VariableModel model, Accessibility accessibility = Accessibility.Public)
     {
-        if (model is null)
+        if (model == default)
         {
             throw new ArgumentNullException(nameof(model));
         }
@@ -39,9 +39,9 @@ internal static class DataVariableDescriptorSyntaxFactory
             throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or empty.", nameof(propertyName));
         }
 
-        if (variableInfo is null)
+        if (variableInfo == default)
         {
-            throw new ArgumentNullException(nameof(variableInfo));
+            throw new ArgumentException($"'{nameof(variableInfo)}' cannot be a default value.", nameof(variableInfo));
         }
 
         var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(), Identifier(propertyName))

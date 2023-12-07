@@ -1,14 +1,14 @@
 {
-  "VariablesGenerator": {
-    "GenerateTypedVariableClasses": true
+  "ChanLatency": {
+    "ContextPropertyName": "ChannelLatency",
+    "DescriptorName": "ChannelLatency"
   },
-  "VariableOptions": {
-    "ChanLatency": {
-      "ContextPropertyName": "ChannelLatency",
-      "DescriptorName": "ChannelLatency"
-    },
-    "Lon": {
-      "Name": "Longitude"
-    }
+  "Lon": {
+    "Name": "Longitude",
+    "DescriptorName": "Longitude"
+  },
+  "PitstopActive": {
+    "Name": "PitStopActive",
+    "DescriptorName": "PitStopActive"
   }
 }
