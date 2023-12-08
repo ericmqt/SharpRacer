@@ -37,6 +37,20 @@ internal readonly struct TypedVariableClassesDescriptorOptions : IEquatable<Type
             descriptorGeneratorProvider.DescriptorPropertyReferences);
     }
 
+    public bool TryGetDescriptorPropertyReference(ref readonly VariableModel variableModel, out DescriptorPropertyReference descriptorPropertyReference)
+    {
+        var variableKey = variableModel.VariableInfo.Name;
+
+        if (DescriptorPropertyReferences.Any(x => x.VariableName.Equals(variableKey, StringComparison.Ordinal)))
+        {
+            descriptorPropertyReference = DescriptorPropertyReferences.First(x => x.VariableName.Equals(variableKey, StringComparison.Ordinal));
+            return true;
+        }
+
+        descriptorPropertyReference = default;
+        return false;
+    }
+
     public override bool Equals(object obj)
     {
         return obj is TypedVariableClassesDescriptorOptions other && Equals(other);

@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 internal static class VariableModelsValueProvider
 {
-    internal static IncrementalValueProvider<ImmutableArray<VariableModel>> Get(
+    internal static IncrementalValuesProvider<VariableModel> Get(
         ref IncrementalGeneratorInitializationContext context,
         IncrementalValueProvider<GeneratorConfiguration> generatorConfiguration)
     {
@@ -35,7 +35,7 @@ internal static class VariableModelsValueProvider
 
         context.ReportDiagnostics(variableModelsResult.Select(static (x, _) => x.Diagnostics));
 
-        return variableModelsResult.Select(static (x, _) => x.Values);
+        return variableModelsResult.SelectMany(static (x, _) => x.Values);
     }
 
     private static IncrementalValueProvider<PipelineValuesResult<VariableInfo>> GetVariableInfoProvider(

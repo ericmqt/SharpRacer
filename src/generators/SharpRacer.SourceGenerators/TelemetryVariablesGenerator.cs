@@ -19,9 +19,20 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .Select(static (item, ct) => GeneratorConfiguration.FromAnalyzerConfigOptionsProvider(item));
 
         var variableModels = VariableModelsValueProvider.Get(ref context, generatorConfiguration);
+        var variableModelArray = variableModels.Collect();
 
         // Create descriptor generator models
-        var descriptorGeneratorModelProvider = GetDescriptorClassGeneratorModelProvider(context.SyntaxProvider, variableModels);
+        var descriptorGeneratorModelProvider = GetDescriptorClassGeneratorModelProvider(context.SyntaxProvider, variableModelArray);
+
+        // Create typed variable classes
+        var typedVariableClassModels = GetTypedVariableGeneratorModels(
+            generatorConfiguration,
+            descriptorGeneratorModelProvider,
+            variableModels);
+
+        // TODO: Pull references to the typename of generated variables for use in context classes
+
+        context.RegisterSourceOutput(typedVariableClassModels, GenerateTypedVariableClass);
 
         // Get variable context generator models
         var variableContextClassInfo = context.SyntaxProvider.ForClassWithAttribute(
@@ -118,13 +129,22 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .WithComparer(DescriptorClassGeneratorProvider.EqualityComparer.Default);
     }
 
-    private static void GetTypedVariableGeneratorModelProvider(
+    private static IncrementalValuesProvider<VariableClassGeneratorModel> GetTypedVariableGeneratorModels(
         IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
         IncrementalValueProvider<DescriptorClassGeneratorProvider> descriptorGeneratorProvider,
-        IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
+        IncrementalValuesProvider<VariableModel> variableModelsProvider)
     {
-        generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
+        var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
             .Select(static (x, _) => TypedVariableClassesDescriptorOptions.Create(x.Left, x.Right));
+
+        return variableModelsProvider.Combine(typedVariablesOptions)
+            .Where(static x => x.Right.IsGeneratorEnabled)
+            .Select(static (x, ct) =>
+            {
+                ct.ThrowIfCancellationRequested();
+
+                return VariableClassGeneratorModel.Create(x.Left, x.Right);
+            });
     }
 
     private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassGeneratorProvider modelProvider)
@@ -153,5 +173,19 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var generatedSourceTextStr = generatedSourceText.ToString();
 
         context.AddSource($"{generatorModel.TypeName}.g.cs", generatedSourceText);
+    }
+
+    private static void GenerateTypedVariableClass(SourceProductionContext context, VariableClassGeneratorModel model)
+    {
+        var generator = new VariableClassGenerator(model);
+
+        var compilationUnit = generator.CreateCompilationUnit(context.CancellationToken)
+            .NormalizeWhitespace(eol: "\n");
+
+        var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
+
+        var generatedSourceTextStr = generatedSourceText.ToString();
+
+        context.AddSource($"Variables/{model.TypeName}.g.cs", generatedSourceText);
     }
 }
