@@ -39,6 +39,10 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public readonly VariableInfo VariableInfo { get; }
 
+    public int VariableValueCount => VariableInfo.ValueCount;
+    public VariableValueType VariableValueType => VariableInfo.ValueType;
+    public string? VariableValueUnit => VariableInfo.ValueUnit;
+
     public override bool Equals(object obj)
     {
         return obj is VariableModel other && Equals(other);

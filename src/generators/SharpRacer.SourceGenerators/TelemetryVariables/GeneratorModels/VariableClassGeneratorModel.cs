@@ -4,10 +4,13 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class VariableClassGeneratorModel
 {
     public VariableClassGeneratorModel(
+        VariableModel variableModel,
         string typeName,
         string typeNamespace,
         DescriptorPropertyReference? descriptorPropertyReference)
     {
+        VariableModel = variableModel;
+
         TypeName = !string.IsNullOrEmpty(typeName)
             ? typeName
             : throw new ArgumentException($"'{nameof(typeName)}' cannot be null or empty.", nameof(typeName));
@@ -19,6 +22,7 @@ internal class VariableClassGeneratorModel
         DescriptorPropertyReference = descriptorPropertyReference;
     }
 
+    public VariableModel VariableModel { get; }
     public DescriptorPropertyReference? DescriptorPropertyReference { get; }
     public string TypeName { get; }
     public string TypeNamespace { get; }
@@ -28,12 +32,14 @@ internal class VariableClassGeneratorModel
         if (generatorOptions.TryGetDescriptorPropertyReference(ref variableModel, out var descriptorPropertyReference))
         {
             return new VariableClassGeneratorModel(
+                variableModel,
                 $"{variableModel.VariableName}Variable",
                 generatorOptions.TargetNamespace,
                 descriptorPropertyReference);
         }
 
         return new VariableClassGeneratorModel(
+            variableModel,
             $"{variableModel.VariableName}Variable",
             generatorOptions.TargetNamespace,
             null);

@@ -177,15 +177,14 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
     private static void GenerateTypedVariableClass(SourceProductionContext context, VariableClassGeneratorModel model)
     {
-        var generator = new VariableClassGenerator(model);
-
-        var compilationUnit = generator.CreateCompilationUnit(context.CancellationToken)
+        var compilationUnit = VariableClassGenerator.CreateTypedVariableClassCompilationUnit(model, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
 
         var generatedSourceTextStr = generatedSourceText.ToString();
 
+        // TODO: Pull the variable name from the model and append to filename like "VariableKey.g.cs" to avoid potential collisions
         context.AddSource($"Variables/{model.TypeName}.g.cs", generatedSourceText);
     }
 }

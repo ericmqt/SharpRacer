@@ -79,24 +79,12 @@ internal class DescriptorClassGenerator
             .WithModifiers(accessibility, isStatic: true)
             .WithGetOnlyAutoAccessor();
 
-        // Initializer
-        var variableNameArgument = Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(descriptorPropertyModel.VariableName)));
-        var valueTypeArgument = Argument(DataVariableValueTypeSyntaxFactory.EnumMemberAccessExpression(descriptorPropertyModel.VariableValueType));
-        var valueCountArgument = Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(descriptorPropertyModel.VariableValueCount)));
+        var objectCreationExpr = DataVariableDescriptorSyntaxFactory.CreateNewInstanceExpression(
+            descriptorPropertyModel.VariableName,
+            descriptorPropertyModel.VariableValueType,
+            descriptorPropertyModel.VariableValueCount);
 
-        var argumentList = ArgumentList(
-            SeparatedList(
-                new ArgumentSyntax[]
-                {
-                    variableNameArgument,
-                    valueTypeArgument,
-                    valueCountArgument
-                }));
-
-        return decl.WithInitializer(
-            EqualsValueClause(
-                ObjectCreationExpression(SharpRacerTypes.DataVariableDescriptor())
-                    .WithArgumentList(argumentList)))
+        return decl.WithInitializer(EqualsValueClause(objectCreationExpr))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
     }
 }
