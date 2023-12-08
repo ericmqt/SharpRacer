@@ -16,7 +16,7 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
         VariableInfo = variableInfo;
 
-        VariableName = !string.IsNullOrEmpty(variableName)
+        Name = !string.IsNullOrEmpty(variableName)
             ? variableName
             : throw new ArgumentException($"'{nameof(variableName)}' cannot be null or empty.", nameof(variableName));
 
@@ -35,10 +35,10 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public bool IsArray => VariableInfo.ValueCount > 1;
 
-    public readonly string VariableName { get; }
+    public readonly string Name { get; }
 
     public readonly VariableInfo VariableInfo { get; }
-
+    public string VariableName => VariableInfo.Name;
     public int VariableValueCount => VariableInfo.ValueCount;
     public VariableValueType VariableValueType => VariableInfo.ValueType;
     public string? VariableValueUnit => VariableInfo.ValueUnit;
@@ -50,7 +50,7 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public bool Equals(VariableModel other)
     {
-        return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
+        return StringComparer.Ordinal.Equals(Name, other.Name) &&
             StringComparer.Ordinal.Equals(ContextPropertyName, other.ContextPropertyName) &&
             StringComparer.Ordinal.Equals(DescriptorName, other.DescriptorName) &&
             VariableInfo == other.VariableInfo;
@@ -62,7 +62,7 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
         hc.Add(ContextPropertyName, StringComparer.Ordinal);
         hc.Add(DescriptorName, StringComparer.Ordinal);
-        hc.Add(VariableName, StringComparer.Ordinal);
+        hc.Add(Name, StringComparer.Ordinal);
         hc.Add(VariableInfo);
 
         return hc.ToHashCode();

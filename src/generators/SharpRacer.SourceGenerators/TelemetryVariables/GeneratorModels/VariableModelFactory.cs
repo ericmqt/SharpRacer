@@ -151,7 +151,7 @@ internal static class VariableModelFactory
         IEnumerable<VariableModel> modelCollection,
         out Diagnostic? diagnostic)
     {
-        var duplicate = modelCollection.FirstOrDefault(x => x.VariableName.Equals(variableName, StringComparison.Ordinal));
+        var duplicate = modelCollection.FirstOrDefault(x => x.Name.Equals(variableName, StringComparison.Ordinal));
 
         if (duplicate == default)
         {

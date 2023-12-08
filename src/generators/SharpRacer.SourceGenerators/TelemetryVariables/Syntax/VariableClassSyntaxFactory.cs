@@ -30,7 +30,7 @@ internal static class VariableClassSyntaxFactory
         return ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, baseCtorArgList);
     }
 
-    public static ConstructorDeclarationSyntax ConstructorFromDescriptor(TypedVariableClassModelBase model)
+    public static ConstructorDeclarationSyntax ConstructorFromDescriptor(TypedVariableClassGeneratorModel model)
     {
         var baseCtorInitializer = BaseConstructorInitializerFromDescriptor(
             model.DescriptorFieldIdentifierName(),
@@ -42,7 +42,7 @@ internal static class VariableClassSyntaxFactory
             .WithBody(Block());
     }
 
-    public static ConstructorDeclarationSyntax ConstructorFromDescriptorWithDataVariableInfoParameter(TypedVariableClassModelBase model)
+    public static ConstructorDeclarationSyntax ConstructorFromDescriptorWithDataVariableInfoParameter(TypedVariableClassGeneratorModel model)
     {
         var dataVariableParameter = Parameter(Identifier("dataVariableInfo"))
             .WithType(NullableType(SharpRacerTypes.DataVariableInfo()));
@@ -56,16 +56,6 @@ internal static class VariableClassSyntaxFactory
             .WithParameterList(ParameterList(SingletonSeparatedList(dataVariableParameter)))
             .WithInitializer(baseCtorInitializer)
             .WithBody(Block());
-    }
-
-    public static FieldDeclarationSyntax DescriptorStaticField(TypedArrayVariableClassModel model)
-    {
-        return DescriptorStaticField(model.DescriptorFieldIdentifier(), model.VariableName, model.VariableValueType, model.ArrayLength);
-    }
-
-    public static FieldDeclarationSyntax DescriptorStaticField(TypedScalarVariableClassModel model)
-    {
-        return DescriptorStaticField(model.DescriptorFieldIdentifier(), model.VariableName, model.VariableValueType, variableValueCount: 1);
     }
 
     public static FieldDeclarationSyntax DescriptorStaticField(SyntaxToken identifier, string variableName, VariableValueType variableValueType, int variableValueCount)

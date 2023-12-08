@@ -129,13 +129,13 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .WithComparer(DescriptorClassGeneratorProvider.EqualityComparer.Default);
     }
 
-    private static IncrementalValuesProvider<VariableClassGeneratorModel> GetTypedVariableGeneratorModels(
+    private static IncrementalValuesProvider<TypedVariableClassGeneratorModel> GetTypedVariableGeneratorModels(
         IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
         IncrementalValueProvider<DescriptorClassGeneratorProvider> descriptorGeneratorProvider,
         IncrementalValuesProvider<VariableModel> variableModelsProvider)
     {
         var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
-            .Select(static (x, _) => TypedVariableClassesDescriptorOptions.Create(x.Left, x.Right));
+            .Select(static (x, _) => TypedVariableClassesGeneratorOptions.Create(x.Left, x.Right));
 
         return variableModelsProvider.Combine(typedVariablesOptions)
             .Where(static x => x.Right.IsGeneratorEnabled)
@@ -143,7 +143,24 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             {
                 ct.ThrowIfCancellationRequested();
 
-                return VariableClassGeneratorModel.Create(x.Left, x.Right);
+                if (x.Right.TryGetDescriptorPropertyReference(ref x.Left, out var descriptorPropertyReference))
+                {
+                    return new TypedVariableClassGeneratorModel(
+                        $"{x.Left.Name}Variable",
+                        x.Right.TargetNamespace,
+                        x.Left,
+                        descriptorPropertyReference,
+                        isClassInternal: false,
+                        isClassPartial: true);
+                }
+
+                return new TypedVariableClassGeneratorModel(
+                    $"{x.Left.Name}Variable",
+                    x.Right.TargetNamespace,
+                    x.Left,
+                    null,
+                    isClassInternal: false,
+                    isClassPartial: true);
             });
     }
 
@@ -175,9 +192,9 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         context.AddSource($"{generatorModel.TypeName}.g.cs", generatedSourceText);
     }
 
-    private static void GenerateTypedVariableClass(SourceProductionContext context, VariableClassGeneratorModel model)
+    private static void GenerateTypedVariableClass(SourceProductionContext context, TypedVariableClassGeneratorModel model)
     {
-        var compilationUnit = VariableClassGenerator.CreateTypedVariableClassCompilationUnit(model, context.CancellationToken)
+        var compilationUnit = TypedVariableClassGenerator.Create(model, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
@@ -185,6 +202,6 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var generatedSourceTextStr = generatedSourceText.ToString();
 
         // TODO: Pull the variable name from the model and append to filename like "VariableKey.g.cs" to avoid potential collisions
-        context.AddSource($"Variables/{model.TypeName}.g.cs", generatedSourceText);
+        context.AddSource($"Variables/{model.ClassName}.g.cs", generatedSourceText);
     }
 }

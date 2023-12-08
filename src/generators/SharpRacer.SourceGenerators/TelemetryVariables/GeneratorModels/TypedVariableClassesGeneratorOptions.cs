@@ -1,18 +1,18 @@
 ﻿using System.Collections.Immutable;
-using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 
-namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
-internal readonly struct TypedVariableClassesDescriptorOptions : IEquatable<TypedVariableClassesDescriptorOptions>
+namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<TypedVariableClassesGeneratorOptions>
 {
-    public TypedVariableClassesDescriptorOptions()
+    public TypedVariableClassesGeneratorOptions()
     {
         IsGeneratorEnabled = false;
         TargetNamespace = "SharpRacer.Telemetry.Variables.Generated";
         DescriptorPropertyReferences = ImmutableArray<DescriptorPropertyReference>.Empty;
     }
 
-    public TypedVariableClassesDescriptorOptions(
+    public TypedVariableClassesGeneratorOptions(
         bool isGeneratorEnabled,
         string targetNamespace,
         ImmutableArray<DescriptorPropertyReference> descriptorPropertyReferences)
@@ -29,9 +29,9 @@ internal readonly struct TypedVariableClassesDescriptorOptions : IEquatable<Type
     public readonly bool IsGeneratorEnabled { get; }
     public readonly string TargetNamespace { get; }
 
-    public static TypedVariableClassesDescriptorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorClassGeneratorProvider descriptorGeneratorProvider)
+    public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorClassGeneratorProvider descriptorGeneratorProvider)
     {
-        return new TypedVariableClassesDescriptorOptions(
+        return new TypedVariableClassesGeneratorOptions(
             generatorConfiguration.GenerateTypedVariableClasses,
             generatorConfiguration.TelemetryVariableClassesNamespace,
             descriptorGeneratorProvider.DescriptorPropertyReferences);
@@ -53,10 +53,10 @@ internal readonly struct TypedVariableClassesDescriptorOptions : IEquatable<Type
 
     public override bool Equals(object obj)
     {
-        return obj is TypedVariableClassesDescriptorOptions other && Equals(other);
+        return obj is TypedVariableClassesGeneratorOptions other && Equals(other);
     }
 
-    public bool Equals(TypedVariableClassesDescriptorOptions other)
+    public bool Equals(TypedVariableClassesGeneratorOptions other)
     {
         return IsGeneratorEnabled == other.IsGeneratorEnabled &&
             StringComparer.Ordinal.Equals(TargetNamespace, other.TargetNamespace) &&
