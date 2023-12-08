@@ -44,12 +44,16 @@ internal static class VariableClassSyntaxFactory
 
     public static ConstructorDeclarationSyntax ConstructorFromDescriptorWithDataVariableInfoParameter(TypedVariableClassModelBase model)
     {
+        var dataVariableParameter = Parameter(Identifier("dataVariableInfo"))
+            .WithType(NullableType(SharpRacerTypes.DataVariableInfo()));
+
         var baseCtorInitializer = BaseConstructorInitializerFromDescriptor(
             model.DescriptorFieldIdentifierName(),
             IdentifierName("dataVariableInfo"));
 
         return ConstructorDeclaration(model.ClassIdentifier())
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+            .WithParameterList(ParameterList(SingletonSeparatedList(dataVariableParameter)))
             .WithInitializer(baseCtorInitializer)
             .WithBody(Block());
     }
