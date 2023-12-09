@@ -5,12 +5,14 @@ namespace SharpRacer.SourceGenerators;
 internal readonly struct PipelineValuesResult<TResult> : IEquatable<PipelineValuesResult<TResult>>
     where TResult : struct, IEquatable<TResult>
 {
+    private readonly bool _isInitialized;
+
     public PipelineValuesResult()
     {
         Values = ImmutableArray<TResult>.Empty;
         Diagnostics = ImmutableArray<Diagnostic>.Empty;
 
-        IsDefault = true;
+        _isInitialized = true;
     }
 
     public PipelineValuesResult(ImmutableArray<TResult> values, ImmutableArray<Diagnostic> diagnostics)
@@ -18,6 +20,8 @@ internal readonly struct PipelineValuesResult<TResult> : IEquatable<PipelineValu
         Values = values;
         Diagnostics = diagnostics;
         HasErrors = Diagnostics.HasErrors();
+
+        _isInitialized = true;
     }
 
     public PipelineValuesResult(ImmutableArray<TResult> values)
@@ -40,8 +44,10 @@ internal readonly struct PipelineValuesResult<TResult> : IEquatable<PipelineValu
 
     public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
     public readonly bool HasErrors { get; }
-    public readonly bool IsDefault { get; }
+    public bool IsDefault => !_isInitialized;
     public readonly ImmutableArray<TResult> Values { get; }
+
+    public static PipelineValuesResult<TResult> Empty { get; } = new PipelineValuesResult<TResult>();
 
     public override bool Equals(object obj)
     {
@@ -50,8 +56,12 @@ internal readonly struct PipelineValuesResult<TResult> : IEquatable<PipelineValu
 
     public bool Equals(PipelineValuesResult<TResult> other)
     {
-        return IsDefault == other.IsDefault &&
-            HasErrors == other.HasErrors &&
+        if (!_isInitialized)
+        {
+            return other._isInitialized;
+        }
+
+        return HasErrors == other.HasErrors &&
             Values.SequenceEqual(other.Values) &&
             Diagnostics.SequenceEqual(other.Diagnostics);
     }

@@ -35,7 +35,7 @@ internal static class VariableModelsValueProvider
 
         context.ReportDiagnostics(variableModelsResult.Select(static (x, _) => x.Diagnostics));
 
-        return variableModelsResult.SelectMany(static (x, _) => x.Values);
+        return variableModelsResult.SelectMany(static (x, _) => x.Values).WithTrackingName("VariableModelsValueProvider_Get");
     }
 
     private static IncrementalValueProvider<PipelineValuesResult<VariableInfo>> GetVariableInfoProvider(
@@ -49,9 +49,9 @@ internal static class VariableModelsValueProvider
 
         return variableInfoFile.Select(static (input, ct) =>
         {
-            if (input.IsDefault || input.HasErrors)
+            if (input.IsDefaultOrEmpty || input.HasErrors)
             {
-                return default;
+                return new PipelineValuesResult<VariableInfo>();
             }
 
             var jsonVariables = input.Value.Read(ct, out var readDiagnostic);
@@ -80,7 +80,7 @@ internal static class VariableModelsValueProvider
             }
 
             return new PipelineValuesResult<VariableInfo>(factory.Build(), diagnosticBuilder.ToImmutable());
-        });
+        }).WithTrackingName("GetVariableInfoProvider");
     }
 
     private static IncrementalValueProvider<PipelineValuesResult<VariableOptions>> GetVariableOptionsProvider(
@@ -95,7 +95,7 @@ internal static class VariableModelsValueProvider
         return variableOptionsFile.Select(static (input, ct) =>
         {
             // Options file is optional, we can skip this
-            if (input.IsDefault || input.HasErrors)
+            if (input.IsDefaultOrEmpty || input.HasErrors)
             {
                 return new PipelineValuesResult<VariableOptions>();
             }

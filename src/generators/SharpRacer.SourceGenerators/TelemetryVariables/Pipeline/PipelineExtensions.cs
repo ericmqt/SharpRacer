@@ -27,7 +27,7 @@ internal static class PipelineExtensions
                 }
 
                 return new PipelineValueResult<VariableInfoFile>(result);
-            });
+            }).WithTrackingName("GetVariableInfoFile");
     }
 
     public static IncrementalValueProvider<PipelineValueResult<VariableOptionsFile>> GetVariableOptionsFile(
@@ -45,14 +45,17 @@ internal static class PipelineExtensions
         return variableOptionsFileName.Combine(variableOptionsTexts)
             .Select(static (x, ct) =>
             {
-                var result = InputFileFactory.VariableOptionsFile(x.Left, x.Right, ct, out var diagnostic);
-
-                if (diagnostic != null)
+                if (!InputFileFactory.TryFindVariableOptionsFile(x.Left, x.Right, ct, out var file, out var diagnostic))
                 {
-                    return new PipelineValueResult<VariableOptionsFile>(diagnostic);
+                    if (diagnostic != null)
+                    {
+                        return new PipelineValueResult<VariableOptionsFile>(diagnostic);
+                    }
+
+                    return new PipelineValueResult<VariableOptionsFile>();
                 }
 
-                return new PipelineValueResult<VariableOptionsFile>(result);
+                return new PipelineValueResult<VariableOptionsFile>(file);
             });
     }
 }

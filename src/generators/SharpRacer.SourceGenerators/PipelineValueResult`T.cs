@@ -5,11 +5,14 @@ namespace SharpRacer.SourceGenerators;
 internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValueResult<TResult>>
     where TResult : struct, IEquatable<TResult>
 {
+    private readonly bool _isInitialized;
+
     public PipelineValueResult()
     {
-        Value = default;
+        Value = new TResult();
         Diagnostics = ImmutableArray<Diagnostic>.Empty;
-        IsDefault = true;
+
+        _isInitialized = true;
     }
 
     public PipelineValueResult(TResult value, ImmutableArray<Diagnostic> diagnostics)
@@ -17,6 +20,8 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
         Value = value;
         Diagnostics = diagnostics;
         HasErrors = Diagnostics.HasErrors();
+
+        _isInitialized = true;
     }
 
     public PipelineValueResult(TResult value)
@@ -32,21 +37,25 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
     }
 
     public PipelineValueResult(ImmutableArray<Diagnostic> diagnostics)
-        : this(default, diagnostics)
+        : this(new TResult(), diagnostics)
     {
 
     }
 
     public PipelineValueResult(Diagnostic diagnostic)
-        : this(default, ImmutableArray.Create(diagnostic))
+        : this(new TResult(), ImmutableArray.Create(diagnostic))
     {
 
     }
 
     public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
     public readonly bool HasErrors { get; }
-    public readonly bool IsDefault { get; }
+    public bool IsDefault => !_isInitialized;
+    public bool IsEmpty => this == Empty;
+    public bool IsDefaultOrEmpty => IsDefault || IsEmpty;
     public readonly TResult Value { get; }
+
+    public static PipelineValueResult<TResult> Empty { get; } = new PipelineValueResult<TResult>();
 
     public override bool Equals(object obj)
     {
@@ -55,8 +64,12 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
 
     public bool Equals(PipelineValueResult<TResult> other)
     {
-        return IsDefault == other.IsDefault &&
-            HasErrors == other.HasErrors &&
+        if (!_isInitialized)
+        {
+            return other._isInitialized;
+        }
+
+        return HasErrors == other.HasErrors &&
             Value.Equals(other.Value) &&
             Diagnostics.SequenceEqual(other.Diagnostics);
     }

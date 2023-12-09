@@ -123,28 +123,34 @@ internal static class InputFileFactory
         return new VariableOptionsFile(fileName, additionalText, sourceText);
     }
 
-    public static VariableOptionsFile VariableOptionsFile(
+    public static bool TryFindVariableOptionsFile(
         VariableOptionsFileName fileName,
         ImmutableArray<AdditionalText> additionalTexts,
         CancellationToken cancellationToken,
+        out VariableOptionsFile variableOptionsFile,
         out Diagnostic? diagnostic)
     {
         cancellationToken.ThrowIfCancellationRequested();
+
+        variableOptionsFile = default;
 
         if (!additionalTexts.Any())
         {
             // Options file not required, so if we don't find one that's OK
             diagnostic = null;
-            return default;
+
+            return false;
         }
 
         if (additionalTexts.Length > 1)
         {
             diagnostic = VariableOptionsDiagnostics.AmbiguousFileName(fileName);
 
-            return default;
+            return false;
         }
 
-        return VariableOptionsFile(fileName, additionalTexts.Single(), cancellationToken, out diagnostic);
+        variableOptionsFile = VariableOptionsFile(fileName, additionalTexts.Single(), cancellationToken, out diagnostic);
+
+        return variableOptionsFile != default;
     }
 }

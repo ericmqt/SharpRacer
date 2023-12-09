@@ -44,7 +44,7 @@ internal readonly struct VariableOptionsFileName : IEquatable<VariableOptionsFil
 
     public bool Equals(VariableOptionsFileName other)
     {
-        return _fileName.Equals(other._fileName, StringComparison.Ordinal);
+        return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()

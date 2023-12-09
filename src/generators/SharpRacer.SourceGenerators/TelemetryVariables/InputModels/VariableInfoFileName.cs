@@ -57,7 +57,7 @@ internal readonly struct VariableInfoFileName : IEquatable<VariableInfoFileName>
 
     public bool Equals(VariableInfoFileName other)
     {
-        return _fileName.Equals(other._fileName, StringComparison.Ordinal);
+        return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()
