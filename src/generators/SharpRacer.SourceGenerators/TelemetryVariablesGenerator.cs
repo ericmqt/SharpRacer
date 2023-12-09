@@ -161,7 +161,8 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
                     null,
                     isClassInternal: false,
                     isClassPartial: true);
-            });
+            })
+            .WithComparer(TypedVariableClassGeneratorModel.EqualityComparer.Default);
     }
 
     private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassGeneratorProvider modelProvider)

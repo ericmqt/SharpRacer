@@ -107,4 +107,61 @@ internal class TypedVariableClassGeneratorModel
     {
         return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit);
     }
+
+    internal class EqualityComparer : IEqualityComparer<TypedVariableClassGeneratorModel?>
+    {
+        private EqualityComparer() { }
+
+        public static IEqualityComparer<TypedVariableClassGeneratorModel?> Default { get; } = new EqualityComparer();
+
+        public bool Equals(TypedVariableClassGeneratorModel? x, TypedVariableClassGeneratorModel? y)
+        {
+            if (ReferenceEquals(x, y))
+            {
+                return true;
+            }
+
+            if (x is null || y is null)
+            {
+                return false;
+            }
+
+            return StringComparer.Ordinal.Equals(x.VariableName, y.VariableName) &&
+                StringComparer.Ordinal.Equals(x.ClassName, y.ClassName) &&
+                StringComparer.Ordinal.Equals(x.ClassNamespace, y.ClassNamespace) &&
+                x.AddCreateDataVariableInterfaceBaseType == y.AddCreateDataVariableInterfaceBaseType &&
+                x.DescriptorPropertyReference == y.DescriptorPropertyReference &&
+                x.ImplementCreateDataVariableInterface == y.ImplementCreateDataVariableInterface &&
+                x.IsClassInternal == y.IsClassInternal &&
+                x.IsClassPartial == y.IsClassPartial &&
+                x.VariableValueCount == y.VariableValueCount &&
+                x.VariableValueType == y.VariableValueType &&
+                StringComparer.Ordinal.Equals(x._variableValueUnit, y._variableValueUnit);
+        }
+
+        public int GetHashCode(TypedVariableClassGeneratorModel? obj)
+        {
+            var hc = new HashCode();
+
+            if (obj is null)
+            {
+                return hc.ToHashCode();
+            }
+
+            hc.Add(obj.AddCreateDataVariableInterfaceBaseType);
+            hc.Add(obj.ClassName, StringComparer.Ordinal);
+            hc.Add(obj.ClassNamespace, StringComparer.Ordinal);
+            hc.Add(obj.DescriptorPropertyReference);
+            hc.Add(obj.ImplementCreateDataVariableInterface);
+            hc.Add(obj.IsClassInternal);
+            hc.Add(obj.IsClassPartial);
+            hc.Add(obj.VariableName, StringComparer.Ordinal);
+            hc.Add(obj.VariableValueCount);
+            hc.Add(obj.VariableValueType);
+            hc.Add(obj._variableValueUnit, StringComparer.Ordinal);
+
+            return hc.ToHashCode();
+        }
+    }
+
 }
