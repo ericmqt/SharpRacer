@@ -7,7 +7,7 @@ internal static class VariableInfoDiagnostics
 
     private static readonly DiagnosticDescriptor _FileNotFound
         = new(
-            "SR2100",
+            DiagnosticIds.VariableInfo_FileNotFound,
             "Telemetry variables file not found",
             "Telemetry variables file was not found: '{0}'",
             _Category,
@@ -16,7 +16,7 @@ internal static class VariableInfoDiagnostics
 
     private static readonly DiagnosticDescriptor _AmbiguousFileName
         = new(
-            "SR2101",
+            DiagnosticIds.VariableInfo_AmbiguousFileName,
             "More than one telemetry variables file found matching the expected file name",
             "Telemetry variables filename '{0}' matches multiple files",
             _Category,
@@ -25,7 +25,7 @@ internal static class VariableInfoDiagnostics
 
     private static readonly DiagnosticDescriptor _FileContentReadFailure
         = new(
-            "SR2102",
+            DiagnosticIds.VariableInfo_FileContentReadFailure,
             "Error reading telemetry variables file", "Error reading telemetry variables file '{0}'",
             _Category,
             DiagnosticSeverity.Error,
@@ -33,7 +33,7 @@ internal static class VariableInfoDiagnostics
 
     private static readonly DiagnosticDescriptor _FileReadException
         = new(
-            "SR2103",
+            DiagnosticIds.VariableInfo_FileReadException,
             "Exception thrown while parsing telemetry variables file",
             "'{0}' thrown while parsing telemetry variables file '{1}': {2}",
             _Category,
@@ -42,7 +42,7 @@ internal static class VariableInfoDiagnostics
 
     private static readonly DiagnosticDescriptor _NoVariablesDefinedInFile
         = new(
-            "SR2104",
+            DiagnosticIds.VariableInfo_NoVariablesDefinedInFile,
             "No variables defined in telemetry variables file",
             "Telemetry variables file does not define any variables: '{0}'",
             _Category,
@@ -51,7 +51,7 @@ internal static class VariableInfoDiagnostics
 
     private static readonly DiagnosticDescriptor _VariableAlreadyDefined
         = new(
-            "SR2105",
+            DiagnosticIds.VariableInfo_VariableAlreadyDefined,
             "Telemetry variable is already defined",
             "Telemetry variable '{0}' is already defined",
             _Category,
