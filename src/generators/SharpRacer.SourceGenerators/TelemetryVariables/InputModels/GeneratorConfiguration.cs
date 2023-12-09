@@ -13,7 +13,7 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
         VariableInfoFileName = variableInfoFileName;
         VariableOptionsFileName = variableOptionsFileName;
 
-        TelemetryVariableClassesNamespace = telemetryVariableClassesNamespace ?? "SharpRacer.Telemetry.Variables.Generated";
+        TelemetryVariableClassesNamespace = telemetryVariableClassesNamespace ?? GeneratorConfigurationDefaults.TelemetryVariableClassesNamespace;
     }
 
     public bool GenerateTypedVariableClasses { get; }
@@ -27,7 +27,7 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
             BuildPropertyKeys.GenerateVariableClassesProperty,
             out var generateTypedVariableClasses))
         {
-            generateTypedVariableClasses = true;
+            generateTypedVariableClasses = GeneratorConfigurationDefaults.GenerateTypedVariableClasses;
         }
 
         var telemetryVariableClassesNamespace = GetTelemetryVariableClassesNamespace(analyzerOptionsProvider);
@@ -59,7 +59,7 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
             return rootNamespace;
         }
 
-        return "SharpRacer.Telemetry.Variables.Generated";
+        return GeneratorConfigurationDefaults.TelemetryVariableClassesNamespace;
     }
 
     public override bool Equals(object? obj)
@@ -69,13 +69,22 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
 
     public bool Equals(GeneratorConfiguration other)
     {
-        return VariableInfoFileName == other.VariableInfoFileName &&
-               VariableOptionsFileName == other.VariableOptionsFileName;
+        return GenerateTypedVariableClasses == other.GenerateTypedVariableClasses &&
+            StringComparer.Ordinal.Equals(TelemetryVariableClassesNamespace, other.TelemetryVariableClassesNamespace) &&
+            VariableInfoFileName == other.VariableInfoFileName &&
+            VariableOptionsFileName == other.VariableOptionsFileName;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(VariableInfoFileName, VariableOptionsFileName);
+        var hc = new HashCode();
+
+        hc.Add(GenerateTypedVariableClasses);
+        hc.Add(TelemetryVariableClassesNamespace);
+        hc.Add(VariableInfoFileName);
+        hc.Add(VariableOptionsFileName);
+
+        return hc.ToHashCode();
     }
 
     public static bool operator ==(GeneratorConfiguration left, GeneratorConfiguration right)
