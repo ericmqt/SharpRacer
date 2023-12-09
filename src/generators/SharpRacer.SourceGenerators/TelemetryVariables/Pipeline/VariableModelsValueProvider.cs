@@ -43,7 +43,7 @@ internal static class VariableModelsValueProvider
         IncrementalValueProvider<GeneratorConfiguration> generatorConfiguration)
     {
         // Variable info
-        var variableInfoFile = context.AdditionalTextsProvider.GetVariableInfoFile(generatorConfiguration);
+        var variableInfoFile = VariableInfoFileProvider.GetValueProvider(context.AdditionalTextsProvider, generatorConfiguration);
 
         context.ReportDiagnostics(variableInfoFile.Select(static (x, _) => x.Diagnostics));
 
@@ -87,7 +87,7 @@ internal static class VariableModelsValueProvider
         ref IncrementalGeneratorInitializationContext context,
         IncrementalValueProvider<GeneratorConfiguration> generatorConfiguration)
     {
-        var variableOptionsFile = context.AdditionalTextsProvider.GetVariableOptionsFile(generatorConfiguration);
+        var variableOptionsFile = VariableOptionsFileProvider.GetValueProvider(context.AdditionalTextsProvider, generatorConfiguration);
 
         context.ReportDiagnostics(variableOptionsFile.Select(static (x, _) => x.Diagnostics));
 
