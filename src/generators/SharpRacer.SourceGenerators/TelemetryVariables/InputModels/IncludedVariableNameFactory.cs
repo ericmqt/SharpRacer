@@ -15,65 +15,24 @@ internal class IncludedVariableNameFactory
         _builder = ImmutableArray.CreateBuilder<IncludedVariableName>();
     }
 
-    public static ImmutableArray<IncludedVariableName> Create(IncludedVariablesFile file, CancellationToken cancellationToken, out ImmutableArray<Diagnostic> diagnostics)
+    public void Add(IncludedVariableNameValue value)
     {
-        diagnostics = ImmutableArray<Diagnostic>.Empty;
-
-        if (file == default)
+        if (value == default)
         {
-            return ImmutableArray<IncludedVariableName>.Empty;
+            return;
         }
 
-        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+        var include = new IncludedVariableName(
+            value.Value,
+            _file.SourceLocationFactory.GetLocation(value.ValueSpan),
+            GetDiagnostics(value));
 
-        var includedVariableNameValues = file.ReadJson(cancellationToken, out var readJsonDiagnostic);
-
-        if (readJsonDiagnostic != null)
-        {
-            diagnostics = ImmutableArray.Create(readJsonDiagnostic);
-
-            return ImmutableArray<IncludedVariableName>.Empty;
-        }
-
-        var factory = new IncludedVariableNameFactory(file);
-
-        foreach (var value in includedVariableNameValues)
-        {
-            factory.TryAdd(value, out var valueDiagnostics);
-
-            diagnosticsBuilder.AddRange(valueDiagnostics);
-        }
-
-        diagnostics = diagnosticsBuilder.ToImmutable();
-
-        return factory.Build();
+        _builder.Add(include);
     }
 
     public ImmutableArray<IncludedVariableName> Build()
     {
         return _builder.ToImmutable();
-    }
-
-    public bool TryAdd(IncludedVariableNameValue value, out ImmutableArray<Diagnostic> diagnostics)
-    {
-        if (value == default)
-        {
-            diagnostics = ImmutableArray<Diagnostic>.Empty;
-            return false;
-        }
-
-        diagnostics = GetDiagnostics(value);
-
-        if (diagnostics.HasErrors())
-        {
-            return false;
-        }
-
-        var include = new IncludedVariableName(value.Value, _file.SourceLocationFactory.GetLocation(value.ValueSpan));
-
-        _builder.Add(include);
-
-        return true;
     }
 
     private ImmutableArray<Diagnostic> GetDiagnostics(IncludedVariableNameValue value)

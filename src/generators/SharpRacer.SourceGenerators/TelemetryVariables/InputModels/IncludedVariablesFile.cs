@@ -8,12 +8,16 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFile>
 {
+    private readonly bool _isInitialized;
+
     public IncludedVariablesFile(IncludedVariablesFileName fileName, AdditionalText file, SourceText sourceText)
     {
         FileName = fileName;
         File = file ?? throw new ArgumentNullException(nameof(file));
         SourceText = sourceText ?? throw new ArgumentNullException(nameof(sourceText));
         SourceLocationFactory = new JsonLocationFactory(File.Path, SourceText);
+
+        _isInitialized = true;
     }
 
     public readonly AdditionalText File { get; }
@@ -24,6 +28,12 @@ internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFil
     public ImmutableArray<IncludedVariableNameValue> ReadJson(CancellationToken cancellationToken, out Diagnostic? diagnostic)
     {
         cancellationToken.ThrowIfCancellationRequested();
+
+        if (!_isInitialized)
+        {
+            diagnostic = null;
+            return ImmutableArray<IncludedVariableNameValue>.Empty;
+        }
 
         var json = SourceText.ToString();
 
@@ -60,6 +70,11 @@ internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFil
 
     public bool Equals(IncludedVariablesFile other)
     {
+        if (!_isInitialized)
+        {
+            return !other._isInitialized;
+        }
+
         // SourceText can be omitted because it is owned by AdditionalText
         return FileName == other.FileName &&
             File == other.File;
@@ -67,6 +82,11 @@ internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFil
 
     public override int GetHashCode()
     {
+        if (!_isInitialized)
+        {
+            return 0;
+        }
+
         return HashCode.Combine(FileName, File);
     }
 

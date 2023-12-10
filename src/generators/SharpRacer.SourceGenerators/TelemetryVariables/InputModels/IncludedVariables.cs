@@ -3,24 +3,20 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct IncludedVariables : IEquatable<IncludedVariables>
 {
-    public IncludedVariables()
-    {
-        FileName = default;
-        VariableNames = ImmutableArray<IncludedVariableName>.Empty;
-    }
+    private readonly bool _isInitialized;
 
-    public IncludedVariables(IncludedVariablesFileName fileName, ImmutableArray<IncludedVariableName> variableNames)
+    public IncludedVariables(ImmutableArray<IncludedVariableName> variableNames)
     {
-        FileName = fileName;
         VariableNames = !variableNames.IsDefault ? variableNames : ImmutableArray<IncludedVariableName>.Empty;
+
+        _isInitialized = true;
     }
 
-    public readonly IncludedVariablesFileName FileName { get; } = default;
     public readonly ImmutableArray<IncludedVariableName> VariableNames { get; }
 
     public bool IncludeAll()
     {
-        return this == default || VariableNames.Length == 0;
+        return !_isInitialized;
     }
 
     public override bool Equals(object obj)
@@ -30,14 +26,27 @@ internal readonly struct IncludedVariables : IEquatable<IncludedVariables>
 
     public bool Equals(IncludedVariables other)
     {
-        return FileName == other.FileName && VariableNames.SequenceEqual(other.VariableNames);
+        if (!_isInitialized)
+        {
+            return !other._isInitialized;
+        }
+
+        if (!other._isInitialized)
+        {
+            return false;
+        }
+
+        return VariableNames.SequenceEqual(other.VariableNames);
     }
 
     public override int GetHashCode()
     {
         var hc = new HashCode();
 
-        hc.Add(FileName);
+        if (!_isInitialized)
+        {
+            return hc.ToHashCode();
+        }
 
         for (int i = 0; i < VariableNames.Length; i++)
         {

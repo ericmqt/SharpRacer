@@ -1,18 +1,32 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>, IEquatable<string?>
 {
+    private readonly bool _isInitialized;
+
     public IncludedVariableName(string variableName, Location sourceLocation)
+        : this(variableName, sourceLocation, ImmutableArray<Diagnostic>.Empty)
+    {
+
+    }
+
+    public IncludedVariableName(string variableName, Location sourceLocation, ImmutableArray<Diagnostic> diagnostics)
     {
         Value = !string.IsNullOrEmpty(variableName)
             ? variableName
             : throw new ArgumentException($"'{nameof(variableName)}' cannot be null or empty.", nameof(variableName));
 
         SourceLocation = sourceLocation ?? throw new ArgumentNullException(nameof(sourceLocation));
+
+        Diagnostics = !diagnostics.IsDefault ? diagnostics : ImmutableArray<Diagnostic>.Empty;
+
+        _isInitialized = true;
     }
 
-    public Location SourceLocation { get; }
+    public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
+    public readonly Location SourceLocation { get; }
     public readonly string Value { get; }
 
     public override bool Equals(object obj)
@@ -22,7 +36,19 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 
     public bool Equals(IncludedVariableName other)
     {
-        return StringComparer.Ordinal.Equals(Value, other.Value) && SourceLocation == other.SourceLocation;
+        if (!_isInitialized)
+        {
+            return !other._isInitialized;
+        }
+
+        if (!other._isInitialized)
+        {
+            return false;
+        }
+
+        return StringComparer.Ordinal.Equals(Value, other.Value) &&
+            SourceLocation == other.SourceLocation &&
+            Diagnostics.SequenceEqual(other.Diagnostics);
     }
 
     public bool Equals(string? other)
@@ -36,6 +62,7 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 
         hc.Add(Value, StringComparer.Ordinal);
         hc.Add(SourceLocation);
+        hc.AddDiagnosticArray(Diagnostics);
 
         return hc.ToHashCode();
     }

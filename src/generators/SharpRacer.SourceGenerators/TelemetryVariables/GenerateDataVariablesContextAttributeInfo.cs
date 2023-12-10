@@ -10,28 +10,32 @@ internal static class GenerateDataVariablesContextAttributeInfo
 
     internal static IncludedVariablesFileName GetIncludedVariablesFileNameOrDefault(AttributeData attributeData)
     {
-        if (attributeData is null)
-        {
-            throw new ArgumentNullException(nameof(attributeData));
-        }
-
         var fileNameArg = FindIncludedVariableNamesFileArgumentValue(attributeData);
 
-        if (fileNameArg is null)
+        if (string.IsNullOrWhiteSpace(fileNameArg))
         {
             return default;
         }
 
-        return new IncludedVariablesFileName(fileNameArg);
+        return new IncludedVariablesFileName(fileNameArg!);
+    }
+
+    internal static bool TryGetIncludedVariablesFileName(AttributeData attributeData, out IncludedVariablesFileName fileName)
+    {
+        var fileNameArg = FindIncludedVariableNamesFileArgumentValue(attributeData);
+
+        if (string.IsNullOrWhiteSpace(fileNameArg))
+        {
+            fileName = default;
+            return false;
+        }
+
+        fileName = new IncludedVariablesFileName(fileNameArg!);
+        return true;
     }
 
     internal static string? FindIncludedVariableNamesFileArgumentValue(AttributeData attributeData)
     {
-        if (attributeData is null)
-        {
-            throw new ArgumentNullException(nameof(attributeData));
-        }
-
         var fileNameArg = attributeData.ConstructorArguments.FirstOrDefault();
 
         if (fileNameArg.Value is string fileNameArgValue)

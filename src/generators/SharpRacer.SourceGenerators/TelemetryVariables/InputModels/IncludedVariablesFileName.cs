@@ -4,29 +4,20 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct IncludedVariablesFileName : IEquatable<IncludedVariablesFileName>
 {
     private readonly string _fileName;
-
-    public IncludedVariablesFileName()
-    {
-        _fileName = string.Empty;
-
-        IsDefault = true;
-    }
+    private readonly bool _isInitialized;
 
     public IncludedVariablesFileName(string fileName)
     {
-        if (string.IsNullOrEmpty(fileName))
-        {
-            throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
-        }
+        _fileName = !string.IsNullOrEmpty(fileName)
+            ? fileName
+            : throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
 
-        _fileName = fileName;
+        _isInitialized = true;
     }
-
-    public bool IsDefault { get; }
 
     public bool IsMatch(AdditionalText additionalText)
     {
-        if (IsDefault)
+        if (!_isInitialized)
         {
             return false;
         }
@@ -41,12 +32,22 @@ internal readonly struct IncludedVariablesFileName : IEquatable<IncludedVariable
 
     public bool Equals(IncludedVariablesFileName other)
     {
+        if (!_isInitialized)
+        {
+            return !other._isInitialized;
+        }
+
         return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()
     {
         var hc = new HashCode();
+
+        if (!_isInitialized)
+        {
+            return hc.ToHashCode();
+        }
 
         hc.Add(_fileName, StringComparer.Ordinal);
 
@@ -65,6 +66,11 @@ internal readonly struct IncludedVariablesFileName : IEquatable<IncludedVariable
 
     public static implicit operator string(IncludedVariablesFileName fileName)
     {
+        if (!fileName._isInitialized)
+        {
+            return string.Empty;
+        }
+
         return fileName._fileName ?? string.Empty;
     }
 }

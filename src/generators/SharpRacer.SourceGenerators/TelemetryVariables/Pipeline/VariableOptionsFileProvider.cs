@@ -74,6 +74,6 @@ internal static class VariableOptionsFileProvider
         variableOptionsFile = new VariableOptionsFile(fileName, file, sourceText);
         diagnostic = null;
 
-        return variableOptionsFile != default;
+        return true;
     }
 }
