@@ -4,12 +4,18 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
     public GeneratorConfiguration(
         VariableInfoFileName variableInfoFileName,
         VariableOptionsFileName variableOptionsFileName,
-        bool generateTypedVariableClasses,
+        bool generateVariableClasses,
         string variableClassesNamespace)
     {
-        GenerateVariableClasses = generateTypedVariableClasses;
-        VariableInfoFileName = variableInfoFileName;
-        VariableOptionsFileName = variableOptionsFileName;
+        GenerateVariableClasses = generateVariableClasses;
+
+        VariableInfoFileName = variableInfoFileName != default
+            ? variableInfoFileName
+            : throw new ArgumentException($"'{nameof(variableInfoFileName)}' cannot be the default value.", nameof(variableInfoFileName));
+
+        VariableOptionsFileName = variableOptionsFileName != default
+            ? variableOptionsFileName
+            : throw new ArgumentException($"'{nameof(variableOptionsFileName)}' cannot be the default value.", nameof(variableOptionsFileName));
 
         VariableClassesNamespace = !string.IsNullOrEmpty(variableClassesNamespace)
             ? variableClassesNamespace
