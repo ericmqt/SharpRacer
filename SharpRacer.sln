@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer", "src\libraries
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6B9D1423-882C-4C28-8F2B-ADA63F59349F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{46F84494-F21C-47E5-BB50-62DE6EF54B86}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Tools.TelemetryVariables.CliApp", "src\tools\irtvars\SharpRacer.Tools.TelemetryVariables.CliApp\SharpRacer.Tools.TelemetryVariables.CliApp.csproj", "{81FB67DD-D7A5-451D-BBE8-65A7DBCF7BF8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Tools.TelemetryVariables.Data", "src\tools\irtvars\SharpRacer.Tools.TelemetryVariables.Data\SharpRacer.Tools.TelemetryVariables.Data.csproj", "{C34303F5-1210-40F8-ABC7-EB09E3266493}"
@@ -91,7 +89,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
-		{46F84494-F21C-47E5-BB50-62DE6EF54B86} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
 		{81FB67DD-D7A5-451D-BBE8-65A7DBCF7BF8} = {6B9D1423-882C-4C28-8F2B-ADA63F59349F}
 		{C34303F5-1210-40F8-ABC7-EB09E3266493} = {6B9D1423-882C-4C28-8F2B-ADA63F59349F}
 		{5C84A90B-2A8A-40D6-9E5F-A474398CED52} = {EBEA4519-B547-45F6-BE7D-8D01E872AB1D}

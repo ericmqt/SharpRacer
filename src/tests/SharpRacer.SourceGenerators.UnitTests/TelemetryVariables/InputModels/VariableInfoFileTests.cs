@@ -35,7 +35,7 @@ public class VariableInfoFileTests
     }
 
     [Fact]
-    public void Equals_DefaultValue_Test()
+    public void Equals_DefaultValueTest()
     {
         var fileName = new VariableInfoFileName("Foo.bar");
         var additionalText = new AdditionalTextFile("Foo.bar", "Hello, world!");

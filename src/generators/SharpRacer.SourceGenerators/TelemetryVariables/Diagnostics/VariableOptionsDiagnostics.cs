@@ -17,7 +17,7 @@ internal static class VariableOptionsDiagnostics
 
     public static Diagnostic DuplicateDescriptorName(string variableKey, string contextPropertyName, string duplicatedVariableKey, Location? location = null)
     {
-        return Diagnostic.Create(_DuplicateContextPropertyName, location, variableKey, contextPropertyName, duplicatedVariableKey);
+        return Diagnostic.Create(_DuplicateDescriptorName, location, variableKey, contextPropertyName, duplicatedVariableKey);
     }
 
     public static Diagnostic DuplicateKey(string key, Location? location = null)
@@ -47,7 +47,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _AmbiguousFileName
         = new(
-            "SR2201",
+            DiagnosticIds.VariableOptions_AmbiguousFileName,
             "More than one telemetry variables options file found matching the expected file name",
             "Telemetry variables options filename '{0}' matches multiple files",
             _Category,
@@ -56,7 +56,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _FileContentReadFailure
         = new(
-            "SR2202",
+            DiagnosticIds.VariableOptions_FileContentReadFailure,
             "Error reading telemetry variables options file",
             "Error reading telemetry variables options file '{0}'",
             _Category,
@@ -65,7 +65,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _FileReadException
         = new(
-            "SR2203",
+            DiagnosticIds.VariableOptions_FileReadException,
             "Exception thrown while parsing telemetry variables options file",
             "'{0}' thrown while parsing telemetry variables options file '{1}': {2}",
             _Category,
@@ -74,7 +74,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _DuplicateKey
         = new(
-            "SR2210",
+            DiagnosticIds.VariableOptions_DuplicateKey,
             "Variable options already defined",
             "Variable options file already defines a value for key '{0}'",
             _Category,
@@ -83,7 +83,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _DuplicateVariableName
         = new(
-            "SR2211",
+            DiagnosticIds.VariableOptions_DuplicateVariableName,
             "Value for variable option Name is assigned to another variable",
             "Options for variable '{0}' defines a value for Name '{1}' which is used by variable '{2}'",
             _Category,
@@ -92,7 +92,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _DuplicateContextPropertyName
         = new(
-            "SR2212",
+            DiagnosticIds.VariableOptions_DuplicateContextPropertyName,
             "Value for variable option ContextPropertyName is assigned to another variable",
             "Options for variable '{0}' defines a value for ContextPropertyName '{1}' which is used by variable '{2}'",
             _Category,
@@ -101,7 +101,7 @@ internal static class VariableOptionsDiagnostics
 
     private static readonly DiagnosticDescriptor _DuplicateDescriptorName
         = new(
-            "SR2213",
+            DiagnosticIds.VariableOptions_DuplicateDescriptorName,
             "Value for variable option DescriptorName is assigned to another variable",
             "Options for variable '{0}' defines a value for DescriptorName '{1}' which is used by variable '{2}'",
             _Category,
