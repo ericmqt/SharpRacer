@@ -57,6 +57,10 @@ public class IncludedVariablesFileNameTests
         Assert.False(fileName1 == default);
         Assert.True(fileName1 != default);
         Assert.NotEqual(fileName1.GetHashCode(), default(IncludedVariablesFileName).GetHashCode());
+
+        Assert.False(default(IncludedVariablesFileName).Equals(fileName1));
+        Assert.False(default == fileName1);
+        Assert.True(default != fileName1);
     }
 
     [Fact]

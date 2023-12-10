@@ -57,6 +57,10 @@ public class VariableInfoFileNameTests
         Assert.False(fileName1 == default);
         Assert.True(fileName1 != default);
         Assert.NotEqual(fileName1.GetHashCode(), default(VariableInfoFileName).GetHashCode());
+
+        Assert.False(default(VariableInfoFileName).Equals(fileName1));
+        Assert.False(default == fileName1);
+        Assert.True(default != fileName1);
     }
 
     [Fact]
