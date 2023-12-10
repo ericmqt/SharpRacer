@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\SharpRacer\SharpRacer.csproj" />
+		<ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
 	</ItemGroup>
 
 </Project>
