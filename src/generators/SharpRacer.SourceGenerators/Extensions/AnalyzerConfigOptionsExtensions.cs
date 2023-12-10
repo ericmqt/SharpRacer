@@ -1,27 +1,35 @@
 ﻿using Microsoft.CodeAnalysis.Diagnostics;
+using SharpRacer.SourceGenerators.Configuration;
 
 namespace SharpRacer.SourceGenerators;
 internal static class AnalyzerConfigOptionsExtensions
 {
-    public static bool TryGetMSBuildProperty(this AnalyzerConfigOptions source, string propertyName, out string value)
+    public static MSBuildPropertyValue GetMSBuildProperty(this AnalyzerConfigOptions source, MSBuildPropertyKey propertyKey)
     {
-        return source.TryGetValue(FormatBuildProperty(propertyName), out value!);
-    }
-
-    public static bool TryGetBool(this AnalyzerConfigOptions analyzerConfigOptions, string key, out bool value)
-    {
-        value = false;
-
-        if (!analyzerConfigOptions.TryGetValue(key, out var keyValue))
+        if (propertyKey == default)
         {
-            return false;
+            throw new ArgumentException($"'{nameof(propertyKey)}' cannot be a default value.", nameof(propertyKey));
         }
 
-        return bool.TryParse(keyValue, out value);
+        source.TryGetValue(propertyKey.Key, out var value);
+
+        return new MSBuildPropertyValue(propertyKey, value);
     }
 
-    private static string FormatBuildProperty(string propertyName)
+    public static bool TryGetMSBuildProperty(this AnalyzerConfigOptions source, MSBuildPropertyKey propertyKey, out MSBuildPropertyValue propertyValue)
     {
-        return $"build_property.{propertyName}";
+        if (propertyKey == default)
+        {
+            throw new ArgumentException($"'{nameof(propertyKey)}' cannot be a default value.", nameof(propertyKey));
+        }
+
+        if (source.TryGetValue(propertyKey.Key, out var value))
+        {
+            propertyValue = new MSBuildPropertyValue(propertyKey, value);
+            return true;
+        }
+
+        propertyValue = new MSBuildPropertyValue(propertyKey, null);
+        return false;
     }
 }

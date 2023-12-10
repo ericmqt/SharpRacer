@@ -32,8 +32,8 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
     public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorClassGeneratorProvider descriptorGeneratorProvider)
     {
         return new TypedVariableClassesGeneratorOptions(
-            generatorConfiguration.GenerateTypedVariableClasses,
-            generatorConfiguration.TelemetryVariableClassesNamespace,
+            generatorConfiguration.GenerateVariableClasses,
+            generatorConfiguration.VariableClassesNamespace,
             descriptorGeneratorProvider.DescriptorPropertyReferences);
     }
 

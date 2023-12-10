@@ -1,67 +1,53 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 internal readonly struct VariableInfoFileName : IEquatable<VariableInfoFileName>
 {
-    private readonly static string _Default = "TelemetryVariables.json";
     private readonly string _fileName;
-
-    public VariableInfoFileName()
-    {
-        _fileName = _Default;
-    }
+    private readonly bool _isInitialized;
 
     public VariableInfoFileName(string fileName)
     {
-        _fileName = !string.IsNullOrEmpty(fileName) ? fileName : _Default;
-    }
+        _fileName = !string.IsNullOrEmpty(fileName)
+            ? fileName
+            : throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
 
-    public static VariableInfoFileName GetFromConfigurationOrDefault(AnalyzerConfigOptionsProvider analyzerOptionsProvider)
-    {
-        if (analyzerOptionsProvider.GlobalOptions.TryGetValue(BuildPropertyKeys.TelemetryVariablesFileNameProperty, out var value))
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                return new VariableInfoFileName();
-            }
-
-            return new VariableInfoFileName(value);
-        }
-
-        return new VariableInfoFileName();
+        _isInitialized = true;
     }
 
     public bool IsMatch(AdditionalText additionalText)
     {
+        if (!_isInitialized)
+        {
+            return false;
+        }
+
         return additionalText.Path.EndsWith(_fileName, StringComparison.Ordinal);
     }
 
-    public static implicit operator string(VariableInfoFileName fileName)
-    {
-        return fileName._fileName;
-    }
-
-    #region IEquatable Implementation
-
     public override bool Equals(object obj)
     {
-        if (obj is VariableInfoFileName other)
-        {
-            return Equals(other);
-        }
-
-        return false;
+        return obj is VariableInfoFileName other && Equals(other);
     }
 
     public bool Equals(VariableInfoFileName other)
     {
+        if (!_isInitialized)
+        {
+            return !other._isInitialized;
+        }
+
         return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()
     {
+        if (!_isInitialized)
+        {
+            return 0;
+        }
+
         return _fileName.GetHashCode();
     }
 
@@ -75,5 +61,13 @@ internal readonly struct VariableInfoFileName : IEquatable<VariableInfoFileName>
         return !lhs.Equals(rhs);
     }
 
-    #endregion IEquatable Implementation
+    public static implicit operator string(VariableInfoFileName fileName)
+    {
+        if (!fileName._isInitialized)
+        {
+            return string.Empty;
+        }
+
+        return fileName._fileName;
+    }
 }

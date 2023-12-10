@@ -15,8 +15,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        var generatorConfiguration = context.AnalyzerConfigOptionsProvider
-            .Select(static (item, ct) => GeneratorConfiguration.FromAnalyzerConfigOptionsProvider(item));
+        var generatorConfiguration = GeneratorConfigurationValueProvider.GetValueProvider(context.AnalyzerConfigOptionsProvider);
 
         var variableModels = VariableModelsValueProvider.Get(ref context, generatorConfiguration);
         var variableModelArray = variableModels.Collect();

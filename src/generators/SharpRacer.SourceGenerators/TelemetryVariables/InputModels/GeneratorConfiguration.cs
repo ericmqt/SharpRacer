@@ -1,66 +1,25 @@
-﻿using Microsoft.CodeAnalysis.Diagnostics;
-
-namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfiguration>
 {
     public GeneratorConfiguration(
         VariableInfoFileName variableInfoFileName,
         VariableOptionsFileName variableOptionsFileName,
         bool generateTypedVariableClasses,
-        string? telemetryVariableClassesNamespace)
+        string variableClassesNamespace)
     {
-        GenerateTypedVariableClasses = generateTypedVariableClasses;
+        GenerateVariableClasses = generateTypedVariableClasses;
         VariableInfoFileName = variableInfoFileName;
         VariableOptionsFileName = variableOptionsFileName;
 
-        TelemetryVariableClassesNamespace = telemetryVariableClassesNamespace ?? GeneratorConfigurationDefaults.TelemetryVariableClassesNamespace;
+        VariableClassesNamespace = !string.IsNullOrEmpty(variableClassesNamespace)
+            ? variableClassesNamespace
+            : throw new ArgumentException($"'{nameof(variableClassesNamespace)}' cannot be null or empty.", nameof(variableClassesNamespace));
     }
 
-    public bool GenerateTypedVariableClasses { get; }
-    public string TelemetryVariableClassesNamespace { get; }
+    public bool GenerateVariableClasses { get; }
+    public string VariableClassesNamespace { get; }
     public VariableInfoFileName VariableInfoFileName { get; }
     public VariableOptionsFileName VariableOptionsFileName { get; }
-
-    public static GeneratorConfiguration FromAnalyzerConfigOptionsProvider(AnalyzerConfigOptionsProvider analyzerOptionsProvider)
-    {
-        if (!analyzerOptionsProvider.GlobalOptions.TryGetBool(
-            BuildPropertyKeys.GenerateVariableClassesProperty,
-            out var generateTypedVariableClasses))
-        {
-            generateTypedVariableClasses = GeneratorConfigurationDefaults.GenerateTypedVariableClasses;
-        }
-
-        var telemetryVariableClassesNamespace = GetTelemetryVariableClassesNamespace(analyzerOptionsProvider);
-
-        var variableInfoFileName = VariableInfoFileName.GetFromConfigurationOrDefault(analyzerOptionsProvider);
-        var variableOptionsFileName = VariableOptionsFileName.FromConfigurationOrDefault(analyzerOptionsProvider);
-
-        return new GeneratorConfiguration(
-            variableInfoFileName,
-            variableOptionsFileName,
-            generateTypedVariableClasses,
-            telemetryVariableClassesNamespace);
-    }
-
-    private static string GetTelemetryVariableClassesNamespace(AnalyzerConfigOptionsProvider analyzerOptionsProvider)
-    {
-        if (analyzerOptionsProvider.GlobalOptions.TryGetValue(
-            BuildPropertyKeys.TelemetryVariableClassesNamespaceProperty,
-            out var configuredNamespaceValue))
-        {
-            if (!string.IsNullOrEmpty(configuredNamespaceValue))
-            {
-                return configuredNamespaceValue;
-            }
-        }
-
-        if (analyzerOptionsProvider.GlobalOptions.TryGetMSBuildProperty("RootNamespace", out var rootNamespace))
-        {
-            return rootNamespace;
-        }
-
-        return GeneratorConfigurationDefaults.TelemetryVariableClassesNamespace;
-    }
 
     public override bool Equals(object? obj)
     {
@@ -69,8 +28,8 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
 
     public bool Equals(GeneratorConfiguration other)
     {
-        return GenerateTypedVariableClasses == other.GenerateTypedVariableClasses &&
-            StringComparer.Ordinal.Equals(TelemetryVariableClassesNamespace, other.TelemetryVariableClassesNamespace) &&
+        return GenerateVariableClasses == other.GenerateVariableClasses &&
+            StringComparer.Ordinal.Equals(VariableClassesNamespace, other.VariableClassesNamespace) &&
             VariableInfoFileName == other.VariableInfoFileName &&
             VariableOptionsFileName == other.VariableOptionsFileName;
     }
@@ -79,8 +38,8 @@ internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfigurat
     {
         var hc = new HashCode();
 
-        hc.Add(GenerateTypedVariableClasses);
-        hc.Add(TelemetryVariableClassesNamespace);
+        hc.Add(GenerateVariableClasses);
+        hc.Add(VariableClassesNamespace);
         hc.Add(VariableInfoFileName);
         hc.Add(VariableOptionsFileName);
 

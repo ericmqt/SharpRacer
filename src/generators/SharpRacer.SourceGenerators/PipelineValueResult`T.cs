@@ -66,7 +66,7 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
     {
         if (!_isInitialized)
         {
-            return other._isInitialized;
+            return !other._isInitialized;
         }
 
         return HasErrors == other.HasErrors &&

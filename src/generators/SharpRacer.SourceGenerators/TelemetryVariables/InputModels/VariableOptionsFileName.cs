@@ -1,54 +1,52 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct VariableOptionsFileName : IEquatable<VariableOptionsFileName>
 {
-    private readonly static string _Default = "TelemetryVariables.config.json";
     private readonly string _fileName;
-
-    public VariableOptionsFileName()
-    {
-        _fileName = _Default;
-    }
+    private readonly bool _isInitialized;
 
     public VariableOptionsFileName(string fileName)
     {
-        _fileName = !string.IsNullOrEmpty(fileName) ? fileName : _Default;
-    }
+        _fileName = !string.IsNullOrEmpty(fileName)
+            ? fileName
+            : throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
 
-    public static VariableOptionsFileName FromConfigurationOrDefault(AnalyzerConfigOptionsProvider analyzerOptionsProvider)
-    {
-        if (analyzerOptionsProvider.GlobalOptions.TryGetValue(BuildPropertyKeys.VariableOptionsFileNameProperty, out var fileName))
-        {
-            return new VariableOptionsFileName(fileName);
-        }
-
-        return new VariableOptionsFileName();
+        _isInitialized = true;
     }
 
     public bool IsMatch(AdditionalText additionalText)
     {
+        if (!_isInitialized)
+        {
+            return false;
+        }
+
         return additionalText.Path.EndsWith(_fileName, StringComparison.Ordinal);
     }
 
     public override bool Equals(object obj)
     {
-        if (obj is VariableOptionsFileName other)
-        {
-            return Equals(other);
-        }
-
-        return false;
+        return obj is VariableOptionsFileName other && Equals(other);
     }
 
     public bool Equals(VariableOptionsFileName other)
     {
+        if (!_isInitialized)
+        {
+            return !other._isInitialized;
+        }
+
         return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()
     {
+        if (!_isInitialized)
+        {
+            return 0;
+        }
+
         return _fileName.GetHashCode();
     }
 
@@ -62,8 +60,13 @@ internal readonly struct VariableOptionsFileName : IEquatable<VariableOptionsFil
         return !lhs.Equals(rhs);
     }
 
-    public static implicit operator string(VariableOptionsFileName variableOptionsFileName)
+    public static implicit operator string(VariableOptionsFileName fileName)
     {
-        return variableOptionsFileName._fileName;
+        if (!fileName._isInitialized)
+        {
+            return string.Empty;
+        }
+
+        return fileName._fileName;
     }
 }
