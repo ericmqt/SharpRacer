@@ -28,7 +28,12 @@ internal static class VariableOptionsFileProvider
     {
         if (!TryFindVariableOptionsFile(fileName, additionalTexts, cancellationToken, out var optionsFile, out var diagnostic))
         {
-            return new PipelineValueResult<VariableOptionsFile>(diagnostic!);
+            if (diagnostic != null)
+            {
+                return new PipelineValueResult<VariableOptionsFile>(diagnostic!);
+            }
+
+            return new PipelineValueResult<VariableOptionsFile>();
         }
 
         return new PipelineValueResult<VariableOptionsFile>(optionsFile);

@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using SharpRacer.SourceGenerators.Testing.Configuration;
 
 namespace SharpRacer.SourceGenerators.Testing.TelemetryVariables;
-internal class VariablesGeneratorAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
+public class VariablesGeneratorAnalyzerConfigOptionsProvider : AnalyzerConfigOptionsProvider
 {
     private static readonly EmptyAnalyzerConfigOptions _emptyOptions = new EmptyAnalyzerConfigOptions();
 
