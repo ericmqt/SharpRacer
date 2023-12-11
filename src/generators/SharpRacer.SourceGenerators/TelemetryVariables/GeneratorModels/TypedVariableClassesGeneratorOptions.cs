@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<TypedVariableClassesGeneratorOptions>
@@ -29,7 +28,7 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
     public readonly bool IsGeneratorEnabled { get; }
     public readonly string TargetNamespace { get; }
 
-    public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorClassGeneratorProvider descriptorGeneratorProvider)
+    public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorClassGeneratorModel descriptorGeneratorProvider)
     {
         return new TypedVariableClassesGeneratorOptions(
             generatorConfiguration.GenerateVariableClasses,

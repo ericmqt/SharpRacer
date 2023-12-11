@@ -33,6 +33,7 @@ public class PipelineValueResultTests
         Assert.True(result1 == result2);
         Assert.False(result1 != result2);
         Assert.True(result1.Equals(result2));
+        Assert.Equal(result1.GetHashCode(), result2.GetHashCode());
     }
 
     [Fact]
@@ -49,6 +50,8 @@ public class PipelineValueResultTests
 
         Assert.False(result1.Equals(result2));
         Assert.False(result2.Equals(result1));
+
+        Assert.NotEqual(result1.GetHashCode(), result2.GetHashCode());
     }
 
     [Fact]
@@ -65,6 +68,8 @@ public class PipelineValueResultTests
 
         Assert.False(result1.Equals(result2));
         Assert.False(result2.Equals(result1));
+
+        Assert.NotEqual(result1.GetHashCode(), result2.GetHashCode());
     }
 
     [Fact]

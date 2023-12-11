@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorPropertyReference>
 {
-    public DescriptorPropertyReference(DescriptorClassGeneratorModel generatorModel, VariableModel variableModel)
+    public DescriptorPropertyReference(DescriptorClassModel generatorModel, VariableModel variableModel)
     {
         if (generatorModel is null)
         {

@@ -12,7 +12,7 @@ internal class DescriptorClassGenerator
 {
     private readonly List<string> _usingNamespaces;
 
-    public DescriptorClassGenerator(DescriptorClassGeneratorModel model)
+    public DescriptorClassGenerator(DescriptorClassModel model)
     {
         Model = model ?? throw new ArgumentNullException(nameof(model));
 
@@ -25,7 +25,7 @@ internal class DescriptorClassGenerator
         };
     }
 
-    public DescriptorClassGeneratorModel Model { get; }
+    public DescriptorClassModel Model { get; }
 
     public ClassDeclarationSyntax CreateClassDeclaration(CancellationToken cancellationToken = default)
     {

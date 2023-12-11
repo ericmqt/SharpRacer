@@ -71,7 +71,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .Select(static (item, _) => new VariableContextClassResult(item.Item1, item.Item2));
     }
 
-    private static IncrementalValueProvider<DescriptorClassGeneratorProvider> GetDescriptorClassGeneratorModelProvider(
+    private static IncrementalValueProvider<DescriptorClassGeneratorModel> GetDescriptorClassGeneratorModelProvider(
         SyntaxValueProvider syntaxValueProvider,
         IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
     {
@@ -81,13 +81,13 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
         return classTargets.Collect()
             .Combine(variableModelsProvider)
-            .Select(static (x, ct) => DescriptorClassGeneratorProvider.Create(x.Left, x.Right, ct))
-            .WithComparer(DescriptorClassGeneratorProvider.EqualityComparer.Default);
+            .Select(static (x, ct) => DescriptorClassGeneratorModel.Create(x.Left, x.Right, ct))
+            .WithComparer(DescriptorClassGeneratorModel.EqualityComparer.Default);
     }
 
     private static IncrementalValuesProvider<TypedVariableClassGeneratorModel> GetTypedVariableGeneratorModels(
         IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
-        IncrementalValueProvider<DescriptorClassGeneratorProvider> descriptorGeneratorProvider,
+        IncrementalValueProvider<DescriptorClassGeneratorModel> descriptorGeneratorProvider,
         IncrementalValuesProvider<VariableModel> variableModelsProvider)
     {
         var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
@@ -121,7 +121,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .WithComparer(TypedVariableClassGeneratorModel.EqualityComparer.Default);
     }
 
-    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassGeneratorProvider modelProvider)
+    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassGeneratorModel modelProvider)
     {
         if (modelProvider.Diagnostics.Any())
         {
