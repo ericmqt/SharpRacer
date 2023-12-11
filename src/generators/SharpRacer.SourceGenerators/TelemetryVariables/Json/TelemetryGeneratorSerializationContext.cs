@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
@@ -21,6 +22,7 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 [JsonSerializable(typeof(VariableValueType))]
 [JsonSerializable(typeof(bool))]
 [JsonSerializable(typeof(string))]
+[ExcludeFromCodeCoverage]
 internal partial class TelemetryGeneratorSerializationContext : JsonSerializerContext
 {
 }

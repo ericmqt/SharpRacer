@@ -31,9 +31,9 @@ internal readonly struct JsonVariableOptionsValue : IEquatable<JsonVariableOptio
     {
         var hc = new HashCode();
 
-        hc.Add(Name, StringComparer.Ordinal);
-        hc.Add(ContextPropertyName, StringComparer.Ordinal);
-        hc.Add(DescriptorName, StringComparer.Ordinal);
+        hc.Add(Name);
+        hc.Add(ContextPropertyName);
+        hc.Add(DescriptorName);
 
         return hc.ToHashCode();
     }

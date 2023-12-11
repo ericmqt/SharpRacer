@@ -71,12 +71,12 @@ internal readonly struct VariableOptions : IEquatable<VariableOptions>
     {
         var hc = new HashCode();
 
-        hc.Add(VariableKey, StringComparer.Ordinal);
+        hc.Add(VariableKey);
         hc.Add(VariableKeyLocation);
         hc.Add(ValueLocation);
-        hc.Add(Name, StringComparer.Ordinal);
-        hc.Add(ContextPropertyName, StringComparer.Ordinal);
-        hc.Add(DescriptorName, StringComparer.Ordinal);
+        hc.Add(Name);
+        hc.Add(ContextPropertyName);
+        hc.Add(DescriptorName);
 
         return hc.ToHashCode();
     }

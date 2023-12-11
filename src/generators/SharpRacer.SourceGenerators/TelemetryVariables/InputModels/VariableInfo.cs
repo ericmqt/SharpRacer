@@ -49,15 +49,15 @@ internal readonly struct VariableInfo : IEquatable<VariableInfo>
     {
         var hc = new HashCode();
 
-        hc.Add(Name, StringComparer.Ordinal);
+        hc.Add(Name);
         hc.Add(ValueType);
         hc.Add(ValueCount);
-        hc.Add(Description, StringComparer.Ordinal);
-        hc.Add(ValueUnit, StringComparer.Ordinal);
+        hc.Add(Description);
+        hc.Add(ValueUnit);
         hc.Add(IsTimeSliceArray);
         hc.Add(IsDeprecated);
         hc.Add(JsonLocation);
-        hc.Add(DeprecatedBy, StringComparer.Ordinal);
+        hc.Add(DeprecatedBy);
 
         return hc.ToHashCode();
     }

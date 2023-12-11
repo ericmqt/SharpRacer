@@ -125,6 +125,6 @@ internal static class VariableModelsValueProvider
             }
 
             return new PipelineValuesResult<VariableOptions>(factory.Build(), diagnosticsBuilder.ToImmutable());
-        });
+        }).WithTrackingName(TrackingNames.VariableModelsValueProvider_GetVariableOptionsProvider);
     }
 }

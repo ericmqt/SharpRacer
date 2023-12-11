@@ -42,7 +42,7 @@ internal readonly struct JsonVariableInfo : IEquatable<JsonVariableInfo>
     public readonly string Description { get; }
     public readonly bool IsDeprecated { get; }
     public readonly bool IsTimeSliceArray { get; }
-    public TextSpan JsonSpan { get; }
+    public readonly TextSpan JsonSpan { get; }
     public readonly string Name { get; }
     public readonly int ValueCount { get; }
     public readonly VariableValueType ValueType { get; }
@@ -70,15 +70,15 @@ internal readonly struct JsonVariableInfo : IEquatable<JsonVariableInfo>
     {
         var hc = new HashCode();
 
-        hc.Add(Name, StringComparer.Ordinal);
+        hc.Add(Name);
         hc.Add(JsonSpan);
         hc.Add(ValueType);
         hc.Add(ValueCount);
-        hc.Add(Description, StringComparer.Ordinal);
-        hc.Add(ValueUnit, StringComparer.Ordinal);
+        hc.Add(Description);
+        hc.Add(ValueUnit);
         hc.Add(IsTimeSliceArray);
         hc.Add(IsDeprecated);
-        hc.Add(DeprecatedBy, StringComparer.Ordinal);
+        hc.Add(DeprecatedBy);
 
         return hc.ToHashCode();
     }

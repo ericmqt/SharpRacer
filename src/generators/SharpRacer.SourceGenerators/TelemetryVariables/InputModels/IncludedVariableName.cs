@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>, IEquatable<string?>
+internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 {
     private readonly bool _isInitialized;
 
@@ -51,11 +51,6 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
             Diagnostics.SequenceEqual(other.Diagnostics);
     }
 
-    public bool Equals(string? other)
-    {
-        return StringComparer.Ordinal.Equals(Value, other);
-    }
-
     public override int GetHashCode()
     {
         var hc = new HashCode();
@@ -73,16 +68,6 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
     }
 
     public static bool operator !=(IncludedVariableName left, IncludedVariableName right)
-    {
-        return !left.Equals(right);
-    }
-
-    public static bool operator ==(IncludedVariableName left, string? right)
-    {
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(IncludedVariableName left, string? right)
     {
         return !left.Equals(right);
     }
