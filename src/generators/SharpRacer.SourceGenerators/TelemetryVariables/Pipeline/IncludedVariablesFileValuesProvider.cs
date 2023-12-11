@@ -30,7 +30,7 @@ internal static class IncludedVariablesFileValuesProvider
                 diagnostic!);
         }
 
-        return new PipelineValueResult<(ClassWithGeneratorAttribute, IncludedVariablesFile)>((contextClassData, includedVariablesFile));
+        return (contextClassData, includedVariablesFile);
     }
 
     public static bool TryFindIncludedVariablesFile(

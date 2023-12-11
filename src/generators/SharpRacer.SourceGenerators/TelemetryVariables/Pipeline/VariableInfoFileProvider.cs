@@ -18,6 +18,7 @@ internal static class VariableInfoFileProvider
             .Select(static (x, _) => x.Left)
             .Collect();
 
+
         return variableInfoFileName.Combine(variableInfoTexts)
             .Select(static (x, ct) => GetPipelineValueResult(x.Left, x.Right, ct))
             .WithTrackingName(TrackingNames.VariableInfoFileProvider_GetValueProvider);
@@ -30,10 +31,10 @@ internal static class VariableInfoFileProvider
     {
         if (!TryFindVariableInfoFile(fileName, additionalTexts, cancellationToken, out var variableInfoFile, out var diagnostic))
         {
-            return new PipelineValueResult<VariableInfoFile>(diagnostic!);
+            return diagnostic!;
         }
 
-        return new PipelineValueResult<VariableInfoFile>(variableInfoFile);
+        return variableInfoFile;
     }
 
     public static bool TryFindVariableInfoFile(

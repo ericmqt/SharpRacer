@@ -30,13 +30,13 @@ internal static class VariableOptionsFileProvider
         {
             if (diagnostic != null)
             {
-                return new PipelineValueResult<VariableOptionsFile>(diagnostic!);
+                return diagnostic!;
             }
 
             return new PipelineValueResult<VariableOptionsFile>();
         }
 
-        return new PipelineValueResult<VariableOptionsFile>(optionsFile);
+        return optionsFile;
     }
 
     public static bool TryFindVariableOptionsFile(

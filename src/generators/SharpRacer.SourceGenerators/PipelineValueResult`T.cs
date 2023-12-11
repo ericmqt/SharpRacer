@@ -5,57 +5,33 @@ namespace SharpRacer.SourceGenerators;
 internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValueResult<TResult>>
     where TResult : struct, IEquatable<TResult>
 {
+    private readonly ImmutableArray<Diagnostic> _diagnostics;
     private readonly bool _isInitialized;
 
     public PipelineValueResult()
-    {
-        Value = new TResult();
-        Diagnostics = ImmutableArray<Diagnostic>.Empty;
-
-        _isInitialized = true;
-    }
-
-    public PipelineValueResult(TResult value, ImmutableArray<Diagnostic> diagnostics)
-    {
-        Value = value;
-        Diagnostics = diagnostics;
-        HasErrors = Diagnostics.HasErrors();
-
-        _isInitialized = true;
-    }
-
-    public PipelineValueResult(TResult value)
-        : this(value, ImmutableArray<Diagnostic>.Empty)
+        : this(default, false, ImmutableArray<Diagnostic>.Empty)
     {
 
     }
 
     public PipelineValueResult(TResult value, Diagnostic diagnostic)
-        : this(value, ImmutableArray.Create(diagnostic))
+        : this(value, true, ImmutableArray.Create(diagnostic))
     {
 
     }
 
-    public PipelineValueResult(ImmutableArray<Diagnostic> diagnostics)
-        : this(new TResult(), diagnostics)
+    private PipelineValueResult(TResult value, bool hasValue, ImmutableArray<Diagnostic> diagnostics)
     {
-
+        Value = value;
+        HasValue = hasValue;
+        _diagnostics = diagnostics.GetEmptyIfDefault();
+        _isInitialized = true;
     }
 
-    public PipelineValueResult(Diagnostic diagnostic)
-        : this(new TResult(), ImmutableArray.Create(diagnostic))
-    {
-
-    }
-
-    public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
-    public readonly bool HasErrors { get; }
-    public bool IsDefault => !_isInitialized;
-    public bool IsEmpty => this == Empty;
-    public bool IsDefaultOrEmpty => IsDefault || IsEmpty;
+    public ImmutableArray<Diagnostic> Diagnostics => _diagnostics.GetEmptyIfDefault();
+    public bool HasErrors => Diagnostics.HasErrors();
+    public readonly bool HasValue { get; }
     public readonly TResult Value { get; }
-
-    public static PipelineValueResult<TResult> Empty { get; } = new PipelineValueResult<TResult>();
 
     public override bool Equals(object obj)
     {
@@ -70,8 +46,9 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
         }
 
         return HasErrors == other.HasErrors &&
+            HasValue == other.HasValue &&
             Value.Equals(other.Value) &&
-            Diagnostics.SequenceEqual(other.Diagnostics);
+            _diagnostics.SequenceEqual(other.Diagnostics);
     }
 
     public override int GetHashCode()
@@ -79,7 +56,7 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
         var hc = new HashCode();
 
         hc.Add(Value);
-        hc.AddDiagnosticArray(Diagnostics);
+        hc.AddDiagnosticArray(_diagnostics);
 
         return hc.ToHashCode();
     }
@@ -92,5 +69,20 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
     public static bool operator !=(PipelineValueResult<TResult> left, PipelineValueResult<TResult> right)
     {
         return !left.Equals(right);
+    }
+
+    public static implicit operator PipelineValueResult<TResult>(TResult result)
+    {
+        return new PipelineValueResult<TResult>(result, true, ImmutableArray<Diagnostic>.Empty);
+    }
+
+    public static implicit operator PipelineValueResult<TResult>(Diagnostic diagnostic)
+    {
+        return new PipelineValueResult<TResult>(default, false, ImmutableArray.Create(diagnostic));
+    }
+
+    public static implicit operator PipelineValueResult<TResult>(ImmutableArray<Diagnostic> diagnostics)
+    {
+        return new PipelineValueResult<TResult>(default, false, diagnostics);
     }
 }

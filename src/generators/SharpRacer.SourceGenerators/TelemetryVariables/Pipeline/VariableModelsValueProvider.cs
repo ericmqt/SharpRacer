@@ -49,7 +49,7 @@ internal static class VariableModelsValueProvider
 
         return variableInfoFile.Select(static (input, ct) =>
         {
-            if (input.IsDefaultOrEmpty || input.HasErrors)
+            if (!input.HasValue || input.HasErrors)
             {
                 return new PipelineValuesResult<VariableInfo>();
             }
@@ -95,7 +95,7 @@ internal static class VariableModelsValueProvider
         return variableOptionsFile.Select(static (input, ct) =>
         {
             // Options file is optional, we can skip this
-            if (input.IsDefaultOrEmpty || input.HasErrors)
+            if (!input.HasValue || input.HasErrors)
             {
                 return new PipelineValuesResult<VariableOptions>();
             }

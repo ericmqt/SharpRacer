@@ -34,14 +34,14 @@ internal static class ContextClassIncludedVariableNamesValuesProvider
 
         if (includedVariablesFile == default)
         {
-            return new PipelineValueResult<(ClassWithGeneratorAttribute, ImmutableArray<IncludedVariableName>)>((contextClass, default));
+            return (contextClass, ImmutableArray<IncludedVariableName>.Empty);
         }
 
         var includedVariableNameValues = includedVariablesFile.ReadJson(cancellationToken, out var readDiagnostic);
 
         if (readDiagnostic != null && readDiagnostic.IsError())
         {
-            return new PipelineValueResult<(ClassWithGeneratorAttribute, ImmutableArray<IncludedVariableName>)>(readDiagnostic);
+            return readDiagnostic;
         }
 
         var factory = new IncludedVariableNameFactory(includedVariablesFile);
@@ -51,6 +51,6 @@ internal static class ContextClassIncludedVariableNamesValuesProvider
             factory.Add(variableNameValue);
         }
 
-        return new PipelineValueResult<(ClassWithGeneratorAttribute, ImmutableArray<IncludedVariableName>)>((contextClass, factory.Build()));
+        return (contextClass, factory.Build());
     }
 }

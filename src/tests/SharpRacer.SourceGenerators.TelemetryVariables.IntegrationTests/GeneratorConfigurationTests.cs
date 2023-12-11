@@ -15,12 +15,11 @@ public class GeneratorConfigurationTests
 
         var runResult = driver.GetRunResult().Results.Single();
 
-        var configResult = runResult.TrackedSteps.FirstOrDefault(x => x.Key == TrackingNames.GeneratorConfigurationValueProvider_GetValueProvider);
+        var configResult = runResult.TrackedSteps[TrackingNames.GeneratorConfigurationValueProvider_GetValueProvider].Single();
 
-        Assert.Single(configResult.Value);
+        Assert.NotNull(configResult);
 
-        var configRunStep = configResult.Value.Single();
-        var configStepOutput = configRunStep.Outputs.Single();
+        var configStepOutput = configResult.Outputs.Single();
         var generatorConfig = (GeneratorConfiguration)configStepOutput.Value;
 
         Assert.True(configStepOutput.Reason == IncrementalStepRunReason.New);
