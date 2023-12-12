@@ -55,7 +55,7 @@ internal static class SharpRacerTypes
             VariableValueType.Float => VariableValueTypes.Float(),
             VariableValueType.Int => VariableValueTypes.EnumerationOrInt(valueUnit),
 
-            _ => throw new InvalidOperationException($"{valueType} is not a valid {nameof(VariableValueType)} value.")
+            _ => throw new ArgumentException($"{valueType} is not a valid {nameof(VariableValueType)} value.")
         };
     }
 

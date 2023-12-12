@@ -6,8 +6,8 @@ internal static class VariableValueTypes
 {
     public static TypeSyntax Bool() => ParseTypeName("bool");
     public static TypeSyntax Byte() => ParseTypeName("byte");
-    public static TypeSyntax Float() => ParseTypeName("float");
     public static TypeSyntax Double() => ParseTypeName("double");
+    public static TypeSyntax Float() => ParseTypeName("float");
     public static TypeSyntax Int() => ParseTypeName("int");
 
     public static TypeSyntax? Enumeration(string variableUnit)
