@@ -9,19 +9,9 @@ internal static class SharpRacerTypes
     private static string DataVariableValueType_TypeName = "DataVariableValueType";
     private static string DataVariableInfo_TypeName = "DataVariableInfo";
 
-    private static QualifiedNameSyntax SharpRacerTelemetryNamespace()
-    {
-        return QualifiedName(IdentifierName("SharpRacer"), IdentifierName("Telemetry"));
-    }
-
-    private static QualifiedNameSyntax SharpRacerTelemetryVariablesNamespace()
-    {
-        return QualifiedName(SharpRacerTelemetryNamespace(), IdentifierName("Variables"));
-    }
-
     public static BaseTypeSyntax ArrayDataVariableBaseType(TypeSyntax typeArgument)
     {
-        return SimpleBaseType(SharpRacerTypes.ArrayDataVariableType(typeArgument));
+        return SimpleBaseType(ArrayDataVariableType(typeArgument));
     }
 
     public static GenericNameSyntax ArrayDataVariableType(VariableInfo variableInfo)

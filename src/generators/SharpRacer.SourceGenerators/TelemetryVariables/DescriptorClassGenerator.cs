@@ -10,19 +10,19 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables;
 
 internal class DescriptorClassGenerator
 {
-    private readonly List<string> _usingNamespaces;
+    private readonly List<UsingDirectiveSyntax> _usingDirectives;
 
     public DescriptorClassGenerator(DescriptorClassModel model)
     {
         Model = model ?? throw new ArgumentNullException(nameof(model));
 
-        _usingNamespaces = new List<string>()
-        {
-            "System",
-            "System.Collections.Generic",
-            "System.Text",
-            "SharpRacer.Telemetry.Variables"
-        };
+        _usingDirectives =
+        [
+            UsingDirective(IdentifierName("System")),
+            UsingDirective(ParseName("System.Collections.Generic")),
+            UsingDirective(ParseName("System.Text")),
+            UsingDirective(ParseName("SharpRacer.Telemetry.Variables"))
+        ];
     }
 
     public DescriptorClassModel Model { get; }
@@ -35,7 +35,6 @@ internal class DescriptorClassGenerator
             .WithKeyword(Token(SyntaxKind.ClassKeyword))
             .WithModifiers(Accessibility.NotApplicable, isStatic: true, isPartial: true)
             .WithMembers(List(EnumerateMembers(cancellationToken)));
-        //.WithBaseList(CreateBaseList(cancellationToken));
     }
 
     public CompilationUnitSyntax CreateCompilationUnit(CancellationToken cancellationToken = default)
@@ -47,10 +46,8 @@ internal class DescriptorClassGenerator
         var namespaceDecl = NamespaceDeclaration(IdentifierName(Model.TypeNamespace))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
-        var usingDirectives = _usingNamespaces.Select(x => UsingDirective(IdentifierName(x)));
-
         return CompilationUnit()
-            .WithUsings(new SyntaxList<UsingDirectiveSyntax>(usingDirectives))
+            .WithUsings(new SyntaxList<UsingDirectiveSyntax>(_usingDirectives))
             .AddMembers(namespaceDecl);
     }
 
