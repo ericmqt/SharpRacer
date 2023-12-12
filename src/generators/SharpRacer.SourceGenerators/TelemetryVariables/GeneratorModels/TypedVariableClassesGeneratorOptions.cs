@@ -28,7 +28,7 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
     public readonly bool IsGeneratorEnabled { get; }
     public readonly string TargetNamespace { get; }
 
-    public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorClassGeneratorModel descriptorGeneratorProvider)
+    public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorsGeneratorModel descriptorGeneratorProvider)
     {
         return new TypedVariableClassesGeneratorOptions(
             generatorConfiguration.GenerateVariableClasses,

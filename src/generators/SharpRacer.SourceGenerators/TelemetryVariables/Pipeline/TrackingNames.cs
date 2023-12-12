@@ -2,6 +2,7 @@
 internal static class TrackingNames
 {
     public static string ContextClassIncludedVariableNamesValuesProvider { get; } = "ContextClassIncludedVariableNamesValuesProvider";
+    public static string DescriptorsGeneratorModelValueProvider_GetTargetClasses { get; } = "DescriptorsGeneratorModelValueProvider_GetTargetClasses";
     public static string GeneratorConfigurationValueProvider_GetValueProvider { get; } = "GeneratorConfigurationValueProvider_GetValueProvider";
     public static string IncludedVariablesValuesProvider { get; } = "IncludedVariablesValuesProvider";
     public static string IncludedVariablesFileValuesProvider_GetValuesProvider { get; } = "IncludedVariablesFileValuesProvider_GetValuesProvider";

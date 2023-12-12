@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using System.Text;
+﻿using System.Text;
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables;
@@ -20,7 +19,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var variableModelArray = variableModels.Collect();
 
         // Create descriptor generator models
-        var descriptorGeneratorModelProvider = GetDescriptorClassGeneratorModelProvider(context.SyntaxProvider, variableModelArray);
+        var descriptorGeneratorModelProvider = DescriptorsGeneratorModelValueProvider.GetValueProvider(context.SyntaxProvider, variableModelArray);
 
         // Create typed variable classes
         var typedVariableClassModels = GetTypedVariableGeneratorModels(
@@ -71,23 +70,9 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .Select(static (item, _) => new VariableContextClassResult(item.Item1, item.Item2));
     }
 
-    private static IncrementalValueProvider<DescriptorClassGeneratorModel> GetDescriptorClassGeneratorModelProvider(
-        SyntaxValueProvider syntaxValueProvider,
-        IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
-    {
-        var classTargets = syntaxValueProvider.ForClassWithAttribute(
-            GenerateDataVariableDescriptorsAttributeInfo.FullTypeName,
-            static classDecl => classDecl.HasAttributes() && classDecl.IsStaticPartialClass());
-
-        return classTargets.Collect()
-            .Combine(variableModelsProvider)
-            .Select(static (x, ct) => DescriptorClassGeneratorModel.Create(x.Left, x.Right, ct))
-            .WithComparer(DescriptorClassGeneratorModel.EqualityComparer.Default);
-    }
-
     private static IncrementalValuesProvider<TypedVariableClassGeneratorModel> GetTypedVariableGeneratorModels(
         IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
-        IncrementalValueProvider<DescriptorClassGeneratorModel> descriptorGeneratorProvider,
+        IncrementalValueProvider<DescriptorsGeneratorModel> descriptorGeneratorProvider,
         IncrementalValuesProvider<VariableModel> variableModelsProvider)
     {
         var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
@@ -121,7 +106,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .WithComparer(TypedVariableClassGeneratorModel.EqualityComparer.Default);
     }
 
-    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassGeneratorModel modelProvider)
+    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorsGeneratorModel modelProvider)
     {
         if (modelProvider.Diagnostics.Any())
         {
