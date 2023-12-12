@@ -2,6 +2,8 @@
 
 internal static class DiagnosticIds
 {
+    public const string DescriptorClass_AssemblyAlreadyContainsDescriptorClassTarget = "SR1010";
+
     public const string VariableInfo_FileNotFound = "SR2100";
     public const string VariableInfo_AmbiguousFileName = "SR2101";
     public const string VariableInfo_FileContentReadFailure = "SR2102";

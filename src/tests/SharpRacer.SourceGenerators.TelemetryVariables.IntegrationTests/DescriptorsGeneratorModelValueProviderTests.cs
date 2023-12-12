@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
+using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
@@ -58,8 +59,7 @@ public static partial class MyDescriptors2 { }";
 
         var findTargetClassesResults = runResult.TrackedSteps[TrackingNames.DescriptorsGeneratorModelValueProvider_GetTargetClasses];
 
-        // TODO: Check runResult.Diagnostics for ONE instance of SR1010
-
+        Assert.Single(runResult.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClass_AssemblyAlreadyContainsDescriptorClassTarget);
         Assert.Equal(2, findTargetClassesResults.Length);
     }
 

@@ -36,6 +36,8 @@ internal static class DescriptorsGeneratorModelValueProvider
             return new DescriptorsGeneratorModel();
         }
 
+        var target = targetClasses.First();
+
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
         if (targetClasses.Length > 1)
@@ -47,14 +49,14 @@ internal static class DescriptorsGeneratorModelValueProvider
             var diagnostics = targetClasses
                 .OrderBy(x => x.ClassSymbol.ToFullTypeName())
                 .Skip(1)
-                .Select(x => GeneratorDiagnostics.MoreThanOneDescriptorGeneratorTarget(x.AttributeLocation));
+                .Select(x => DescriptorClassDiagnostics.AssemblyAlreadyContainsDescriptorClassTarget(
+                    x.ClassSymbol.ToFullTypeName(), target.ClassSymbol.ToFullTypeName(), x.AttributeLocation));
 
             diagnosticsBuilder.AddRange(diagnostics);
         }
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        var target = targetClasses.First();
         var descriptorProperties = variableModels.Select(x => new DescriptorPropertyModel(x)).ToImmutableArray();
         var generatorModel = new DescriptorClassModel(target, descriptorProperties);
 
