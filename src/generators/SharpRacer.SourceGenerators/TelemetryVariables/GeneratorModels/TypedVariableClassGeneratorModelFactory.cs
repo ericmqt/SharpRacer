@@ -7,10 +7,12 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class TypedVariableClassGeneratorModelFactory
 {
     private ImmutableArray<TypedVariableClassGeneratorModel>.Builder _builder;
+    private readonly TypedVariableClassesGeneratorOptions _variableClassOptions;
 
-    public TypedVariableClassGeneratorModelFactory()
+    public TypedVariableClassGeneratorModelFactory(TypedVariableClassesGeneratorOptions variableClassOptions, int initialCapacity)
     {
-        _builder = ImmutableArray.CreateBuilder<TypedVariableClassGeneratorModel>();
+        _builder = ImmutableArray.CreateBuilder<TypedVariableClassGeneratorModel>(initialCapacity);
+        _variableClassOptions = variableClassOptions;
     }
 
     public ImmutableArray<TypedVariableClassGeneratorModel> Build()
@@ -18,53 +20,39 @@ internal class TypedVariableClassGeneratorModelFactory
         return _builder.ToImmutable();
     }
 
-    public bool TryAdd(
-        VariableModel variableModel,
-        TypedVariableClassesGeneratorOptions variableClassOptions,
-        out ImmutableArray<Diagnostic> diagnostics)
+    public void Add(VariableModel variableModel)
     {
-        if (variableModel == default)
-        {
-            return false;
-        }
+        var className = GetClassName(variableModel);
 
+        // Get any diagnostics
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
-
-        var className = GetClassName(variableModel, variableClassOptions);
 
         if (TryGetDuplicateClassNameDiagnostic(variableModel, className, out var duplicateClassNameDiagnostic))
         {
             diagnosticsBuilder.Add(duplicateClassNameDiagnostic!);
         }
 
-        diagnostics = diagnosticsBuilder.ToImmutable();
-
-        if (diagnostics.HasErrors())
-        {
-            return false;
-        }
-
+        // Build and add model
         var model = new TypedVariableClassGeneratorModel(
             className,
-            variableClassOptions.TargetNamespace,
+            _variableClassOptions.TargetNamespace,
             variableModel.VariableInfo,
-            variableClassOptions.GetDescriptorPropertyReference(ref variableModel),
+            diagnosticsBuilder.ToImmutable(),
+            _variableClassOptions.GetDescriptorPropertyReference(ref variableModel),
             isClassInternal: false,
             isClassPartial: true);
 
         _builder.Add(model);
-
-        return true;
     }
 
-    private string GetClassName(VariableModel variableModel, TypedVariableClassesGeneratorOptions variableClassOptions)
+    private string GetClassName(VariableModel variableModel)
     {
         if (variableModel.Options != default && !string.IsNullOrEmpty(variableModel.Options.ClassName))
         {
-            return variableClassOptions.FormatClassName(variableModel.Options.ClassName!);
+            return _variableClassOptions.FormatClassName(variableModel.Options.ClassName!);
         }
 
-        return variableClassOptions.FormatClassName(variableModel.VariableInfo.Name);
+        return _variableClassOptions.FormatClassName(variableModel.VariableInfo.Name);
     }
 
     private bool TryGetDuplicateClassNameDiagnostic(VariableModel variableModel, string className, out Diagnostic? diagnostic)

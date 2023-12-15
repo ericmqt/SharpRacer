@@ -17,6 +17,7 @@ internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVari
         string className,
         string classNamespace,
         VariableInfo variableInfo,
+        ImmutableArray<Diagnostic> diagnostics,
         DescriptorPropertyReference? descriptorPropertyReference,
         bool isClassInternal = false,
         bool isClassPartial = true)
@@ -24,6 +25,7 @@ internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVari
         ClassName = className;
         ClassNamespace = classNamespace;
         DescriptorPropertyReference = descriptorPropertyReference;
+        Diagnostics = diagnostics.GetEmptyIfDefault();
         IsClassInternal = isClassInternal;
         IsClassPartial = isClassPartial;
 
@@ -38,16 +40,17 @@ internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVari
         _implementCreateDataVariableInterface = true;
     }
 
-    public bool AddCreateDataVariableInterfaceBaseType { get; }
-    public string ClassName { get; }
-    public string ClassNamespace { get; }
-    public DescriptorPropertyReference? DescriptorPropertyReference { get; }
-    public bool ImplementCreateDataVariableInterface => _implementCreateDataVariableInterface || AddCreateDataVariableInterfaceBaseType;
-    public bool IsClassInternal { get; }
-    public bool IsClassPartial { get; }
-    public string VariableName { get; }
-    public int VariableValueCount { get; }
-    public VariableValueType VariableValueType { get; }
+    public readonly bool AddCreateDataVariableInterfaceBaseType { get; }
+    public readonly string ClassName { get; }
+    public readonly string ClassNamespace { get; }
+    public readonly DescriptorPropertyReference? DescriptorPropertyReference { get; }
+    public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
+    public readonly bool ImplementCreateDataVariableInterface => _implementCreateDataVariableInterface || AddCreateDataVariableInterfaceBaseType;
+    public readonly bool IsClassInternal { get; }
+    public readonly bool IsClassPartial { get; }
+    public readonly string VariableName { get; }
+    public readonly int VariableValueCount { get; }
+    public readonly VariableValueType VariableValueType { get; }
 
     public bool Equals(TypedVariableClassGeneratorModel other)
     {
