@@ -1,9 +1,9 @@
 ﻿using System.Collections.Immutable;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<TypedVariableClassesGeneratorOptions>
+internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClassGeneratorOptions>
 {
-    public TypedVariableClassesGeneratorOptions(
+    public VariableClassGeneratorOptions(
         bool isGeneratorEnabled,
         string targetNamespace,
         ImmutableArray<DescriptorPropertyReference> descriptorPropertyReferences)
@@ -56,10 +56,10 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
 
     public override bool Equals(object obj)
     {
-        return obj is TypedVariableClassesGeneratorOptions other && Equals(other);
+        return obj is VariableClassGeneratorOptions other && Equals(other);
     }
 
-    public bool Equals(TypedVariableClassesGeneratorOptions other)
+    public bool Equals(VariableClassGeneratorOptions other)
     {
         return IsGeneratorEnabled == other.IsGeneratorEnabled &&
             StringComparer.Ordinal.Equals(ClassNameFormat, other.ClassNameFormat) &&

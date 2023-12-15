@@ -30,7 +30,7 @@ internal static class VariableClassSyntaxFactory
         return ConstructorInitializer(SyntaxKind.BaseConstructorInitializer, baseCtorArgList);
     }
 
-    public static ConstructorDeclarationSyntax ConstructorFromDescriptor(TypedVariableClassGeneratorModel model)
+    public static ConstructorDeclarationSyntax ConstructorFromDescriptor(VariableClassGeneratorModel model)
     {
         var baseCtorInitializer = BaseConstructorInitializerFromDescriptor(
             model.DescriptorFieldIdentifierName(),
@@ -42,7 +42,7 @@ internal static class VariableClassSyntaxFactory
             .WithBody(Block());
     }
 
-    public static ConstructorDeclarationSyntax ConstructorFromDescriptorWithDataVariableInfoParameter(TypedVariableClassGeneratorModel model)
+    public static ConstructorDeclarationSyntax ConstructorFromDescriptorWithDataVariableInfoParameter(VariableClassGeneratorModel model)
     {
         var dataVariableParameter = Parameter(Identifier("dataVariableInfo"))
             .WithType(NullableType(SharpRacerTypes.DataVariableInfo()));

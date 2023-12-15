@@ -4,18 +4,18 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal class TypedVariableClassGeneratorModelFactory
+internal class VariableClassGeneratorModelFactory
 {
-    private ImmutableArray<TypedVariableClassGeneratorModel>.Builder _builder;
-    private readonly TypedVariableClassesGeneratorOptions _variableClassOptions;
+    private ImmutableArray<VariableClassGeneratorModel>.Builder _builder;
+    private readonly VariableClassGeneratorOptions _variableClassOptions;
 
-    public TypedVariableClassGeneratorModelFactory(TypedVariableClassesGeneratorOptions variableClassOptions, int initialCapacity)
+    public VariableClassGeneratorModelFactory(VariableClassGeneratorOptions variableClassOptions, int initialCapacity)
     {
-        _builder = ImmutableArray.CreateBuilder<TypedVariableClassGeneratorModel>(initialCapacity);
+        _builder = ImmutableArray.CreateBuilder<VariableClassGeneratorModel>(initialCapacity);
         _variableClassOptions = variableClassOptions;
     }
 
-    public ImmutableArray<TypedVariableClassGeneratorModel> Build()
+    public ImmutableArray<VariableClassGeneratorModel> Build()
     {
         return _builder.ToImmutable();
     }
@@ -33,7 +33,7 @@ internal class TypedVariableClassGeneratorModelFactory
         }
 
         // Build and add model
-        var model = new TypedVariableClassGeneratorModel(
+        var model = new VariableClassGeneratorModel(
             className,
             _variableClassOptions.TargetNamespace,
             variableModel.VariableInfo,

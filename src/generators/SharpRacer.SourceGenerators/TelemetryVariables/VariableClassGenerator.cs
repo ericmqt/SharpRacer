@@ -7,9 +7,9 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
-internal static class TypedVariableClassGenerator
+internal static class VariableClassGenerator
 {
-    public static CompilationUnitSyntax Create(ref readonly TypedVariableClassGeneratorModel model, CancellationToken cancellationToken)
+    public static CompilationUnitSyntax Create(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,7 +27,7 @@ internal static class TypedVariableClassGenerator
             .AddMembers(namespaceDecl);
     }
 
-    public static ClassDeclarationSyntax CreateClassDeclaration(ref readonly TypedVariableClassGeneratorModel model, CancellationToken cancellationToken)
+    public static ClassDeclarationSyntax CreateClassDeclaration(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -41,7 +41,7 @@ internal static class TypedVariableClassGenerator
             .WithMembers(classMembers);
     }
 
-    private static SyntaxList<MemberDeclarationSyntax> CreateClassMembers(ref readonly TypedVariableClassGeneratorModel model, CancellationToken cancellationToken = default)
+    private static SyntaxList<MemberDeclarationSyntax> CreateClassMembers(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -62,7 +62,7 @@ internal static class TypedVariableClassGenerator
         return List(members);
     }
 
-    private static BaseListSyntax CreateClassBaseTypeList(ref readonly TypedVariableClassGeneratorModel model, CancellationToken cancellationToken = default)
+    private static BaseListSyntax CreateClassBaseTypeList(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -77,7 +77,7 @@ internal static class TypedVariableClassGenerator
         return BaseList(SingletonSeparatedList(model.BaseClassType()));
     }
 
-    private static string[] GetRequiredUsingNamespaces(ref readonly TypedVariableClassGeneratorModel model)
+    private static string[] GetRequiredUsingNamespaces(ref readonly VariableClassGeneratorModel model)
     {
         var telemetryVariablesNamespace = "SharpRacer.Telemetry.Variables";
 

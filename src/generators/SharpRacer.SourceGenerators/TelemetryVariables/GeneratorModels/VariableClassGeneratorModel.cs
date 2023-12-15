@@ -7,13 +7,13 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVariableClassGeneratorModel>
+internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassGeneratorModel>
 {
     private readonly string _descriptorFieldName;
     private readonly bool _implementCreateDataVariableInterface;
     private readonly string? _variableValueUnit;
 
-    public TypedVariableClassGeneratorModel(
+    public VariableClassGeneratorModel(
         string className,
         string classNamespace,
         VariableInfo variableInfo,
@@ -52,7 +52,7 @@ internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVari
     public readonly int VariableValueCount { get; }
     public readonly VariableValueType VariableValueType { get; }
 
-    public bool Equals(TypedVariableClassGeneratorModel other)
+    public bool Equals(VariableClassGeneratorModel other)
     {
         return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
                 StringComparer.Ordinal.Equals(ClassName, other.ClassName) &&
@@ -149,15 +149,15 @@ internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVari
 
     public override bool Equals(object obj)
     {
-        return obj is TypedVariableClassGeneratorModel other && Equals(other);
+        return obj is VariableClassGeneratorModel other && Equals(other);
     }
 
-    public static bool operator ==(TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
+    public static bool operator ==(VariableClassGeneratorModel left, VariableClassGeneratorModel right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
+    public static bool operator !=(VariableClassGeneratorModel left, VariableClassGeneratorModel right)
     {
         return !left.Equals(right);
     }

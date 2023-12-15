@@ -25,14 +25,14 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         // Create typed variable classes
         var descriptorPropertyReferences = descriptorGeneratorModelProvider.Select(static (x, _) => x.DescriptorPropertyReferences);
 
-        var typedVariableClassModels = GetTypedVariableGeneratorModels(
+        var variableClassGeneratorModels = GetVariableClassGeneratorModels(
             generatorConfiguration,
             descriptorPropertyReferences,
             variableModels);
 
         // TODO: Pull references to the typename of generated variables for use in context classes
 
-        context.RegisterSourceOutput(typedVariableClassModels, GenerateTypedVariableClass);
+        context.RegisterSourceOutput(variableClassGeneratorModels, GenerateVariableClass);
 
         // Get variable context generator models
         var variableContextClassInfo = context.SyntaxProvider.ForClassWithAttribute(
@@ -73,22 +73,22 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .Select(static (item, _) => new VariableContextClassResult(item.Item1, item.Item2));
     }
 
-    private static IncrementalValuesProvider<TypedVariableClassGeneratorModel> GetTypedVariableGeneratorModels(
+    private static IncrementalValuesProvider<VariableClassGeneratorModel> GetVariableClassGeneratorModels(
         IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
         IncrementalValueProvider<ImmutableArray<DescriptorPropertyReference>> descriptorPropertyReferences,
         IncrementalValuesProvider<VariableModel> variableModelsProvider)
     {
-        var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorPropertyReferences)
+        var variableClassGeneratorOptions = generatorConfigurationProvider.Combine(descriptorPropertyReferences)
             .Select(static (x, _) =>
-                new TypedVariableClassesGeneratorOptions(x.Left.GenerateVariableClasses, x.Left.VariableClassesNamespace, x.Right));
+                new VariableClassGeneratorOptions(x.Left.GenerateVariableClasses, x.Left.VariableClassesNamespace, x.Right));
 
         return variableModelsProvider.Collect()
-            .Combine(descriptorPropertyReferences.Combine(typedVariablesOptions))
+            .Combine(descriptorPropertyReferences.Combine(variableClassGeneratorOptions))
             .SelectMany(static (x, ct) =>
             {
                 var descriptorPropertyRefs = x.Right.Left;
 
-                var factory = new TypedVariableClassGeneratorModelFactory(x.Right.Right, x.Left.Length);
+                var factory = new VariableClassGeneratorModelFactory(x.Right.Right, x.Left.Length);
 
                 foreach (var model in x.Left)
                 {
@@ -135,7 +135,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         context.AddSource($"{generatorModel.TypeName}.g.cs", generatedSourceText);
     }
 
-    private static void GenerateTypedVariableClass(SourceProductionContext context, TypedVariableClassGeneratorModel model)
+    private static void GenerateVariableClass(SourceProductionContext context, VariableClassGeneratorModel model)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -155,7 +155,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        var compilationUnit = TypedVariableClassGenerator.Create(ref model, context.CancellationToken)
+        var compilationUnit = VariableClassGenerator.Create(ref model, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
