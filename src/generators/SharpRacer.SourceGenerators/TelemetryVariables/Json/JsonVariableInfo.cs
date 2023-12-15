@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-internal readonly struct JsonVariableInfo : IEquatable<JsonVariableInfo>
+public readonly struct JsonVariableInfo : IEquatable<JsonVariableInfo>
 {
     public JsonVariableInfo(JsonVariableInfo value, TextSpan jsonSpan)
     {
@@ -42,7 +42,10 @@ internal readonly struct JsonVariableInfo : IEquatable<JsonVariableInfo>
     public readonly string Description { get; }
     public readonly bool IsDeprecated { get; }
     public readonly bool IsTimeSliceArray { get; }
+
+    [JsonIgnore]
     public readonly TextSpan JsonSpan { get; }
+
     public readonly string Name { get; }
     public readonly int ValueCount { get; }
     public readonly VariableValueType ValueType { get; }

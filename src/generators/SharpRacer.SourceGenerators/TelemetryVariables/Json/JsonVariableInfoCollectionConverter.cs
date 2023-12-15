@@ -30,7 +30,14 @@ internal class JsonVariableInfoCollectionConverter : JsonConverter<ImmutableArra
 
     public override void Write(Utf8JsonWriter writer, ImmutableArray<JsonVariableInfo> value, JsonSerializerOptions options)
     {
-        throw new NotImplementedException();
+        writer.WriteStartArray();
+
+        foreach (var variableInfoValue in value)
+        {
+            JsonSerializer.Serialize(writer, variableInfoValue, TelemetryGeneratorSerializationContext.Default.JsonVariableInfo);
+        }
+
+        writer.WriteEndArray();
     }
 
     private JsonVariableInfo ReadVariableInfo(ref Utf8JsonReader reader)

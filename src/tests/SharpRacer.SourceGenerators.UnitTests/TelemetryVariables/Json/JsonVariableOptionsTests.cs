@@ -8,7 +8,7 @@ public class JsonVariableOptionsTests
     {
         var key = "Lat";
         var keySpan = new TextSpan(200, key.Length);
-        var optionsValue = new JsonVariableOptionsValue("Latitude", "LatitudeDescriptor", "LatitudeVariable");
+        var optionsValue = new JsonVariableOptionsValue("Latitude", "LatitudeVariable");
         var valueSpan = new TextSpan(keySpan.End + 10, 256);
 
         var options = new JsonVariableOptions(key, keySpan, optionsValue, valueSpan);
@@ -24,7 +24,7 @@ public class JsonVariableOptionsTests
     {
         var key = "Lat";
         var keySpan = new TextSpan(200, key.Length);
-        var optionsValue = new JsonVariableOptionsValue("Latitude", "LatitudeDescriptor", "LatitudeVariable");
+        var optionsValue = new JsonVariableOptionsValue("Latitude", "LatitudeVariable");
         var valueSpan = new TextSpan(keySpan.End + 10, 256);
 
         var options1 = new JsonVariableOptions(key, keySpan, optionsValue, valueSpan);
@@ -42,13 +42,13 @@ public class JsonVariableOptionsTests
         var options1 = new JsonVariableOptions(
             "Lat",
             new TextSpan(200, 3),
-            new JsonVariableOptionsValue("Latitude", "LatitudeDescriptor", "LatitudeVariable"),
+            new JsonVariableOptionsValue("Latitude", "LatitudeVariable"),
             new TextSpan(220, 256));
 
         var options2 = new JsonVariableOptions(
             "SessionTime",
             new TextSpan(200, 3),
-            new JsonVariableOptionsValue("SessionTime", "SessionTimeDescriptor", "SessionTimeVariable"),
+            new JsonVariableOptionsValue("SessionTime", "SessionTimeVariable"),
             new TextSpan(220, 256));
 
         Assert.False(options1 == options2);

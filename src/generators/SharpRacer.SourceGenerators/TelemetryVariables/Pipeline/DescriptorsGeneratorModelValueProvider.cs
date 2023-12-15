@@ -9,23 +9,43 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 internal static class DescriptorsGeneratorModelValueProvider
 {
     public static IncrementalValueProvider<DescriptorsGeneratorModel> GetValueProvider(
-        SyntaxValueProvider syntaxValueProvider,
+        ref IncrementalGeneratorInitializationContext context,
         IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
     {
-        var classTargets = syntaxValueProvider.ForClassWithAttribute(
+        var classTargets = context.SyntaxProvider.ForClassWithAttribute(
             GenerateDataVariableDescriptorsAttributeInfo.FullTypeName,
             static classDecl => classDecl.HasAttributes() && classDecl.IsStaticPartialClass())
             .WithTrackingName(TrackingNames.DescriptorsGeneratorModelValueProvider_GetTargetClasses);
 
+        var descriptorPropertiesResult = variableModelsProvider.Select(static (x, ct) =>
+        {
+            var factory = new DescriptorPropertyModelFactory();
+            var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+            foreach (var model in x)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                if (!factory.TryAdd(model, out var diagnostic))
+                {
+                    diagnosticsBuilder.Add(diagnostic!);
+                }
+            }
+
+            return new PipelineValuesResult<DescriptorPropertyModel>(factory.Build(), diagnosticsBuilder.ToImmutable());
+        });
+
+        context.ReportDiagnostics(descriptorPropertiesResult.Select(static (x, _) => x.Diagnostics));
+
         return classTargets.Collect()
-            .Combine(variableModelsProvider)
+            .Combine(descriptorPropertiesResult.Select(static (x, _) => x.Values))
             .Select(static (x, ct) => CreateModel(x.Left, x.Right, ct))
             .WithComparer(DescriptorsGeneratorModel.EqualityComparer.Default);
     }
 
     public static DescriptorsGeneratorModel CreateModel(
         ImmutableArray<ClassWithGeneratorAttribute> targetClasses,
-        ImmutableArray<VariableModel> variableModels,
+        ImmutableArray<DescriptorPropertyModel> descriptorProperties,
         CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -57,10 +77,9 @@ internal static class DescriptorsGeneratorModelValueProvider
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        var descriptorProperties = variableModels.Select(x => new DescriptorPropertyModel(x)).ToImmutableArray();
         var generatorModel = new DescriptorClassModel(target, descriptorProperties);
 
-        var descriptorReferences = variableModels.Select(x => new DescriptorPropertyReference(generatorModel, x)).ToImmutableArray();
+        var descriptorReferences = descriptorProperties.Select(x => new DescriptorPropertyReference(generatorModel, x)).ToImmutableArray();
 
         return new DescriptorsGeneratorModel(generatorModel, descriptorReferences, diagnosticsBuilder.ToImmutable());
     }

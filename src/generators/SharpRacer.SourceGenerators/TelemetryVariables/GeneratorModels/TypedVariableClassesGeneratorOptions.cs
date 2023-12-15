@@ -1,16 +1,8 @@
 ﻿using System.Collections.Immutable;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<TypedVariableClassesGeneratorOptions>
 {
-    public TypedVariableClassesGeneratorOptions()
-    {
-        IsGeneratorEnabled = false;
-        TargetNamespace = "SharpRacer.Telemetry.Variables.Generated";
-        DescriptorPropertyReferences = ImmutableArray<DescriptorPropertyReference>.Empty;
-    }
-
     public TypedVariableClassesGeneratorOptions(
         bool isGeneratorEnabled,
         string targetNamespace,
@@ -22,18 +14,30 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
         DescriptorPropertyReferences = !descriptorPropertyReferences.IsDefault
             ? descriptorPropertyReferences
             : ImmutableArray<DescriptorPropertyReference>.Empty;
+
+        ClassNameFormat = "{0}Variable";
     }
 
+    public readonly string ClassNameFormat { get; }
     public readonly ImmutableArray<DescriptorPropertyReference> DescriptorPropertyReferences { get; }
     public readonly bool IsGeneratorEnabled { get; }
     public readonly string TargetNamespace { get; }
 
-    public static TypedVariableClassesGeneratorOptions Create(GeneratorConfiguration generatorConfiguration, DescriptorsGeneratorModel descriptorGeneratorProvider)
+    public string FormatClassName(string className)
     {
-        return new TypedVariableClassesGeneratorOptions(
-            generatorConfiguration.GenerateVariableClasses,
-            generatorConfiguration.VariableClassesNamespace,
-            descriptorGeneratorProvider.DescriptorPropertyReferences);
+        return string.Format(ClassNameFormat, className);
+    }
+
+    public DescriptorPropertyReference? GetDescriptorPropertyReference(ref readonly VariableModel variableModel)
+    {
+        var variableKey = variableModel.VariableInfo.Name;
+
+        if (DescriptorPropertyReferences.Any(x => x.VariableName.Equals(variableKey, StringComparison.Ordinal)))
+        {
+            return DescriptorPropertyReferences.First(x => x.VariableName.Equals(variableKey, StringComparison.Ordinal));
+        }
+
+        return null;
     }
 
     public bool TryGetDescriptorPropertyReference(ref readonly VariableModel variableModel, out DescriptorPropertyReference descriptorPropertyReference)
@@ -58,6 +62,7 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
     public bool Equals(TypedVariableClassesGeneratorOptions other)
     {
         return IsGeneratorEnabled == other.IsGeneratorEnabled &&
+            StringComparer.Ordinal.Equals(ClassNameFormat, other.ClassNameFormat) &&
             StringComparer.Ordinal.Equals(TargetNamespace, other.TargetNamespace) &&
             DescriptorPropertyReferences.SequenceEqual(other.DescriptorPropertyReferences);
     }
@@ -67,7 +72,8 @@ internal readonly struct TypedVariableClassesGeneratorOptions : IEquatable<Typed
         var hc = new HashCode();
 
         hc.Add(IsGeneratorEnabled);
-        hc.Add(TargetNamespace, StringComparer.Ordinal);
+        hc.Add(TargetNamespace);
+        hc.Add(ClassNameFormat);
 
         for (int i = 0; i < DescriptorPropertyReferences.Length; i++)
         {

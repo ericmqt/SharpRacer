@@ -5,25 +5,22 @@ public class JsonVariableOptionsValueTests
     public void Ctor_Test()
     {
         var name = "Latitude";
-        var descriptorName = "LatitudeDescriptor";
-        var contextPropertyName = "LatitudeVariable";
+        var className = "LatitudeVariable";
 
-        var optionsValue = new JsonVariableOptionsValue(name, descriptorName, contextPropertyName);
+        var optionsValue = new JsonVariableOptionsValue(name, className);
 
         Assert.Equal(name, optionsValue.Name);
-        Assert.Equal(descriptorName, optionsValue.DescriptorName);
-        Assert.Equal(contextPropertyName, optionsValue.ContextPropertyName);
+        Assert.Equal(className, optionsValue.ClassName);
     }
 
     [Fact]
     public void Equals_Test()
     {
         var name = "Latitude";
-        var descriptorName = "LatitudeDescriptor";
-        var contextPropertyName = "LatitudeVariable";
+        var className = "LatitudeVariable";
 
-        var optionsValue1 = new JsonVariableOptionsValue(name, descriptorName, contextPropertyName);
-        var optionsValue2 = new JsonVariableOptionsValue(name, descriptorName, contextPropertyName);
+        var optionsValue1 = new JsonVariableOptionsValue(name, className);
+        var optionsValue2 = new JsonVariableOptionsValue(name, className);
 
         Assert.True(optionsValue1 == optionsValue2);
         Assert.False(optionsValue1 != optionsValue2);
@@ -34,8 +31,8 @@ public class JsonVariableOptionsValueTests
     [Fact]
     public void Equals_UnequalTest()
     {
-        var options1 = new JsonVariableOptionsValue("Latitude", "LatitudeDescriptor", "LatitudeVariable");
-        var options2 = new JsonVariableOptionsValue("SessionTime", "SessionTimeDescriptor", "SessionTimeVariable");
+        var options1 = new JsonVariableOptionsValue("Latitude", "LatitudeVariable");
+        var options2 = new JsonVariableOptionsValue("SessionTime", "SessionTimeVariable");
 
         Assert.False(options1 == options2);
         Assert.True(options1 != options2);

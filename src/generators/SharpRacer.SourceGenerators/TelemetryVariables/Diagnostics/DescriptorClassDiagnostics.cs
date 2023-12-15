@@ -14,8 +14,26 @@ internal static class DescriptorClassDiagnostics
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
+    private static readonly DiagnosticDescriptor _DescriptorNameConflictsWithExistingVariable
+        = new(
+            "xxxx",
+            "Variable descriptor name conflict",
+            "Variable '{0}' has descriptor name '{1}' which conflicts with existing descriptor for variable '{2}'",
+            _Category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
     public static Diagnostic AssemblyAlreadyContainsDescriptorClassTarget(string redefiningClassName, string descriptorClassName, Location? location = null)
     {
         return Diagnostic.Create(_AssemblyAlreadyContainsDescriptorClassTarget, location, redefiningClassName, descriptorClassName);
+    }
+
+    public static Diagnostic DescriptorNameConflictsWithExistingVariable(
+        string variableName,
+        string descriptorName,
+        string definingVariableName,
+        Location? location = null)
+    {
+        return Diagnostic.Create(_DescriptorNameConflictsWithExistingVariable, location, variableName, descriptorName, definingVariableName);
     }
 }

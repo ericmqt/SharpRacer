@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-internal readonly struct JsonLocationFactory
+public readonly struct JsonLocationFactory
 {
     private readonly string _filePath;
     private readonly SourceText _sourceText;

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables;
@@ -15,16 +16,19 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
     {
         var generatorConfiguration = GeneratorConfigurationValueProvider.GetValueProvider(context.AnalyzerConfigOptionsProvider);
 
-        var variableModels = VariableModelsValueProvider.Get(ref context, generatorConfiguration);
+        var variableModels = VariableModelsValueProvider.GetValueProvider(ref context, generatorConfiguration);
         var variableModelArray = variableModels.Collect();
 
         // Create descriptor generator models
-        var descriptorGeneratorModelProvider = DescriptorsGeneratorModelValueProvider.GetValueProvider(context.SyntaxProvider, variableModelArray);
+        var descriptorGeneratorModelProvider = DescriptorsGeneratorModelValueProvider.GetValueProvider(ref context, variableModelArray);
 
         // Create typed variable classes
+        var descriptorPropertyReferences = descriptorGeneratorModelProvider.Select(static (x, _) => x.DescriptorPropertyReferences);
+
         var typedVariableClassModels = GetTypedVariableGeneratorModels(
+            ref context,
             generatorConfiguration,
-            descriptorGeneratorModelProvider,
+            descriptorPropertyReferences,
             variableModels);
 
         // TODO: Pull references to the typename of generated variables for use in context classes
@@ -71,39 +75,40 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
     }
 
     private static IncrementalValuesProvider<TypedVariableClassGeneratorModel> GetTypedVariableGeneratorModels(
+        ref IncrementalGeneratorInitializationContext context,
         IncrementalValueProvider<GeneratorConfiguration> generatorConfigurationProvider,
-        IncrementalValueProvider<DescriptorsGeneratorModel> descriptorGeneratorProvider,
+        IncrementalValueProvider<ImmutableArray<DescriptorPropertyReference>> descriptorPropertyReferences,
         IncrementalValuesProvider<VariableModel> variableModelsProvider)
     {
-        var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorGeneratorProvider)
-            .Select(static (x, _) => TypedVariableClassesGeneratorOptions.Create(x.Left, x.Right));
+        var typedVariablesOptions = generatorConfigurationProvider.Combine(descriptorPropertyReferences)
+            .Select(static (x, _) =>
+                new TypedVariableClassesGeneratorOptions(x.Left.GenerateVariableClasses, x.Left.VariableClassesNamespace, x.Right));
 
-        return variableModelsProvider.Combine(typedVariablesOptions)
-            .Where(static x => x.Right.IsGeneratorEnabled)
+        var classGenModels = variableModelsProvider.Collect()
+            .Combine(descriptorPropertyReferences.Combine(typedVariablesOptions))
             .Select(static (x, ct) =>
             {
-                ct.ThrowIfCancellationRequested();
+                var descriptorPropertyRefs = x.Right.Left;
+                var classGenOptions = x.Right.Right;
 
-                if (x.Right.TryGetDescriptorPropertyReference(ref x.Left, out var descriptorPropertyReference))
+                var factory = new TypedVariableClassGeneratorModelFactory();
+                var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+                foreach (var model in x.Left)
                 {
-                    return new TypedVariableClassGeneratorModel(
-                        $"{x.Left.Name}Variable",
-                        x.Right.TargetNamespace,
-                        x.Left,
-                        descriptorPropertyReference,
-                        isClassInternal: false,
-                        isClassPartial: true);
+                    ct.ThrowIfCancellationRequested();
+
+                    factory.TryAdd(model, classGenOptions, out var modelDiagnostics);
+
+                    diagnosticsBuilder.AddRange(modelDiagnostics);
                 }
 
-                return new TypedVariableClassGeneratorModel(
-                    $"{x.Left.Name}Variable",
-                    x.Right.TargetNamespace,
-                    x.Left,
-                    null,
-                    isClassInternal: false,
-                    isClassPartial: true);
-            })
-            .WithComparer(TypedVariableClassGeneratorModel.EqualityComparer.Default);
+                return new PipelineValuesResult<TypedVariableClassGeneratorModel>(factory.Build(), diagnosticsBuilder.ToImmutable());
+            });
+
+        context.ReportDiagnostics(classGenModels.Select(static (x, _) => x.Diagnostics));
+
+        return classGenModels.SelectMany(static (x, _) => x.Values);
     }
 
     private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorsGeneratorModel modelProvider)

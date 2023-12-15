@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 internal static class VariableModelsValueProvider
 {
-    internal static IncrementalValuesProvider<VariableModel> Get(
+    internal static IncrementalValuesProvider<VariableModel> GetValueProvider(
         ref IncrementalGeneratorInitializationContext context,
         IncrementalValueProvider<GeneratorConfiguration> generatorConfiguration)
     {
@@ -17,25 +17,15 @@ internal static class VariableModelsValueProvider
         var variableInfoModelsResult = GetVariableInfoProvider(ref context, generatorConfiguration);
         context.ReportDiagnostics(variableInfoModelsResult.Select(static (x, _) => x.Diagnostics));
 
-        // Build VariableModel
-        var variableModelsResult = variableInfoModelsResult.Select(static (x, _) => x.Values)
+        return variableInfoModelsResult.SelectMany(static (x, _) => x.Values)
             .Combine(variableOptionsProvider.Select(static (x, _) => x.Values))
             .Select(static (input, ct) =>
             {
-                var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+                var options = input.Right.FirstOrDefault(x => x.VariableKey.Equals(input.Left.Name));
 
-                var models = VariableModelFactory.CreateArray(
-                    input.Left,
-                    input.Right,
-                    diagnosticsBuilder,
-                    ct);
-
-                return new PipelineValuesResult<VariableModel>(models, diagnosticsBuilder.ToImmutable());
-            });
-
-        context.ReportDiagnostics(variableModelsResult.Select(static (x, _) => x.Diagnostics));
-
-        return variableModelsResult.SelectMany(static (x, _) => x.Values).WithTrackingName("VariableModelsValueProvider_Get");
+                return new VariableModel(input.Left, options);
+            })
+            .WithTrackingName(TrackingNames.VariableModelsValueProvider_GetValuesProvider);
     }
 
     private static IncrementalValueProvider<PipelineValuesResult<VariableInfo>> GetVariableInfoProvider(
@@ -73,6 +63,8 @@ internal static class VariableModelsValueProvider
 
             foreach (var jsonVariable in jsonVariables)
             {
+                ct.ThrowIfCancellationRequested();
+
                 // NOTE: Models with errors are not added to the constructed collection but will return diagnostics
                 factory.TryAdd(jsonVariable, out var variableDiagnostics);
 

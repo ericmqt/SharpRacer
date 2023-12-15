@@ -10,14 +10,9 @@ internal static class VariableOptionsDiagnostics
         return Diagnostic.Create(_AmbiguousFileName, location, fileName);
     }
 
-    public static Diagnostic DuplicateContextPropertyName(string variableKey, string contextPropertyName, string duplicatedVariableKey, Location? location = null)
+    public static Diagnostic DuplicateClassName(string variableKey, string contextPropertyName, string duplicatedVariableKey, Location? location = null)
     {
-        return Diagnostic.Create(_DuplicateContextPropertyName, location, variableKey, contextPropertyName, duplicatedVariableKey);
-    }
-
-    public static Diagnostic DuplicateDescriptorName(string variableKey, string contextPropertyName, string duplicatedVariableKey, Location? location = null)
-    {
-        return Diagnostic.Create(_DuplicateDescriptorName, location, variableKey, contextPropertyName, duplicatedVariableKey);
+        return Diagnostic.Create(_DuplicateClassName, location, variableKey, contextPropertyName, duplicatedVariableKey);
     }
 
     public static Diagnostic DuplicateKey(string key, Location? location = null)
@@ -90,20 +85,11 @@ internal static class VariableOptionsDiagnostics
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-    private static readonly DiagnosticDescriptor _DuplicateContextPropertyName
+    private static readonly DiagnosticDescriptor _DuplicateClassName
         = new(
-            DiagnosticIds.VariableOptions_DuplicateContextPropertyName,
-            "Value for variable option ContextPropertyName is assigned to another variable",
-            "Options for variable '{0}' defines a value for ContextPropertyName '{1}' which is used by variable '{2}'",
-            _Category,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor _DuplicateDescriptorName
-        = new(
-            DiagnosticIds.VariableOptions_DuplicateDescriptorName,
-            "Value for variable option DescriptorName is assigned to another variable",
-            "Options for variable '{0}' defines a value for DescriptorName '{1}' which is used by variable '{2}'",
+            DiagnosticIds.VariableOptions_DuplicateClassName,
+            "Value for variable option ClassName is assigned to another variable",
+            "Options for variable '{0}' defines a value for ClassName '{1}' which is used by variable '{2}'",
             _Category,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);

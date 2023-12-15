@@ -10,47 +10,16 @@ internal readonly struct VariableOptions : IEquatable<VariableOptions>
         VariableKey = jsonVariableOptions.Key;
         VariableKeyLocation = variableKeyLocation;
         ValueLocation = valueLocation;
-        ContextPropertyName = jsonVariableOptions.Value.ContextPropertyName;
-        DescriptorName = jsonVariableOptions.Value.DescriptorName;
+
+        ClassName = jsonVariableOptions.Value.ClassName;
         Name = jsonVariableOptions.Value.Name;
     }
 
-    public readonly string? ContextPropertyName { get; }
-    public readonly string? DescriptorName { get; }
+    public readonly string? ClassName { get; }
     public readonly string? Name { get; }
-    public Location ValueLocation { get; }
+    public readonly Location ValueLocation { get; }
     public readonly string VariableKey { get; }
     public readonly Location VariableKeyLocation { get; }
-
-    public string GetConfiguredName(VariableInfo variableInfo)
-    {
-        if (!string.IsNullOrEmpty(Name))
-        {
-            return Name!;
-        }
-
-        return variableInfo.Name;
-    }
-
-    public string GetConfiguredContextPropertyName(VariableInfo variableInfo)
-    {
-        if (!string.IsNullOrEmpty(ContextPropertyName))
-        {
-            return ContextPropertyName!;
-        }
-
-        return variableInfo.Name;
-    }
-
-    public string GetConfiguredDescriptorName(VariableInfo variableInfo)
-    {
-        if (!string.IsNullOrEmpty(DescriptorName))
-        {
-            return DescriptorName!;
-        }
-
-        return variableInfo.Name;
-    }
 
     public override bool Equals(object obj)
     {
@@ -63,8 +32,7 @@ internal readonly struct VariableOptions : IEquatable<VariableOptions>
             VariableKeyLocation == other.VariableKeyLocation &&
             ValueLocation == other.ValueLocation &&
             StringComparer.Ordinal.Equals(Name, other.Name) &&
-            StringComparer.Ordinal.Equals(ContextPropertyName, other.ContextPropertyName) &&
-            StringComparer.Ordinal.Equals(DescriptorName, other.DescriptorName);
+            StringComparer.Ordinal.Equals(ClassName, other.ClassName);
     }
 
     public override int GetHashCode()
@@ -75,8 +43,7 @@ internal readonly struct VariableOptions : IEquatable<VariableOptions>
         hc.Add(VariableKeyLocation);
         hc.Add(ValueLocation);
         hc.Add(Name);
-        hc.Add(ContextPropertyName);
-        hc.Add(DescriptorName);
+        hc.Add(ClassName);
 
         return hc.ToHashCode();
     }

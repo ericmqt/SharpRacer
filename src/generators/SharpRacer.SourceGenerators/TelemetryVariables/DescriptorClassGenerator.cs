@@ -77,9 +77,9 @@ internal class DescriptorClassGenerator
             .WithGetOnlyAutoAccessor();
 
         var objectCreationExpr = DataVariableDescriptorSyntaxFactory.CreateNewInstanceExpression(
-            descriptorPropertyModel.VariableName,
-            descriptorPropertyModel.VariableValueType,
-            descriptorPropertyModel.VariableValueCount);
+            descriptorPropertyModel.VariableInfo.Name,
+            descriptorPropertyModel.VariableInfo.ValueType,
+            descriptorPropertyModel.VariableInfo.ValueCount);
 
         return decl.WithInitializer(EqualsValueClause(objectCreationExpr))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));

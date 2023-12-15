@@ -60,14 +60,9 @@ internal class VariableOptionsFactory
             diagnosticsBuilder.Add(duplicateKeyDiagnostic!);
         }
 
-        if (TryGetDuplicatedContextPropertyNameDiagnostic(jsonVariableOptions, out var duplicateContextPropertyNameDiagnostic))
+        if (TryGetDuplicatedClassNameDiagnostic(jsonVariableOptions, out var duplicateContextPropertyNameDiagnostic))
         {
             diagnosticsBuilder.Add(duplicateContextPropertyNameDiagnostic!);
-        }
-
-        if (TryGetDuplicatedDescriptorNameDiagnostic(jsonVariableOptions, out var duplicateDescriptorNameDiagnostic))
-        {
-            diagnosticsBuilder.Add(duplicateDescriptorNameDiagnostic!);
         }
 
         if (TryGetDuplicatedNameDiagnostic(jsonVariableOptions, out var duplicateNameDiagnostic))
@@ -94,18 +89,18 @@ internal class VariableOptionsFactory
         return true;
     }
 
-    private bool TryGetDuplicatedContextPropertyNameDiagnostic(JsonVariableOptions jsonVariableOptions, out Diagnostic? diagnostic)
+    private bool TryGetDuplicatedClassNameDiagnostic(JsonVariableOptions jsonVariableOptions, out Diagnostic? diagnostic)
     {
         var optionsValue = jsonVariableOptions.Value;
 
-        if (string.IsNullOrEmpty(optionsValue.ContextPropertyName))
+        if (string.IsNullOrEmpty(optionsValue.ClassName))
         {
             diagnostic = null;
             return false;
         }
 
         var existing = _builder
-            .Where(x => !string.IsNullOrEmpty(x.ContextPropertyName) && x.ContextPropertyName!.Equals(optionsValue.ContextPropertyName))
+            .Where(x => !string.IsNullOrEmpty(x.ClassName) && x.ClassName!.Equals(optionsValue.ClassName))
             .FirstOrDefault();
 
         if (existing == default)
@@ -116,40 +111,9 @@ internal class VariableOptionsFactory
 
         var location = GetValueLocation(jsonVariableOptions);
 
-        diagnostic = VariableOptionsDiagnostics.DuplicateContextPropertyName(
+        diagnostic = VariableOptionsDiagnostics.DuplicateClassName(
             jsonVariableOptions.Key,
-            optionsValue.ContextPropertyName!,
-            existing.VariableKey,
-            location);
-
-        return true;
-    }
-
-    private bool TryGetDuplicatedDescriptorNameDiagnostic(JsonVariableOptions jsonVariableOptions, out Diagnostic? diagnostic)
-    {
-        var optionsValue = jsonVariableOptions.Value;
-
-        if (string.IsNullOrEmpty(optionsValue.DescriptorName))
-        {
-            diagnostic = null;
-            return false;
-        }
-
-        var existing = _builder
-            .Where(x => !string.IsNullOrEmpty(x.DescriptorName) && x.DescriptorName!.Equals(optionsValue.DescriptorName))
-            .FirstOrDefault();
-
-        if (existing == default)
-        {
-            diagnostic = null;
-            return false;
-        }
-
-        var location = GetValueLocation(jsonVariableOptions);
-
-        diagnostic = VariableOptionsDiagnostics.DuplicateDescriptorName(
-            jsonVariableOptions.Key,
-            optionsValue.DescriptorName!,
+            optionsValue.ClassName!,
             existing.VariableKey,
             location);
 

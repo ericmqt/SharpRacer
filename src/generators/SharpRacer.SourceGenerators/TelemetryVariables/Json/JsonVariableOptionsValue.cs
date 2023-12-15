@@ -4,15 +4,13 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 internal readonly struct JsonVariableOptionsValue : IEquatable<JsonVariableOptionsValue>
 {
     [JsonConstructor]
-    public JsonVariableOptionsValue(string? name, string? descriptorName, string? contextPropertyName)
+    public JsonVariableOptionsValue(string? name, string? className)
     {
         Name = name;
-        DescriptorName = descriptorName;
-        ContextPropertyName = contextPropertyName;
+        ClassName = className;
     }
 
-    public readonly string? ContextPropertyName { get; }
-    public readonly string? DescriptorName { get; }
+    public readonly string? ClassName { get; }
     public readonly string? Name { get; }
 
     public override bool Equals(object obj)
@@ -23,8 +21,7 @@ internal readonly struct JsonVariableOptionsValue : IEquatable<JsonVariableOptio
     public bool Equals(JsonVariableOptionsValue other)
     {
         return StringComparer.Ordinal.Equals(Name, other.Name) &&
-            StringComparer.Ordinal.Equals(ContextPropertyName, other.ContextPropertyName) &&
-            StringComparer.Ordinal.Equals(DescriptorName, other.DescriptorName);
+            StringComparer.Ordinal.Equals(ClassName, other.ClassName);
     }
 
     public override int GetHashCode()
@@ -32,8 +29,7 @@ internal readonly struct JsonVariableOptionsValue : IEquatable<JsonVariableOptio
         var hc = new HashCode();
 
         hc.Add(Name);
-        hc.Add(ContextPropertyName);
-        hc.Add(DescriptorName);
+        hc.Add(ClassName);
 
         return hc.ToHashCode();
     }

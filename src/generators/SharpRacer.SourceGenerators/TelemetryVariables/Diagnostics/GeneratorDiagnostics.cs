@@ -5,17 +5,13 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 internal static partial class GeneratorDiagnostics
 {
-    // Variables file: SR1100
-    // Configuration file: SR1200
-
     public static string DefaultCategory = "SharpRacer.SourceGenerators";
 
-
-    private static readonly DiagnosticDescriptor _MoreThanOneDescriptorGeneratorTarget
+    private static readonly DiagnosticDescriptor _VariableClassNameInUse
         = new DiagnosticDescriptor(
-            "SR1010",
-            "GenerateDataVariableDescriptorsAttribute can only decorate exactly one class",
-            "Only one class in an assembly can be decorated with GenerateDataVariableDescriptorsAttribute",
+            DiagnosticIds.VariableClassNameInUse,
+            "Variable class name in use by another variable",
+            "Variable class '{0}' for variable '{1}' is in use by variable '{2}'",
             DefaultCategory,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
@@ -56,14 +52,14 @@ internal static partial class GeneratorDiagnostics
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-    public static Diagnostic MoreThanOneDescriptorGeneratorTarget(Location? location = null)
-    {
-        return Diagnostic.Create(_MoreThanOneDescriptorGeneratorTarget, location);
-    }
-
     public static Diagnostic Placeholder(Location? location = null)
     {
         return Diagnostic.Create(_PlaceholderDiagnostic, location);
+    }
+
+    public static Diagnostic VariableClassNameInUse(string className, string variableName, string conflictingVariableName, Location? location = null)
+    {
+        return Diagnostic.Create(_VariableClassNameInUse, location, className, variableName, conflictingVariableName);
     }
 
     public static Diagnostic VariableNameInUseByVariable(

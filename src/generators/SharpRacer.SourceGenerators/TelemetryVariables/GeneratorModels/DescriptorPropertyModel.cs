@@ -1,20 +1,18 @@
-﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+
+namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorPropertyModel>
 {
-    public DescriptorPropertyModel(VariableModel variableModel)
+    public DescriptorPropertyModel(string propertyName, string propertyXmlSummary, VariableInfo variableInfo)
     {
-        PropertyName = variableModel.DescriptorName;
-        PropertyXmlSummary = variableModel.VariableInfo.Description;
-        VariableName = variableModel.VariableInfo.Name;
-        VariableValueType = variableModel.VariableInfo.ValueType;
-        VariableValueCount = variableModel.VariableInfo.ValueCount;
+        PropertyName = propertyName;
+        PropertyXmlSummary = propertyXmlSummary;
+        VariableInfo = variableInfo;
     }
 
     public readonly string PropertyName { get; }
     public readonly string? PropertyXmlSummary { get; }
-    public readonly string VariableName { get; }
-    public readonly VariableValueType VariableValueType { get; }
-    public readonly int VariableValueCount { get; }
+    public readonly VariableInfo VariableInfo { get; }
 
     public override bool Equals(object obj)
     {
@@ -23,22 +21,18 @@ internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorProperty
 
     public bool Equals(DescriptorPropertyModel other)
     {
-        return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
-            StringComparer.Ordinal.Equals(PropertyName, other.PropertyName) &&
+        return StringComparer.Ordinal.Equals(PropertyName, other.PropertyName) &&
             StringComparer.Ordinal.Equals(PropertyXmlSummary, other.PropertyXmlSummary) &&
-            VariableValueType == other.VariableValueType &&
-            VariableValueCount == other.VariableValueCount;
+            VariableInfo == other.VariableInfo;
     }
 
     public override int GetHashCode()
     {
         var hc = new HashCode();
 
-        hc.Add(VariableName, StringComparer.Ordinal);
-        hc.Add(PropertyName, StringComparer.Ordinal);
-        hc.Add(PropertyXmlSummary, StringComparer.Ordinal);
-        hc.Add(VariableValueType);
-        hc.Add(VariableValueCount);
+        hc.Add(PropertyName);
+        hc.Add(PropertyXmlSummary);
+        hc.Add(VariableInfo);
 
         return hc.ToHashCode();
     }

@@ -1,22 +1,22 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorPropertyReference>
 {
-    public DescriptorPropertyReference(DescriptorClassModel generatorModel, VariableModel variableModel)
+    public DescriptorPropertyReference(DescriptorClassModel generatorModel, DescriptorPropertyModel propertyModel)
     {
         if (generatorModel is null)
         {
             throw new ArgumentNullException(nameof(generatorModel));
         }
 
-        if (variableModel == default)
+        if (propertyModel == default)
         {
-            throw new ArgumentException($"'{nameof(variableModel)}' cannot be a default value.", nameof(variableModel));
+            throw new ArgumentException($"'{nameof(propertyModel)}' cannot be a default value.", nameof(propertyModel));
         }
 
         DescriptorClassNamespace = generatorModel.TypeNamespace;
         DescriptorClassName = generatorModel.TypeName;
-        PropertyName = variableModel.DescriptorName;
-        VariableName = variableModel.VariableInfo.Name;
+        PropertyName = propertyModel.PropertyName;
+        VariableName = propertyModel.VariableInfo.Name;
     }
 
     public readonly string DescriptorClassNamespace { get; }

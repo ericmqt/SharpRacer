@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using System.Text.Json.Serialization;
+using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 internal readonly struct JsonVariableOptions
@@ -12,8 +13,13 @@ internal readonly struct JsonVariableOptions
     }
 
     public readonly string Key { get; }
+
+    [JsonIgnore]
     public readonly TextSpan KeySpan { get; }
+
     public readonly JsonVariableOptionsValue Value { get; }
+
+    [JsonIgnore]
     public readonly TextSpan ValueSpan { get; }
 
     public override bool Equals(object obj)

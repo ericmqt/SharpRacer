@@ -22,7 +22,9 @@ internal class JsonVariableOptionsCollectionConverter : JsonConverter<ImmutableA
                 break;
             }
 
-            var optionsValue = ReadOptions(ref reader);
+            var key = ReadOptionsKey(ref reader, out var keySpan);
+            var value = ReadOptionsValue(ref reader, out var valueSpan);
+            var optionsValue = new JsonVariableOptions(key, keySpan, value, valueSpan);
 
             builder.Add(optionsValue);
         }
@@ -32,15 +34,16 @@ internal class JsonVariableOptionsCollectionConverter : JsonConverter<ImmutableA
 
     public override void Write(Utf8JsonWriter writer, ImmutableArray<JsonVariableOptions> value, JsonSerializerOptions options)
     {
-        throw new NotImplementedException();
-    }
+        writer.WriteStartObject();
 
-    private JsonVariableOptions ReadOptions(ref Utf8JsonReader reader)
-    {
-        var key = ReadOptionsKey(ref reader, out var keySpan);
-        var value = ReadOptionsValue(ref reader, out var valueSpan);
+        foreach (var optionsValue in value)
+        {
+            writer.WritePropertyName(optionsValue.Key);
 
-        return new JsonVariableOptions(key, keySpan, value, valueSpan);
+            JsonSerializer.Serialize(writer, optionsValue.Value, TelemetryGeneratorSerializationContext.Default.JsonVariableOptionsValue);
+        }
+
+        writer.WriteEndObject();
     }
 
     private string ReadOptionsKey(ref Utf8JsonReader reader, out TextSpan keySpan)

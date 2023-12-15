@@ -1,11 +1,13 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal class TypedVariableClassGeneratorModel
+internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVariableClassGeneratorModel>
 {
     private readonly string _descriptorFieldName;
     private readonly bool _implementCreateDataVariableInterface;
@@ -14,7 +16,7 @@ internal class TypedVariableClassGeneratorModel
     public TypedVariableClassGeneratorModel(
         string className,
         string classNamespace,
-        VariableModel variableModel,
+        VariableInfo variableInfo,
         DescriptorPropertyReference? descriptorPropertyReference,
         bool isClassInternal = false,
         bool isClassPartial = true)
@@ -25,10 +27,10 @@ internal class TypedVariableClassGeneratorModel
         IsClassInternal = isClassInternal;
         IsClassPartial = isClassPartial;
 
-        VariableName = variableModel.VariableName;
-        VariableValueCount = variableModel.VariableValueCount;
-        VariableValueType = variableModel.VariableValueType;
-        _variableValueUnit = variableModel.VariableValueUnit;
+        VariableName = variableInfo.Name;
+        VariableValueCount = variableInfo.ValueCount;
+        VariableValueType = variableInfo.ValueType;
+        _variableValueUnit = variableInfo.ValueUnit;
 
         _descriptorFieldName = "_Descriptor";
 
@@ -46,6 +48,40 @@ internal class TypedVariableClassGeneratorModel
     public string VariableName { get; }
     public int VariableValueCount { get; }
     public VariableValueType VariableValueType { get; }
+
+    public bool Equals(TypedVariableClassGeneratorModel other)
+    {
+        return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
+                StringComparer.Ordinal.Equals(ClassName, other.ClassName) &&
+                StringComparer.Ordinal.Equals(ClassNamespace, other.ClassNamespace) &&
+                AddCreateDataVariableInterfaceBaseType == other.AddCreateDataVariableInterfaceBaseType &&
+                DescriptorPropertyReference == other.DescriptorPropertyReference &&
+                ImplementCreateDataVariableInterface == other.ImplementCreateDataVariableInterface &&
+                IsClassInternal == other.IsClassInternal &&
+                IsClassPartial == other.IsClassPartial &&
+                VariableValueCount == other.VariableValueCount &&
+                VariableValueType == other.VariableValueType &&
+                StringComparer.Ordinal.Equals(_variableValueUnit, other._variableValueUnit);
+    }
+
+    public override int GetHashCode()
+    {
+        var hc = new HashCode();
+
+        hc.Add(AddCreateDataVariableInterfaceBaseType);
+        hc.Add(ClassName);
+        hc.Add(ClassNamespace);
+        hc.Add(DescriptorPropertyReference);
+        hc.Add(ImplementCreateDataVariableInterface);
+        hc.Add(IsClassInternal);
+        hc.Add(IsClassPartial);
+        hc.Add(VariableName);
+        hc.Add(VariableValueCount);
+        hc.Add(VariableValueType);
+        hc.Add(_variableValueUnit);
+
+        return hc.ToHashCode();
+    }
 
     public BaseTypeSyntax BaseClassType()
     {
@@ -108,60 +144,18 @@ internal class TypedVariableClassGeneratorModel
         return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit);
     }
 
-    internal class EqualityComparer : IEqualityComparer<TypedVariableClassGeneratorModel?>
+    public override bool Equals(object obj)
     {
-        private EqualityComparer() { }
-
-        public static IEqualityComparer<TypedVariableClassGeneratorModel?> Default { get; } = new EqualityComparer();
-
-        public bool Equals(TypedVariableClassGeneratorModel? x, TypedVariableClassGeneratorModel? y)
-        {
-            if (ReferenceEquals(x, y))
-            {
-                return true;
-            }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            return StringComparer.Ordinal.Equals(x.VariableName, y.VariableName) &&
-                StringComparer.Ordinal.Equals(x.ClassName, y.ClassName) &&
-                StringComparer.Ordinal.Equals(x.ClassNamespace, y.ClassNamespace) &&
-                x.AddCreateDataVariableInterfaceBaseType == y.AddCreateDataVariableInterfaceBaseType &&
-                x.DescriptorPropertyReference == y.DescriptorPropertyReference &&
-                x.ImplementCreateDataVariableInterface == y.ImplementCreateDataVariableInterface &&
-                x.IsClassInternal == y.IsClassInternal &&
-                x.IsClassPartial == y.IsClassPartial &&
-                x.VariableValueCount == y.VariableValueCount &&
-                x.VariableValueType == y.VariableValueType &&
-                StringComparer.Ordinal.Equals(x._variableValueUnit, y._variableValueUnit);
-        }
-
-        public int GetHashCode(TypedVariableClassGeneratorModel? obj)
-        {
-            var hc = new HashCode();
-
-            if (obj is null)
-            {
-                return hc.ToHashCode();
-            }
-
-            hc.Add(obj.AddCreateDataVariableInterfaceBaseType);
-            hc.Add(obj.ClassName, StringComparer.Ordinal);
-            hc.Add(obj.ClassNamespace, StringComparer.Ordinal);
-            hc.Add(obj.DescriptorPropertyReference);
-            hc.Add(obj.ImplementCreateDataVariableInterface);
-            hc.Add(obj.IsClassInternal);
-            hc.Add(obj.IsClassPartial);
-            hc.Add(obj.VariableName, StringComparer.Ordinal);
-            hc.Add(obj.VariableValueCount);
-            hc.Add(obj.VariableValueType);
-            hc.Add(obj._variableValueUnit, StringComparer.Ordinal);
-
-            return hc.ToHashCode();
-        }
+        return obj is TypedVariableClassGeneratorModel other && Equals(other);
     }
 
+    public static bool operator == (TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator != (TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
+    {
+        return !left.Equals(right);
+    }
 }

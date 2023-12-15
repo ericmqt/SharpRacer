@@ -2,7 +2,7 @@
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct VariableInfo : IEquatable<VariableInfo>
+public readonly struct VariableInfo : IEquatable<VariableInfo>
 {
     public VariableInfo(JsonVariableInfo value, Location jsonLocation)
     {
