@@ -152,12 +152,12 @@ internal readonly struct TypedVariableClassGeneratorModel : IEquatable<TypedVari
         return obj is TypedVariableClassGeneratorModel other && Equals(other);
     }
 
-    public static bool operator == (TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
+    public static bool operator ==(TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator != (TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
+    public static bool operator !=(TypedVariableClassGeneratorModel left, TypedVariableClassGeneratorModel right)
     {
         return !left.Equals(right);
     }

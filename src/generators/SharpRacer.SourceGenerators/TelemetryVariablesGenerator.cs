@@ -103,10 +103,14 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
     private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorsGeneratorModel modelProvider)
     {
+        context.CancellationToken.ThrowIfCancellationRequested();
+
         if (modelProvider.Diagnostics.Any())
         {
             foreach (var diagnostic in modelProvider.Diagnostics)
             {
+                context.CancellationToken.ThrowIfCancellationRequested();
+
                 context.ReportDiagnostic(diagnostic);
             }
         }
@@ -115,6 +119,8 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         {
             return;
         }
+
+        context.CancellationToken.ThrowIfCancellationRequested();
 
         var generatorModel = modelProvider.GeneratorModel;
         var generator = new DescriptorClassGenerator(generatorModel);
@@ -131,9 +137,13 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
     private static void GenerateTypedVariableClass(SourceProductionContext context, TypedVariableClassGeneratorModel model)
     {
+        context.CancellationToken.ThrowIfCancellationRequested();
+
         // Report diagnostics, if any
         foreach (var diagnostic in model.Diagnostics)
         {
+            context.CancellationToken.ThrowIfCancellationRequested();
+
             context.ReportDiagnostic(diagnostic);
         }
 
@@ -143,7 +153,9 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             return;
         }
 
-        var compilationUnit = TypedVariableClassGenerator.Create(model, context.CancellationToken)
+        context.CancellationToken.ThrowIfCancellationRequested();
+
+        var compilationUnit = TypedVariableClassGenerator.Create(ref model, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
