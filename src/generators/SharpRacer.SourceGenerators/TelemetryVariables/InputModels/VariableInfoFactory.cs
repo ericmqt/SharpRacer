@@ -40,11 +40,6 @@ internal class VariableInfoFactory
 
     private ImmutableArray<Diagnostic> GetDiagnostics(JsonVariableInfo jsonVariableInfo)
     {
-        if (jsonVariableInfo == default)
-        {
-            return ImmutableArray<Diagnostic>.Empty;
-        }
-
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
         if (TryGetDuplicateNameDiagnostic(jsonVariableInfo, out var duplicateNameDiagnostic))
@@ -99,11 +94,6 @@ internal class VariableInfoFactory
 
     private Location? GetLocation(JsonVariableInfo jsonVariableInfo)
     {
-        if (jsonVariableInfo == default)
-        {
-            return null;
-        }
-
         return _locationFactory.GetLocation(jsonVariableInfo.JsonSpan);
     }
 }

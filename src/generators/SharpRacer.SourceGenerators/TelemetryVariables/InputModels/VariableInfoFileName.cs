@@ -2,7 +2,7 @@
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
-internal readonly struct VariableInfoFileName : IEquatable<VariableInfoFileName>
+public readonly struct VariableInfoFileName : IEquatable<VariableInfoFileName>
 {
     private readonly string _fileName;
     private readonly bool _isInitialized;

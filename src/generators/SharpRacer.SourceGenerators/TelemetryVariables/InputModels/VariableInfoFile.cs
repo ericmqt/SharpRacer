@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
+public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
 {
     public VariableInfoFile(VariableInfoFileName fileName, AdditionalText file, SourceText sourceText)
     {

@@ -42,7 +42,7 @@ internal readonly struct IncludedVariableNameValue : IEquatable<IncludedVariable
     {
         var hc = new HashCode();
 
-        hc.Add(Value, StringComparer.Ordinal);
+        hc.Add(Value);
         hc.Add(ValueSpan);
 
         return hc.ToHashCode();

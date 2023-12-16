@@ -16,7 +16,7 @@ public readonly struct MSBuildPropertyValue : IEquatable<MSBuildPropertyValue>
     public readonly MSBuildPropertyKey PropertyKey { get; }
     public readonly string? Value { get; }
 
-    public bool GetBooleanOrDefault(bool defaultValue)
+    public bool GetBooleanOrDefault(bool defaultValue = false)
     {
         if (Exists && bool.TryParse(Value, out var result))
         {

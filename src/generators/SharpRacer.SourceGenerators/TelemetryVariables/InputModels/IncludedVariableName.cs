@@ -14,13 +14,12 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 
     public IncludedVariableName(string variableName, Location sourceLocation, ImmutableArray<Diagnostic> diagnostics)
     {
-        Value = !string.IsNullOrEmpty(variableName)
-            ? variableName
-            : throw new ArgumentException($"'{nameof(variableName)}' cannot be null or empty.", nameof(variableName));
+        // Allow string.Empty but not null
+        Value = variableName ?? throw new ArgumentException($"'{nameof(variableName)}' cannot be null or empty.", nameof(variableName));
 
         SourceLocation = sourceLocation ?? throw new ArgumentNullException(nameof(sourceLocation));
 
-        Diagnostics = !diagnostics.IsDefault ? diagnostics : ImmutableArray<Diagnostic>.Empty;
+        Diagnostics = diagnostics.GetEmptyIfDefault();
 
         _isInitialized = true;
     }

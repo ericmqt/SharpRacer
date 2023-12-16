@@ -50,7 +50,7 @@ internal class IncludedVariableNameFactory
             diagnosticsBuilder.Add(emptyDiagnostic);
         }
 
-        if (!_builder.Any(x => string.Equals(x.Value, value.Value, StringComparison.Ordinal)))
+        if (_builder.Any(x => string.Equals(x.Value, value.Value, StringComparison.Ordinal)))
         {
             var reincludeDiagnostic = IncludedVariablesDiagnostics.VariableAlreadyIncluded(
                 value.Value,

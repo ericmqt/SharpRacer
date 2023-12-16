@@ -5,12 +5,32 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 internal readonly struct VariableOptions : IEquatable<VariableOptions>
 {
+    public VariableOptions(string variableKey)
+    {
+        VariableKey = !string.IsNullOrEmpty(variableKey)
+            ? variableKey
+            : throw new ArgumentException($"'{nameof(variableKey)}' cannot be null or empty.", nameof(variableKey));
+
+        VariableKeyLocation = Location.None;
+        ValueLocation = Location.None;
+    }
+
+    public VariableOptions(string variableKey, string? name, string? className)
+        : this (variableKey)
+    {
+        Name = name;
+        ClassName = className;
+
+        VariableKeyLocation = Location.None;
+        ValueLocation = Location.None;
+    }
+
     public VariableOptions(JsonVariableOptions jsonVariableOptions, Location variableKeyLocation, Location valueLocation)
     {
         VariableKey = jsonVariableOptions.Key;
         VariableKeyLocation = variableKeyLocation;
         ValueLocation = valueLocation;
-
+        
         ClassName = jsonVariableOptions.Value.ClassName;
         Name = jsonVariableOptions.Value.Name;
     }

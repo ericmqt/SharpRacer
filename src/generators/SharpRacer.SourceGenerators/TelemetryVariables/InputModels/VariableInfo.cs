@@ -4,6 +4,12 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public readonly struct VariableInfo : IEquatable<VariableInfo>
 {
+    internal VariableInfo(JsonVariableInfo variableInfo)
+        : this (variableInfo, Location.None)
+    {
+
+    }
+
     public VariableInfo(JsonVariableInfo value, Location jsonLocation)
     {
         Name = value.Name;

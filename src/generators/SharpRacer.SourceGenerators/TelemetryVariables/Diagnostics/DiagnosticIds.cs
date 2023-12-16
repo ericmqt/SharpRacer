@@ -22,6 +22,11 @@ internal static class DiagnosticIds
     public const string VariableOptions_DuplicateClassName = "SR2212";
     public const string VariableOptions_DuplicateDescriptorName = "SR2213";
 
+    public const string IncludedVariables_FileReadException = "SR2303";
+    public const string IncludedVariables_NoIncludedVariableNames = "SR2304";
+    public const string IncludedVariables_EmptyVariableName = "SR2305";
+    public const string IncludedVariables_VariableAlreadyIncluded = "SR2306";
+
     public const string VariableModels_NameInUse = "SR3210";
     public const string VariableModels_ContextPropertyNameInUse = "SR3211";
     public const string VariableModels_DescriptorNameInUse = "SR3212";

@@ -7,7 +7,7 @@ internal readonly struct IncludedVariables : IEquatable<IncludedVariables>
 
     public IncludedVariables(ImmutableArray<IncludedVariableName> variableNames)
     {
-        VariableNames = !variableNames.IsDefault ? variableNames : ImmutableArray<IncludedVariableName>.Empty;
+        VariableNames = variableNames.GetEmptyIfDefault();
 
         _isInitialized = true;
     }
@@ -31,6 +31,7 @@ internal readonly struct IncludedVariables : IEquatable<IncludedVariables>
             return !other._isInitialized;
         }
 
+        // Check if other is initialized, otherwise VariableNames.SequenceEqual(...) throws NullReferenceException
         if (!other._isInitialized)
         {
             return false;

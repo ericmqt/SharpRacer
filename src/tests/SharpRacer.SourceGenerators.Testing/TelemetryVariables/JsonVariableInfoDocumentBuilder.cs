@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text.Json;
 using SharpRacer.SourceGenerators.TelemetryVariables;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 using SharpRacer.SourceGenerators.Testing.Text;
 
@@ -118,5 +119,24 @@ public class JsonVariableInfoDocumentBuilder
         var variables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
 
         return new JsonVariableInfoDocument(documentPath, jsonSourceText, variables);
+    }
+
+    public AdditionalTextFile ToAdditionalTextFile(string documentPath)
+    {
+        var json = JsonSerializer.Serialize(
+           _variables.ToImmutableArray(),
+           TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
+
+        var jsonSourceText = new JsonSourceText(json);
+
+        return new AdditionalTextFile(documentPath, jsonSourceText);
+    }
+
+    public VariableInfoFile ToVariableInfoFile(string documentPath)
+    {
+        var additionalText = ToAdditionalTextFile(documentPath);
+        var sourceText = additionalText.GetText()!;
+
+        return new VariableInfoFile(new VariableInfoFileName(documentPath), additionalText, sourceText);
     }
 }

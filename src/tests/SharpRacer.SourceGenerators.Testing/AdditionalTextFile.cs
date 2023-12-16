@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace SharpRacer.SourceGenerators.Testing;
 public sealed class AdditionalTextFile : AdditionalText
 {
-    private readonly string _contents;
+    private readonly Lazy<SourceText?> _sourceText;
 
     public AdditionalTextFile(string path, string contents)
     {
@@ -13,15 +13,22 @@ public sealed class AdditionalTextFile : AdditionalText
             ? path
             : throw new ArgumentException($"'{nameof(path)}' cannot be null or empty.", nameof(path));
 
-        _contents = !string.IsNullOrEmpty(contents)
-            ? contents
-            : throw new ArgumentException($"'{nameof(contents)}' cannot be null or empty.", nameof(contents));
+        _sourceText = new Lazy<SourceText?>(SourceText.From(contents, Encoding.UTF8));
+    }
+
+    public AdditionalTextFile(string path, SourceText sourceText)
+    {
+        Path = !string.IsNullOrEmpty(path)
+            ? path
+            : throw new ArgumentException($"'{nameof(path)}' cannot be null or empty.", nameof(path));
+
+        _sourceText = new Lazy<SourceText?>(sourceText);
     }
 
     public override string Path { get; }
 
     public override SourceText? GetText(CancellationToken cancellationToken = default)
     {
-        return SourceText.From(_contents, Encoding.UTF8);
+        return _sourceText.Value;
     }
 }

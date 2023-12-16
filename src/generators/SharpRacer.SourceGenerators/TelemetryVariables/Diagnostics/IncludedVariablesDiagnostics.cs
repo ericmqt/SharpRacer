@@ -43,7 +43,7 @@ internal static class IncludedVariablesDiagnostics
 
     private static readonly DiagnosticDescriptor _NoIncludedVariableNames
         = new(
-            "SR2304",
+            DiagnosticIds.IncludedVariables_NoIncludedVariableNames,
             "Variable includes file does not specify any variables",
             "Variable includes file does not specify any variables: '{0}'",
             _Category,
@@ -52,7 +52,7 @@ internal static class IncludedVariablesDiagnostics
 
     private static readonly DiagnosticDescriptor _EmptyVariableName
         = new(
-            "SR2305",
+            DiagnosticIds.IncludedVariables_EmptyVariableName,
             "Included variable name is empty",
             "Included variable name is empty",
             _Category,
@@ -61,7 +61,7 @@ internal static class IncludedVariablesDiagnostics
 
     private static readonly DiagnosticDescriptor _VariableAlreadyIncluded
         = new(
-            "SR2306",
+            DiagnosticIds.IncludedVariables_VariableAlreadyIncluded,
             "Variable is already included",
             "Variable '{0}' is already included",
             _Category,

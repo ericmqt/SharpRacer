@@ -47,7 +47,7 @@ public class IncludedVariableNameTests
     }
 
     [Fact]
-    public void Ctor_ThrowOnNullOrEmptyVariableNameTest()
+    public void Ctor_ThrowOnNullVariableNameTest()
     {
         var location = Location.Create(
             "test.txt",
@@ -56,8 +56,12 @@ public class IncludedVariableNameTests
 
         Assert.Throws<ArgumentException>(() => new IncludedVariableName(null!, location));
         Assert.Throws<ArgumentException>(() => new IncludedVariableName(null!, location, ImmutableArray<Diagnostic>.Empty));
-        Assert.Throws<ArgumentException>(() => new IncludedVariableName(string.Empty, location));
-        Assert.Throws<ArgumentException>(() => new IncludedVariableName(string.Empty, location, ImmutableArray<Diagnostic>.Empty));
+    }
+
+    [Fact]
+    public void Ctor_ThrowOnNullLocationTest()
+    {
+        Assert.Throws<ArgumentNullException>(() => new IncludedVariableName("test", null!));
     }
 
     [Fact]
@@ -75,7 +79,10 @@ public class IncludedVariableNameTests
 
         Assert.True(includedVariable1 == includedVariable2);
         Assert.False(includedVariable1 != includedVariable2);
+
         Assert.True(includedVariable1.Equals(includedVariable2));
+        Assert.True(includedVariable1.Equals((object)includedVariable2));
+
         Assert.Equal(includedVariable1.GetHashCode(), includedVariable2.GetHashCode());
     }
 
@@ -93,9 +100,12 @@ public class IncludedVariableNameTests
 
         Assert.False(includedVariable1 == default);
         Assert.True(includedVariable1 != default);
+
         Assert.False(includedVariable1.Equals(default));
+
         Assert.False(default == includedVariable1);
         Assert.True(default != includedVariable1);
+
         Assert.False(default(IncludedVariableName).Equals(includedVariable1));
     }
 
@@ -113,7 +123,21 @@ public class IncludedVariableNameTests
 
         Assert.False(includedVariable1 == includedVariable2);
         Assert.True(includedVariable1 != includedVariable2);
+
         Assert.False(includedVariable1.Equals(includedVariable2));
+        Assert.False(includedVariable1.Equals(DateTime.Now));
+
         Assert.NotEqual(includedVariable1.GetHashCode(), includedVariable2.GetHashCode());
+    }
+
+    [Fact]
+    public void ImplicitStringOperatorTest()
+    {
+        var includedVariable1 = new IncludedVariableName("Lat", Location.None);
+
+        string name = includedVariable1;
+
+        Assert.Equal("Lat", name);
+        Assert.Equal(name, includedVariable1.Value);
     }
 }

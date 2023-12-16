@@ -45,7 +45,7 @@ internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFil
                 ? IncludedVariablesDiagnostics.NoIncludedVariableNamesWarning(FileName)
                 : null;
 
-            return !variableNameValues.IsDefault ? variableNameValues : ImmutableArray<IncludedVariableNameValue>.Empty;
+            return variableNameValues;
         }
         catch (JsonException jsonEx)
         {

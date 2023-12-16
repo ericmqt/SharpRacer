@@ -37,6 +37,16 @@ public class VariableOptionsFileNameTests
     }
 
     [Fact]
+    public void IsMatch_DefaultValueReturnsFalseTest()
+    {
+        var file = new AdditionalTextFile("Bar.baz", "Goodbye, world!");
+
+        var fileName = default(VariableOptionsFileName);
+
+        Assert.False(fileName.IsMatch(file));
+    }
+
+    [Fact]
     public void Equals_Test()
     {
         var fileName1 = new VariableOptionsFileName("Foo.bar");

@@ -5,8 +5,8 @@ internal readonly struct ClassWithGeneratorAttribute : IEquatable<ClassWithGener
 {
     public ClassWithGeneratorAttribute(INamedTypeSymbol classSymbol, AttributeData attributeData, Location? attributeLocation)
     {
-        ClassSymbol = classSymbol;
-        AttributeData = attributeData;
+        ClassSymbol = classSymbol ?? throw new ArgumentNullException(nameof(classSymbol));
+        AttributeData = attributeData ?? throw new ArgumentNullException(nameof(attributeData));
         AttributeLocation = attributeLocation;
     }
 
