@@ -18,7 +18,7 @@ internal readonly struct PipelineValuesResult<TResult> : IEquatable<PipelineValu
     public PipelineValuesResult(ImmutableArray<TResult> values, ImmutableArray<Diagnostic> diagnostics)
     {
         Values = values;
-        Diagnostics = diagnostics;
+        Diagnostics = diagnostics.GetEmptyIfDefault();
         HasErrors = Diagnostics.HasErrors();
 
         _isInitialized = true;

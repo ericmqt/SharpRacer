@@ -4,8 +4,30 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public readonly struct VariableInfo : IEquatable<VariableInfo>
 {
+    internal VariableInfo(
+        string name,
+        VariableValueType valueType,
+        int valueCount,
+        bool isTimeSliceArray,
+        string description,
+        string? valueUnit,
+        bool isDeprecated,
+        string? deprecatedBy,
+        Location? location)
+    {
+        Name = name;
+        ValueType = valueType;
+        ValueCount = valueCount;
+        IsTimeSliceArray = isTimeSliceArray;
+        Description = description;
+        ValueUnit = valueUnit;
+        IsDeprecated = isDeprecated;
+        DeprecatedBy = deprecatedBy;
+        JsonLocation = location ?? Location.None;
+    }
+
     internal VariableInfo(JsonVariableInfo variableInfo)
-        : this (variableInfo, Location.None)
+        : this(variableInfo, Location.None)
     {
 
     }

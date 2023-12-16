@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-internal readonly struct JsonVariableOptionsValue : IEquatable<JsonVariableOptionsValue>
+public readonly struct JsonVariableOptionsValue : IEquatable<JsonVariableOptionsValue>
 {
     [JsonConstructor]
     public JsonVariableOptionsValue(string? name, string? className)

@@ -48,11 +48,6 @@ internal class VariableOptionsFactory
 
     private ImmutableArray<Diagnostic> GetDiagnostics(JsonVariableOptions jsonVariableOptions)
     {
-        if (jsonVariableOptions == default)
-        {
-            return ImmutableArray<Diagnostic>.Empty;
-        }
-
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>(initialCapacity: 4);
 
         if (TryGetDuplicateKeyDiagnostic(jsonVariableOptions, out var duplicateKeyDiagnostic))
@@ -151,23 +146,13 @@ internal class VariableOptionsFactory
         return true;
     }
 
-    private Location? GetKeyLocation(JsonVariableOptions jsonVariableOptions)
+    private Location GetKeyLocation(JsonVariableOptions jsonVariableOptions)
     {
-        if (jsonVariableOptions == default)
-        {
-            return null;
-        }
-
         return _locationFactory.GetLocation(jsonVariableOptions.KeySpan);
     }
 
-    private Location? GetValueLocation(JsonVariableOptions jsonVariableOptions)
+    private Location GetValueLocation(JsonVariableOptions jsonVariableOptions)
     {
-        if (jsonVariableOptions == default)
-        {
-            return null;
-        }
-
         return _locationFactory.GetLocation(jsonVariableOptions.ValueSpan);
     }
 }

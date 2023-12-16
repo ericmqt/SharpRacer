@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-internal readonly struct JsonVariableOptions
+public readonly struct JsonVariableOptions
 {
     public JsonVariableOptions(string key, TextSpan keySpan, JsonVariableOptionsValue value, TextSpan valueSpan)
     {

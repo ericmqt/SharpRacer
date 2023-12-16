@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct VariableOptionsFile : IEquatable<VariableOptionsFile>
+public readonly struct VariableOptionsFile : IEquatable<VariableOptionsFile>
 {
     public VariableOptionsFile(VariableOptionsFileName fileName, AdditionalText file, SourceText sourceText)
     {
@@ -33,9 +33,7 @@ internal readonly struct VariableOptionsFile : IEquatable<VariableOptionsFile>
 
             var options = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableOptions);
 
-            return options.IsDefault
-                ? ImmutableArray<JsonVariableOptions>.Empty
-                : options;
+            return options;
         }
         catch (JsonException jsonEx)
         {
