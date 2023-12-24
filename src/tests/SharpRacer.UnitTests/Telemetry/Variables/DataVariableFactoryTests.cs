@@ -147,7 +147,7 @@ public class DataVariableFactoryTests
 
         var factory = new DataVariableFactory(new[] { fooVar });
 
-        Assert.Throws<ArgumentNullException>(() => factory.CreateType<FooVariable>(null!));
+        Assert.Throws<ArgumentNullException>(() => factory.CreateType<FooVariable>(name: null!));
         Assert.Throws<ArgumentException>(() => factory.CreateType<FooVariable>(string.Empty));
     }
 

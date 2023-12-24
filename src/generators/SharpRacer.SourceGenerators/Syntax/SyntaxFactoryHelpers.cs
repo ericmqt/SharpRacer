@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.Syntax;
@@ -33,5 +34,42 @@ internal static class SyntaxFactoryHelpers
         {
             yield return Token(SyntaxKind.ProtectedKeyword);
         }
+    }
+
+    public static IfStatementSyntax NullCheck(string identifier)
+    {
+        if (string.IsNullOrEmpty(identifier))
+        {
+            throw new ArgumentException($"'{nameof(identifier)}' cannot be null or empty.", nameof(identifier));
+        }
+
+        var throwParamNameArg = Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(identifier)));
+
+        var throwStatement = ThrowStatement(
+            ObjectCreationExpression(IdentifierName("ArgumentNullException"))
+                .WithArgumentList(
+                    ArgumentList(SingletonSeparatedList(throwParamNameArg))));
+
+        return IfStatement(
+            IsPatternExpression(
+                IdentifierName(identifier),
+                ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+            Block(SingletonList<StatementSyntax>(throwStatement)));
+    }
+
+    public static IfStatementSyntax NullCheck(IdentifierNameSyntax identifier)
+    {
+        var throwParamNameArg = Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(identifier.Identifier.ValueText)));
+
+        var throwStatement = ThrowStatement(
+            ObjectCreationExpression(IdentifierName("ArgumentNullException"))
+                .WithArgumentList(
+                    ArgumentList(SingletonSeparatedList(throwParamNameArg))));
+
+        return IfStatement(
+            IsPatternExpression(
+                identifier,
+                ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
+            Block(SingletonList<StatementSyntax>(throwStatement)));
     }
 }

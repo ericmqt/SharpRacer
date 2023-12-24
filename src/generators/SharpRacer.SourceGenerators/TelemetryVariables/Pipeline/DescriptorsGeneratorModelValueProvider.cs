@@ -40,7 +40,8 @@ internal static class DescriptorsGeneratorModelValueProvider
         return classTargets.Collect()
             .Combine(descriptorPropertiesResult.Select(static (x, _) => x.Values))
             .Select(static (x, ct) => CreateModel(x.Left, x.Right, ct))
-            .WithComparer(DescriptorsGeneratorModel.EqualityComparer.Default);
+            .WithComparer(DescriptorsGeneratorModel.EqualityComparer.Default)
+            .WithTrackingName(TrackingNames.DescriptorsGeneratorModelValueProvider_GetValueProvider);
     }
 
     public static DescriptorsGeneratorModel CreateModel(

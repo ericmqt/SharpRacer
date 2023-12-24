@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
@@ -30,47 +29,93 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             descriptorPropertyReferences,
             variableModels);
 
-        // TODO: Pull references to the typename of generated variables for use in context classes
-
-        context.RegisterSourceOutput(variableClassGeneratorModels, GenerateVariableClass);
+        var variableClassReferences = variableClassGeneratorModels.Select(
+            static (x, _) => new VariableClassReference(x.VariableName, x.ClassName, x.ClassNamespace));
 
         // Get variable context generator models
-        var variableContextClassInfo = context.SyntaxProvider.ForClassWithAttribute(
-            GenerateDataVariablesContextAttributeInfo.FullTypeName,
-            static classDecl => classDecl.HasAttributes() && classDecl.IsPartialClass() && !classDecl.IsStaticClass());
+        var contextClasses = ContextClassInfoValuesProvider.GetValuesProvider(ref context);
 
-        var variableContextClassTargets = GetVariableContextClassValuesProvider(variableContextClassInfo, ref context);
+        var contextVariableModels = GetContextVariableModelsProvider(
+            ref context,
+            variableModels,
+            descriptorPropertyReferences,
+            variableClassReferences);
 
-        // TODO: Combine context includes with variable models, and also combine with DescriptorPropertyReferences
+        var contextClassModels = contextClasses.Combine(contextVariableModels)
+            .Select(static (item, ct) =>
+            {
+                var variables = GetContextIncludedVariables(item.Left.IncludedVariables, item.Right, out var includedVariablesDiagnostics);
+                var model = new ContextClassModel(item.Left, variables);
+
+                return new PipelineValueResult<ContextClassModel>(model, includedVariablesDiagnostics);
+            });
 
         // Generate
         context.RegisterSourceOutput(descriptorGeneratorModelProvider, GenerateDescriptorClass);
+        context.RegisterSourceOutput(variableClassGeneratorModels, GenerateVariableClass);
+        context.RegisterSourceOutput(contextClassModels, GenerateContextClass);
     }
 
-    private static IncrementalValuesProvider<VariableContextClassResult> GetVariableContextClassValuesProvider(
-        IncrementalValuesProvider<ClassWithGeneratorAttribute> variableContextClassResults,
-        ref IncrementalGeneratorInitializationContext context)
+    private static ImmutableArray<ContextVariableModel> GetContextIncludedVariables(
+        IncludedVariables includedVariables,
+        ImmutableArray<ContextVariableModel> models,
+        out ImmutableArray<Diagnostic> diagnostics)
     {
-        IncrementalValuesProvider<(ClassWithGeneratorAttribute, IncludedVariablesFileName)> contextClassesWithIncludedVariableFileNames =
-            variableContextClassResults.Select(static (item, _) =>
-                (ClassTarget: item,
-                IncludedVariablesFileName: GenerateDataVariablesContextAttributeInfo.GetIncludedVariablesFileNameOrDefault(item.AttributeData)));
+        if (includedVariables.IncludeAll())
+        {
+            diagnostics = ImmutableArray<Diagnostic>.Empty;
+            return models;
+        }
 
-        var contextClassesWithIncludedVariableFiles = IncludedVariablesFileValuesProvider.GetValuesProvider(
-            contextClassesWithIncludedVariableFileNames,
-            context.AdditionalTextsProvider);
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+        var builder = ImmutableArray.CreateBuilder<ContextVariableModel>();
 
-        context.ReportDiagnostics(contextClassesWithIncludedVariableFiles.SelectMany(static (x, _) => x.Diagnostics));
+        foreach (var variableName in includedVariables.VariableNames)
+        {
+            var model = models.FirstOrDefault(x => x.VariableModel.VariableInfo.Name.Equals(variableName, StringComparison.Ordinal));
 
-        var contextClassAndIncludedNamesProvider = ContextClassIncludedVariableNamesValuesProvider.GetValuesProvider(
-            contextClassesWithIncludedVariableFiles
-                .Where(static x => !x.HasErrors)
-                .Select(static (x, _) => x.Value));
+            if (model != default)
+            {
+                builder.Add(model);
+            }
+            else
+            {
+                // TODO: Diagnostic for missing variable
+            }
+        }
 
-        context.ReportDiagnostics(ContextClassIncludedVariableNamesValuesProvider.GetDiagnostics(contextClassAndIncludedNamesProvider));
+        diagnostics = diagnosticsBuilder.ToImmutable();
+        return builder.ToImmutable();
+    }
 
-        return IncludedVariablesValuesProvider.GetValuesProvider(contextClassAndIncludedNamesProvider)
-            .Select(static (item, _) => new VariableContextClassResult(item.Item1, item.Item2));
+    private static IncrementalValueProvider<ImmutableArray<ContextVariableModel>> GetContextVariableModelsProvider(
+        ref IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<VariableModel> variableModels,
+        IncrementalValueProvider<ImmutableArray<DescriptorPropertyReference>> descriptorPropertyReferences,
+        IncrementalValuesProvider<VariableClassReference> variableClassReferences)
+    {
+        var descriptorAndVariableClassRefs = descriptorPropertyReferences.Combine(variableClassReferences.Collect());
+
+        var contextVariableModelsResult = variableModels.Collect()
+            .Combine(descriptorAndVariableClassRefs)
+            .Select(static (item, ct) =>
+            {
+                var factory = new ContextVariableModelFactory(item.Right.Right, item.Right.Left);
+                var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+                foreach (var variableModel in item.Left)
+                {
+                    factory.TryAdd(variableModel, out var modelDiagnostics);
+
+                    diagnosticsBuilder.AddRange(modelDiagnostics);
+                }
+
+                return new PipelineValuesResult<ContextVariableModel>(factory.Build(), diagnosticsBuilder.ToImmutable());
+            });
+
+        context.ReportDiagnostics(contextVariableModelsResult.Select(static (x, _) => x.Diagnostics));
+
+        return contextVariableModelsResult.Select(static (x, _) => x.Values);
     }
 
     private static IncrementalValuesProvider<VariableClassGeneratorModel> GetVariableClassGeneratorModels(
@@ -99,6 +144,35 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
                 return factory.Build();
             });
+    }
+
+    private static void GenerateContextClass(SourceProductionContext context, PipelineValueResult<ContextClassModel> pipelineResult)
+    {
+        context.CancellationToken.ThrowIfCancellationRequested();
+
+        if (pipelineResult.Diagnostics.HasErrors())
+        {
+            foreach (var diagnostic in pipelineResult.Diagnostics)
+            {
+                context.CancellationToken.ThrowIfCancellationRequested();
+
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
+        if (!pipelineResult.HasValue)
+        {
+            return;
+        }
+
+        var model = pipelineResult.Value;
+
+        var compilationUnit = ContextClassGenerator.Create(in model, context.CancellationToken)
+            .NormalizeWhitespace(eol: "\n");
+
+        var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
+
+        var generatedSourceTextStr = generatedSourceText.ToString();
     }
 
     private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorsGeneratorModel modelProvider)

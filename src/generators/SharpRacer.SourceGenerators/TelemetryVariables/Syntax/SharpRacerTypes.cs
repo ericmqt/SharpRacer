@@ -6,8 +6,13 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 internal static class SharpRacerTypes
 {
     private static string DataVariableDescriptor_TypeName = "DataVariableDescriptor";
-    private static string DataVariableValueType_TypeName = "DataVariableValueType";
+    private static string DataVariableFactory_TypeName = "DataVariableFactory";
     private static string DataVariableInfo_TypeName = "DataVariableInfo";
+    private static string DataVariableValueType_TypeName = "DataVariableValueType";
+    private static string IArrayDataVariable_TypeName = "IArrayDataVariable";
+    private static string ICreateDataVariable_TypeName = "ICreateDataVariable";
+    private static string IDataVariableInfoProvider_TypeName = "IDataVariableInfo";
+    private static string IScalarDataVariable_TypeName = "IScalarDataVariable";
 
     public static BaseTypeSyntax ArrayDataVariableBaseType(TypeSyntax typeArgument)
     {
@@ -54,6 +59,11 @@ internal static class SharpRacerTypes
         return IdentifierName(DataVariableDescriptor_TypeName);
     }
 
+    public static TypeSyntax DataVariableFactory()
+    {
+        return IdentifierName(DataVariableFactory_TypeName);
+    }
+
     public static TypeSyntax DataVariableInfo()
     {
         return IdentifierName(DataVariableInfo_TypeName);
@@ -64,12 +74,43 @@ internal static class SharpRacerTypes
         return IdentifierName(DataVariableValueType_TypeName);
     }
 
+    public static TypeSyntax IArrayDataVariableInterfaceType(VariableInfo variableInfo)
+    {
+        var typeArg = DataVariableTypeArgument(variableInfo);
+
+        return GenericName(IArrayDataVariable_TypeName)
+            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList(typeArg)));
+    }
+
+    public static TypeSyntax IArrayDataVariableInterfaceType(TypeSyntax typeArgument)
+    {
+        return GenericName(IArrayDataVariable_TypeName)
+            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList(typeArgument)));
+    }
+
     public static TypeSyntax ICreateDataVariableInterfaceType(TypeSyntax selfTypeArgument)
     {
-        return GenericName("ICreateDataVariable")
-            .WithTypeArgumentList(
-                TypeArgumentList(
-                    SingletonSeparatedList(selfTypeArgument)));
+        return GenericName(ICreateDataVariable_TypeName)
+            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList(selfTypeArgument)));
+    }
+
+    public static TypeSyntax IDataVariableInfoProvider()
+    {
+        return IdentifierName(IDataVariableInfoProvider_TypeName);
+    }
+
+    public static TypeSyntax IScalarDataVariableInterfaceType(VariableInfo variableInfo)
+    {
+        var typeArg = DataVariableTypeArgument(variableInfo);
+
+        return GenericName(IScalarDataVariable_TypeName)
+            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList(typeArg)));
+    }
+
+    public static TypeSyntax IScalarDataVariableInterfaceType(TypeSyntax typeArgument)
+    {
+        return GenericName(IScalarDataVariable_TypeName)
+            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList(typeArgument)));
     }
 
     public static BaseTypeSyntax ScalarDataVariableBaseType(TypeSyntax typeArgument)
@@ -77,12 +118,17 @@ internal static class SharpRacerTypes
         return SimpleBaseType(ScalarDataVariableType(typeArgument));
     }
 
+    public static TypeSyntax ScalarDataVariableType(VariableInfo variableInfo)
+    {
+        var typeArg = DataVariableTypeArgument(variableInfo);
+
+        return ScalarDataVariableType(typeArg);
+    }
+
     public static TypeSyntax ScalarDataVariableType(TypeSyntax typeArgument)
     {
         return GenericName("ScalarDataVariable")
-            .WithTypeArgumentList(
-                TypeArgumentList(
-                    SingletonSeparatedList(typeArgument)));
+            .WithTypeArgumentList(TypeArgumentList(SingletonSeparatedList(typeArgument)));
     }
 
     public static class Enumerations

@@ -14,8 +14,20 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
 
     }
 
+    public PipelineValueResult(TResult value, ImmutableArray<Diagnostic> diagnostics)
+        : this(value, true, diagnostics)
+    {
+
+    }
+
     public PipelineValueResult(TResult value, Diagnostic diagnostic)
         : this(value, true, ImmutableArray.Create(diagnostic))
+    {
+
+    }
+
+    public PipelineValueResult(ImmutableArray<Diagnostic> diagnostics)
+        : this(default, false, diagnostics)
     {
 
     }

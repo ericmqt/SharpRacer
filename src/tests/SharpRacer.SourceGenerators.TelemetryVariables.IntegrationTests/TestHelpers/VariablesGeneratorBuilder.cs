@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 internal class VariablesGeneratorBuilder
 {
-    private readonly List<AdditionalTextFile> _additionalTexts;
+    private readonly List<AdditionalText> _additionalTexts;
     private string _assemblyName = "TestAssembly";
     private CSharpCompilationOptions _compilationOptions;
     private Action<VariablesGeneratorGlobalOptionsValues>? _configureGlobalOptions;
@@ -17,7 +17,7 @@ internal class VariablesGeneratorBuilder
     {
         _syntaxTrees = new List<SyntaxTree>();
 
-        _additionalTexts = new List<AdditionalTextFile>();
+        _additionalTexts = new List<AdditionalText>();
         _compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary);
         _disabledOutputs = IncrementalGeneratorOutputKind.None;
     }
@@ -25,6 +25,18 @@ internal class VariablesGeneratorBuilder
     public VariablesGeneratorBuilder ConfigureGlobalOptions(Action<VariablesGeneratorGlobalOptionsValues>? configure)
     {
         _configureGlobalOptions = configure;
+
+        return this;
+    }
+
+    public VariablesGeneratorBuilder WithAdditionalText(AdditionalText additionalText)
+    {
+        if (additionalText is null)
+        {
+            throw new ArgumentNullException(nameof(additionalText));
+        }
+
+        _additionalTexts.Add(additionalText);
 
         return this;
     }

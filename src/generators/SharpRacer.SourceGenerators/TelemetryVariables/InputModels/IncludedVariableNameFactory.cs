@@ -30,6 +30,30 @@ internal class IncludedVariableNameFactory
         _builder.Add(include);
     }
 
+    public bool TryAdd(IncludedVariableNameValue value, out ImmutableArray<Diagnostic> diagnostics)
+    {
+        if (value == default)
+        {
+            return false;
+        }
+
+        diagnostics = GetDiagnostics(value);
+
+        if (diagnostics.HasErrors())
+        {
+            return false;
+        }
+
+        var include = new IncludedVariableName(
+            value.Value,
+            _file.SourceLocationFactory.GetLocation(value.ValueSpan),
+            diagnostics);
+
+        _builder.Add(include);
+
+        return true;
+    }
+
     public ImmutableArray<IncludedVariableName> Build()
     {
         return _builder.ToImmutable();

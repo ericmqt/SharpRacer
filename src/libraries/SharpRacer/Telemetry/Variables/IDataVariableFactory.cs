@@ -14,7 +14,9 @@ public interface IDataVariableFactory
     /// </summary>
     /// <typeparam name="T">The telemetry variable array element type.</typeparam>
     /// <param name="name">The telemetry variable name.</param>
-    /// <param name="arrayLength">The length of the array represented by the telemetry variable. Value must be greater than or equal to one.</param>
+    /// <param name="arrayLength">
+    /// The length of the array represented by the telemetry variable. Value must be greater than or equal to one.
+    /// </param>
     /// <returns>
     /// An instance of <see cref="IArrayDataVariable{T}"/> representing the telemetry variable with the specified name and array length.
     /// </returns>
@@ -55,12 +57,32 @@ public interface IDataVariableFactory
     /// and <see cref="ICreateDataVariable{TSelf}"/>.
     /// </typeparam>
     /// <param name="name">The name of the telemetry variable.</param>
-    /// <returns>An instance of <typeparamref name="TImplementation"/> representing the telemetry variable with the specified name.</returns>
+    /// <returns>
+    /// An instance of <typeparamref name="TImplementation"/> representing the telemetry variable with the specified name.
+    /// </returns>
     /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
     /// <exception cref="DataVariableInitializationException">
     /// An instance of <typeparamref name="TImplementation"/> cannot be initialized with the telemetry variable with the specified name.
     /// </exception>
     TImplementation CreateType<TImplementation>(string name)
+        where TImplementation : class, IDataVariable, ICreateDataVariable<TImplementation>, new();
+
+    /// <summary>
+    /// Creates an instance of a typed telemetry variable from the specified variable descriptor.
+    /// </summary>
+    /// <typeparam name="TImplementation">
+    /// The type of the telemetry variable class which has a default parameterless constructor and implements <see cref="IDataVariable"/>
+    /// and <see cref="ICreateDataVariable{TSelf}"/>.
+    /// </typeparam>
+    /// <param name="descriptor">The descriptor from which to initialize the variable.</param>
+    /// <returns>
+    /// An instance of <typeparamref name="TImplementation"/> representing the telemetry variable described by <paramref name="descriptor"/>.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="descriptor"/> is <see langword="null" />.</exception>
+    /// <exception cref="DataVariableInitializationException">
+    /// An instance of <typeparamref name="TImplementation"/> cannot be initialized with the specified descriptor.
+    /// </exception>
+    TImplementation CreateType<TImplementation>(DataVariableDescriptor descriptor)
         where TImplementation : class, IDataVariable, ICreateDataVariable<TImplementation>, new();
 }

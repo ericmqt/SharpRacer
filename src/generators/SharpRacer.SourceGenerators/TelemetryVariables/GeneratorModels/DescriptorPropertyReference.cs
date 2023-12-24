@@ -1,4 +1,8 @@
-﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+
+namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorPropertyReference>
 {
     public DescriptorPropertyReference(DescriptorClassModel generatorModel, DescriptorPropertyModel propertyModel)
@@ -23,6 +27,19 @@ internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorProp
     public readonly string DescriptorClassName { get; }
     public readonly string PropertyName { get; }
     public readonly string VariableName { get; }
+
+    public NameSyntax GlobalQualifiedTypeName()
+    {
+        return ParseName($"global::{DescriptorClassNamespace}.{DescriptorClassName}");
+    }
+
+    public MemberAccessExpressionSyntax StaticPropertyMemberAccess()
+    {
+        return MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            GlobalQualifiedTypeName(),
+            IdentifierName(PropertyName));
+    }
 
     public override bool Equals(object obj)
     {

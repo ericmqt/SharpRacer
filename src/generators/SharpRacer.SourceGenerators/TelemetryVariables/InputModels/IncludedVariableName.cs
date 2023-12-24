@@ -15,7 +15,7 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
     public IncludedVariableName(string variableName, Location sourceLocation, ImmutableArray<Diagnostic> diagnostics)
     {
         // Allow string.Empty but not null
-        Value = variableName ?? throw new ArgumentException($"'{nameof(variableName)}' cannot be null or empty.", nameof(variableName));
+        Value = variableName ?? throw new ArgumentException($"'{nameof(variableName)}' cannot be null.", nameof(variableName));
 
         SourceLocation = sourceLocation ?? throw new ArgumentNullException(nameof(sourceLocation));
 
