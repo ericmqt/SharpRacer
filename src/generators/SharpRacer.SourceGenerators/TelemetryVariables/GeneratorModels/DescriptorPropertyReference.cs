@@ -5,11 +5,11 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorPropertyReference>
 {
-    public DescriptorPropertyReference(DescriptorClassModel generatorModel, DescriptorPropertyModel propertyModel)
+    public DescriptorPropertyReference(DescriptorClassModel descriptorClass, DescriptorPropertyModel propertyModel)
     {
-        if (generatorModel is null)
+        if (descriptorClass == default)
         {
-            throw new ArgumentNullException(nameof(generatorModel));
+            throw new ArgumentException($"'{nameof(descriptorClass)}' cannot be a default value.", nameof(descriptorClass));
         }
 
         if (propertyModel == default)
@@ -17,8 +17,8 @@ internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorProp
             throw new ArgumentException($"'{nameof(propertyModel)}' cannot be a default value.", nameof(propertyModel));
         }
 
-        DescriptorClassNamespace = generatorModel.TypeNamespace;
-        DescriptorClassName = generatorModel.TypeName;
+        DescriptorClassNamespace = descriptorClass.TypeNamespace;
+        DescriptorClassName = descriptorClass.TypeName;
         PropertyName = propertyModel.PropertyName;
         VariableName = propertyModel.VariableInfo.Name;
     }

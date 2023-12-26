@@ -1,78 +1,83 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal class DescriptorClassModel
+internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
 {
-    public DescriptorClassModel(ClassWithGeneratorAttribute generatorClassResult, ImmutableArray<DescriptorPropertyModel> descriptorProperties)
+    public DescriptorClassModel(INamedTypeSymbol classSymbol, Location? generatorAttributeLocation)
     {
-        TypeName = generatorClassResult.ClassSymbol.Name;
-        TypeNamespace = generatorClassResult.ClassSymbol.ContainingNamespace.ToString();
-        GeneratorAttributeLocation = generatorClassResult.AttributeLocation;
-        DescriptorProperties = descriptorProperties;
+        TypeName = classSymbol.Name;
+        TypeNamespace = classSymbol.ContainingNamespace.ToString();
+        GeneratorAttributeLocation = generatorAttributeLocation;
+
+        DescriptorProperties = ImmutableArray<DescriptorPropertyModel>.Empty;
     }
 
-    public ImmutableArray<DescriptorPropertyModel> DescriptorProperties { get; }
-    public Location? GeneratorAttributeLocation { get; }
-    public string TypeName { get; }
-    public string TypeNamespace { get; }
-
-    internal class EqualityComparer : IEqualityComparer<DescriptorClassModel?>
+    private DescriptorClassModel(
+        string typeName,
+        string typeNamespace,
+        Location? generatorAttributeLocation,
+        ImmutableArray<DescriptorPropertyModel> descriptorProperties)
     {
-        private EqualityComparer() { }
+        TypeName = typeName;
+        TypeNamespace = typeNamespace;
+        GeneratorAttributeLocation = generatorAttributeLocation;
+        DescriptorProperties = descriptorProperties.GetEmptyIfDefault();
+    }
 
-        public static IEqualityComparer<DescriptorClassModel?> Default { get; } = new EqualityComparer();
+    public readonly ImmutableArray<DescriptorPropertyModel> DescriptorProperties { get; }
+    public readonly Location? GeneratorAttributeLocation { get; }
+    public readonly string TypeName { get; }
+    public readonly string TypeNamespace { get; }
 
-        public bool Equals(DescriptorClassModel? x, DescriptorClassModel? y)
+    public DescriptorClassModel WithDescriptorProperties(ImmutableArray<DescriptorPropertyModel> descriptorProperties)
+    {
+        return new DescriptorClassModel(
+            TypeName,
+            TypeNamespace,
+            GeneratorAttributeLocation,
+            descriptorProperties.GetEmptyIfDefault());
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is DescriptorClassModel other && Equals(other);
+    }
+
+    public bool Equals(DescriptorClassModel other)
+    {
+        return StringComparer.Ordinal.Equals(TypeName, other.TypeName) &&
+            StringComparer.Ordinal.Equals(TypeNamespace, other.TypeNamespace) &&
+            GeneratorAttributeLocation == other.GeneratorAttributeLocation &&
+            DescriptorProperties.GetEmptyIfDefault().SequenceEqual(other.DescriptorProperties.GetEmptyIfDefault());
+    }
+
+    public override int GetHashCode()
+    {
+        var hc = new HashCode();
+
+        hc.Add(TypeName);
+        hc.Add(TypeNamespace);
+        hc.Add(GeneratorAttributeLocation);
+
+        if (!DescriptorProperties.IsDefaultOrEmpty)
         {
-            if (ReferenceEquals(x, y))
+            for (int i = 0; i < DescriptorProperties.Length; i++)
             {
-                return true;
+                hc.Add(DescriptorProperties[i]);
             }
-
-            if (x is null || y is null)
-            {
-                return false;
-            }
-
-            if (x.GeneratorAttributeLocation != y.GeneratorAttributeLocation)
-            {
-                return false;
-            }
-
-            if (!StringComparer.Ordinal.Equals(x.TypeName, y.TypeName))
-            {
-                return false;
-            }
-
-            if (!StringComparer.Ordinal.Equals(x.TypeNamespace, y.TypeNamespace))
-            {
-                return false;
-            }
-
-            return x.DescriptorProperties.SequenceEqual(y.DescriptorProperties);
         }
 
-        public int GetHashCode(DescriptorClassModel? obj)
-        {
-            var hc = new HashCode();
+        return hc.ToHashCode();
+    }
 
-            if (obj is null)
-            {
-                return hc.ToHashCode();
-            }
+    public static bool operator ==(DescriptorClassModel left, DescriptorClassModel right)
+    {
+        return left.Equals(right);
+    }
 
-            hc.Add(obj.TypeName, StringComparer.Ordinal);
-            hc.Add(obj.TypeNamespace, StringComparer.Ordinal);
-            hc.Add(obj.GeneratorAttributeLocation);
-
-            for (int i = 0; i < obj.DescriptorProperties.Length; i++)
-            {
-                hc.Add(obj.DescriptorProperties[i]);
-            }
-
-            return hc.ToHashCode();
-        }
+    public static bool operator !=(DescriptorClassModel left, DescriptorClassModel right)
+    {
+        return !left.Equals(right);
     }
 }

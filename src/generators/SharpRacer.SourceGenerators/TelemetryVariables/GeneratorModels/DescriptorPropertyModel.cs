@@ -1,4 +1,7 @@
-﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorPropertyModel>
@@ -13,6 +16,16 @@ internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorProperty
     public readonly string PropertyName { get; }
     public readonly string? PropertyXmlSummary { get; }
     public readonly VariableInfo VariableInfo { get; }
+
+    public SyntaxToken PropertyIdentifier()
+    {
+        return Identifier(PropertyName);
+    }
+
+    public IdentifierNameSyntax PropertyIdentifierName()
+    {
+        return IdentifierName(PropertyName);
+    }
 
     public override bool Equals(object obj)
     {

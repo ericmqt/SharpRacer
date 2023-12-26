@@ -4,6 +4,9 @@ internal static class TrackingNames
     public static string ContextClassInfoValuesProvider_WithIncludedVariablesFile { get; } = "ContextClassInfoValuesProvider_WithIncludedVariablesFile";
     public static string ContextClassInfoValuesProvider_GetValuesProvider { get; } = "ContextClassInfoValuesProvider_GetValuesProvider";
     public static string ContextClassIncludedVariableNamesValuesProvider { get; } = "ContextClassIncludedVariableNamesValuesProvider";
+
+    public static string DescriptorClassModelProvider_GetValueProvider { get; } = "DescriptorClassModelProvider_GetValueProvider";
+
     public static string DescriptorsGeneratorModelValueProvider_GetTargetClasses { get; } = "DescriptorsGeneratorModelValueProvider_GetTargetClasses";
     public static string DescriptorsGeneratorModelValueProvider_GetValueProvider { get; } = "DescriptorsGeneratorModelValueProvider_GetValueProvider";
     public static string GeneratorConfigurationValueProvider_GetValueProvider { get; } = "GeneratorConfigurationValueProvider_GetValueProvider";

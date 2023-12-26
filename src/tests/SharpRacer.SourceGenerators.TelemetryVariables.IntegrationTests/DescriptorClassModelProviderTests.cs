@@ -8,40 +8,10 @@ using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
-public class DescriptorsGeneratorModelValueProviderTests
+public class DescriptorClassModelProviderTests
 {
     [Fact]
-    public void GetTargetClasses_SingleDescriptorClass_Test()
-    {
-        var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
-namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
-public static partial class MyDescriptors { }";
-
-        var variablesText = new JsonVariableInfoDocumentBuilder()
-            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
-            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
-
-        var testModel = new VariablesGeneratorBuilder()
-            .WithAdditionalText(variablesText)
-            .WithSyntaxTree(CSharpSyntaxTree.ParseText(descriptorClass))
-            .Build();
-
-        var driver = testModel.GeneratorDriver.RunGenerators(testModel.Compilation);
-        var runResult = driver.GetRunResult().Results.Single();
-
-        var findTargetClassesRunResult = runResult.TrackedSteps[TrackingNames.DescriptorsGeneratorModelValueProvider_GetTargetClasses].Single();
-
-        var output = findTargetClassesRunResult.Outputs.Single();
-
-        var targetClass = (ClassWithGeneratorAttribute)output.Value;
-
-        Assert.Equal("MyDescriptors", targetClass.ClassSymbol.Name);
-    }
-
-    [Fact]
-    public void GetTargetClasses_DiagnosticsForMultipleDescriptorClassesTest()
+    public void GetValueProvider_DiagnosticsForMultipleDescriptorClassesTest()
     {
         var descriptorClass1 = @"
 using SharpRacer.Telemetry.Variables;
@@ -68,10 +38,18 @@ public static partial class MyDescriptors2 { }";
         var driver = testModel.GeneratorDriver.RunGenerators(testModel.Compilation);
         var runResult = driver.GetRunResult().Results.Single();
 
-        var findTargetClassesResults = runResult.TrackedSteps[TrackingNames.DescriptorsGeneratorModelValueProvider_GetTargetClasses];
+        var valueProviderStep = runResult.TrackedSteps[TrackingNames.DescriptorClassModelProvider_GetValueProvider].Single();
 
+        Assert.Single(valueProviderStep.Outputs);
+
+        var valueProviderResult = valueProviderStep.Outputs.Single();
+        Assert.Equal(IncrementalStepRunReason.New, valueProviderResult.Reason);
+
+        var pipelineValueResult = (PipelineValueResult<DescriptorClassModel>)valueProviderResult.Value;
+
+        Assert.True(pipelineValueResult.HasValue);
+        Assert.Single(pipelineValueResult.Diagnostics);
         Assert.Single(runResult.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClass_AssemblyAlreadyContainsDescriptorClassTarget);
-        Assert.Equal(2, findTargetClassesResults.Length);
     }
 
     [Fact]
@@ -95,18 +73,22 @@ public static partial class MyDescriptors { }";
         var driver = testModel.GeneratorDriver.RunGenerators(testModel.Compilation);
         var runResult = driver.GetRunResult().Results.Single();
 
-        var valueProviderResult = runResult.TrackedSteps[TrackingNames.DescriptorsGeneratorModelValueProvider_GetValueProvider].Single();
+        var valueProviderStep = runResult.TrackedSteps[TrackingNames.DescriptorClassModelProvider_GetValueProvider].Single();
 
-        Assert.Single(valueProviderResult.Outputs);
-        var descriptorClassGenOutput = valueProviderResult.Outputs.Single();
+        Assert.Single(valueProviderStep.Outputs);
 
-        Assert.Equal(IncrementalStepRunReason.New, descriptorClassGenOutput.Reason);
-        var descriptorClassValue = (DescriptorsGeneratorModel)descriptorClassGenOutput.Value;
+        var valueProviderResult = valueProviderStep.Outputs.Single();
+        Assert.Equal(IncrementalStepRunReason.New, valueProviderResult.Reason);
 
-        Assert.NotNull(descriptorClassValue.GeneratorModel);
-        Assert.Equal("Test.Assembly", descriptorClassValue.GeneratorModel.TypeNamespace);
-        Assert.Equal("MyDescriptors", descriptorClassValue.GeneratorModel.TypeName);
-        Assert.Single(descriptorClassValue.GeneratorModel.DescriptorProperties);
-        Assert.Single(descriptorClassValue.DescriptorPropertyReferences);
+        var pipelineValueResult = (PipelineValueResult<DescriptorClassModel>)valueProviderResult.Value;
+
+        Assert.True(pipelineValueResult.HasValue);
+        Assert.Empty(pipelineValueResult.Diagnostics);
+
+        var classModel = pipelineValueResult.Value;
+
+        Assert.Equal("Test.Assembly", classModel.TypeNamespace);
+        Assert.Equal("MyDescriptors", classModel.TypeName);
+        Assert.Single(classModel.DescriptorProperties);
     }
 }

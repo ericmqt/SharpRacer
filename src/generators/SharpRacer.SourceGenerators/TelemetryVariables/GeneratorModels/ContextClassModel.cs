@@ -18,15 +18,6 @@ internal readonly struct ContextClassModel : IEquatable<ContextClassModel>
         _isInitialized = true;
     }
 
-    public ContextClassModel(ClassWithGeneratorAttribute classTarget, ImmutableArray<ContextVariableModel> variables)
-    {
-        TypeName = classTarget.ClassSymbol.Name;
-        TypeNamespace = classTarget.ClassSymbol.ContainingNamespace.ToString();
-        Variables = variables.GetEmptyIfDefault();
-
-        _isInitialized = true;
-    }
-
     public readonly bool HasDataVariablesContextInterface { get; }
     public readonly string TypeName { get; }
     public readonly string TypeNamespace { get; }

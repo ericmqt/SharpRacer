@@ -8,59 +8,54 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 
-internal class DescriptorClassGenerator
+internal static class DescriptorClassGenerator
 {
-    private readonly List<UsingDirectiveSyntax> _usingDirectives;
-
-    public DescriptorClassGenerator(DescriptorClassModel model)
-    {
-        Model = model ?? throw new ArgumentNullException(nameof(model));
-
-        _usingDirectives =
-        [
-            UsingDirective(IdentifierName("System")),
-            UsingDirective(ParseName("System.Collections.Generic")),
-            UsingDirective(ParseName("System.Text")),
-            UsingDirective(ParseName("SharpRacer.Telemetry.Variables"))
-        ];
-    }
-
-    public DescriptorClassModel Model { get; }
-
-    public ClassDeclarationSyntax CreateClassDeclaration(CancellationToken cancellationToken = default)
+    public static ClassDeclarationSyntax CreateClassDeclaration(
+        ref readonly DescriptorClassModel model,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return ClassDeclaration(Model.TypeName)
+        return ClassDeclaration(model.TypeName)
             .WithKeyword(Token(SyntaxKind.ClassKeyword))
             .WithModifiers(Accessibility.NotApplicable, isStatic: true, isPartial: true)
-            .WithMembers(List(EnumerateMembers(cancellationToken)));
+            .WithMembers(GetClassMemberDeclarations(in model, cancellationToken));
     }
 
-    public CompilationUnitSyntax CreateCompilationUnit(CancellationToken cancellationToken = default)
+    public static CompilationUnitSyntax CreateCompilationUnit(
+        ref readonly DescriptorClassModel model,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var classDecl = CreateClassDeclaration(cancellationToken);
+        var classDecl = CreateClassDeclaration(in model, cancellationToken);
 
-        var namespaceDecl = NamespaceDeclaration(IdentifierName(Model.TypeNamespace))
+        var namespaceDecl = NamespaceDeclaration(IdentifierName(model.TypeNamespace))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
+        var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry.Variables")));
+
         return CompilationUnit()
-            .WithUsings(new SyntaxList<UsingDirectiveSyntax>(_usingDirectives))
+            .WithUsings(usingDirectives)
             .AddMembers(namespaceDecl);
     }
 
-    private IEnumerable<MemberDeclarationSyntax> EnumerateMembers(CancellationToken cancellationToken = default)
+    private static SyntaxList<MemberDeclarationSyntax> GetClassMemberDeclarations(
+        ref readonly DescriptorClassModel model,
+        CancellationToken cancellationToken)
     {
-        for (int i = 0; i < Model.DescriptorProperties.Length; i++)
+        var members = new List<MemberDeclarationSyntax>();
+
+        for (int i = 0; i < model.DescriptorProperties.Length; i++)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var property = Model.DescriptorProperties[i];
+            var property = model.DescriptorProperties[i];
 
-            yield return DescriptorProperty(ref property);
+            members.Add(DescriptorProperty(ref property));
         }
+
+        return List(members);
     }
 
     private static PropertyDeclarationSyntax DescriptorProperty(
@@ -72,7 +67,7 @@ internal class DescriptorClassGenerator
             throw new ArgumentException($"'{nameof(descriptorPropertyModel)}' cannot be a default value.", nameof(descriptorPropertyModel));
         }
 
-        var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(), Identifier(descriptorPropertyModel.PropertyName))
+        var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(), descriptorPropertyModel.PropertyIdentifier())
             .WithModifiers(accessibility, isStatic: true)
             .WithGetOnlyAutoAccessor();
 

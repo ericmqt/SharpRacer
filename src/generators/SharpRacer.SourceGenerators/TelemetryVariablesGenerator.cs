@@ -19,10 +19,20 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var variableModelArray = variableModels.Collect();
 
         // Create descriptor generator models
-        var descriptorGeneratorModelProvider = DescriptorsGeneratorModelValueProvider.GetValueProvider(ref context, variableModelArray);
+        var descriptorGeneratorModelProvider = DescriptorClassModelProvider.GetValueProvider(ref context, variableModelArray);
+
+        context.ReportDiagnostics(descriptorGeneratorModelProvider.Select(static (x, _) => x.Diagnostics));
 
         // Create typed variable classes
-        var descriptorPropertyReferences = descriptorGeneratorModelProvider.Select(static (x, _) => x.DescriptorPropertyReferences);
+        var descriptorPropertyReferences = descriptorGeneratorModelProvider.Select(static (item, _) =>
+        {
+            if (!item.HasValue)
+            {
+                return ImmutableArray<DescriptorPropertyReference>.Empty;
+            }
+
+            return item.Value.DescriptorProperties.Select(x => new DescriptorPropertyReference(item.Value, x)).ToImmutableArray();
+        });
 
         var variableClassGeneratorModels = GetVariableClassGeneratorModels(
             generatorConfiguration,
@@ -51,7 +61,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             });
 
         // Generate
-        context.RegisterSourceOutput(descriptorGeneratorModelProvider, GenerateDescriptorClass);
+        context.RegisterSourceOutput(descriptorGeneratorModelProvider.Select(static (x, _) => x.Value), GenerateDescriptorClass);
         context.RegisterSourceOutput(variableClassGeneratorModels, GenerateVariableClass);
         context.RegisterSourceOutput(contextClassModels, GenerateContextClass);
     }
@@ -175,34 +185,17 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var generatedSourceTextStr = generatedSourceText.ToString();
     }
 
-    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorsGeneratorModel modelProvider)
+    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassModel generatorModel)
     {
-        context.CancellationToken.ThrowIfCancellationRequested();
-
-        if (modelProvider.Diagnostics.Any())
-        {
-            foreach (var diagnostic in modelProvider.Diagnostics)
-            {
-                context.CancellationToken.ThrowIfCancellationRequested();
-
-                context.ReportDiagnostic(diagnostic);
-            }
-        }
-
-        if (modelProvider.GeneratorModel is null)
+        if (generatorModel == default)
         {
             return;
         }
 
-        context.CancellationToken.ThrowIfCancellationRequested();
-
-        var generatorModel = modelProvider.GeneratorModel;
-        var generator = new DescriptorClassGenerator(generatorModel);
-
-        var descriptorClassCompilationUnit = generator.CreateCompilationUnit(context.CancellationToken)
+        var compilationUnit = DescriptorClassGenerator.CreateCompilationUnit(in generatorModel, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
-        var generatedSourceText = descriptorClassCompilationUnit.GetText(Encoding.UTF8);
+        var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
 
         var generatedSourceTextStr = generatedSourceText.ToString();
 
