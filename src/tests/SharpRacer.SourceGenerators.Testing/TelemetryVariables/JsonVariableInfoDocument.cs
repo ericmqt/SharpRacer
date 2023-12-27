@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.Testing.Text;
 namespace SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 public class JsonVariableInfoDocument
 {
-    public JsonVariableInfoDocument(string documentPath, JsonSourceText sourceText, ImmutableArray<JsonVariableInfo> variables)
+    public JsonVariableInfoDocument(string documentPath, JsonSourceText sourceText, ImmutableArray<VariableInfo> variables)
     {
         if (string.IsNullOrEmpty(documentPath))
         {
@@ -21,10 +21,10 @@ public class JsonVariableInfoDocument
 
     public JsonLocationFactory SourceLocationFactory { get; }
     public JsonSourceText SourceText { get; }
-    public ImmutableArray<JsonVariableInfo> Variables { get; }
+    public ImmutableArray<VariableInfo> Variables { get; }
 
     public ImmutableArray<VariableInfo> ToVariableInfoArray()
     {
-        return Variables.Select(x => new VariableInfo(x, SourceLocationFactory.GetLocation(x.JsonSpan))).ToImmutableArray();
+        return Variables.Select(x => x.WithJsonLocation(SourceLocationFactory.GetLocation(x.JsonSpan))).ToImmutableArray();
     }
 }

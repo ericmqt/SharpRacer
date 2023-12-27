@@ -21,7 +21,7 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
     public readonly JsonLocationFactory SourceLocationFactory { get; }
     public readonly SourceText SourceText { get; }
 
-    public ImmutableArray<JsonVariableInfo> Read(CancellationToken cancellationToken, out Diagnostic? diagnostic)
+    public ImmutableArray<VariableInfo> Read(CancellationToken cancellationToken, out Diagnostic? diagnostic)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -29,7 +29,7 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
 
         try
         {
-            var jsonVariables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
+            var jsonVariables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
             diagnostic = !jsonVariables.Any()
                 ? VariableInfoDiagnostics.NoVariablesDefinedInFile(FileName)
@@ -37,19 +37,19 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
 
             return !jsonVariables.IsDefault
                 ? jsonVariables
-                : ImmutableArray<JsonVariableInfo>.Empty;
+                : ImmutableArray<VariableInfo>.Empty;
         }
         catch (JsonException jsonEx)
         {
             diagnostic = VariableInfoDiagnostics.FileReadException(File.Path, jsonEx, SourceLocationFactory.GetLocation(jsonEx));
 
-            return ImmutableArray<JsonVariableInfo>.Empty;
+            return ImmutableArray<VariableInfo>.Empty;
         }
         catch (Exception ex)
         {
             diagnostic = VariableInfoDiagnostics.FileReadException(File.Path, ex);
 
-            return ImmutableArray<JsonVariableInfo>.Empty;
+            return ImmutableArray<VariableInfo>.Empty;
         }
     }
 

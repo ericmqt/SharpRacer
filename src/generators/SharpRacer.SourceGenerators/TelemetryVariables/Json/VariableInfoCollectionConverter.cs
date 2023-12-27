@@ -2,18 +2,19 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.CodeAnalysis.Text;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-internal class JsonVariableInfoCollectionConverter : JsonConverter<ImmutableArray<JsonVariableInfo>>
+internal class VariableInfoCollectionConverter : JsonConverter<ImmutableArray<VariableInfo>>
 {
-    public override ImmutableArray<JsonVariableInfo> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override ImmutableArray<VariableInfo> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartArray)
         {
             throw new JsonException();
         }
 
-        var builder = ImmutableArray.CreateBuilder<JsonVariableInfo>();
+        var builder = ImmutableArray.CreateBuilder<VariableInfo>();
 
         while (reader.Read())
         {
@@ -22,38 +23,35 @@ internal class JsonVariableInfoCollectionConverter : JsonConverter<ImmutableArra
                 break;
             }
 
-            builder.Add(ReadVariableInfo(ref reader));
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException();
+            }
+
+            var objStart = (int)reader.TokenStartIndex;
+
+            var variableInfo = JsonSerializer.Deserialize(ref reader, TelemetryGeneratorSerializationContext.Default.VariableInfo);
+
+            var objSpan = GetTextSpanFromStartToCurrentPosition(objStart, ref reader);
+
+            variableInfo = variableInfo.WithJsonSpan(objSpan);
+
+            builder.Add(variableInfo);
         }
 
         return builder.ToImmutable();
     }
 
-    public override void Write(Utf8JsonWriter writer, ImmutableArray<JsonVariableInfo> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, ImmutableArray<VariableInfo> value, JsonSerializerOptions options)
     {
         writer.WriteStartArray();
 
         foreach (var variableInfoValue in value)
         {
-            JsonSerializer.Serialize(writer, variableInfoValue, TelemetryGeneratorSerializationContext.Default.JsonVariableInfo);
+            JsonSerializer.Serialize(writer, variableInfoValue, TelemetryGeneratorSerializationContext.Default.VariableInfo);
         }
 
         writer.WriteEndArray();
-    }
-
-    private JsonVariableInfo ReadVariableInfo(ref Utf8JsonReader reader)
-    {
-        if (reader.TokenType != JsonTokenType.StartObject)
-        {
-            throw new JsonException();
-        }
-
-        var objStart = (int)reader.TokenStartIndex;
-
-        var variableInfo = JsonSerializer.Deserialize(ref reader, TelemetryGeneratorSerializationContext.Default.JsonVariableInfo);
-
-        var objSpan = GetTextSpanFromStartToCurrentPosition(objStart, ref reader);
-
-        return new JsonVariableInfo(variableInfo, objSpan);
     }
 
     private TextSpan GetTextSpanFromStartToCurrentPosition(int start, ref Utf8JsonReader reader)

@@ -1,59 +1,104 @@
-﻿using Microsoft.CodeAnalysis;
-using SharpRacer.SourceGenerators.TelemetryVariables.Json;
+﻿using System.Text.Json.Serialization;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public readonly struct VariableInfo : IEquatable<VariableInfo>
 {
-    internal VariableInfo(
+    public VariableInfo(
         string name,
         VariableValueType valueType,
         int valueCount,
-        bool isTimeSliceArray,
         string description,
         string? valueUnit,
+        bool isTimeSliceArray,
         bool isDeprecated,
         string? deprecatedBy,
-        Location? location)
+        TextSpan jsonSpan,
+        Location jsonLocation)
     {
         Name = name;
         ValueType = valueType;
         ValueCount = valueCount;
-        IsTimeSliceArray = isTimeSliceArray;
         Description = description;
         ValueUnit = valueUnit;
+        IsTimeSliceArray = isTimeSliceArray;
         IsDeprecated = isDeprecated;
         DeprecatedBy = deprecatedBy;
-        JsonLocation = location ?? Location.None;
-    }
 
-    internal VariableInfo(JsonVariableInfo variableInfo)
-        : this(variableInfo, Location.None)
-    {
-
-    }
-
-    public VariableInfo(JsonVariableInfo value, Location jsonLocation)
-    {
-        Name = value.Name;
-        ValueType = value.ValueType;
-        ValueCount = value.ValueCount;
-        Description = value.Description;
-        ValueUnit = value.ValueUnit;
-        IsTimeSliceArray = value.IsTimeSliceArray;
-        IsDeprecated = value.IsDeprecated;
-        DeprecatedBy = value.DeprecatedBy;
+        JsonSpan = jsonSpan;
         JsonLocation = jsonLocation;
+    }
+
+    [JsonConstructor]
+    public VariableInfo(
+        string name,
+        VariableValueType valueType,
+        int valueCount,
+        string description,
+        string? valueUnit,
+        bool isTimeSliceArray,
+        bool isDeprecated,
+        string? deprecatedBy)
+    {
+        Name = name;
+        ValueType = valueType;
+        ValueCount = valueCount;
+        Description = description;
+        ValueUnit = valueUnit;
+        IsTimeSliceArray = isTimeSliceArray;
+        IsDeprecated = isDeprecated;
+        DeprecatedBy = deprecatedBy;
+
+        JsonLocation = Location.None;
+        JsonSpan = new TextSpan(0, 0);
     }
 
     public readonly string? DeprecatedBy { get; }
     public readonly string Description { get; }
     public readonly bool IsDeprecated { get; }
     public readonly bool IsTimeSliceArray { get; }
-    public Location JsonLocation { get; }
+
+    [JsonIgnore]
+    public readonly Location JsonLocation { get; }
+
+    [JsonIgnore]
+    public readonly TextSpan JsonSpan { get; }
+
     public readonly string Name { get; }
     public readonly int ValueCount { get; }
     public readonly VariableValueType ValueType { get; }
     public readonly string? ValueUnit { get; }
+
+    public readonly VariableInfo WithJsonLocation(Location jsonLocation)
+    {
+        return new VariableInfo(
+            Name,
+            ValueType,
+            ValueCount,
+            Description,
+            ValueUnit,
+            IsTimeSliceArray,
+            IsDeprecated,
+            DeprecatedBy,
+            JsonSpan,
+            jsonLocation);
+    }
+
+    public readonly VariableInfo WithJsonSpan(TextSpan jsonSpan)
+    {
+        return new VariableInfo(
+            Name,
+            ValueType,
+            ValueCount,
+            Description,
+            ValueUnit,
+            IsTimeSliceArray,
+            IsDeprecated,
+            DeprecatedBy,
+            jsonSpan,
+            JsonLocation);
+    }
 
     public override bool Equals(object obj)
     {
@@ -62,15 +107,16 @@ public readonly struct VariableInfo : IEquatable<VariableInfo>
 
     public bool Equals(VariableInfo other)
     {
-        return StringComparer.Ordinal.Equals(Name, other.Name) &&
-            JsonLocation == other.JsonLocation &&
-            ValueType == other.ValueType &&
-            ValueCount == other.ValueCount &&
+        return StringComparer.Ordinal.Equals(DeprecatedBy, other.DeprecatedBy) &&
             StringComparer.Ordinal.Equals(Description, other.Description) &&
-            StringComparer.Ordinal.Equals(ValueUnit, other.ValueUnit) &&
-            IsTimeSliceArray == other.IsTimeSliceArray &&
             IsDeprecated == other.IsDeprecated &&
-            StringComparer.Ordinal.Equals(DeprecatedBy, other.DeprecatedBy);
+            IsTimeSliceArray == other.IsTimeSliceArray &&
+            JsonLocation == other.JsonLocation &&
+            JsonSpan == other.JsonSpan &&
+            StringComparer.Ordinal.Equals(Name, other.Name) &&
+            ValueCount == other.ValueCount &&
+            ValueType == other.ValueType &&
+            StringComparer.Ordinal.Equals(ValueUnit, other.ValueUnit);
     }
 
     public override int GetHashCode()
@@ -84,8 +130,10 @@ public readonly struct VariableInfo : IEquatable<VariableInfo>
         hc.Add(ValueUnit);
         hc.Add(IsTimeSliceArray);
         hc.Add(IsDeprecated);
-        hc.Add(JsonLocation);
         hc.Add(DeprecatedBy);
+
+        hc.Add(JsonLocation);
+        hc.Add(JsonSpan);
 
         return hc.ToHashCode();
     }

@@ -1,14 +1,17 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 using System.Text.Json;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-public class JsonVariableInfoCollectionConverterTests
+public class VariableInfoCollectionConverterTests
 {
     [Fact]
     public void Write_Test()
     {
-        var variable1 = new JsonVariableInfo(
+        var variable1 = new VariableInfo(
             "SessionTime",
             VariableValueType.Double,
             1,
@@ -18,7 +21,7 @@ public class JsonVariableInfoCollectionConverterTests
             false,
             null);
 
-        var variable2 = new JsonVariableInfo(
+        var variable2 = new VariableInfo(
             "SteeringWheelTorque_ST",
             VariableValueType.Float,
             6,
@@ -35,7 +38,7 @@ public class JsonVariableInfoCollectionConverterTests
         using (var jsonWriter = new Utf8JsonWriter(memoryStream))
         {
 
-            var converter = new JsonVariableInfoCollectionConverter();
+            var converter = new VariableInfoCollectionConverter();
             converter.Write(jsonWriter, outputVariableArray, TelemetryGeneratorSerializationContext.Default.Options);
 
             jsonWriter.Flush();
@@ -44,13 +47,18 @@ public class JsonVariableInfoCollectionConverterTests
             json = Encoding.UTF8.GetString(memoryStream.ToArray());
         }
 
-        var readVariables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
+        var readVariables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
         Assert.Equal(2, readVariables.Length);
 
         // Provide default spans for read variables so equality won't fail
-        var readVariable1 = new JsonVariableInfo(readVariables.Single(x => x.Name == variable1.Name), default);
-        var readVariable2 = new JsonVariableInfo(readVariables.Single(x => x.Name == variable2.Name), default);
+        var readVariable1 = readVariables.Single(x => x.Name == variable1.Name)
+            .WithJsonSpan(new TextSpan(0, 0))
+            .WithJsonLocation(Location.None);
+
+        var readVariable2 = readVariables.Single(x => x.Name == variable2.Name)
+            .WithJsonSpan(new TextSpan(0, 0))
+            .WithJsonLocation(Location.None);
 
         Assert.Equal(variable1, readVariable1);
         Assert.Equal(variable2, readVariable2);

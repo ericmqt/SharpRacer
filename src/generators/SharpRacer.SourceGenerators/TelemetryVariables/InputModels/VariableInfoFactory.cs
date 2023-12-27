@@ -16,33 +16,33 @@ internal class VariableInfoFactory
         _builder = ImmutableArray.CreateBuilder<VariableInfo>(initialCapacity);
     }
 
-    public bool TryAdd(JsonVariableInfo jsonVariableInfo, out ImmutableArray<Diagnostic> diagnostics)
+    public bool TryAdd(VariableInfo variableInfo, out ImmutableArray<Diagnostic> diagnostics)
     {
-        if (jsonVariableInfo == default)
+        if (variableInfo == default)
         {
             diagnostics = ImmutableArray<Diagnostic>.Empty;
             return false;
         }
 
-        diagnostics = GetDiagnostics(jsonVariableInfo);
+        diagnostics = GetDiagnostics(variableInfo);
 
         if (diagnostics.HasErrors())
         {
             return false;
         }
 
-        var variableInfo = new VariableInfo(jsonVariableInfo, GetLocation(jsonVariableInfo)!);
+        variableInfo = variableInfo.WithJsonLocation(GetLocation(variableInfo)!);
 
         _builder.Add(variableInfo);
 
         return true;
     }
 
-    private ImmutableArray<Diagnostic> GetDiagnostics(JsonVariableInfo jsonVariableInfo)
+    private ImmutableArray<Diagnostic> GetDiagnostics(VariableInfo variableInfo)
     {
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
-        if (TryGetDuplicateNameDiagnostic(jsonVariableInfo, out var duplicateNameDiagnostic))
+        if (TryGetDuplicateNameDiagnostic(variableInfo, out var duplicateNameDiagnostic))
         {
             diagnosticsBuilder.Add(duplicateNameDiagnostic!);
         }
@@ -55,9 +55,9 @@ internal class VariableInfoFactory
         return _builder.ToImmutable();
     }
 
-    private bool TryGetDuplicateNameDiagnostic(JsonVariableInfo jsonVariableInfo, out Diagnostic? diagnostic)
+    private bool TryGetDuplicateNameDiagnostic(VariableInfo variableInfo, out Diagnostic? diagnostic)
     {
-        var duplicate = _builder.FirstOrDefault(x => x.Name.Equals(jsonVariableInfo.Name, StringComparison.Ordinal));
+        var duplicate = _builder.FirstOrDefault(x => x.Name.Equals(variableInfo.Name, StringComparison.Ordinal));
 
         if (duplicate == default)
         {
@@ -66,8 +66,8 @@ internal class VariableInfoFactory
         }
 
         diagnostic = VariableInfoDiagnostics.VariableAlreadyDefined(
-            jsonVariableInfo.Name,
-            GetLocation(jsonVariableInfo));
+            variableInfo.Name,
+            GetLocation(variableInfo));
 
         return true;
     }
@@ -92,8 +92,8 @@ internal class VariableInfoFactory
         return false;
     }*/
 
-    private Location? GetLocation(JsonVariableInfo jsonVariableInfo)
+    private Location? GetLocation(VariableInfo variableInfo)
     {
-        return _locationFactory.GetLocation(jsonVariableInfo.JsonSpan);
+        return _locationFactory.GetLocation(variableInfo.JsonSpan);
     }
 }

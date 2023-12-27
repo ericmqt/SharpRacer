@@ -1,5 +1,4 @@
 ﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class VariableModelTests
@@ -13,7 +12,7 @@ public class VariableModelTests
     [Fact]
     public void Equals_Test()
     {
-        var jsonVariable1 = new JsonVariableInfo(
+        var jsonVariable1 = new VariableInfo(
             "Lat",
             VariableValueType.Int,
             4,
@@ -23,7 +22,7 @@ public class VariableModelTests
             false,
             null);
 
-        var jsonVariable2 = new JsonVariableInfo(
+        var jsonVariable2 = new VariableInfo(
             "Lat",
             VariableValueType.Int,
             4,
@@ -34,11 +33,11 @@ public class VariableModelTests
             null);
 
         var variableModel1 = new VariableModel(
-            new VariableInfo(jsonVariable1),
+            jsonVariable1,
             new VariableOptions(jsonVariable1.Name, "Latitude", "LatitudeVariable"));
 
         var variableModel2 = new VariableModel(
-            new VariableInfo(jsonVariable2),
+            jsonVariable2,
             new VariableOptions(jsonVariable2.Name, "Latitude", "LatitudeVariable"));
 
         Assert.True(variableModel1 == variableModel2);
@@ -53,7 +52,7 @@ public class VariableModelTests
     [Fact]
     public void Equals_UnequalTest()
     {
-        var jsonVariable1 = new JsonVariableInfo(
+        var jsonVariable1 = new VariableInfo(
             "Lat",
             VariableValueType.Int,
             4,
@@ -63,7 +62,7 @@ public class VariableModelTests
             false,
             null);
 
-        var jsonVariable2 = new JsonVariableInfo(
+        var jsonVariable2 = new VariableInfo(
             "Lon",
             VariableValueType.Int,
             1,
@@ -74,11 +73,11 @@ public class VariableModelTests
             null);
 
         var variableModel1 = new VariableModel(
-            new VariableInfo(jsonVariable1),
+            jsonVariable1,
             new VariableOptions(jsonVariable1.Name, "Latitude", "LatitudeVariable"));
 
         var variableModel2 = new VariableModel(
-            new VariableInfo(jsonVariable2),
+            jsonVariable2,
             new VariableOptions(jsonVariable2.Name, "Longitude", "LatitudeVariable"));
 
         Assert.False(variableModel1 == variableModel2);

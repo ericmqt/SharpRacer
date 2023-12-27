@@ -11,15 +11,16 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
     [
         typeof(IncludedVariableNameValueCollectionConverter),
         typeof(JsonStringEnumConverter<VariableValueType>),
-        typeof(JsonVariableInfoCollectionConverter),
-        typeof(JsonVariableOptionsCollectionConverter)
+        typeof(JsonVariableOptionsCollectionConverter),
+        typeof(VariableInfoCollectionConverter)
     ],
     WriteIndented = true)]
 [JsonSerializable(typeof(ImmutableArray<IncludedVariableNameValue>))]
-[JsonSerializable(typeof(ImmutableArray<JsonVariableInfo>))]
+[JsonSerializable(typeof(ImmutableArray<VariableInfo>))]
 [JsonSerializable(typeof(ImmutableArray<JsonVariableOptions>))]
 [JsonSerializable(typeof(IncludedVariableNameValue))]
 [JsonSerializable(typeof(JsonVariableOptionsValue))]
+[JsonSerializable(typeof(VariableInfo))]
 [JsonSerializable(typeof(VariableValueType))]
 [JsonSerializable(typeof(bool))]
 [JsonSerializable(typeof(string))]

@@ -8,11 +8,11 @@ using SharpRacer.SourceGenerators.Testing.Text;
 namespace SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 public class JsonVariableInfoDocumentBuilder
 {
-    private readonly List<JsonVariableInfo> _variables;
+    private readonly List<VariableInfo> _variables;
 
     public JsonVariableInfoDocumentBuilder()
     {
-        _variables = new List<JsonVariableInfo>();
+        _variables = new List<VariableInfo>();
     }
 
     public JsonVariableInfoDocumentBuilder AddArray(
@@ -33,7 +33,7 @@ public class JsonVariableInfoDocumentBuilder
         string? unit,
         string? deprecatedBy)
     {
-        var variableInfo = new JsonVariableInfo(
+        var variableInfo = new VariableInfo(
             variableName,
             valueType,
             valueCount,
@@ -60,7 +60,7 @@ public class JsonVariableInfoDocumentBuilder
         string? unit,
         string? deprecatedBy)
     {
-        var variableInfo = new JsonVariableInfo(
+        var variableInfo = new VariableInfo(
             variableName,
             valueType,
             1,
@@ -93,7 +93,7 @@ public class JsonVariableInfoDocumentBuilder
         string? unit,
         string? deprecatedBy)
     {
-        var variableInfo = new JsonVariableInfo(
+        var variableInfo = new VariableInfo(
             variableName,
             variableValueType,
             valueCount,
@@ -112,11 +112,11 @@ public class JsonVariableInfoDocumentBuilder
     {
         var json = JsonSerializer.Serialize(
             _variables.ToImmutableArray(),
-            TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
+            TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
         var jsonSourceText = new JsonSourceText(json);
 
-        var variables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
+        var variables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
         return new JsonVariableInfoDocument(documentPath, jsonSourceText, variables);
     }
@@ -125,7 +125,7 @@ public class JsonVariableInfoDocumentBuilder
     {
         var json = JsonSerializer.Serialize(
            _variables.ToImmutableArray(),
-           TelemetryGeneratorSerializationContext.Default.ImmutableArrayJsonVariableInfo);
+           TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
         var jsonSourceText = new JsonSourceText(json);
 

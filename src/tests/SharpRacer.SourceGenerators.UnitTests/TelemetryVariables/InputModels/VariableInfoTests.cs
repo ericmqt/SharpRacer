@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
-using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public class VariableInfoTests
@@ -8,69 +7,85 @@ public class VariableInfoTests
     [Fact]
     public void Ctor_Test()
     {
+        var name = "Test";
+        var valueType = VariableValueType.Int;
+        int valueCount = 4;
+        string description = "Test variable";
+        string? unit = "test/s";
+        bool isTimeSliceArray = true;
+        bool isDeprecated = true;
+        string? deprecatedBy = "TestEx";
+
+        var span = new TextSpan(2, 3);
         var location = Location.Create(
             "test.txt",
-            new TextSpan(2, 3),
+            span,
             new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
 
-        var jsonVariable = new JsonVariableInfo(
-            "Test",
-            VariableValueType.Int,
-            4,
-            "Test variable",
-            "test/s",
-            true,
-            false,
-            null);
+        var variableInfo = new VariableInfo(
+            name,
+            valueType,
+            valueCount,
+            description,
+            unit,
+            isTimeSliceArray,
+            isDeprecated,
+            deprecatedBy,
+            span,
+            location);
 
-        var variableInfo = new VariableInfo(jsonVariable, location);
+        Assert.Equal(name, variableInfo.Name);
+        Assert.Equal(valueType, variableInfo.ValueType);
+        Assert.Equal(valueCount, variableInfo.ValueCount);
+        Assert.Equal(description, variableInfo.Description);
+        Assert.Equal(unit, variableInfo.ValueUnit);
+        Assert.Equal(isTimeSliceArray, variableInfo.IsTimeSliceArray);
+        Assert.Equal(isDeprecated, variableInfo.IsDeprecated);
+        Assert.Equal(deprecatedBy, variableInfo.DeprecatedBy);
 
-        Assert.Equal(jsonVariable.Name, variableInfo.Name);
-        Assert.Equal(jsonVariable.ValueType, variableInfo.ValueType);
-        Assert.Equal(jsonVariable.ValueCount, variableInfo.ValueCount);
-        Assert.Equal(jsonVariable.Description, variableInfo.Description);
-        Assert.Equal(jsonVariable.ValueUnit, jsonVariable.ValueUnit);
-        Assert.Equal(jsonVariable.IsTimeSliceArray, variableInfo.IsTimeSliceArray);
-        Assert.Equal(jsonVariable.IsDeprecated, variableInfo.IsDeprecated);
-        Assert.Equal(jsonVariable.DeprecatedBy, variableInfo.DeprecatedBy);
+        Assert.Equal(span, variableInfo.JsonSpan);
         Assert.Equal(location, variableInfo.JsonLocation);
     }
 
     [Fact]
     public void Equals_Test()
     {
-        var jsonVariable1 = new JsonVariableInfo(
-            "Test",
-            VariableValueType.Int,
-            4,
-            "Test variable",
-            "test/s",
-            true,
-            false,
-            null);
-
-        var jsonVariable2 = new JsonVariableInfo(
-            "Test",
-            VariableValueType.Int,
-            4,
-            "Test variable",
-            "test/s",
-            true,
-            false,
-            null);
+        var variable1Span = new TextSpan(2, 3);
+        var variable2Span = new TextSpan(2, 3);
 
         var variable1Location = Location.Create(
             "test.txt",
-            new TextSpan(2, 3),
+            variable1Span,
             new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
 
         var variable2Location = Location.Create(
             "test.txt",
-            new TextSpan(2, 3),
+            variable2Span,
             new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
 
-        var variable1 = new VariableInfo(jsonVariable1, variable1Location);
-        var variable2 = new VariableInfo(jsonVariable2, variable2Location);
+        var variable1 = new VariableInfo(
+            "Test",
+            VariableValueType.Int,
+            4,
+            "Test variable",
+            "test/s",
+            true,
+            false,
+            null,
+            variable1Span,
+            variable1Location);
+
+        var variable2 = new VariableInfo(
+            "Test",
+            VariableValueType.Int,
+            4,
+            "Test variable",
+            "test/s",
+            true,
+            false,
+            null,
+            variable2Span,
+            variable2Location);
 
         Assert.True(variable1 == variable2);
         Assert.False(variable1 != variable2);
@@ -81,7 +96,20 @@ public class VariableInfoTests
     [Fact]
     public void Equals_UnequalTest()
     {
-        var jsonVariable1 = new JsonVariableInfo(
+        var variable1Span = new TextSpan(2, 3);
+        var variable2Span = new TextSpan(9, 10);
+
+        var variable1Location = Location.Create(
+            "test.txt",
+            variable1Span,
+            new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
+
+        var variable2Location = Location.Create(
+            "test.txt",
+            variable2Span,
+            new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
+
+        var variable1 = new VariableInfo(
             "Test",
             VariableValueType.Int,
             4,
@@ -89,9 +117,11 @@ public class VariableInfoTests
             "test/s",
             true,
             false,
-            null);
+            null,
+            variable1Span,
+            variable1Location);
 
-        var jsonVariable2 = new JsonVariableInfo(
+        var variable2 = new VariableInfo(
             "Test2",
             VariableValueType.Float,
             1,
@@ -99,20 +129,9 @@ public class VariableInfoTests
             null,
             false,
             true,
-            "Test3");
-
-        var variable1Location = Location.Create(
-            "test.txt",
-            new TextSpan(2, 3),
-            new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
-
-        var variable2Location = Location.Create(
-            "test.txt",
-            new TextSpan(9, 10),
-            new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
-
-        var variable1 = new VariableInfo(jsonVariable1, variable1Location);
-        var variable2 = new VariableInfo(jsonVariable2, variable2Location);
+            "Test3",
+            variable2Span,
+            variable2Location);
 
         Assert.False(variable1 == variable2);
         Assert.True(variable1 != variable2);

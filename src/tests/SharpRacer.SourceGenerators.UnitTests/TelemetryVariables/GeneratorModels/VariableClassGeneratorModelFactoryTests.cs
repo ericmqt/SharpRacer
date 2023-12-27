@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Text;
-using Microsoft.CodeAnalysis;
-using SharpRacer.SourceGenerators.TelemetryVariables.Json;
+﻿using System.Collections.Immutable;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
@@ -33,7 +25,7 @@ public class VariableClassGeneratorModelFactoryTests
             targetNamespace: "Test.Variables",
             ImmutableArray<DescriptorPropertyReference>.Empty);
 
-        var jsonVariable = new JsonVariableInfo(
+        var variableInfo = new VariableInfo(
             "Test",
             VariableValueType.Int,
             4,
@@ -42,8 +34,6 @@ public class VariableClassGeneratorModelFactoryTests
             true,
             false,
             null);
-
-        var variableInfo = new VariableInfo(jsonVariable);
 
         var factory = new VariableClassGeneratorModelFactory(generatorOptions, initialCapacity: 3);
 
@@ -63,7 +53,7 @@ public class VariableClassGeneratorModelFactoryTests
             targetNamespace: "Test.Variables",
             ImmutableArray<DescriptorPropertyReference>.Empty);
 
-        var jsonVariable1 = new JsonVariableInfo(
+        var jsonVariable1 = new VariableInfo(
             "Lat",
             VariableValueType.Int,
             4,
@@ -73,7 +63,7 @@ public class VariableClassGeneratorModelFactoryTests
             false,
             null);
 
-        var jsonVariable2 = new JsonVariableInfo(
+        var jsonVariable2 = new VariableInfo(
             "Lon",
             VariableValueType.Int,
             1,
@@ -84,11 +74,11 @@ public class VariableClassGeneratorModelFactoryTests
             null);
 
         var variableModel1 = new VariableModel(
-            new VariableInfo(jsonVariable1),
+            jsonVariable1,
             new VariableOptions(jsonVariable1.Name, "Latitude", "LatitudeVariable"));
 
         var variableModel2 = new VariableModel(
-            new VariableInfo(jsonVariable2),
+            jsonVariable2,
             new VariableOptions(jsonVariable2.Name, "Longitude", "LatitudeVariable"));
 
         var factory = new VariableClassGeneratorModelFactory(generatorOptions, initialCapacity: 3);
