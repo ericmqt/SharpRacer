@@ -68,7 +68,7 @@ internal static partial class GeneratorDiagnostics
         VariableModel duplicatedVariable,
         Location? location = null)
     {
-        return Diagnostic.Create(_VariableNameInUseByVariable, location, variableInfo.Name, variableName, duplicatedVariable.VariableInfo.Name);
+        return Diagnostic.Create(_VariableNameInUseByVariable, location, variableInfo.Name, variableName, duplicatedVariable.VariableName);
     }
 
     public static Diagnostic VariableContextPropertyNameInUseByVariable(
@@ -82,7 +82,7 @@ internal static partial class GeneratorDiagnostics
             location,
             duplicatingVariableInfo.Name,
             contextPropertyName,
-            duplicatedModel.VariableInfo.Name);
+            duplicatedModel.VariableName);
     }
 
     public static Diagnostic VariableDescriptorNameInUseByVariable(
@@ -96,7 +96,7 @@ internal static partial class GeneratorDiagnostics
             location,
             duplicatingVariableInfo.Name,
             descriptorName,
-            duplicatedModel.VariableInfo.Name);
+            duplicatedModel.VariableName);
     }
 
     internal static DiagnosticDescriptor CreateErrorDescriptor(string id, string title, string messageFormat)

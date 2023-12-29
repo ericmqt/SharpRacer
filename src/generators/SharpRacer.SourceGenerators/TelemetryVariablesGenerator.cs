@@ -2,6 +2,7 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables;
+using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
@@ -15,11 +16,14 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
     {
         var generatorConfiguration = GeneratorConfigurationValueProvider.GetValueProvider(context.AnalyzerConfigOptionsProvider);
 
-        var variableModels = VariableModelsValueProvider.GetValueProvider(ref context, generatorConfiguration);
+        var variableModels = VariableModelsValueProvider.GetValueProvider(ref context, generatorConfiguration)
+            .WithTrackingName(TrackingNames.VariableModelsValueProvider_GetValuesProvider);
+
         var variableModelArray = variableModels.Collect();
 
         // Create descriptor generator models
-        var descriptorGeneratorModelProvider = DescriptorClassModelProvider.GetValueProvider(ref context, variableModelArray);
+        var descriptorGeneratorModelProvider = DescriptorClassModelProvider.GetValueProvider(ref context, variableModelArray)
+            .WithTrackingName(TrackingNames.DescriptorClassModelProvider_GetValueProvider);
 
         context.ReportDiagnostics(descriptorGeneratorModelProvider.Select(static (x, _) => x.Diagnostics));
 
@@ -43,7 +47,8 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             static (x, _) => new VariableClassReference(x.VariableName, x.ClassName, x.ClassNamespace));
 
         // Get variable context generator models
-        var contextClasses = ContextClassInfoValuesProvider.GetValuesProvider(ref context);
+        var contextClasses = ContextClassInfoValuesProvider.GetValuesProvider(ref context)
+            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider);
 
         var contextVariableModels = GetContextVariableModelsProvider(
             ref context,
@@ -54,7 +59,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var contextClassModels = contextClasses.Combine(contextVariableModels)
             .Select(static (item, ct) =>
             {
-                var variables = GetContextIncludedVariables(item.Left.IncludedVariables, item.Right, out var includedVariablesDiagnostics);
+                var variables = GetContextIncludedVariables(item.Left, item.Right, out var includedVariablesDiagnostics);
                 var model = new ContextClassModel(item.Left, variables);
 
                 return new PipelineValueResult<ContextClassModel>(model, includedVariablesDiagnostics);
@@ -67,11 +72,11 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
     }
 
     private static ImmutableArray<ContextVariableModel> GetContextIncludedVariables(
-        IncludedVariables includedVariables,
+        ContextClassInfo contextClassInfo,
         ImmutableArray<ContextVariableModel> models,
         out ImmutableArray<Diagnostic> diagnostics)
     {
-        if (includedVariables.IncludeAll())
+        if (contextClassInfo.IncludedVariables.IncludeAll())
         {
             diagnostics = ImmutableArray<Diagnostic>.Empty;
             return models;
@@ -80,9 +85,9 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
         var builder = ImmutableArray.CreateBuilder<ContextVariableModel>();
 
-        foreach (var variableName in includedVariables.VariableNames)
+        foreach (var variableName in contextClassInfo.IncludedVariables.VariableNames)
         {
-            var model = models.FirstOrDefault(x => x.VariableModel.VariableInfo.Name.Equals(variableName, StringComparison.Ordinal));
+            var model = models.FirstOrDefault(x => x.VariableModel.VariableName.Equals(variableName, StringComparison.Ordinal));
 
             if (model != default)
             {
@@ -90,7 +95,10 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             }
             else
             {
-                // TODO: Diagnostic for missing variable
+                var contextName = $"{contextClassInfo.ClassNamespace}.{contextClassInfo.ClassName}";
+                var diagnostic = IncludedVariablesDiagnostics.VariableNotFound(contextName, variableName);
+
+                diagnosticsBuilder.Add(diagnostic);
             }
         }
 

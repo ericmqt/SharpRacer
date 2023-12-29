@@ -16,17 +16,14 @@ internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
     {
         VariableModel = variableModel;
 
-        PropertyName = !string.IsNullOrEmpty(propertyName)
-            ? propertyName
-            : throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or empty.", nameof(propertyName));
-
+        PropertyName = propertyName;
         PropertyXmlSummary = propertyXmlSummary;
         VariableClassReference = variableClassReference;
         DescriptorReference = descriptorPropertyReference;
     }
 
     public readonly DescriptorPropertyReference? DescriptorReference { get; }
-    public bool IsArray => VariableModel.VariableInfo.ValueCount > 1;
+    public bool IsArray => VariableModel.ValueCount > 1;
     public readonly string PropertyName { get; }
     public readonly string PropertyXmlSummary { get; }
     public readonly VariableClassReference? VariableClassReference { get; }
@@ -53,13 +50,13 @@ internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
             {
                 return DataVariableFactorySyntaxFactory.CreateArrayFromDescriptorMethodInvocation(
                     factoryInstanceIdentifier,
-                    DataVariableInterfaceTypeArgument(),
+                    VariableModel.DataVariableTypeArgument(),
                     descriptorMemberAccessExpr);
             }
 
             return DataVariableFactorySyntaxFactory.CreateScalarFromDescriptorMethodInvocation(
                 factoryInstanceIdentifier,
-                DataVariableInterfaceTypeArgument(),
+                VariableModel.DataVariableTypeArgument(),
                 descriptorMemberAccessExpr);
         }
 
@@ -67,20 +64,15 @@ internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
         {
             return DataVariableFactorySyntaxFactory.CreateArrayFromVariableNameAndArrayLengthMethodInvocation(
                 factoryInstanceIdentifier,
-                DataVariableInterfaceTypeArgument(),
-                VariableModel.VariableInfo.Name,
-                VariableModel.VariableInfo.ValueCount);
+                VariableModel.DataVariableTypeArgument(),
+                VariableModel.VariableName,
+                VariableModel.ValueCount);
         }
 
         return DataVariableFactorySyntaxFactory.CreateScalarFromVariableNameMethodInvocation(
             factoryInstanceIdentifier,
-            DataVariableInterfaceTypeArgument(),
-            VariableModel.VariableInfo.Name);
-    }
-
-    public TypeSyntax DataVariableInterfaceTypeArgument()
-    {
-        return SharpRacerTypes.DataVariableTypeArgument(VariableModel.VariableInfo);
+            VariableModel.DataVariableTypeArgument(),
+            VariableModel.VariableName);
     }
 
     public SyntaxToken PropertyIdentifier()

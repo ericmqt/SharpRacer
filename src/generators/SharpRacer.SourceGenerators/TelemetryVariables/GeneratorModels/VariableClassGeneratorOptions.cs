@@ -30,7 +30,7 @@ internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClas
 
     public DescriptorPropertyReference? GetDescriptorPropertyReference(ref readonly VariableModel variableModel)
     {
-        var variableKey = variableModel.VariableInfo.Name;
+        var variableKey = variableModel.VariableName;
 
         if (DescriptorPropertyReferences.Any(x => x.VariableName.Equals(variableKey, StringComparison.Ordinal)))
         {
@@ -42,7 +42,7 @@ internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClas
 
     public bool TryGetDescriptorPropertyReference(ref readonly VariableModel variableModel, out DescriptorPropertyReference descriptorPropertyReference)
     {
-        var variableKey = variableModel.VariableInfo.Name;
+        var variableKey = variableModel.VariableName;
 
         if (DescriptorPropertyReferences.Any(x => x.VariableName.Equals(variableKey, StringComparison.Ordinal)))
         {

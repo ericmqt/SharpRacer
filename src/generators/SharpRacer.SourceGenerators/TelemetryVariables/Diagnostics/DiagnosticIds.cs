@@ -26,10 +26,12 @@ internal static class DiagnosticIds
     public const string IncludedVariables_NoIncludedVariableNames = "SR2304";
     public const string IncludedVariables_EmptyVariableName = "SR2305";
     public const string IncludedVariables_VariableAlreadyIncluded = "SR2306";
+    public const string IncludedVariables_VariableNotFound = "SR2307";
 
     public const string VariableModels_NameInUse = "SR3210";
     public const string VariableModels_ContextPropertyNameInUse = "SR3211";
     public const string VariableModels_DescriptorNameInUse = "SR3212";
     public const string VariableModels_ConfiguredNameResultsInContextPropertyNameCollision = "SR3213";
     public const string VariableModels_ConfiguredNameResultsInDescriptorNameCollision = "SR3214";
+    public const string VariableModels_DeprecatingVariableNotFound = "SR3215";
 }

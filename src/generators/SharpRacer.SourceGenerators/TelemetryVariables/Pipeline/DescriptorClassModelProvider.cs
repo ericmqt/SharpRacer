@@ -41,8 +41,7 @@ internal static class DescriptorClassModelProvider
         // TODO: Warn for empty descriptor properties?
 
         return classesWithDescriptorProperties.Collect()
-            .Select(static (item, _) => GetSingleDescriptorClassModel(item))
-            .WithTrackingName(TrackingNames.DescriptorClassModelProvider_GetValueProvider);
+            .Select(static (item, _) => GetSingleDescriptorClassModel(item));
     }
 
     private static PipelineValueResult<DescriptorClassModel> GetSingleDescriptorClassModel(ImmutableArray<DescriptorClassModel> models)

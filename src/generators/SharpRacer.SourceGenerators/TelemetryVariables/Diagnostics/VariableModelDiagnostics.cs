@@ -13,7 +13,7 @@ internal class VariableModelDiagnostics
         Location? location = null)
     {
         return Diagnostic.Create(
-            _ConfiguredNameResultsInDescriptorNameCollision,
+            _ConfiguredNameResultsInContextPropertyNameCollision,
             location,
             variableName,
             descriptorName,
@@ -44,6 +44,14 @@ internal class VariableModelDiagnostics
         Location? location = null)
     {
         return Diagnostic.Create(_ContextPropertyNameInUse, location, variableName, contextPropertyName, definingVariableName);
+    }
+
+    public static Diagnostic DeprecatingVariableNotFoundWarning(
+        string variableName,
+        string deprecatingVariableName,
+        Location? location = null)
+    {
+        return Diagnostic.Create(_DeprecatingVariableNotFoundWarning, location, variableName, deprecatingVariableName);
     }
 
     public static Diagnostic DescriptorNameInUse(
@@ -80,6 +88,15 @@ internal class VariableModelDiagnostics
             "Variable '{0}' has ContextPropertyName '{1}' but that value is already defined by variable '{2}'",
             _Category,
             DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
+    private static readonly DiagnosticDescriptor _DeprecatingVariableNotFoundWarning
+        = new(
+            DiagnosticIds.VariableModels_DeprecatingVariableNotFound,
+            "Deprecating variable not found",
+            "Variable '{0}' is deprecated but deprecating variable '{1}' was not found",
+            _Category,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
     private static readonly DiagnosticDescriptor _DescriptorNameInUse

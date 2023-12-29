@@ -59,14 +59,7 @@ internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
         hc.Add(TypeName);
         hc.Add(TypeNamespace);
         hc.Add(GeneratorAttributeLocation);
-
-        if (!DescriptorProperties.IsDefaultOrEmpty)
-        {
-            for (int i = 0; i < DescriptorProperties.Length; i++)
-            {
-                hc.Add(DescriptorProperties[i]);
-            }
-        }
+        hc.AddImmutableArray(DescriptorProperties);
 
         return hc.ToHashCode();
     }

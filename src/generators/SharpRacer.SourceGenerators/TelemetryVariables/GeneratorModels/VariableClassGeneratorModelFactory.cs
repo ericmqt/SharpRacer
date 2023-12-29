@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class VariableClassGeneratorModelFactory
@@ -52,7 +51,7 @@ internal class VariableClassGeneratorModelFactory
             return _variableClassOptions.FormatClassName(variableModel.Options.ClassName!);
         }
 
-        return _variableClassOptions.FormatClassName(variableModel.VariableInfo.Name);
+        return _variableClassOptions.FormatClassName(variableModel.VariableName);
     }
 
     private bool TryGetDuplicateClassNameDiagnostic(VariableModel variableModel, string className, out Diagnostic? diagnostic)
@@ -65,7 +64,7 @@ internal class VariableClassGeneratorModelFactory
             return false;
         }
 
-        diagnostic = GeneratorDiagnostics.VariableClassNameInUse(className, variableModel.VariableInfo.Name, existing.VariableName);
+        diagnostic = GeneratorDiagnostics.VariableClassNameInUse(className, variableModel.VariableName, existing.VariableName);
         return true;
     }
 }

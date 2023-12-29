@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
@@ -17,15 +18,13 @@ internal static class VariableModelsValueProvider
         var variableInfoModelsResult = GetVariableInfoProvider(ref context, generatorConfiguration);
         context.ReportDiagnostics(variableInfoModelsResult.Select(static (x, _) => x.Diagnostics));
 
-        return variableInfoModelsResult.SelectMany(static (x, _) => x.Values)
+        var variableModelsResult = variableInfoModelsResult.Select(static (x, _) => x.Values)
             .Combine(variableOptionsProvider.Select(static (x, _) => x.Values))
-            .Select(static (input, ct) =>
-            {
-                var options = input.Right.FirstOrDefault(x => x.VariableKey.Equals(input.Left.Name));
+            .Select(static (item, ct) => CreateVariableModels(item.Left, item.Right));
 
-                return new VariableModel(input.Left, options);
-            })
-            .WithTrackingName(TrackingNames.VariableModelsValueProvider_GetValuesProvider);
+        context.ReportDiagnostics(variableModelsResult.Select(static (x, _) => x.Diagnostics));
+
+        return variableModelsResult.SelectMany(static (result, _) => result.Values);
     }
 
     private static IncrementalValueProvider<PipelineValuesResult<VariableInfo>> GetVariableInfoProvider(
@@ -118,5 +117,40 @@ internal static class VariableModelsValueProvider
 
             return new PipelineValuesResult<VariableOptions>(factory.Build(), diagnosticsBuilder.ToImmutable());
         }).WithTrackingName(TrackingNames.VariableModelsValueProvider_GetVariableOptionsProvider);
+    }
+
+    private static PipelineValuesResult<VariableModel> CreateVariableModels(ImmutableArray<VariableInfo> variables, ImmutableArray<VariableOptions> variableOptions)
+    {
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        var variableModels = variables
+            .Select(x => new VariableModel(x, variableOptions.FirstOrDefault(x => x.VariableKey.Equals(x.Name))))
+            .ToList();
+
+        // Find deprecating variables
+        for (int i = 0; i < variableModels.Count; i++)
+        {
+            var model = variableModels[i];
+
+            if (model.VariableInfo.IsDeprecated && model.VariableInfo.DeprecatedBy != null)
+            {
+                var deprecatingModel = variableModels.FirstOrDefault(x => x.VariableName.Equals(model.VariableInfo.DeprecatedBy));
+
+                if (deprecatingModel != default)
+                {
+                    variableModels[i] = model.WithDeprecatingVariable(deprecatingModel);
+                }
+                else
+                {
+                    var diagnostic = VariableModelDiagnostics.DeprecatingVariableNotFoundWarning(
+                        model.VariableName,
+                        model.VariableInfo.DeprecatedBy);
+
+                    diagnosticsBuilder.Add(diagnostic);
+                }
+            }
+        }
+
+        return new PipelineValuesResult<VariableModel>(variableModels.ToImmutableArray(), diagnosticsBuilder.ToImmutable());
     }
 }

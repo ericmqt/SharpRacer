@@ -43,20 +43,20 @@ internal class ContextVariableModelFactory
         DescriptorPropertyReference? descriptorReference = null;
         VariableClassReference? variableClassReference = null;
 
-        if (_variableClassReferences.Any(x => x.VariableName.Equals(variableModel.VariableInfo.Name)))
+        if (_variableClassReferences.Any(x => x.VariableName.Equals(variableModel.VariableName)))
         {
-            variableClassReference = _variableClassReferences.First(x => x.VariableName.Equals(variableModel.VariableInfo.Name));
+            variableClassReference = _variableClassReferences.First(x => x.VariableName.Equals(variableModel.VariableName));
         }
 
-        if (_descriptorPropertyReferences.Any(x => x.VariableName.Equals(variableModel.VariableInfo.Name)))
+        if (_descriptorPropertyReferences.Any(x => x.VariableName.Equals(variableModel.VariableName)))
         {
-            descriptorReference = _descriptorPropertyReferences.First(x => x.VariableName.Equals(variableModel.VariableInfo.Name));
+            descriptorReference = _descriptorPropertyReferences.First(x => x.VariableName.Equals(variableModel.VariableName));
         }
 
         var model = new ContextVariableModel(
             variableModel,
             propertyName,
-            variableModel.VariableInfo.Description,
+            variableModel.Description,
             variableClassReference,
             descriptorReference);
 
@@ -72,7 +72,7 @@ internal class ContextVariableModelFactory
             return variableModel.Options.Name!;
         }
 
-        return variableModel.VariableInfo.Name;
+        return variableModel.VariableName;
     }
 
     private ImmutableArray<Diagnostic> GetDiagnostics(VariableModel variableModel)

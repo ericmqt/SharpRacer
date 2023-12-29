@@ -1,4 +1,6 @@
-﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct VariableModel : IEquatable<VariableModel>
@@ -12,8 +14,30 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
         Options = options;
     }
 
+    public VariableModel(VariableInfo variableInfo, VariableOptions options, VariableModel? deprecatingVariable)
+        : this(variableInfo, options)
+    {
+        DeprecatingVariable = deprecatingVariable;
+    }
+
+    public readonly VariableModel? DeprecatingVariable { get; }
+    public string Description => VariableInfo.Description;
     public readonly VariableOptions Options { get; }
+    public int ValueCount => VariableInfo.ValueCount;
+    public VariableValueType ValueType => VariableInfo.ValueType;
+    public string? ValueUnit => VariableInfo.ValueUnit;
     public readonly VariableInfo VariableInfo { get; }
+    public string VariableName => VariableInfo.Name;
+
+    public TypeSyntax DataVariableTypeArgument()
+    {
+        return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit);
+    }
+
+    public VariableModel WithDeprecatingVariable(VariableModel deprecatingVariable)
+    {
+        return new VariableModel(VariableInfo, Options, deprecatingVariable);
+    }
 
     public override bool Equals(object obj)
     {
@@ -22,7 +46,7 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public bool Equals(VariableModel other)
     {
-        return VariableInfo == other.VariableInfo && Options == other.Options;
+        return VariableInfo == other.VariableInfo && Options == other.Options && DeprecatingVariable == other.DeprecatingVariable;
     }
 
     public override int GetHashCode()
@@ -31,6 +55,7 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
         hc.Add(VariableInfo);
         hc.Add(Options);
+        hc.Add(DeprecatingVariable);
 
         return hc.ToHashCode();
     }

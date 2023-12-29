@@ -25,16 +25,6 @@ internal readonly struct VariableClassReference : IEquatable<VariableClassRefere
     public readonly string ClassNamespace { get; }
     public readonly string VariableName { get; }
 
-    public TypeSyntax ClassType()
-    {
-        return ParseName(ClassName);
-    }
-
-    public NameSyntax ClassNamespaceName()
-    {
-        return ParseName(ClassNamespace);
-    }
-
     public InvocationExpressionSyntax DataVariableFactoryCreateMethodInvocation(
         IdentifierNameSyntax factoryInstanceIdentifier,
         MemberAccessExpressionSyntax? descriptorPropertyMemberAccessExpression)

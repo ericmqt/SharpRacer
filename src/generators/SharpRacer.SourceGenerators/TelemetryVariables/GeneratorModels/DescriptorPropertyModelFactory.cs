@@ -33,7 +33,7 @@ internal class DescriptorPropertyModelFactory
         }
 
         diagnostic = null;
-        var model = new DescriptorPropertyModel(propertyName, variableModel.VariableInfo.Description, variableModel.VariableInfo);
+        var model = new DescriptorPropertyModel(propertyName, variableModel.Description, variableModel.VariableInfo);
         _builder.Add(model);
 
         return true;
@@ -48,7 +48,7 @@ internal class DescriptorPropertyModelFactory
             if (IsDescriptorNameInUse(propertyName, out var configuredNameConflictingModel))
             {
                 diagnostic = DescriptorClassDiagnostics.DescriptorNameConflictsWithExistingVariable(
-                    variableModel.VariableInfo.Name,
+                    variableModel.VariableName,
                     propertyName,
                     configuredNameConflictingModel.VariableInfo.Name,
                     variableModel.Options.ValueLocation);
@@ -60,12 +60,12 @@ internal class DescriptorPropertyModelFactory
             return true;
         }
 
-        propertyName = variableModel.VariableInfo.Name;
+        propertyName = variableModel.VariableName;
 
         if (IsDescriptorNameInUse(propertyName, out var conflictingModel))
         {
             diagnostic = DescriptorClassDiagnostics.DescriptorNameConflictsWithExistingVariable(
-                variableModel.VariableInfo.Name,
+                variableModel.VariableName,
                 propertyName,
                 conflictingModel.VariableInfo.Name,
                 variableModel.Options.ValueLocation);

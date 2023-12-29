@@ -23,6 +23,25 @@ internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorProp
         VariableName = propertyModel.VariableInfo.Name;
     }
 
+    public DescriptorPropertyReference(string variableName, string propertyName, string descriptorClassName, string descriptorClassNamespace)
+    {
+        VariableName = !string.IsNullOrEmpty(variableName)
+            ? variableName
+            : throw new ArgumentException($"'{nameof(variableName)}' cannot be null or empty.", nameof(variableName));
+
+        PropertyName = !string.IsNullOrEmpty(propertyName)
+            ? propertyName
+            : throw new ArgumentException($"'{nameof(propertyName)}' cannot be null or empty.", nameof(propertyName));
+
+        DescriptorClassName = !string.IsNullOrEmpty(descriptorClassName)
+            ? descriptorClassName
+            : throw new ArgumentException($"'{nameof(descriptorClassName)}' cannot be null or empty.", nameof(descriptorClassName));
+
+        DescriptorClassNamespace = !string.IsNullOrEmpty(descriptorClassNamespace)
+            ? descriptorClassNamespace
+            : throw new ArgumentException($"'{nameof(descriptorClassNamespace)}' cannot be null or empty.", nameof(descriptorClassNamespace));
+    }
+
     public readonly string DescriptorClassNamespace { get; }
     public readonly string DescriptorClassName { get; }
     public readonly string PropertyName { get; }

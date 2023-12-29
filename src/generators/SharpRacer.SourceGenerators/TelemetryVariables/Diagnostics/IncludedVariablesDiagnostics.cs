@@ -68,6 +68,15 @@ internal static class IncludedVariablesDiagnostics
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
+    private static readonly DiagnosticDescriptor _VariableNotFound
+        = new(
+            DiagnosticIds.IncludedVariables_VariableNotFound,
+            "Included variable was not found",
+            "Variable context '{0}' includes variable '{1}' but the variable was not found.",
+            _Category,
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true);
+
     public static Diagnostic AmbiguousFileName(string fileName, Location? location = null)
     {
         return Diagnostic.Create(_AmbiguousFileName, location, fileName);
@@ -106,5 +115,10 @@ internal static class IncludedVariablesDiagnostics
     public static Diagnostic VariableAlreadyIncluded(string variableName, Location location)
     {
         return Diagnostic.Create(_VariableAlreadyIncluded, location, variableName);
+    }
+
+    public static Diagnostic VariableNotFound(string contextName, string includedVariableName, Location? location = null)
+    {
+        return Diagnostic.Create(_VariableNotFound, location, contextName, includedVariableName);
     }
 }

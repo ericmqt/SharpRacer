@@ -25,8 +25,7 @@ internal static class ContextClassInfoValuesProvider
 
         context.ReportDiagnostics(contextClassesWithIncludedVariablesResult.SelectMany(static (x, _) => x.Diagnostics));
 
-        return contextClassesWithIncludedVariablesResult.Select(static (x, _) => x.Value)
-            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider);
+        return contextClassesWithIncludedVariablesResult.Select(static (x, _) => x.Value);
     }
 
     private static PipelineValueResult<(ContextClassInfo ContextClassInfo, IncludedVariablesFile IncludedVariablesFile)> GetIncludedVariablesFile(
