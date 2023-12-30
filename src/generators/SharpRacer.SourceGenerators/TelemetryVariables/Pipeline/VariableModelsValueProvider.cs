@@ -132,19 +132,15 @@ internal static class VariableModelsValueProvider
         {
             var model = variableModels[i];
 
-            if (model.VariableInfo.IsDeprecated && model.VariableInfo.DeprecatedBy != null)
+            if (model.IsDeprecated && model.DeprecatingVariableName != null)
             {
-                var deprecatingModel = variableModels.FirstOrDefault(x => x.VariableName.Equals(model.VariableInfo.DeprecatedBy));
+                var deprecatingModel = variableModels.FirstOrDefault(x => x.VariableName.Equals(model.DeprecatingVariableName));
 
-                if (deprecatingModel != default)
-                {
-                    variableModels[i] = model.WithDeprecatingVariable(deprecatingModel);
-                }
-                else
+                if (deprecatingModel == default)
                 {
                     var diagnostic = VariableModelDiagnostics.DeprecatingVariableNotFoundWarning(
                         model.VariableName,
-                        model.VariableInfo.DeprecatedBy);
+                        model.DeprecatingVariableName);
 
                     diagnosticsBuilder.Add(diagnostic);
                 }

@@ -5,39 +5,52 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct VariableModel : IEquatable<VariableModel>
 {
+    private readonly VariableInfo _variableInfo;
+
     public VariableModel(VariableInfo variableInfo, VariableOptions options)
     {
-        VariableInfo = variableInfo != default
+        _variableInfo = variableInfo != default
             ? variableInfo
             : throw new ArgumentException($"'{nameof(variableInfo)}' cannot be a default value.", nameof(variableInfo));
 
         Options = options;
     }
 
-    public VariableModel(VariableInfo variableInfo, VariableOptions options, VariableModel? deprecatingVariable)
-        : this(variableInfo, options)
-    {
-        DeprecatingVariable = deprecatingVariable;
-    }
-
-    public readonly VariableModel? DeprecatingVariable { get; }
-    public string Description => VariableInfo.Description;
+    public string? DeprecatingVariableName => _variableInfo.DeprecatedBy;
+    public string Description => _variableInfo.Description;
+    public bool IsDeprecated => _variableInfo.IsDeprecated;
     public readonly VariableOptions Options { get; }
-    public int ValueCount => VariableInfo.ValueCount;
-    public VariableValueType ValueType => VariableInfo.ValueType;
-    public string? ValueUnit => VariableInfo.ValueUnit;
-    public readonly VariableInfo VariableInfo { get; }
-    public string VariableName => VariableInfo.Name;
+    public int ValueCount => _variableInfo.ValueCount;
+    public VariableValueType ValueType => _variableInfo.ValueType;
+    public string? ValueUnit => _variableInfo.ValueUnit;
+    public string VariableName => _variableInfo.Name;
 
     public TypeSyntax DataVariableTypeArgument()
     {
         return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit);
     }
 
-    public VariableModel WithDeprecatingVariable(VariableModel deprecatingVariable)
+    public string DescriptorPropertyName()
     {
-        return new VariableModel(VariableInfo, Options, deprecatingVariable);
+        if (Options != default && !string.IsNullOrWhiteSpace(Options.Name))
+        {
+            return Options.Name!;
+        }
+
+        return VariableName;
     }
+
+    public string VariableClassName()
+    {
+        if (Options != default && !string.IsNullOrWhiteSpace(Options.ClassName))
+        {
+            return $"{Options.ClassName}Variable";
+        }
+
+        return $"{VariableName}Variable";
+    }
+
+    #region IEquatable Implementation
 
     public override bool Equals(object obj)
     {
@@ -46,16 +59,15 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public bool Equals(VariableModel other)
     {
-        return VariableInfo == other.VariableInfo && Options == other.Options && DeprecatingVariable == other.DeprecatingVariable;
+        return _variableInfo == other._variableInfo && Options == other.Options;
     }
 
     public override int GetHashCode()
     {
         var hc = new HashCode();
 
-        hc.Add(VariableInfo);
+        hc.Add(_variableInfo);
         hc.Add(Options);
-        hc.Add(DeprecatingVariable);
 
         return hc.ToHashCode();
     }
@@ -69,4 +81,6 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
     {
         return !left.Equals(right);
     }
+
+    #endregion IEquatable Implementation
 }

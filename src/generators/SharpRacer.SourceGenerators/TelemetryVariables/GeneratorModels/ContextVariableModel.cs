@@ -94,10 +94,10 @@ internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
 
         if (IsArray)
         {
-            return SharpRacerTypes.IArrayDataVariableInterfaceType(VariableModel.VariableInfo);
+            return SharpRacerTypes.IArrayDataVariableInterfaceType(VariableModel);
         }
 
-        return SharpRacerTypes.IScalarDataVariableInterfaceType(VariableModel.VariableInfo);
+        return SharpRacerTypes.IScalarDataVariableInterfaceType(VariableModel);
     }
 
     public override bool Equals(object obj)

@@ -11,7 +11,7 @@ internal static partial class GeneratorDiagnostics
         = new DiagnosticDescriptor(
             DiagnosticIds.VariableClassNameInUse,
             "Variable class name in use by another variable",
-            "Variable class '{0}' for variable '{1}' is in use by variable '{2}'",
+            "Variable class '{0}' will not be generated for variable '{1}' because the type name conflicts with variable class '{2}' for variable '{3}'",
             DefaultCategory,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
@@ -57,9 +57,14 @@ internal static partial class GeneratorDiagnostics
         return Diagnostic.Create(_PlaceholderDiagnostic, location);
     }
 
-    public static Diagnostic VariableClassNameInUse(string className, string variableName, string conflictingVariableName, Location? location = null)
+    public static Diagnostic VariableClassNameInUse(
+        string className,
+        string variableName,
+        string conflictingVariableClassName,
+        string conflictingVariableName,
+        Location? location = null)
     {
-        return Diagnostic.Create(_VariableClassNameInUse, location, className, variableName, conflictingVariableName);
+        return Diagnostic.Create(_VariableClassNameInUse, location, className, variableName, conflictingVariableClassName, conflictingVariableName);
     }
 
     public static Diagnostic VariableNameInUseByVariable(

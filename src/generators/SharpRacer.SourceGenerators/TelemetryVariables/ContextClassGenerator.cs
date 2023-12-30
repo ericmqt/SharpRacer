@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpRacer.SourceGenerators.Syntax;
@@ -55,11 +56,68 @@ internal static class ContextClassGenerator
         {
             var propertyDecl = VariableContextSyntaxFactory.VariablePropertyDeclaration(in variable);
 
+            var obsoleteAttribute = GetObsoletePropertyAttribute(in variable, model.Variables);
+
+            if (obsoleteAttribute != null)
+            {
+                var attributeList = AttributeList(SingletonSeparatedList(obsoleteAttribute));
+                propertyDecl = propertyDecl.WithAttributeLists(SingletonList(attributeList));
+            }
+
             members.Add(propertyDecl);
         }
 
         // TODO: Interface implementation
 
         return List(members);
+    }
+
+    private static AttributeSyntax? GetObsoletePropertyAttribute(
+        ref readonly ContextVariableModel variable,
+        ImmutableArray<ContextVariableModel> contextVariableModels)
+    {
+        if (!variable.VariableModel.IsDeprecated)
+        {
+            return null;
+        }
+
+        string? deprecatingVariableName = variable.VariableModel.DeprecatingVariableName;
+        string? deprecatingContextPropertyName = null;
+
+        if (!string.IsNullOrEmpty(deprecatingVariableName))
+        {
+            var deprecatingVariable = contextVariableModels.FirstOrDefault(
+                x => x.VariableModel.VariableName.Equals(deprecatingVariableName, StringComparison.Ordinal));
+
+            if (deprecatingVariable != default)
+            {
+                deprecatingContextPropertyName = deprecatingVariable.PropertyName;
+            }
+        }
+
+        // Build the attribute
+        var messageLiteral = Literal(
+            GetObsoleteAttributeMessage(variable.VariableModel.VariableName, deprecatingVariableName, deprecatingContextPropertyName));
+
+        var messageArgument = AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, messageLiteral));
+
+        return Attribute(IdentifierName("Obsolete"))
+            .WithArgumentList(AttributeArgumentList(SingletonSeparatedList(messageArgument)));
+    }
+
+    private static string GetObsoleteAttributeMessage(string deprecatedVariableName, string? deprecatingVariableName, string? deprecatingPropertyName)
+    {
+        if (!string.IsNullOrEmpty(deprecatingVariableName))
+        {
+            if (!string.IsNullOrEmpty(deprecatingPropertyName))
+            {
+                return $"Telemetry variable '{deprecatedVariableName}' is deprecated by variable '{deprecatedVariableName}'. Use context " +
+                    $"property '{deprecatingPropertyName}' instead.";
+            }
+
+            return $"Telemetry variable '{deprecatedVariableName}' is deprecated by variable '{deprecatedVariableName}'.";
+        }
+
+        return $"Telemetry variable '{deprecatedVariableName}' is deprecated.";
     }
 }

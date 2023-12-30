@@ -21,12 +21,13 @@ internal class VariableClassGeneratorModelFactory
 
     public void Add(VariableModel variableModel)
     {
-        var className = GetClassName(variableModel);
+        var className = variableModel.VariableClassName();
+        var classNamespace = _variableClassOptions.TargetNamespace;
 
         // Get any diagnostics
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
-        if (TryGetDuplicateClassNameDiagnostic(variableModel, className, out var duplicateClassNameDiagnostic))
+        if (TryGetDuplicateClassNameDiagnostic(variableModel, className, classNamespace, out var duplicateClassNameDiagnostic))
         {
             diagnosticsBuilder.Add(duplicateClassNameDiagnostic!);
         }
@@ -34,8 +35,8 @@ internal class VariableClassGeneratorModelFactory
         // Build and add model
         var model = new VariableClassGeneratorModel(
             className,
-            _variableClassOptions.TargetNamespace,
-            variableModel.VariableInfo,
+            classNamespace,
+            variableModel,
             diagnosticsBuilder.ToImmutable(),
             _variableClassOptions.GetDescriptorPropertyReference(ref variableModel),
             isClassInternal: false,
@@ -44,19 +45,11 @@ internal class VariableClassGeneratorModelFactory
         _builder.Add(model);
     }
 
-    private string GetClassName(VariableModel variableModel)
+    private bool TryGetDuplicateClassNameDiagnostic(VariableModel variableModel, string className, string classNamespace, out Diagnostic? diagnostic)
     {
-        if (variableModel.Options != default && !string.IsNullOrEmpty(variableModel.Options.ClassName))
-        {
-            return _variableClassOptions.FormatClassName(variableModel.Options.ClassName!);
-        }
-
-        return _variableClassOptions.FormatClassName(variableModel.VariableName);
-    }
-
-    private bool TryGetDuplicateClassNameDiagnostic(VariableModel variableModel, string className, out Diagnostic? diagnostic)
-    {
-        var existing = _builder.FirstOrDefault(x => x.ClassName.Equals(className, StringComparison.Ordinal));
+        var existing = _builder.FirstOrDefault(x =>
+            x.ClassName.Equals(className, StringComparison.Ordinal) &&
+            x.ClassNamespace.Equals(classNamespace, StringComparison.Ordinal));
 
         if (existing == default)
         {
@@ -64,7 +57,10 @@ internal class VariableClassGeneratorModelFactory
             return false;
         }
 
-        diagnostic = GeneratorDiagnostics.VariableClassNameInUse(className, variableModel.VariableName, existing.VariableName);
+        var modelTypeName = $"{classNamespace}.{className}";
+        var existingTypeName = $"{existing.ClassNamespace}.{existing.ClassName}";
+
+        diagnostic = GeneratorDiagnostics.VariableClassNameInUse(modelTypeName, variableModel.VariableName, existingTypeName, existing.VariableName);
         return true;
     }
 }

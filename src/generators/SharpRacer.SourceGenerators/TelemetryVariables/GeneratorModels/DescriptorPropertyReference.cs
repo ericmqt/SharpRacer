@@ -20,7 +20,7 @@ internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorProp
         DescriptorClassNamespace = descriptorClass.TypeNamespace;
         DescriptorClassName = descriptorClass.TypeName;
         PropertyName = propertyModel.PropertyName;
-        VariableName = propertyModel.VariableInfo.Name;
+        VariableName = propertyModel.VariableName;
     }
 
     public DescriptorPropertyReference(string variableName, string propertyName, string descriptorClassName, string descriptorClassNamespace)

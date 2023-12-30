@@ -1,21 +1,21 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorPropertyModel>
 {
-    public DescriptorPropertyModel(string propertyName, string propertyXmlSummary, VariableInfo variableInfo)
+    public DescriptorPropertyModel(string propertyName, string propertyXmlSummary, VariableModel variableModel)
     {
         PropertyName = propertyName;
         PropertyXmlSummary = propertyXmlSummary;
-        VariableInfo = variableInfo;
+        VariableModel = variableModel;
     }
 
     public readonly string PropertyName { get; }
     public readonly string? PropertyXmlSummary { get; }
-    public readonly VariableInfo VariableInfo { get; }
+    public readonly VariableModel VariableModel { get; }
+    public string VariableName => VariableModel.VariableName;
 
     public SyntaxToken PropertyIdentifier()
     {
@@ -36,7 +36,7 @@ internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorProperty
     {
         return StringComparer.Ordinal.Equals(PropertyName, other.PropertyName) &&
             StringComparer.Ordinal.Equals(PropertyXmlSummary, other.PropertyXmlSummary) &&
-            VariableInfo == other.VariableInfo;
+            VariableModel == other.VariableModel;
     }
 
     public override int GetHashCode()
@@ -45,7 +45,7 @@ internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorProperty
 
         hc.Add(PropertyName);
         hc.Add(PropertyXmlSummary);
-        hc.Add(VariableInfo);
+        hc.Add(VariableModel);
 
         return hc.ToHashCode();
     }

@@ -2,7 +2,6 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -16,7 +15,7 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
     public VariableClassGeneratorModel(
         string className,
         string classNamespace,
-        VariableInfo variableInfo,
+        VariableModel variableModel,
         ImmutableArray<Diagnostic> diagnostics,
         DescriptorPropertyReference? descriptorPropertyReference,
         bool isClassInternal = false,
@@ -29,10 +28,10 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         IsClassInternal = isClassInternal;
         IsClassPartial = isClassPartial;
 
-        VariableName = variableInfo.Name;
-        VariableValueCount = variableInfo.ValueCount;
-        VariableValueType = variableInfo.ValueType;
-        _variableValueUnit = variableInfo.ValueUnit;
+        VariableName = variableModel.VariableName;
+        VariableValueCount = variableModel.ValueCount;
+        VariableValueType = variableModel.ValueType;
+        _variableValueUnit = variableModel.ValueUnit;
 
         _descriptorFieldName = "_Descriptor";
 
