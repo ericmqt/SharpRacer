@@ -5,8 +5,8 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 internal static class DataVariableFactorySyntaxFactory
 {
-    private static string CreateArray_MethodName = "CreateType";
-    private static string CreateScalar_MethodName = "CreateType";
+    private static string CreateArray_MethodName = "CreateArray";
+    private static string CreateScalar_MethodName = "CreateScalar";
     private static string CreateType_MethodName = "CreateType";
 
     internal static ObjectCreationExpressionSyntax InstanceCreationExpression(IdentifierNameSyntax dataVariableProviderIdentifier)
