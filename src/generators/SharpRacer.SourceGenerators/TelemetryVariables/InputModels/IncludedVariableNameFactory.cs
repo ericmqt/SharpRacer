@@ -70,14 +70,17 @@ internal class IncludedVariableNameFactory
 
         if (string.IsNullOrEmpty(value.Value))
         {
-            var emptyDiagnostic = IncludedVariablesDiagnostics.EmptyVariableName(_file.SourceLocationFactory.GetLocation(value.ValueSpan));
+            var emptyDiagnostic = GeneratorDiagnostics.IncludedVariablesFileContainsEmptyVariableName(
+                _file.SourceLocationFactory.GetLocation(value.ValueSpan));
+
             diagnosticsBuilder.Add(emptyDiagnostic);
         }
 
         if (_builder.Any(x => string.Equals(x.Value, value.Value, StringComparison.Ordinal)))
         {
-            var reincludeDiagnostic = IncludedVariablesDiagnostics.VariableAlreadyIncluded(
+            var reincludeDiagnostic = GeneratorDiagnostics.IncludedVariablesFileAlreadyIncludesVariable(
                 value.Value,
+                _file.FileName,
                 _file.SourceLocationFactory.GetLocation(value.ValueSpan));
 
             diagnosticsBuilder.Add(reincludeDiagnostic);

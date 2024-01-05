@@ -1,9 +1,9 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 internal static class DescriptorClassModelProvider
@@ -12,7 +12,16 @@ internal static class DescriptorClassModelProvider
         ref IncrementalGeneratorInitializationContext context,
         IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
     {
-        var classTargets = GetClassesFromSyntaxValueProvider(context.SyntaxProvider);
+        var classTargetResults = context.SyntaxProvider.ForAttributeWithMetadataName(
+            SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute.ToQualifiedName(),
+            predicate: static (node, _) => node is ClassDeclarationSyntax,
+            transform: static (context, ct) => DescriptorClassModelResult.Create(context, ct));
+
+        context.ReportDiagnostics(classTargetResults.SelectMany(static (x, _) => x.Diagnostics));
+
+        var classTargets = classTargetResults
+            .Where(static x => x.IsValid)
+            .Select(static (x, _) => x.Model);
 
         var descriptorPropertiesResult = variableModelsProvider.Select(static (x, ct) =>
         {
@@ -38,8 +47,6 @@ internal static class DescriptorClassModelProvider
             .Combine(descriptorPropertiesResult.Select(static (x, _) => x.Values))
             .Select(static (item, _) => item.Left.WithDescriptorProperties(item.Right));
 
-        // TODO: Warn for empty descriptor properties?
-
         return classesWithDescriptorProperties.Collect()
             .Select(static (item, _) => GetSingleDescriptorClassModel(item));
     }
@@ -64,41 +71,12 @@ internal static class DescriptorClassModelProvider
             var diagnostics = models
                 .OrderBy(x => $"{x.TypeNamespace}.{x.TypeName}")
                 .Skip(1)
-                .Select(x => DescriptorClassDiagnostics.AssemblyAlreadyContainsDescriptorClassTarget(
+                .Select(x => GeneratorDiagnostics.DescriptorClassAlreadyExistsInAssembly(
                     x.TypeName, target.TypeName, x.GeneratorAttributeLocation));
 
             diagnosticsBuilder.AddRange(diagnostics);
         }
 
         return new PipelineValueResult<DescriptorClassModel>(target, diagnosticsBuilder.ToImmutable());
-    }
-
-    private static IncrementalValuesProvider<DescriptorClassModel> GetClassesFromSyntaxValueProvider(SyntaxValueProvider syntaxValueProvider)
-    {
-        return syntaxValueProvider.ForAttributeWithMetadataName(
-            GenerateDataVariableDescriptorsAttributeInfo.FullTypeName,
-            predicate: (node, ct) =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                return node is ClassDeclarationSyntax classDecl &&
-                    classDecl.HasAttributes() && classDecl.IsStaticPartialClass();
-            },
-            transform: (context, cancellationToken) =>
-            {
-                if (context.TryGetClassSymbolWithAttribute(
-                        GenerateDataVariablesContextAttributeInfo.FullTypeName,
-                        cancellationToken,
-                        out INamedTypeSymbol? targetClassSymbol,
-                        out AttributeData? attributeData,
-                        out Location? attributeLocation))
-                {
-
-                    return new DescriptorClassModel(targetClassSymbol!, attributeLocation);
-                }
-
-                return default;
-            })
-            .Where(static item => item != default);
     }
 }

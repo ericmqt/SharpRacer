@@ -17,7 +17,7 @@ public class PipelineValueResultTests
     [Fact]
     public void Ctor_ResultAndDiagnosticTest()
     {
-        var result = new PipelineValueResult<int>(5, VariableInfoDiagnostics.FileNotFound("Test"));
+        var result = new PipelineValueResult<int>(5, GeneratorDiagnostics.TelemetryVariablesFileNotFound("Test"));
 
         Assert.True(result.HasValue);
         Assert.True(result.HasErrors);
@@ -58,7 +58,7 @@ public class PipelineValueResultTests
     public void Equals_OtherNoValueTest()
     {
         PipelineValueResult<int> result1 = 4;
-        PipelineValueResult<int> result2 = VariableInfoDiagnostics.FileNotFound("Test");
+        PipelineValueResult<int> result2 = GeneratorDiagnostics.TelemetryVariablesFileNotFound("Test");
 
         Assert.False(result1 == result2);
         Assert.False(result2 == result1);
@@ -75,7 +75,7 @@ public class PipelineValueResultTests
     [Fact]
     public void ImplicitConversionOperator_FromDiagnosticTest()
     {
-        PipelineValueResult<int> result = VariableInfoDiagnostics.FileNotFound("Test");
+        PipelineValueResult<int> result = GeneratorDiagnostics.TelemetryVariablesFileNotFound("Test");
 
         Assert.False(result.HasValue);
         Assert.True(result.HasErrors);
@@ -85,7 +85,7 @@ public class PipelineValueResultTests
     [Fact]
     public void ImplicitConversionOperator_FromDiagnosticArrayTest()
     {
-        PipelineValueResult<int> result = ImmutableArray.Create(VariableInfoDiagnostics.FileNotFound("Test"));
+        PipelineValueResult<int> result = ImmutableArray.Create(GeneratorDiagnostics.TelemetryVariablesFileNotFound("Test"));
 
         Assert.False(result.HasValue);
         Assert.True(result.HasErrors);

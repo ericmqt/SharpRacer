@@ -60,7 +60,7 @@ internal static class VariableOptionsFileProvider
 
         if (additionalTexts.Length > 1)
         {
-            diagnostic = VariableOptionsDiagnostics.AmbiguousFileName(fileName);
+            diagnostic = GeneratorDiagnostics.AmbiguousVariableOptionsFileName(fileName);
 
             return false;
         }
@@ -71,7 +71,7 @@ internal static class VariableOptionsFileProvider
 
         if (sourceText is null)
         {
-            diagnostic = VariableOptionsDiagnostics.FileContentReadFailure(fileName);
+            diagnostic = GeneratorDiagnostics.AdditionalTextContentReadError(file);
 
             return false;
         }

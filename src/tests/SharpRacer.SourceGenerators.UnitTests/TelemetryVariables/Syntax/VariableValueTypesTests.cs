@@ -28,7 +28,7 @@ public class VariableValueTypesTests
     [InlineData("irsdk_TrkSurf", "SharpRacer.Telemetry.TrackSurfaceType")]
     public void Enumeration_Test(string variableUnit, string expected)
     {
-        var enumType = VariableValueTypes.Enumeration(variableUnit);
+        var enumType = VariableValueTypes.Enumeration(variableUnit, TypeNameFormat.Qualified);
 
         Assert.NotNull(enumType);
         Assert.Equal(expected, enumType.ToFullString());
@@ -49,7 +49,7 @@ public class VariableValueTypesTests
     [InlineData("FooBarNotARealEnumName", "int")]
     public void EnumerationOrInt_Test(string variableUnit, string expected)
     {
-        var enumType = VariableValueTypes.EnumerationOrInt(variableUnit);
+        var enumType = VariableValueTypes.EnumerationOrInt(variableUnit, TypeNameFormat.Qualified);
 
         Assert.NotNull(enumType);
         Assert.Equal(expected, enumType.ToFullString());

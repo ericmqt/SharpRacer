@@ -51,6 +51,71 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
     public readonly int VariableValueCount { get; }
     public readonly VariableValueType VariableValueType { get; }
 
+    public readonly BaseTypeSyntax BaseClassType()
+    {
+        var baseType = VariableValueCount > 1
+            ? SharpRacerTypes.ArrayDataVariableType(VariableValueTypeArg())
+            : SharpRacerTypes.ScalarDataVariableType(VariableValueTypeArg());
+
+        return SimpleBaseType(baseType);
+    }
+
+    public readonly Accessibility ClassAccesibility()
+    {
+        return IsClassInternal ? Accessibility.Internal : Accessibility.Public;
+    }
+
+    public readonly SyntaxToken ClassIdentifier()
+    {
+        return Identifier(ClassName);
+    }
+
+    public readonly IdentifierNameSyntax ClassIdentifierName()
+    {
+        return IdentifierName(ClassName);
+    }
+
+    public readonly FieldDeclarationSyntax DescriptorFieldDeclaration()
+    {
+        if (DescriptorPropertyReference != null)
+        {
+            var descriptorAccessExpr = MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                DescriptorPropertyReference.Value.GlobalQualifiedTypeName(),
+                IdentifierName(DescriptorPropertyReference.Value.PropertyName));
+
+            return VariableClassSyntaxFactory.DescriptorStaticFieldFromDescriptorReferenceDeclaration(
+                DescriptorFieldIdentifier(),
+                descriptorAccessExpr);
+        }
+
+        return VariableClassSyntaxFactory.DescriptorStaticField(
+            DescriptorFieldIdentifier(),
+            VariableName,
+            VariableValueType,
+            VariableValueCount);
+    }
+
+    public readonly SyntaxToken DescriptorFieldIdentifier()
+    {
+        return Identifier(_descriptorFieldName);
+    }
+
+    public readonly IdentifierNameSyntax DescriptorFieldIdentifierName()
+    {
+        return IdentifierName(_descriptorFieldName);
+    }
+
+    public readonly TypeSyntax VariableValueTypeArg()
+    {
+        return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit, TypeNameFormat.Qualified);
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is VariableClassGeneratorModel other && Equals(other);
+    }
+
     public bool Equals(VariableClassGeneratorModel other)
     {
         return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
@@ -83,72 +148,6 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         hc.Add(_variableValueUnit);
 
         return hc.ToHashCode();
-    }
-
-    public BaseTypeSyntax BaseClassType()
-    {
-        if (VariableValueCount > 1)
-        {
-            return SharpRacerTypes.ArrayDataVariableBaseType(VariableValueTypeArg());
-        }
-
-        return SharpRacerTypes.ScalarDataVariableBaseType(VariableValueTypeArg());
-    }
-
-    public Accessibility ClassAccesibility()
-    {
-        return IsClassInternal ? Accessibility.Internal : Accessibility.Public;
-    }
-
-    public SyntaxToken ClassIdentifier()
-    {
-        return Identifier(ClassName);
-    }
-
-    public IdentifierNameSyntax ClassIdentifierName()
-    {
-        return IdentifierName(ClassName);
-    }
-
-    public FieldDeclarationSyntax DescriptorFieldDeclaration()
-    {
-        if (DescriptorPropertyReference != null)
-        {
-            var descriptorAccessExpr = MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                IdentifierName(DescriptorPropertyReference.Value.DescriptorClassName),
-                IdentifierName(DescriptorPropertyReference.Value.PropertyName));
-
-            return VariableClassSyntaxFactory.DescriptorStaticFieldFromDescriptorReferenceDeclaration(
-                DescriptorFieldIdentifier(),
-                descriptorAccessExpr);
-        }
-
-        return VariableClassSyntaxFactory.DescriptorStaticField(
-            DescriptorFieldIdentifier(),
-            VariableName,
-            VariableValueType,
-            VariableValueCount);
-    }
-
-    public SyntaxToken DescriptorFieldIdentifier()
-    {
-        return Identifier(_descriptorFieldName);
-    }
-
-    public IdentifierNameSyntax DescriptorFieldIdentifierName()
-    {
-        return IdentifierName(_descriptorFieldName);
-    }
-
-    public TypeSyntax VariableValueTypeArg()
-    {
-        return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit);
-    }
-
-    public override bool Equals(object obj)
-    {
-        return obj is VariableClassGeneratorModel other && Equals(other);
     }
 
     public static bool operator ==(VariableClassGeneratorModel left, VariableClassGeneratorModel right)

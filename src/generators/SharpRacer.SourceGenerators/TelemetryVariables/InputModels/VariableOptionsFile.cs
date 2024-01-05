@@ -39,13 +39,13 @@ public readonly struct VariableOptionsFile : IEquatable<VariableOptionsFile>
         {
             var errorLocation = JsonLocationFactory.GetLocation(jsonEx);
 
-            diagnostic = VariableOptionsDiagnostics.FileReadException(File.Path, jsonEx, errorLocation);
+            diagnostic = GeneratorDiagnostics.AdditionalTextFileReadException(File, jsonEx, errorLocation);
 
             return ImmutableArray<JsonVariableOptions>.Empty;
         }
         catch (Exception ex)
         {
-            diagnostic = VariableOptionsDiagnostics.FileReadException(File.Path, ex);
+            diagnostic = GeneratorDiagnostics.AdditionalTextFileReadException(File, ex);
 
             return ImmutableArray<JsonVariableOptions>.Empty;
         }

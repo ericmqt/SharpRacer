@@ -128,7 +128,7 @@ public class IncludedVariablesFileTests
         var names = includedVariablesFile.ReadJson(default, out var readDiagnostic);
 
         Assert.NotNull(readDiagnostic);
-        Assert.Equal(DiagnosticIds.IncludedVariables_NoIncludedVariableNames, readDiagnostic.Id);
+        Assert.Equal(DiagnosticIds.IncludedVariablesFileContainsNoVariableNames, readDiagnostic.Id);
         Assert.Empty(names);
     }
 
@@ -147,7 +147,7 @@ public class IncludedVariablesFileTests
         var names = includedVariablesFile.ReadJson(default, out var readDiagnostic);
 
         Assert.NotNull(readDiagnostic);
-        Assert.Equal(DiagnosticIds.IncludedVariables_FileReadException, readDiagnostic.Id);
+        Assert.Equal(DiagnosticIds.AdditionalText_FileReadException, readDiagnostic.Id);
         Assert.Empty(names);
     }
 
@@ -165,7 +165,7 @@ public class IncludedVariablesFileTests
         var names = includedVariablesFile.ReadJson(default, out var readDiagnostic);
 
         Assert.NotNull(readDiagnostic);
-        Assert.Equal(DiagnosticIds.IncludedVariables_FileReadException, readDiagnostic.Id);
+        Assert.Equal(DiagnosticIds.AdditionalText_FileReadException, readDiagnostic.Id);
         Assert.Empty(names);
     }
 }

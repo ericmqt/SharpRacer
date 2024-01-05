@@ -16,17 +16,4 @@ internal static class HashCodeExtensions
             hashCode.Add(diagnostics[i]);
         }
     }
-
-    public static void AddImmutableArray<T>(this HashCode hashCode, ImmutableArray<T> collection)
-    {
-        if (collection.IsDefaultOrEmpty)
-        {
-            return;
-        }
-
-        for (int i = 0; i < collection.Length; i++)
-        {
-            hashCode.Add(collection[i]);
-        }
-    }
 }

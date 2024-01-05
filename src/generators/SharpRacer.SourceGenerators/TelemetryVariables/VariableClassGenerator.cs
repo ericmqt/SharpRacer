@@ -45,11 +45,16 @@ internal static class VariableClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
+        var parameterlessCtorXmlDocs = VariableClassSyntaxFactory.ConstructorXmlDocumentation(in model);
+        var ctorWithDataVariableInfoXmlDocs = VariableClassSyntaxFactory.ConstructorWithDataVariableInfoParameterXmlDocumentation(in model);
+
         var members = new List<MemberDeclarationSyntax>()
         {
             model.DescriptorFieldDeclaration(),
-            VariableClassSyntaxFactory.ConstructorFromDescriptor(model),
-            VariableClassSyntaxFactory.ConstructorFromDescriptorWithDataVariableInfoParameter(model)
+            VariableClassSyntaxFactory.Constructor(in model)
+                .WithLeadingTrivia(Trivia(parameterlessCtorXmlDocs)),
+            VariableClassSyntaxFactory.ConstructorWithDataVariableInfoParameter(in model)
+                .WithLeadingTrivia(Trivia(ctorWithDataVariableInfoXmlDocs))
         };
 
         if (model.ImplementCreateDataVariableInterface)

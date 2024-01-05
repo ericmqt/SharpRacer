@@ -19,4 +19,18 @@ internal static class DataVariableDescriptorSyntaxFactory
 
         return ObjectCreationExpression(SharpRacerTypes.DataVariableDescriptor()).WithArgumentList(argumentList);
     }
+
+    internal static ImplicitObjectCreationExpressionSyntax ImplicitNewInstanceExpression(string variableName, VariableValueType valueType, int valueCount)
+    {
+        var argumentList = ArgumentList(
+            SeparatedList(
+                new ArgumentSyntax[]
+                {
+                    Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(variableName))),
+                    Argument(DataVariableValueTypeSyntaxFactory.EnumMemberAccessExpression(valueType)),
+                    Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(valueCount)))
+                }));
+
+        return ImplicitObjectCreationExpression().WithArgumentList(argumentList);
+    }
 }

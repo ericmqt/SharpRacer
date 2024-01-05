@@ -65,7 +65,7 @@ internal class VariableInfoFactory
             return false;
         }
 
-        diagnostic = VariableInfoDiagnostics.VariableAlreadyDefined(
+        diagnostic = GeneratorDiagnostics.TelemetryVariableAlreadyDefined(
             variableInfo.Name,
             GetLocation(variableInfo));
 

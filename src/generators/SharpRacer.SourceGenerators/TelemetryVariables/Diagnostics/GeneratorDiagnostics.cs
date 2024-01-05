@@ -1,60 +1,171 @@
 ﻿using Microsoft.CodeAnalysis;
-using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 internal static partial class GeneratorDiagnostics
 {
-    public static string DefaultCategory = "SharpRacer.SourceGenerators";
-
-    private static readonly DiagnosticDescriptor _VariableClassNameInUse
-        = new DiagnosticDescriptor(
-            DiagnosticIds.VariableClassNameInUse,
-            "Variable class name in use by another variable",
-            "Variable class '{0}' will not be generated for variable '{1}' because the type name conflicts with variable class '{2}' for variable '{3}'",
-            DefaultCategory,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor _VariableNameInUseByVariable
-        = new DiagnosticDescriptor(
-            "SR1020",
-            "Variable name is already defined",
-            "Variable '{0}' is configured with name '{1}' but the variable name is already defined by variable '{2}'",
-            DefaultCategory,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor _VariableContextPropertyNameInUseByVariable
-        = new DiagnosticDescriptor(
-            "SR1021",
-            "Variable context property name is already defined",
-            "Variable '{0}' is configured with context property name '{1}' but the property name is already defined by variable '{2}'",
-            DefaultCategory,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor _VariableDescriptorNameInUseByVariable
-        = new DiagnosticDescriptor(
-            "SR1022",
-            "Variable descriptor name is already defined",
-            "Variable '{0}' is configured with descriptor name '{1}' but the descriptor name is already defined by variable '{2}'",
-            DefaultCategory,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-    private static readonly DiagnosticDescriptor _PlaceholderDiagnostic
-        = new DiagnosticDescriptor(
-            "SR9999",
-            "Placeholder diagnostic",
-            "Placeholder diagnostic",
-            DefaultCategory,
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true);
-
-    public static Diagnostic Placeholder(Location? location = null)
+    public static Diagnostic AdditionalTextContentReadError(AdditionalText additionalText, Location? location = null)
     {
-        return Diagnostic.Create(_PlaceholderDiagnostic, location);
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.AdditionalTextContentReadError, location, additionalText.Path);
+    }
+
+    public static Diagnostic AdditionalTextFileReadException(AdditionalText additionalText, Exception exception, Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.AdditionalTextFileReadException,
+            location,
+            exception.GetType(),
+            additionalText.Path,
+            exception.Message);
+    }
+
+    public static Diagnostic AmbiguousIncludedVariablesFileName(string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.AmbiguousIncludedVariablesFileName, location, fileName);
+    }
+
+    public static Diagnostic AmbiguousTelemetryVariablesFileName(string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.AmbiguousTelemetryVariablesFileName, location, fileName);
+    }
+
+    public static Diagnostic AmbiguousVariableOptionsFileName(string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.AmbiguousVariableOptionsFileName, location, fileName);
+    }
+
+    public static Diagnostic ContextClassConfiguredPropertyNameConflict(
+        string variableName,
+        string configuredPropertyName,
+        string existingVariableName,
+        string existingPropertyName,
+        Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.ContextClassConfiguredPropertyNameConflict,
+            location,
+            variableName,
+            configuredPropertyName,
+            existingVariableName,
+            existingPropertyName);
+    }
+
+    public static Diagnostic ContextClassIncludedVariableNotFound(
+        string contextClassIdentifier,
+        string variableName,
+        Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.ContextClassIncludedVariableNotFound,
+            location,
+            contextClassIdentifier,
+            variableName);
+    }
+
+    public static Diagnostic ContextClassMustBeDeclaredPartial(string contextClassIdentifier, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.ContextClassMustBeDeclaredPartial, location, contextClassIdentifier);
+    }
+
+    public static Diagnostic ContextClassMustInheritIDataVariablesContextInterface(
+        string contextClassIdentifier,
+        Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.ContextClassMustInheritIDataVariablesContextInterface,
+            location,
+            contextClassIdentifier);
+    }
+
+    public static Diagnostic ContextClassMustNotBeDeclaredStatic(string contextClassIdentifier, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.ContextClassMustNotBeDeclaredStatic, location, contextClassIdentifier);
+    }
+
+    public static Diagnostic ContextClassVariableNameCreatesPropertyNameConflict(
+        string variableName,
+        string existingVariableName,
+        string existingPropertyName,
+        Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.ContextClassVariableNameCreatesPropertyNameConflict,
+            location,
+            variableName,
+            existingVariableName,
+            existingPropertyName);
+    }
+
+    public static Diagnostic DeprecatingVariableNotFound(string variableName, string deprecatingVariableName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.DeprecatingVariableNotFound, location, variableName, deprecatingVariableName);
+    }
+
+    public static Diagnostic DescriptorClassAlreadyExistsInAssembly(string redefiningClassName, string descriptorClassName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.DescriptorClassAlreadyExistsInAssembly, location, redefiningClassName, descriptorClassName);
+    }
+
+    public static Diagnostic DescriptorClassMustBeDeclaredPartial(string className, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.DescriptorClassMustBeDeclaredPartial, location, className);
+    }
+
+    public static Diagnostic DescriptorClassMustBeDeclaredStatic(string className, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.DescriptorClassMustBeDeclaredStatic, location, className);
+    }
+
+    public static Diagnostic DescriptorNameConflictsWithExistingVariable(
+        string variableName,
+        string descriptorName,
+        string definingVariableName,
+        Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.DescriptorNameConflictsWithExistingVariable,
+            location,
+            variableName,
+            descriptorName,
+            definingVariableName);
+    }
+
+    public static Diagnostic IncludedVariablesFileAlreadyIncludesVariable(string variableName, string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.IncludedVariablesFileAlreadyIncludesVariable,
+            location,
+            variableName,
+            fileName);
+    }
+
+    public static Diagnostic IncludedVariablesFileContainsEmptyVariableName(Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.IncludedVariablesFileContainsEmptyVariableName, location);
+    }
+
+    public static Diagnostic IncludedVariablesFileContainsNoVariables(AdditionalText additionalText, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.IncludedVariablesFileContainsNoVariables, location, additionalText.Path);
+    }
+
+    public static Diagnostic IncludedVariablesFileNotFound(string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.IncludedVariablesFileNotFound, location, fileName);
+    }
+
+    public static Diagnostic TelemetryVariablesFileContainsNoVariables(string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.TelemetryVariablesFileContainsNoVariables, location, fileName);
+    }
+
+    public static Diagnostic TelemetryVariablesFileNotFound(string fileName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.TelemetryVariablesFileNotFound, location, fileName);
+    }
+
+    public static Diagnostic TelemetryVariableAlreadyDefined(string variableName, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.TelemetryVariableAlreadyDefined, location, variableName);
     }
 
     public static Diagnostic VariableClassNameInUse(
@@ -64,53 +175,45 @@ internal static partial class GeneratorDiagnostics
         string conflictingVariableName,
         Location? location = null)
     {
-        return Diagnostic.Create(_VariableClassNameInUse, location, className, variableName, conflictingVariableClassName, conflictingVariableName);
+        return Diagnostic.Create(
+            GeneratorDiagnosticDescriptors.VariableClassNameInUse,
+            location,
+            className,
+            variableName,
+            conflictingVariableClassName,
+            conflictingVariableName);
     }
 
-    public static Diagnostic VariableNameInUseByVariable(
-        VariableInfo variableInfo,
-        string variableName,
-        VariableModel duplicatedVariable,
-        Location? location = null)
-    {
-        return Diagnostic.Create(_VariableNameInUseByVariable, location, variableInfo.Name, variableName, duplicatedVariable.VariableName);
-    }
-
-    public static Diagnostic VariableContextPropertyNameInUseByVariable(
-        VariableInfo duplicatingVariableInfo,
+    public static Diagnostic VariableOptionsFileContainsDuplicateClassName(
+        string variableKey,
         string contextPropertyName,
-        VariableModel duplicatedModel,
+        string duplicatedVariableKey,
         Location? location = null)
     {
         return Diagnostic.Create(
-            _VariableContextPropertyNameInUseByVariable,
+            GeneratorDiagnosticDescriptors.VariableOptionsFileContainsDuplicateClassName,
             location,
-            duplicatingVariableInfo.Name,
+            variableKey,
             contextPropertyName,
-            duplicatedModel.VariableName);
+            duplicatedVariableKey);
     }
 
-    public static Diagnostic VariableDescriptorNameInUseByVariable(
-        VariableInfo duplicatingVariableInfo,
-        string descriptorName,
-        VariableModel duplicatedModel,
+    public static Diagnostic VariableOptionsFileContainsDuplicateKey(string variableKey, Location? location = null)
+    {
+        return Diagnostic.Create(GeneratorDiagnosticDescriptors.VariableOptionsFileContainsDuplicateKey, location, variableKey);
+    }
+
+    public static Diagnostic VariableOptionsFileContainsDuplicateVariableName(
+        string variableKey,
+        string contextPropertyName,
+        string duplicatedVariableKey,
         Location? location = null)
     {
         return Diagnostic.Create(
-            _VariableDescriptorNameInUseByVariable,
+            GeneratorDiagnosticDescriptors.VariableOptionsFileContainsDuplicateVariableName,
             location,
-            duplicatingVariableInfo.Name,
-            descriptorName,
-            duplicatedModel.VariableName);
-    }
-
-    internal static DiagnosticDescriptor CreateErrorDescriptor(string id, string title, string messageFormat)
-    {
-        return CreateDescriptor(id, title, messageFormat, DiagnosticSeverity.Error);
-    }
-
-    internal static DiagnosticDescriptor CreateDescriptor(string id, string title, string messageFormat, DiagnosticSeverity severity)
-    {
-        return new DiagnosticDescriptor(id, title, messageFormat, GeneratorDiagnostics.DefaultCategory, severity, isEnabledByDefault: true);
+            variableKey,
+            contextPropertyName,
+            duplicatedVariableKey);
     }
 }

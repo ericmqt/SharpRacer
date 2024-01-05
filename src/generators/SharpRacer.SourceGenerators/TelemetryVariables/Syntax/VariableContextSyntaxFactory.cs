@@ -76,6 +76,21 @@ internal static class VariableContextSyntaxFactory
         return ParameterList(SingletonSeparatedList(dataVariableInfoProviderParameter));
     }
 
+    public static MethodDeclarationSyntax EnumerateVariablesMethod(ref readonly ContextClassModel model)
+    {
+        var dataVariableType = IdentifierName(SharpRacerIdentifiers.IDataVariable);
+        var returnType = GenericName(Identifier("IEnumerable"), TypeArgumentList(SingletonSeparatedList<TypeSyntax>(dataVariableType)));
+
+        var yieldReturnStatements = model.Variables
+            .Select(x => YieldStatement(SyntaxKind.YieldReturnStatement, x.PropertyIdentifierName()))
+            .ToList();
+
+        return MethodDeclaration(returnType, "EnumerateVariables")
+            .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
+            .WithBody(Block(yieldReturnStatements))
+            .WithLeadingTrivia(Trivia(XmlDocumentationFactory.InheritDoc()));
+    }
+
     public static ExpressionStatementSyntax InitializeVariablePropertyFromFactory(
         ref readonly ContextVariableModel model,
         IdentifierNameSyntax factoryInstanceIdentifier)

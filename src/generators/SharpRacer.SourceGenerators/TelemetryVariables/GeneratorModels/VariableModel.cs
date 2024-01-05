@@ -27,7 +27,7 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public TypeSyntax DataVariableTypeArgument()
     {
-        return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit);
+        return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit, TypeNameFormat.Qualified);
     }
 
     public string DescriptorPropertyName()

@@ -32,7 +32,7 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
             var jsonVariables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
             diagnostic = !jsonVariables.Any()
-                ? VariableInfoDiagnostics.NoVariablesDefinedInFile(FileName)
+                ? GeneratorDiagnostics.TelemetryVariablesFileContainsNoVariables(FileName)
                 : null;
 
             return !jsonVariables.IsDefault
@@ -41,13 +41,13 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
         }
         catch (JsonException jsonEx)
         {
-            diagnostic = VariableInfoDiagnostics.FileReadException(File.Path, jsonEx, SourceLocationFactory.GetLocation(jsonEx));
+            diagnostic = GeneratorDiagnostics.AdditionalTextFileReadException(File, jsonEx, SourceLocationFactory.GetLocation(jsonEx));
 
             return ImmutableArray<VariableInfo>.Empty;
         }
         catch (Exception ex)
         {
-            diagnostic = VariableInfoDiagnostics.FileReadException(File.Path, ex);
+            diagnostic = GeneratorDiagnostics.AdditionalTextFileReadException(File, ex);
 
             return ImmutableArray<VariableInfo>.Empty;
         }

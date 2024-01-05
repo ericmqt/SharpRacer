@@ -55,6 +55,6 @@ public class VariableInfoFactoryTests
         Assert.Single(testVariableDiagnostics);
 
         var diagnostic = testVariableDiagnostics.First();
-        Assert.Equal(DiagnosticIds.VariableInfo_VariableAlreadyDefined, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.TelemetryVariableAlreadyDefined, diagnostic.Id);
     }
 }

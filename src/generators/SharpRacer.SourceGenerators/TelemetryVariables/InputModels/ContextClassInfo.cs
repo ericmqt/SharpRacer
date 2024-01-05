@@ -31,6 +31,11 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
     public readonly IncludedVariables IncludedVariables { get; }
     public readonly IncludedVariablesFileName IncludedVariablesFileName { get; }
 
+    public readonly string ToFullyQualifiedName()
+    {
+        return $"{ClassNamespace}.{ClassName}";
+    }
+
     public ContextClassInfo WithIncludedVariables(IncludedVariables includedVariables)
     {
         return With(includedVariables: includedVariables);

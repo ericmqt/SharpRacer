@@ -3,6 +3,7 @@ internal static class TrackingNames
 {
     public static string ContextClassInfoValuesProvider_WithIncludedVariablesFile { get; } = "ContextClassInfoValuesProvider_WithIncludedVariablesFile";
     public static string ContextClassInfoValuesProvider_GetValuesProvider { get; } = "ContextClassInfoValuesProvider_GetValuesProvider";
+    public static string ContextClassInfoValuesProvider_GetContextClassResults { get; } = "ContextClassInfoValuesProvider_GetContextClassResults";
     public static string ContextClassIncludedVariableNamesValuesProvider { get; } = "ContextClassIncludedVariableNamesValuesProvider";
 
     public static string DescriptorClassModelProvider_GetValueProvider { get; } = "DescriptorClassModelProvider_GetValueProvider";

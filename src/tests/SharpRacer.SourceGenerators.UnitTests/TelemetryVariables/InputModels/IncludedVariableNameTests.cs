@@ -34,7 +34,7 @@ public class IncludedVariableNameTests
 
         var name = "Lat";
 
-        var diagnostic = IncludedVariablesDiagnostics.VariableAlreadyIncluded(name, location);
+        var diagnostic = GeneratorDiagnostics.IncludedVariablesFileAlreadyIncludesVariable("Test", name, location);
 
         var includedVariableName = new IncludedVariableName(name, location, [diagnostic]);
 

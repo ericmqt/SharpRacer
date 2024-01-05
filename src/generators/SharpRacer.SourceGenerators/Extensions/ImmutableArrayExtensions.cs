@@ -7,4 +7,19 @@ internal static class ImmutableArrayExtensions
     {
         return source.IsDefault ? ImmutableArray<T>.Empty : source;
     }
+
+    public static bool SequenceEqualDefaultTolerant<T>(this ImmutableArray<T> source, ImmutableArray<T> other)
+    {
+        if (source.IsDefault && other.IsDefault)
+        {
+            return true;
+        }
+
+        if (source.IsDefault ^ other.IsDefault)
+        {
+            return false;
+        }
+
+        return source.SequenceEqual(other);
+    }
 }

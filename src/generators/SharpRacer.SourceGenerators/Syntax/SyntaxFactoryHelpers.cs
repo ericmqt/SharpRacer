@@ -7,6 +7,29 @@ namespace SharpRacer.SourceGenerators.Syntax;
 
 internal static class SyntaxFactoryHelpers
 {
+    public static AttributeSyntax GeneratedCodeAttribute()
+        => GeneratedCodeAttribute("SharpRacer.SourceGenerators", "0.1.0.0");
+
+    public static AttributeSyntax GeneratedCodeAttribute(string tool, string version)
+    {
+        var toolArg = AttributeArgument(
+            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(tool)));
+
+        var versionArg = AttributeArgument(
+            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(version)));
+
+        var attributeArgs = new List<AttributeArgumentSyntax>()
+        {
+            toolArg,
+            versionArg
+        };
+
+        var argumentList = AttributeArgumentList(SeparatedList(attributeArgs));
+
+        return Attribute(ParseName("System.CodeDom.Compiler.GeneratedCodeAttribute"))
+            .WithArgumentList(argumentList);
+    }
+
     public static IEnumerable<SyntaxToken> ModifiersFromAccessibility(Accessibility accessibility)
     {
         if (accessibility == Accessibility.Public)

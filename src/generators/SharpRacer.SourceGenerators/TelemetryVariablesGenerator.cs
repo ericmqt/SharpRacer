@@ -96,7 +96,8 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             else
             {
                 var contextName = $"{contextClassInfo.ClassNamespace}.{contextClassInfo.ClassName}";
-                var diagnostic = IncludedVariablesDiagnostics.VariableNotFound(contextName, variableName);
+
+                var diagnostic = GeneratorDiagnostics.ContextClassIncludedVariableNotFound(contextClassInfo.ToFullyQualifiedName(), variableName);
 
                 diagnosticsBuilder.Add(diagnostic);
             }
@@ -191,6 +192,8 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
 
         var generatedSourceTextStr = generatedSourceText.ToString();
+
+        context.AddSource($"{model.TypeName}.g.cs", generatedSourceText);
     }
 
     private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassModel generatorModel)
@@ -237,7 +240,6 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
         var generatedSourceTextStr = generatedSourceText.ToString();
 
-        // TODO: Pull the variable name from the model and append to filename like "VariableKey.g.cs" to avoid potential collisions
         context.AddSource($"Variables/{model.ClassName}.g.cs", generatedSourceText);
     }
 }

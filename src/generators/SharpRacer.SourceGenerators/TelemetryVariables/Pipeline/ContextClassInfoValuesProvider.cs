@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
@@ -11,7 +10,18 @@ internal static class ContextClassInfoValuesProvider
     public static IncrementalValuesProvider<ContextClassInfo> GetValuesProvider(
         ref IncrementalGeneratorInitializationContext context)
     {
-        var contextClasses = GetContextClassesFromSyntaxValueProvider(context.SyntaxProvider);
+        var contextClassResults = context.SyntaxProvider
+            .ForAttributeWithMetadataName(
+                SharpRacerIdentifiers.GenerateDataVariablesContextAttribute.ToQualifiedName(),
+                predicate: static (node, _) => node is ClassDeclarationSyntax,
+                transform: static (context, cancellationToken) => ContextClassResult.Create(context, cancellationToken))
+            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetContextClassResults);
+
+        context.ReportDiagnostics(contextClassResults.SelectMany(static (x, _) => x.Diagnostics));
+
+        var contextClasses = contextClassResults
+            .Where(static x => x.IsValid)
+            .Select(static (x, _) => x.ContextClassInfo);
 
         var withIncludedVariablesFileResult = contextClasses.Combine(context.AdditionalTextsProvider.Collect())
             .Select(static (item, ct) => GetIncludedVariablesFile(item.Left, item.Right, ct))
@@ -44,14 +54,14 @@ internal static class ContextClassInfoValuesProvider
 
         if (!additionalTexts.Any())
         {
-            return IncludedVariablesDiagnostics.FileNotFound(fileName);
+            return GeneratorDiagnostics.IncludedVariablesFileNotFound(fileName);
         }
 
         var matches = additionalTexts.Where(fileName.IsMatch);
 
         if (matches.Count() > 1)
         {
-            return IncludedVariablesDiagnostics.AmbiguousFileName(fileName);
+            return GeneratorDiagnostics.AmbiguousIncludedVariablesFileName(fileName);
         }
 
         var file = matches.Single();
@@ -59,7 +69,7 @@ internal static class ContextClassInfoValuesProvider
 
         if (sourceText is null)
         {
-            return IncludedVariablesDiagnostics.FileContentReadFailure(fileName);
+            return GeneratorDiagnostics.AdditionalTextContentReadError(file);
         }
 
         return (contextClassInfo, new IncludedVariablesFile(fileName, file, sourceText));
@@ -104,37 +114,5 @@ internal static class ContextClassInfoValuesProvider
 
             return new PipelineValueResult<ContextClassInfo>(updatedModel, diagnosticsBuilder.ToImmutable());
         });
-    }
-
-    private static IncrementalValuesProvider<ContextClassInfo> GetContextClassesFromSyntaxValueProvider(SyntaxValueProvider syntaxValueProvider)
-    {
-        return syntaxValueProvider.ForAttributeWithMetadataName(
-            GenerateDataVariablesContextAttributeInfo.FullTypeName,
-            predicate: (node, ct) =>
-            {
-                ct.ThrowIfCancellationRequested();
-
-                return node is ClassDeclarationSyntax classDecl &&
-                    classDecl.HasAttributes() &&
-                    classDecl.IsPartialClass() &&
-                    !classDecl.IsStaticClass();
-            },
-            transform: (context, cancellationToken) =>
-            {
-                if (context.TryGetClassSymbolWithAttribute(
-                        GenerateDataVariablesContextAttributeInfo.FullTypeName,
-                        cancellationToken,
-                        out INamedTypeSymbol? targetClassSymbol,
-                        out AttributeData? attributeData,
-                        out Location? attributeLocation))
-                {
-                    var includedVariablesFileName = GenerateDataVariablesContextAttributeInfo.GetIncludedVariablesFileNameOrDefault(attributeData!);
-
-                    return new ContextClassInfo(targetClassSymbol!, attributeLocation, includedVariablesFileName);
-                }
-
-                return default;
-            })
-            .Where(static item => item != default);
     }
 }

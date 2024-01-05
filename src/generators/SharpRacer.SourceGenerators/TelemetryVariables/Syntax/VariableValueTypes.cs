@@ -10,7 +10,7 @@ internal static class VariableValueTypes
     public static TypeSyntax Float() => ParseTypeName("float");
     public static TypeSyntax Int() => ParseTypeName("int");
 
-    public static TypeSyntax? Enumeration(string variableUnit)
+    public static TypeSyntax? Enumeration(string variableUnit, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         if (string.IsNullOrEmpty(variableUnit))
         {
@@ -19,39 +19,39 @@ internal static class VariableValueTypes
 
         return variableUnit switch
         {
-            BitfieldUnitNames.irsdk_CameraState => SharpRacerTypes.Enumerations.CameraState(),
-            BitfieldUnitNames.irsdk_CarLeftRight => SharpRacerTypes.Enumerations.CarLeftRight(),
-            BitfieldUnitNames.irsdk_EngineWarnings => SharpRacerTypes.Enumerations.EngineWarnings(),
-            BitfieldUnitNames.irsdk_Flags => SharpRacerTypes.Enumerations.RacingFlags(),
-            BitfieldUnitNames.irsdk_PitSvFlags => SharpRacerTypes.Enumerations.PitServiceOptions(),
+            BitfieldUnitNames.irsdk_CameraState => SharpRacerTypes.CameraState(typeNameFormat),
+            BitfieldUnitNames.irsdk_CarLeftRight => SharpRacerTypes.CarLeftRight(typeNameFormat),
+            BitfieldUnitNames.irsdk_EngineWarnings => SharpRacerTypes.EngineWarnings(typeNameFormat),
+            BitfieldUnitNames.irsdk_Flags => SharpRacerTypes.RacingFlags(typeNameFormat),
+            BitfieldUnitNames.irsdk_PitSvFlags => SharpRacerTypes.PitServiceOptions(typeNameFormat),
 
-            EnumerationUnitNames.irsdk_PaceFlags => SharpRacerTypes.Enumerations.PaceRacingFlags(),
-            EnumerationUnitNames.irsdk_PaceMode => SharpRacerTypes.Enumerations.PaceMode(),
-            EnumerationUnitNames.irsdk_PitSvStatus => SharpRacerTypes.Enumerations.PitServiceStatus(),
-            EnumerationUnitNames.irsdk_SessionState => SharpRacerTypes.Enumerations.SessionState(),
-            EnumerationUnitNames.irsdk_TrkLoc => SharpRacerTypes.Enumerations.TrackLocationType(),
-            EnumerationUnitNames.irsdk_TrkSurf => SharpRacerTypes.Enumerations.TrackSurfaceType(),
+            EnumerationUnitNames.irsdk_PaceFlags => SharpRacerTypes.PaceRacingFlags(typeNameFormat),
+            EnumerationUnitNames.irsdk_PaceMode => SharpRacerTypes.PaceMode(typeNameFormat),
+            EnumerationUnitNames.irsdk_PitSvStatus => SharpRacerTypes.PitServiceStatus(typeNameFormat),
+            EnumerationUnitNames.irsdk_SessionState => SharpRacerTypes.SessionState(typeNameFormat),
+            EnumerationUnitNames.irsdk_TrkLoc => SharpRacerTypes.TrackLocationType(typeNameFormat),
+            EnumerationUnitNames.irsdk_TrkSurf => SharpRacerTypes.TrackSurfaceType(typeNameFormat),
 
             _ => null
         };
     }
 
-    public static TypeSyntax EnumerationOrInt(string? variableUnit)
+    public static TypeSyntax EnumerationOrInt(string? variableUnit, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         return variableUnit switch
         {
-            BitfieldUnitNames.irsdk_CameraState => SharpRacerTypes.Enumerations.CameraState(),
-            BitfieldUnitNames.irsdk_CarLeftRight => SharpRacerTypes.Enumerations.CarLeftRight(),
-            BitfieldUnitNames.irsdk_EngineWarnings => SharpRacerTypes.Enumerations.EngineWarnings(),
-            BitfieldUnitNames.irsdk_Flags => SharpRacerTypes.Enumerations.RacingFlags(),
-            BitfieldUnitNames.irsdk_PitSvFlags => SharpRacerTypes.Enumerations.PitServiceOptions(),
+            BitfieldUnitNames.irsdk_CameraState => SharpRacerTypes.CameraState(typeNameFormat),
+            BitfieldUnitNames.irsdk_CarLeftRight => SharpRacerTypes.CarLeftRight(typeNameFormat),
+            BitfieldUnitNames.irsdk_EngineWarnings => SharpRacerTypes.EngineWarnings(typeNameFormat),
+            BitfieldUnitNames.irsdk_Flags => SharpRacerTypes.RacingFlags(typeNameFormat),
+            BitfieldUnitNames.irsdk_PitSvFlags => SharpRacerTypes.PitServiceOptions(typeNameFormat),
 
-            EnumerationUnitNames.irsdk_PaceFlags => SharpRacerTypes.Enumerations.PaceRacingFlags(),
-            EnumerationUnitNames.irsdk_PaceMode => SharpRacerTypes.Enumerations.PaceMode(),
-            EnumerationUnitNames.irsdk_PitSvStatus => SharpRacerTypes.Enumerations.PitServiceStatus(),
-            EnumerationUnitNames.irsdk_SessionState => SharpRacerTypes.Enumerations.SessionState(),
-            EnumerationUnitNames.irsdk_TrkLoc => SharpRacerTypes.Enumerations.TrackLocationType(),
-            EnumerationUnitNames.irsdk_TrkSurf => SharpRacerTypes.Enumerations.TrackSurfaceType(),
+            EnumerationUnitNames.irsdk_PaceFlags => SharpRacerTypes.PaceRacingFlags(typeNameFormat),
+            EnumerationUnitNames.irsdk_PaceMode => SharpRacerTypes.PaceMode(typeNameFormat),
+            EnumerationUnitNames.irsdk_PitSvStatus => SharpRacerTypes.PitServiceStatus(typeNameFormat),
+            EnumerationUnitNames.irsdk_SessionState => SharpRacerTypes.SessionState(typeNameFormat),
+            EnumerationUnitNames.irsdk_TrkLoc => SharpRacerTypes.TrackLocationType(typeNameFormat),
+            EnumerationUnitNames.irsdk_TrkSurf => SharpRacerTypes.TrackSurfaceType(typeNameFormat),
 
             _ => Int()
         };

@@ -86,6 +86,6 @@ public class VariableOptionsFileTests
         Assert.False(result.IsDefault);
         Assert.True(result.IsEmpty);
         Assert.NotNull(diagnostic);
-        Assert.Equal(DiagnosticIds.VariableOptions_FileReadException, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.AdditionalText_FileReadException, diagnostic.Id);
     }
 }

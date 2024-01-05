@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class ContextVariableModelFactory
@@ -31,14 +32,13 @@ internal class ContextVariableModelFactory
             return false;
         }
 
-        diagnostics = GetDiagnostics(variableModel);
-
-        if (diagnostics.HasErrors())
+        if (!TryGetPropertyName(variableModel, out var propertyName, out var propertyNameDiagnostic))
         {
+            diagnostics = ImmutableArray.Create(propertyNameDiagnostic);
             return false;
         }
 
-        var propertyName = GetPropertyName(variableModel);
+        diagnostics = ImmutableArray<Diagnostic>.Empty;
 
         DescriptorPropertyReference? descriptorReference = null;
         VariableClassReference? variableClassReference = null;
@@ -65,22 +65,51 @@ internal class ContextVariableModelFactory
         return true;
     }
 
-    private string GetPropertyName(VariableModel variableModel)
+    private bool TryGetPropertyName(VariableModel variableModel, out string propertyName, out Diagnostic diagnostic)
     {
+        ContextVariableModel existing = default;
+
         if (!string.IsNullOrWhiteSpace(variableModel.Options.Name))
         {
-            return variableModel.Options.Name!;
+            var configuredPropertyName = variableModel.Options.Name!;
+
+            existing = _builder.FirstOrDefault(x => x.PropertyName.Equals(configuredPropertyName, StringComparison.Ordinal));
+
+            if (existing != default)
+            {
+                diagnostic = GeneratorDiagnostics.ContextClassConfiguredPropertyNameConflict(
+                    variableModel.VariableName,
+                    configuredPropertyName,
+                    existing.VariableModel.VariableName,
+                    existing.PropertyName);
+
+                propertyName = string.Empty;
+
+                return false;
+            }
+
+            propertyName = configuredPropertyName;
+            diagnostic = null!;
+            return true;
         }
 
-        return variableModel.VariableName;
-    }
+        existing = _builder.FirstOrDefault(x => x.PropertyName.Equals(variableModel.VariableName, StringComparison.Ordinal));
 
-    private ImmutableArray<Diagnostic> GetDiagnostics(VariableModel variableModel)
-    {
-        var builder = ImmutableArray.CreateBuilder<Diagnostic>();
+        if (existing != default)
+        {
+            diagnostic = GeneratorDiagnostics.ContextClassVariableNameCreatesPropertyNameConflict(
+                variableModel.VariableName,
+                existing.VariableModel.VariableName,
+                existing.PropertyName);
 
-        // TODO: Diagnostics
+            propertyName = string.Empty;
 
-        return builder.ToImmutable();
+            return false;
+        }
+
+        propertyName = variableModel.VariableName;
+        diagnostic = null!;
+
+        return true;
     }
 }

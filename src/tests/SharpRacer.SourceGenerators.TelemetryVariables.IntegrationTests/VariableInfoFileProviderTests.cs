@@ -66,7 +66,7 @@ public class VariableInfoFileProviderTests
         var pipelineResult = (PipelineValueResult<VariableInfoFile>)output.Value;
 
         Assert.True(pipelineResult.HasErrors);
-        Assert.True(runResult.Diagnostics.Any(x => x.Id == DiagnosticIds.VariableInfo_FileNotFound));
+        Assert.True(runResult.Diagnostics.Any(x => x.Id == DiagnosticIds.TelemetryVariablesFileNotFound));
         Assert.Equal(default, pipelineResult.Value);
     }
 

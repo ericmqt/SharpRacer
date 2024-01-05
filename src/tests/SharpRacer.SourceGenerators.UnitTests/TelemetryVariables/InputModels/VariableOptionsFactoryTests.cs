@@ -87,7 +87,7 @@ public class VariableOptionsFactoryTests
         Assert.Single(addDiagnostics);
 
         var diagnostic = addDiagnostics.First();
-        Assert.Equal(DiagnosticIds.VariableOptions_DuplicateClassName, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.VariableOptionsFileContainsDuplicateClassName, diagnostic.Id);
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class VariableOptionsFactoryTests
         Assert.Single(addDiagnostics);
 
         var diagnostic = addDiagnostics.First();
-        Assert.Equal(DiagnosticIds.VariableOptions_DuplicateKey, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.VariableOptionsFileContainsDuplicateKey, diagnostic.Id);
     }
 
     [Fact]
@@ -143,7 +143,7 @@ public class VariableOptionsFactoryTests
         Assert.Single(addDiagnostics);
 
         var diagnostic = addDiagnostics.First();
-        Assert.Equal(DiagnosticIds.VariableOptions_DuplicateVariableName, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.VariableOptionsFileContainsDuplicateVariableName, diagnostic.Id);
     }
 
 

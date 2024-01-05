@@ -79,7 +79,7 @@ internal class VariableOptionsFactory
         }
 
         var location = GetKeyLocation(jsonVariableOptions);
-        diagnostic = VariableOptionsDiagnostics.DuplicateKey(jsonVariableOptions.Key, location);
+        diagnostic = GeneratorDiagnostics.VariableOptionsFileContainsDuplicateKey(jsonVariableOptions.Key, location);
 
         return true;
     }
@@ -106,7 +106,7 @@ internal class VariableOptionsFactory
 
         var location = GetValueLocation(jsonVariableOptions);
 
-        diagnostic = VariableOptionsDiagnostics.DuplicateClassName(
+        diagnostic = GeneratorDiagnostics.VariableOptionsFileContainsDuplicateClassName(
             jsonVariableOptions.Key,
             optionsValue.ClassName!,
             existing.VariableKey,
@@ -137,7 +137,7 @@ internal class VariableOptionsFactory
 
         var location = GetValueLocation(jsonVariableOptions);
 
-        diagnostic = VariableOptionsDiagnostics.DuplicateVariableName(
+        diagnostic = GeneratorDiagnostics.VariableOptionsFileContainsDuplicateVariableName(
             jsonVariableOptions.Key,
             optionsValue.Name!,
             existing.VariableKey,

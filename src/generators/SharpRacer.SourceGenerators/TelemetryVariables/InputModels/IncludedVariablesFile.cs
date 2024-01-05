@@ -42,7 +42,7 @@ internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFil
             var variableNameValues = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayIncludedVariableNameValue);
 
             diagnostic = !variableNameValues.Any()
-                ? IncludedVariablesDiagnostics.NoIncludedVariableNamesWarning(FileName)
+                ? GeneratorDiagnostics.IncludedVariablesFileContainsNoVariables(File)
                 : null;
 
             return variableNameValues;
@@ -51,13 +51,13 @@ internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFil
         {
             var errorLocation = SourceLocationFactory.GetLocation(jsonEx);
 
-            diagnostic = IncludedVariablesDiagnostics.FileReadException(FileName, jsonEx, errorLocation);
+            diagnostic = GeneratorDiagnostics.AdditionalTextFileReadException(File, jsonEx, errorLocation);
 
             return ImmutableArray<IncludedVariableNameValue>.Empty;
         }
         catch (Exception ex)
         {
-            diagnostic = IncludedVariablesDiagnostics.FileReadException(FileName, ex);
+            diagnostic = GeneratorDiagnostics.AdditionalTextFileReadException(File, ex);
 
             return ImmutableArray<IncludedVariableNameValue>.Empty;
         }

@@ -91,7 +91,7 @@ public class VariableInfoFileTests
         Assert.False(result.IsDefault);
         Assert.True(result.IsEmpty);
         Assert.NotNull(diagnostic);
-        Assert.Equal(DiagnosticIds.VariableInfo_FileReadException, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.AdditionalText_FileReadException, diagnostic.Id);
     }
 
     [Fact]
@@ -107,6 +107,6 @@ public class VariableInfoFileTests
         Assert.False(result.IsDefault);
         Assert.True(result.IsEmpty);
         Assert.NotNull(diagnostic);
-        Assert.Equal(DiagnosticIds.VariableInfo_NoVariablesDefinedInFile, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.TelemetryVariablesFileContainsNoVariables, diagnostic.Id);
     }
 }

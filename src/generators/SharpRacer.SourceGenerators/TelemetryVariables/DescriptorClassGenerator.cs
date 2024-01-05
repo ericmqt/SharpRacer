@@ -16,10 +16,17 @@ internal static class DescriptorClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
+        var xmlDoc = XmlDocumentationFactory.CreateDocumentationCommentTrivia(
+            XmlDocumentationFactory.Summary(
+                XmlText("Provides "),
+                XmlSeeElement(TypeCref(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.Qualified))),
+                XmlText(" values that describe telemetry variables.")));
+
         return ClassDeclaration(model.TypeName)
             .WithKeyword(Token(SyntaxKind.ClassKeyword))
             .WithModifiers(Accessibility.NotApplicable, isStatic: true, isPartial: true)
-            .WithMembers(GetClassMemberDeclarations(in model, cancellationToken));
+            .WithMembers(GetClassMemberDeclarations(in model, cancellationToken))
+            .WithLeadingTrivia(Trivia(xmlDoc));
     }
 
     public static CompilationUnitSyntax CreateCompilationUnit(
@@ -31,6 +38,7 @@ internal static class DescriptorClassGenerator
         var classDecl = CreateClassDeclaration(in model, cancellationToken);
 
         var namespaceDecl = NamespaceDeclaration(IdentifierName(model.TypeNamespace))
+            .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
         var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry.Variables")));
@@ -67,7 +75,7 @@ internal static class DescriptorClassGenerator
             throw new ArgumentException($"'{nameof(descriptorPropertyModel)}' cannot be a default value.", nameof(descriptorPropertyModel));
         }
 
-        var objectCreationExpr = DataVariableDescriptorSyntaxFactory.CreateNewInstanceExpression(
+        var objectCreationExpr = DataVariableDescriptorSyntaxFactory.ImplicitNewInstanceExpression(
             descriptorPropertyModel.VariableModel.VariableName,
             descriptorPropertyModel.VariableModel.ValueType,
             descriptorPropertyModel.VariableModel.ValueCount);
@@ -87,7 +95,14 @@ internal static class DescriptorClassGenerator
             decl = decl.WithAttributeLists(SingletonList(attributeList));
         }
 
-        // TODO: XML documentation
+        if (descriptorPropertyModel.PropertyXmlSummary != null)
+        {
+            var docTrivia = XmlDocumentationFactory.CreateDocumentationCommentTrivia(
+                XmlDocumentationFactory.Summary(XmlText(descriptorPropertyModel.PropertyXmlSummary)));
+
+            decl = decl.WithLeadingTrivia(Trivia(docTrivia));
+        }
+
         return decl;
     }
 

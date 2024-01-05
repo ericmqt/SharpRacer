@@ -51,7 +51,7 @@ internal class DescriptorPropertyModelFactory
             return false;
         }
 
-        diagnostic = DescriptorClassDiagnostics.DescriptorNameConflictsWithExistingVariable(
+        diagnostic = GeneratorDiagnostics.DescriptorNameConflictsWithExistingVariable(
             variableModel.VariableName,
             propertyName,
             conflictingModel.VariableName,

@@ -60,7 +60,7 @@ internal readonly struct PipelineValueResult<TResult> : IEquatable<PipelineValue
         return HasErrors == other.HasErrors &&
             HasValue == other.HasValue &&
             Value.Equals(other.Value) &&
-            _diagnostics.SequenceEqual(other.Diagnostics);
+            _diagnostics.SequenceEqualDefaultTolerant(other._diagnostics);
     }
 
     public override int GetHashCode()

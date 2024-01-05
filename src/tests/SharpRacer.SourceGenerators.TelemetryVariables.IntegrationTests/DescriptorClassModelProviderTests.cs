@@ -49,7 +49,7 @@ public static partial class MyDescriptors2 { }";
 
         Assert.True(pipelineValueResult.HasValue);
         Assert.Single(pipelineValueResult.Diagnostics);
-        Assert.Single(runResult.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClass_AssemblyAlreadyContainsDescriptorClassTarget);
+        Assert.Single(runResult.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClassAlreadyExistsInAssembly);
     }
 
     [Fact]

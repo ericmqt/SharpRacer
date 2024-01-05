@@ -4,10 +4,16 @@ using Microsoft.CodeAnalysis;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
 {
-    public DescriptorClassModel(INamedTypeSymbol classSymbol, Location? generatorAttributeLocation)
+    public DescriptorClassModel(string typeName, string typeNamespace, Location? generatorAttributeLocation)
     {
-        TypeName = classSymbol.Name;
-        TypeNamespace = classSymbol.ContainingNamespace.ToString();
+        TypeName = !string.IsNullOrEmpty(typeName)
+            ? typeName
+            : throw new ArgumentException($"'{nameof(typeName)}' cannot be null or empty.", nameof(typeName));
+
+        TypeNamespace = !string.IsNullOrEmpty(typeNamespace)
+            ? typeNamespace
+            : throw new ArgumentException($"'{nameof(typeNamespace)}' cannot be null or empty.", nameof(typeNamespace));
+
         GeneratorAttributeLocation = generatorAttributeLocation;
 
         DescriptorProperties = ImmutableArray<DescriptorPropertyModel>.Empty;
@@ -49,7 +55,7 @@ internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
         return StringComparer.Ordinal.Equals(TypeName, other.TypeName) &&
             StringComparer.Ordinal.Equals(TypeNamespace, other.TypeNamespace) &&
             GeneratorAttributeLocation == other.GeneratorAttributeLocation &&
-            DescriptorProperties.GetEmptyIfDefault().SequenceEqual(other.DescriptorProperties.GetEmptyIfDefault());
+            DescriptorProperties.SequenceEqualDefaultTolerant(other.DescriptorProperties);
     }
 
     public override int GetHashCode()
@@ -59,7 +65,14 @@ internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
         hc.Add(TypeName);
         hc.Add(TypeNamespace);
         hc.Add(GeneratorAttributeLocation);
-        hc.AddImmutableArray(DescriptorProperties);
+
+        if (!DescriptorProperties.IsDefault)
+        {
+            for (int i = 0; i < DescriptorProperties.Length; ++i)
+            {
+                hc.Add(DescriptorProperties[i]);
+            }
+        }
 
         return hc.ToHashCode();
     }

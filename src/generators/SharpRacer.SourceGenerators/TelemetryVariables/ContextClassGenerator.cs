@@ -67,7 +67,7 @@ internal static class ContextClassGenerator
             members.Add(propertyDecl);
         }
 
-        // TODO: Interface implementation
+        members.Add(VariableContextSyntaxFactory.EnumerateVariablesMethod(in model));
 
         return List(members);
     }

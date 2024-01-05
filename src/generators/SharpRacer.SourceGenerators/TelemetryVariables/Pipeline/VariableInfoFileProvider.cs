@@ -18,7 +18,6 @@ internal static class VariableInfoFileProvider
             .Select(static (x, _) => x.Left)
             .Collect();
 
-
         return variableInfoFileName.Combine(variableInfoTexts)
             .Select(static (x, ct) => GetPipelineValueResult(x.Left, x.Right, ct))
             .WithTrackingName(TrackingNames.VariableInfoFileProvider_GetValueProvider);
@@ -50,14 +49,14 @@ internal static class VariableInfoFileProvider
 
         if (!additionalTexts.Any())
         {
-            diagnostic = VariableInfoDiagnostics.FileNotFound(fileName);
+            diagnostic = GeneratorDiagnostics.TelemetryVariablesFileNotFound(fileName);
 
             return false;
         }
 
         if (additionalTexts.Length > 1)
         {
-            diagnostic = VariableInfoDiagnostics.AmbiguousFileName(fileName);
+            diagnostic = GeneratorDiagnostics.AmbiguousTelemetryVariablesFileName(fileName);
 
             return false;
         }
@@ -68,7 +67,7 @@ internal static class VariableInfoFileProvider
 
         if (sourceText is null)
         {
-            diagnostic = VariableInfoDiagnostics.FileContentReadFailure(fileName);
+            diagnostic = GeneratorDiagnostics.AdditionalTextContentReadError(file);
 
             return false;
         }

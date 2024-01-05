@@ -60,7 +60,7 @@ public class IncludedVariableNameFactoryTests
         // Check we got the empty name warning diagnostic
         Assert.False(includedNames.First().Diagnostics.HasErrors());
         var diagnostic = includedNames.First().Diagnostics.First();
-        Assert.Equal(DiagnosticIds.IncludedVariables_EmptyVariableName, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.IncludedVariablesFile_ContainsEmptyVariableName, diagnostic.Id);
     }
 
     [Fact]
@@ -85,6 +85,6 @@ public class IncludedVariableNameFactoryTests
         Assert.NotEmpty(duplicatedName.Diagnostics);
 
         var diagnostic = duplicatedName.Diagnostics.First();
-        Assert.Equal(DiagnosticIds.IncludedVariables_VariableAlreadyIncluded, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.IncludedVariablesFile_VariableAlreadyIncluded, diagnostic.Id);
     }
 }
