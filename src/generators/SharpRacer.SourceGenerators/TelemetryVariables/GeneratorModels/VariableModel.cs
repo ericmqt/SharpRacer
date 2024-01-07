@@ -42,9 +42,17 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
 
     public string VariableClassName()
     {
-        if (Options != default && !string.IsNullOrWhiteSpace(Options.ClassName))
+        if (Options != default)
         {
-            return $"{Options.ClassName}Variable";
+            if (!string.IsNullOrWhiteSpace(Options.ClassName))
+            {
+                return $"{Options.ClassName}Variable";
+            }
+
+            if (!string.IsNullOrWhiteSpace(Options.Name))
+            {
+                return $"{Options.Name}Variable";
+            }
         }
 
         return $"{VariableName}Variable";

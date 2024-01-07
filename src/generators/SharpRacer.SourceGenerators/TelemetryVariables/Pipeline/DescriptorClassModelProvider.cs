@@ -43,8 +43,10 @@ internal static class DescriptorClassModelProvider
 
         context.ReportDiagnostics(descriptorPropertiesResult.Select(static (x, _) => x.Diagnostics));
 
+        var descriptorProperties = descriptorPropertiesResult.Select(static (x, _) => x.Values);
+
         var classesWithDescriptorProperties = classTargets
-            .Combine(descriptorPropertiesResult.Select(static (x, _) => x.Values))
+            .Combine(descriptorProperties)
             .Select(static (item, _) => item.Left.WithDescriptorProperties(item.Right));
 
         return classesWithDescriptorProperties.Collect()

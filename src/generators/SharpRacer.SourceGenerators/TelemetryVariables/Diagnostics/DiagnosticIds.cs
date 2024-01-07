@@ -46,5 +46,6 @@ internal static class DiagnosticIds
     public const string ContextClassVariableNameCreatesPropertyNameConflict = "SR3503";
     public const string ContextClassConfiguredPropertyNameConflict = "SR3504";
 
-    public const string VariableClassNameInUse = "SR3301";
+    // Validation: VariableClasses
+    public const string VariableClassNameInUse = "SR3610";
 }

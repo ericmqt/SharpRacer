@@ -77,6 +77,16 @@ internal class VariablesGeneratorBuilder
         return this;
     }
 
+    public VariablesGeneratorBuilder WithCSharpSyntaxTree(string source)
+    {
+        if (string.IsNullOrEmpty(source))
+        {
+            throw new ArgumentException($"'{nameof(source)}' cannot be null or empty.", nameof(source));
+        }
+
+        return WithSyntaxTree(CSharpSyntaxTree.ParseText(source));
+    }
+
     public VariablesGeneratorBuilder WithDisabledOutputs(IncrementalGeneratorOutputKind output)
     {
         _disabledOutputs = output;

@@ -25,7 +25,7 @@ namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors2 { }";
 
-        var variablesText = new JsonVariableInfoDocumentBuilder()
+        var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
             .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
 
@@ -61,7 +61,7 @@ namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors { }";
 
-        var variablesText = new JsonVariableInfoDocumentBuilder()
+        var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
             .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
 

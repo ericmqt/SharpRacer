@@ -168,7 +168,7 @@ internal static partial class GeneratorDiagnostics
         return Diagnostic.Create(GeneratorDiagnosticDescriptors.TelemetryVariableAlreadyDefined, location, variableName);
     }
 
-    public static Diagnostic VariableClassNameInUse(
+    public static Diagnostic VariableClassConfiguredClassNameInUse(
         string className,
         string variableName,
         string conflictingVariableClassName,
@@ -176,7 +176,7 @@ internal static partial class GeneratorDiagnostics
         Location? location = null)
     {
         return Diagnostic.Create(
-            GeneratorDiagnosticDescriptors.VariableClassNameInUse,
+            GeneratorDiagnosticDescriptors.VariableClassConfiguredClassNameInUse,
             location,
             className,
             variableName,

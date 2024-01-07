@@ -28,3 +28,4 @@ SR3402 | SharpRacer.Validation | Error | DescriptorNameConflictsWithExistingVari
 SR3502 | SharpRacer.Validation | Error | ContextClassIncludedVariableNotFound
 SR3503 | SharpRacer.Validation | Error | ContextClassVariableNameCreatesPropertyNameConflict
 SR3504 | SharpRacer.Validation | Error | ContextClassConfiguredPropertyNameConflict
+SR3610 | SharpRacer.Validation | Error | VariableClassConfiguredClassNameInUse

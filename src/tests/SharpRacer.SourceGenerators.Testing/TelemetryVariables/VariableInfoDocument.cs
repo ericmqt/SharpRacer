@@ -4,9 +4,9 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 using SharpRacer.SourceGenerators.Testing.Text;
 
 namespace SharpRacer.SourceGenerators.Testing.TelemetryVariables;
-public class JsonVariableInfoDocument
+public class VariableInfoDocument
 {
-    public JsonVariableInfoDocument(string documentPath, JsonSourceText sourceText, ImmutableArray<VariableInfo> variables)
+    public VariableInfoDocument(string documentPath, JsonSourceText sourceText, ImmutableArray<VariableInfo> variables)
     {
         if (string.IsNullOrEmpty(documentPath))
         {

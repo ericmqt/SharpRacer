@@ -7,7 +7,7 @@ public class VariableInfoFactoryTests
     [Fact]
     public void Ctor_Test()
     {
-        var file = new JsonVariableInfoDocumentBuilder()
+        var file = new VariableInfoDocumentBuilder()
             .AddScalar("Test", VariableValueType.Int, "Test variable", null)
             .ToVariableInfoFile("Variables.json");
 
@@ -19,7 +19,7 @@ public class VariableInfoFactoryTests
     [Fact]
     public void TryAdd_DefaultJsonVariableInfoValueTest()
     {
-        var file = new JsonVariableInfoDocumentBuilder()
+        var file = new VariableInfoDocumentBuilder()
             .AddScalar("Test", VariableValueType.Int, "Test variable", null)
             .ToVariableInfoFile("Variables.json");
 
@@ -33,7 +33,7 @@ public class VariableInfoFactoryTests
     [Fact]
     public void TryAdd_VariableAlreadyDefinedDiagnosticTest()
     {
-        var file = new JsonVariableInfoDocumentBuilder()
+        var file = new VariableInfoDocumentBuilder()
             .AddScalar("Test", VariableValueType.Int, "Test variable", null)
             .ToVariableInfoFile("Variables.json");
 

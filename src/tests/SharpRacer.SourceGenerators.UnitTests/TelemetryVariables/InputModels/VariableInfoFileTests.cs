@@ -44,8 +44,11 @@ public class VariableInfoFileTests
         var variableInfoFile = new VariableInfoFile(fileName, additionalText, sourceText);
 
         Assert.False(variableInfoFile == default);
+        Assert.False(default == variableInfoFile);
         Assert.True(variableInfoFile != default);
+        Assert.True(default != variableInfoFile);
         Assert.False(variableInfoFile.Equals(default));
+        Assert.False(default(VariableInfoFile).Equals(variableInfoFile));
     }
 
     [Fact]

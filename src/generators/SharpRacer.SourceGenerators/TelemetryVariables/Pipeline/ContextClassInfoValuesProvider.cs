@@ -25,17 +25,21 @@ internal static class ContextClassInfoValuesProvider
 
         var withIncludedVariablesFileResult = contextClasses.Combine(context.AdditionalTextsProvider.Collect())
             .Select(static (item, ct) => GetIncludedVariablesFile(item.Left, item.Right, ct))
-            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_WithIncludedVariablesFile);
+            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_FindIncludedVariablesFiles);
 
         context.ReportDiagnostics(withIncludedVariablesFileResult.SelectMany(static (x, _) => x.Diagnostics));
 
         // Transform each included variables file into array of included variable names
-        var contextClassesWithIncludedVariablesResult = GetContextClassesWithIncludedVariables(
-            withIncludedVariablesFileResult.Where(static x => !x.Diagnostics.HasErrors()).Select(static (item, _) => item.Value));
+        var validContextClassesAndIncludedVariableFiles = withIncludedVariablesFileResult
+            .Where(static x => x.HasValue && !x.Diagnostics.HasErrors())
+            .Select(static (item, _) => item.Value);
+
+        var contextClassesWithIncludedVariablesResult = GetContextClassesWithIncludedVariables(validContextClassesAndIncludedVariableFiles)
+            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_ContextClassesWithIncludedVariables);
 
         context.ReportDiagnostics(contextClassesWithIncludedVariablesResult.SelectMany(static (x, _) => x.Diagnostics));
 
-        return contextClassesWithIncludedVariablesResult.Select(static (x, _) => x.Value);
+        return contextClassesWithIncludedVariablesResult.Where(static x => x.HasValue).Select(static (x, _) => x.Value);
     }
 
     private static PipelineValueResult<(ContextClassInfo ContextClassInfo, IncludedVariablesFile IncludedVariablesFile)> GetIncludedVariablesFile(
@@ -51,13 +55,12 @@ internal static class ContextClassInfoValuesProvider
         }
 
         var fileName = contextClassInfo.IncludedVariablesFileName;
+        var matches = additionalTexts.Where(fileName.IsMatch);
 
-        if (!additionalTexts.Any())
+        if (!matches.Any())
         {
             return GeneratorDiagnostics.IncludedVariablesFileNotFound(fileName);
         }
-
-        var matches = additionalTexts.Where(fileName.IsMatch);
 
         if (matches.Count() > 1)
         {

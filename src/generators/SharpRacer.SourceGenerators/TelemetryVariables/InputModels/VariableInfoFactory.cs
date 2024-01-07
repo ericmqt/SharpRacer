@@ -72,26 +72,6 @@ internal class VariableInfoFactory
         return true;
     }
 
-    /*private bool TryGetDeprecatingVariableNotFound(JsonVariableInfo jsonVariableInfo, out Diagnostic? diagnostic)
-    {
-        if (string.IsNullOrEmpty(jsonVariableInfo.DeprecatedBy))
-        {
-            diagnostic = null;
-            return false;
-        }
-
-        if (!_source.Any(x => x.Name.Equals(jsonVariableInfo.DeprecatedBy, StringComparison.Ordinal)))
-        {
-            diagnostic = VariableInfoDiagnostics.VariableInfoDeprecatingVariableNotFoundWarning(
-                jsonVariableInfo.Name,
-                jsonVariableInfo.DeprecatedBy!,
-                GetLocation(jsonVariableInfo));
-        }
-
-        diagnostic = null;
-        return false;
-    }*/
-
     private Location? GetLocation(VariableInfo variableInfo)
     {
         return _locationFactory.GetLocation(variableInfo.JsonSpan);

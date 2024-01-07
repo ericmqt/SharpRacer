@@ -60,7 +60,7 @@ internal class VariableClassGeneratorModelFactory
         var modelTypeName = $"{classNamespace}.{className}";
         var existingTypeName = $"{existing.ClassNamespace}.{existing.ClassName}";
 
-        diagnostic = GeneratorDiagnostics.VariableClassNameInUse(modelTypeName, variableModel.VariableName, existingTypeName, existing.VariableName);
+        diagnostic = GeneratorDiagnostics.VariableClassConfiguredClassNameInUse(modelTypeName, variableModel.VariableName, existingTypeName, existing.VariableName);
         return true;
     }
 }

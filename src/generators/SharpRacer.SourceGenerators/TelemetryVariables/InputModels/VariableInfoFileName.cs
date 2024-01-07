@@ -51,6 +51,11 @@ public readonly struct VariableInfoFileName : IEquatable<VariableInfoFileName>
         return _fileName.GetHashCode();
     }
 
+    public override string ToString()
+    {
+        return _fileName ?? string.Empty;
+    }
+
     public static bool operator ==(VariableInfoFileName lhs, VariableInfoFileName rhs)
     {
         return lhs.Equals(rhs);

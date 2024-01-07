@@ -67,7 +67,12 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(FileName, File);
+        var hc = new HashCode();
+
+        hc.Add(FileName);
+        hc.Add(File);
+
+        return hc.ToHashCode();
     }
 
     public static bool operator ==(VariableInfoFile left, VariableInfoFile right)

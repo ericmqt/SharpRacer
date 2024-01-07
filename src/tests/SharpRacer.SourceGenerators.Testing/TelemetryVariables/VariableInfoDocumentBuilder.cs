@@ -6,16 +6,16 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 using SharpRacer.SourceGenerators.Testing.Text;
 
 namespace SharpRacer.SourceGenerators.Testing.TelemetryVariables;
-public class JsonVariableInfoDocumentBuilder
+public class VariableInfoDocumentBuilder
 {
     private readonly List<VariableInfo> _variables;
 
-    public JsonVariableInfoDocumentBuilder()
+    public VariableInfoDocumentBuilder()
     {
         _variables = new List<VariableInfo>();
     }
 
-    public JsonVariableInfoDocumentBuilder AddArray(
+    public VariableInfoDocumentBuilder AddArray(
         string variableName,
         VariableValueType variableValueType,
         int valueCount,
@@ -25,7 +25,7 @@ public class JsonVariableInfoDocumentBuilder
         return AddArray(variableName, variableValueType, valueCount, description, unit, null);
     }
 
-    public JsonVariableInfoDocumentBuilder AddArray(
+    public VariableInfoDocumentBuilder AddArray(
         string variableName,
         VariableValueType valueType,
         int valueCount,
@@ -48,12 +48,12 @@ public class JsonVariableInfoDocumentBuilder
         return this;
     }
 
-    public JsonVariableInfoDocumentBuilder AddScalar(string variableName, VariableValueType valueType, string description, string? unit)
+    public VariableInfoDocumentBuilder AddScalar(string variableName, VariableValueType valueType, string description, string? unit)
     {
         return AddScalar(variableName, valueType, description, unit, null);
     }
 
-    public JsonVariableInfoDocumentBuilder AddScalar(
+    public VariableInfoDocumentBuilder AddScalar(
         string variableName,
         VariableValueType valueType,
         string description,
@@ -75,7 +75,7 @@ public class JsonVariableInfoDocumentBuilder
         return this;
     }
 
-    public JsonVariableInfoDocumentBuilder AddTimeSliceArray(
+    public VariableInfoDocumentBuilder AddTimeSliceArray(
         string variableName,
         VariableValueType valueType,
         int valueCount,
@@ -85,7 +85,7 @@ public class JsonVariableInfoDocumentBuilder
         return AddTimeSliceArray(variableName, valueType, valueCount, description, unit, null);
     }
 
-    public JsonVariableInfoDocumentBuilder AddTimeSliceArray(
+    public VariableInfoDocumentBuilder AddTimeSliceArray(
         string variableName,
         VariableValueType variableValueType,
         int valueCount,
@@ -108,7 +108,7 @@ public class JsonVariableInfoDocumentBuilder
         return this;
     }
 
-    public JsonVariableInfoDocument Build(string documentPath)
+    public VariableInfoDocument Build(string documentPath)
     {
         var json = JsonSerializer.Serialize(
             _variables.ToImmutableArray(),
@@ -118,7 +118,7 @@ public class JsonVariableInfoDocumentBuilder
 
         var variables = JsonSerializer.Deserialize(json, TelemetryGeneratorSerializationContext.Default.ImmutableArrayVariableInfo);
 
-        return new JsonVariableInfoDocument(documentPath, jsonSourceText, variables);
+        return new VariableInfoDocument(documentPath, jsonSourceText, variables);
     }
 
     public AdditionalTextFile ToAdditionalTextFile(string documentPath)

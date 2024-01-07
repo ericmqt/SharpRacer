@@ -210,10 +210,10 @@ internal static partial class GeneratorDiagnosticDescriptors
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-    public static readonly DiagnosticDescriptor VariableClassNameInUse
-        = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor VariableClassConfiguredClassNameInUse
+        = new(
             DiagnosticIds.VariableClassNameInUse,
-            "Variable class name in use by another variable",
+            "Variable class name in use",
             "Variable class '{0}' will not be generated for variable '{1}' because the type name conflicts with variable class '{2}' for variable '{3}'",
             GeneratorDiagnosticCategories.Validation,
             DiagnosticSeverity.Error,

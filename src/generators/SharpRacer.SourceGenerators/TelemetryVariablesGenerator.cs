@@ -16,10 +16,13 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
     {
         var generatorConfiguration = GeneratorConfigurationValueProvider.GetValueProvider(context.AnalyzerConfigOptionsProvider);
 
-        var variableModels = VariableModelsValueProvider.GetValueProvider(ref context, generatorConfiguration)
-            .WithTrackingName(TrackingNames.VariableModelsValueProvider_GetValuesProvider);
+        // Variable models
+        var variableModelProviderResult = GetVariableModels(ref context, generatorConfiguration);
 
-        var variableModelArray = variableModels.Collect();
+        context.ReportDiagnostics(variableModelProviderResult.Select(static (x, _) => x.Diagnostics));
+
+        var variableModelArray = variableModelProviderResult.Select(static (x, _) => x.Models);
+        var variableModels = variableModelProviderResult.SelectMany(static (x, _) => x.Models);
 
         // Create descriptor generator models
         var descriptorGeneratorModelProvider = DescriptorClassModelProvider.GetValueProvider(ref context, variableModelArray)
@@ -163,6 +166,26 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
                 return factory.Build();
             });
+    }
+
+    private static IncrementalValueProvider<(ImmutableArray<VariableModel> Models, ImmutableArray<Diagnostic> Diagnostics)> GetVariableModels(
+        ref IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<GeneratorConfiguration> generatorConfiguration)
+    {
+        // VariableInfo
+        var variableInfoProviderResult = VariableInfoProvider.GetValueProvider(context.AdditionalTextsProvider, generatorConfiguration);
+
+        context.ReportDiagnostics(variableInfoProviderResult.Select(static (x, _) => x.Diagnostics));
+
+        // VariableOptions
+        var variableOptionsProviderResult = VariableOptionsProvider.GetValueProvider(context.AdditionalTextsProvider, generatorConfiguration);
+
+        context.ReportDiagnostics(variableOptionsProviderResult.Select(static (x, _) => x.Diagnostics));
+
+        // Variable models
+        return VariableModelsValueProvider.GetValueProvider(
+            variableInfoProviderResult.Select(static (x, _) => x.Variables),
+            variableOptionsProviderResult.Select(static (x, _) => x.Options));
     }
 
     private static void GenerateContextClass(SourceProductionContext context, PipelineValueResult<ContextClassModel> pipelineResult)
