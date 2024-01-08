@@ -1,68 +1,152 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+
+using DescriptorClassModelResult = (
+    SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorClassModel Model,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
+
+using DescriptorClassTargetResult = (
+    SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorClassModel Model,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
+
+using DescriptorPropertiesResult = (
+    System.Collections.Immutable.ImmutableArray<SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyModel> Properties,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 internal static class DescriptorClassModelProvider
 {
-    public static IncrementalValueProvider<PipelineValueResult<DescriptorClassModel>> GetValueProvider(
-        ref IncrementalGeneratorInitializationContext context,
+    public static IncrementalValueProvider<DescriptorClassModelResult> GetValueProvider(
+        SyntaxValueProvider syntaxValueProvider,
         IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
     {
-        var classTargetResults = context.SyntaxProvider.ForAttributeWithMetadataName(
+        var descriptorPropertiesResult = variableModelsProvider.Select(GetDescriptorProperties);
+
+        return syntaxValueProvider.ForAttributeWithMetadataName(
             SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute.ToQualifiedName(),
             predicate: static (node, _) => node is ClassDeclarationSyntax,
-            transform: static (context, ct) => DescriptorClassModelResult.Create(context, ct));
-
-        context.ReportDiagnostics(classTargetResults.SelectMany(static (x, _) => x.Diagnostics));
-
-        var classTargets = classTargetResults
-            .Where(static x => x.IsValid)
-            .Select(static (x, _) => x.Model);
-
-        var descriptorPropertiesResult = variableModelsProvider.Select(static (x, ct) =>
-        {
-            var factory = new DescriptorPropertyModelFactory();
-            var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
-
-            foreach (var model in x)
-            {
-                ct.ThrowIfCancellationRequested();
-
-                if (!factory.TryAdd(model, out var diagnostic))
+            transform: GetDescriptorClassTarget)
+            .Collect()
+            .Select(SelectSingleClassModel)
+            .Combine(descriptorPropertiesResult)
+            .Select<(DescriptorClassModelResult ClassResult, DescriptorPropertiesResult PropertiesResult), DescriptorClassModelResult>(
+                static (item, ct) =>
                 {
-                    diagnosticsBuilder.Add(diagnostic!);
-                }
-            }
+                    var combinedDiagnostics = ImmutableArray.CreateRange(
+                        Enumerable.Concat(item.ClassResult.Diagnostics, item.PropertiesResult.Diagnostics));
 
-            return new PipelineValuesResult<DescriptorPropertyModel>(factory.Build(), diagnosticsBuilder.ToImmutable());
-        });
+                    if (item.ClassResult.Model == default)
+                    {
+                        return (default, combinedDiagnostics);
+                    }
 
-        context.ReportDiagnostics(descriptorPropertiesResult.Select(static (x, _) => x.Diagnostics));
+                    var model = item.ClassResult.Model.WithDescriptorProperties(item.PropertiesResult.Properties);
 
-        var descriptorProperties = descriptorPropertiesResult.Select(static (x, _) => x.Values);
-
-        var classesWithDescriptorProperties = classTargets
-            .Combine(descriptorProperties)
-            .Select(static (item, _) => item.Left.WithDescriptorProperties(item.Right));
-
-        return classesWithDescriptorProperties.Collect()
-            .Select(static (item, _) => GetSingleDescriptorClassModel(item));
+                    return (model, combinedDiagnostics);
+                })
+            .WithTrackingName(TrackingNames.DescriptorClassModelProvider_GetValueProvider);
     }
 
-    private static PipelineValueResult<DescriptorClassModel> GetSingleDescriptorClassModel(ImmutableArray<DescriptorClassModel> models)
+    private static DescriptorClassTargetResult GetDescriptorClassTarget(GeneratorAttributeSyntaxContext context, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        // Determine if the target node is a valid descriptor class
+        var classDeclarationNode = context.TargetNode as ClassDeclarationSyntax;
+        var classDeclarationSymbol = context.TargetSymbol as INamedTypeSymbol;
+
+        if (context.Attributes.Length > 1 ||
+            classDeclarationNode is null ||
+            classDeclarationSymbol is null ||
+            classDeclarationSymbol.ContainingNamespace.IsGlobalNamespace)
+        {
+            return (default, ImmutableArray<Diagnostic>.Empty);
+        }
+
+        var attributeData = context.Attributes.First();
+        var attributeLocation = attributeData.GetLocation();
+
+        // Class is a valid target, so build a result
+        bool isValid = true;
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        var classIdentifier = classDeclarationSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
+        var classDeclLocation = classDeclarationNode.Identifier.GetLocation();
+
+        if (!classDeclarationNode.IsPartialClass())
+        {
+            diagnosticsBuilder.Add(GeneratorDiagnostics.DescriptorClassMustBeDeclaredPartial(classIdentifier, classDeclLocation));
+
+            isValid = false;
+        }
+
+        if (!classDeclarationNode.IsStaticClass())
+        {
+            diagnosticsBuilder.Add(GeneratorDiagnostics.DescriptorClassMustBeDeclaredStatic(classIdentifier, classDeclLocation));
+
+            isValid = false;
+        }
+
+        var diagnostics = diagnosticsBuilder.ToImmutableArray();
+
+        if (!isValid)
+        {
+            return (default, diagnostics);
+        }
+
+        var model = new DescriptorClassModel(
+            classDeclarationSymbol.Name,
+            classDeclarationSymbol.ContainingNamespace.ToString(),
+            attributeLocation);
+
+        return (model, diagnostics);
+    }
+
+    private static DescriptorPropertiesResult GetDescriptorProperties(ImmutableArray<VariableModel> variableModels, CancellationToken cancellationToken)
+    {
+        var factory = new DescriptorPropertyModelFactory();
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        foreach (var model in variableModels)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (!factory.TryAdd(model, out var diagnostic))
+            {
+                diagnosticsBuilder.Add(diagnostic!);
+            }
+        }
+
+        return (factory.Build(), diagnosticsBuilder.ToImmutable());
+    }
+
+    private static DescriptorClassModelResult SelectSingleClassModel(ImmutableArray<DescriptorClassTargetResult> targetResults, CancellationToken cancellationToken)
+    {
+        if (!targetResults.Any())
+        {
+            return (default, ImmutableArray<Diagnostic>.Empty);
+        }
+
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        // Forward existing diagnostics
+        diagnosticsBuilder.AddRange(targetResults.SelectMany(static x => x.Diagnostics));
+
+        var models = targetResults.Where(static x => x.Model != default)
+            .Select(static x => x.Model)
+            .OrderBy(static x => $"{x.TypeNamespace}.{x.TypeName}")
+            .ToArray();
+
         if (!models.Any())
         {
-            return new PipelineValueResult<DescriptorClassModel>();
+            return (default, diagnosticsBuilder.ToImmutable());
         }
 
         var target = models.First();
-
-        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
         if (models.Length > 1)
         {
@@ -71,7 +155,6 @@ internal static class DescriptorClassModelProvider
             // classes won't regenerate without descriptor property references if they're being used.
 
             var diagnostics = models
-                .OrderBy(x => $"{x.TypeNamespace}.{x.TypeName}")
                 .Skip(1)
                 .Select(x => GeneratorDiagnostics.DescriptorClassAlreadyExistsInAssembly(
                     x.TypeName, target.TypeName, x.GeneratorAttributeLocation));
@@ -79,6 +162,6 @@ internal static class DescriptorClassModelProvider
             diagnosticsBuilder.AddRange(diagnostics);
         }
 
-        return new PipelineValueResult<DescriptorClassModel>(target, diagnosticsBuilder.ToImmutable());
+        return (target, diagnosticsBuilder.ToImmutable());
     }
 }

@@ -1,11 +1,14 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
-using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
+
+using DescriptorClassModelResult = (
+    SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorClassModel Model,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 public class DescriptorClassModelProviderTests
@@ -29,26 +32,26 @@ public static partial class MyDescriptors2 { }";
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
             .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
 
-        var testModel = new VariablesGeneratorBuilder()
+        var runResult = new VariablesGeneratorBuilder()
             .WithAdditionalText(variablesText)
             .WithSyntaxTree(CSharpSyntaxTree.ParseText(descriptorClass1))
             .WithSyntaxTree(CSharpSyntaxTree.ParseText(descriptorClass2))
-            .Build();
+            .Build()
+            .RunGenerator();
 
-        var driver = testModel.GeneratorDriver.RunGenerators(testModel.Compilation);
-        var runResult = driver.GetRunResult().Results.Single();
-
-        var valueProviderStep = runResult.TrackedSteps[TrackingNames.DescriptorClassModelProvider_GetValueProvider].Single();
+        var valueProviderStep = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.DescriptorClassModelProvider_GetValueProvider)
+            .Single();
 
         Assert.Single(valueProviderStep.Outputs);
 
         var valueProviderResult = valueProviderStep.Outputs.Single();
         Assert.Equal(IncrementalStepRunReason.New, valueProviderResult.Reason);
 
-        var pipelineValueResult = (PipelineValueResult<DescriptorClassModel>)valueProviderResult.Value;
+        var result = (DescriptorClassModelResult)valueProviderResult.Value;
 
-        Assert.True(pipelineValueResult.HasValue);
-        Assert.Single(pipelineValueResult.Diagnostics);
+        Assert.NotEqual(default, result.Model);
+        Assert.Single(result.Diagnostics);
         Assert.Single(runResult.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClassAlreadyExistsInAssembly);
     }
 
@@ -65,27 +68,27 @@ public static partial class MyDescriptors { }";
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
             .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
 
-        var testModel = new VariablesGeneratorBuilder()
+        var runResult = new VariablesGeneratorBuilder()
             .WithAdditionalText(variablesText)
-            .WithSyntaxTree(CSharpSyntaxTree.ParseText(descriptorClass))
-            .Build();
+            .WithCSharpSyntaxTree(descriptorClass)
+            .Build()
+            .RunGenerator();
 
-        var driver = testModel.GeneratorDriver.RunGenerators(testModel.Compilation);
-        var runResult = driver.GetRunResult().Results.Single();
-
-        var valueProviderStep = runResult.TrackedSteps[TrackingNames.DescriptorClassModelProvider_GetValueProvider].Single();
+        var valueProviderStep = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.DescriptorClassModelProvider_GetValueProvider)
+            .Single();
 
         Assert.Single(valueProviderStep.Outputs);
 
         var valueProviderResult = valueProviderStep.Outputs.Single();
         Assert.Equal(IncrementalStepRunReason.New, valueProviderResult.Reason);
 
-        var pipelineValueResult = (PipelineValueResult<DescriptorClassModel>)valueProviderResult.Value;
+        var pipelineValueResult = (DescriptorClassModelResult)valueProviderResult.Value;
 
-        Assert.True(pipelineValueResult.HasValue);
+        Assert.NotEqual(default, pipelineValueResult.Model);
         Assert.Empty(pipelineValueResult.Diagnostics);
 
-        var classModel = pipelineValueResult.Value;
+        var classModel = pipelineValueResult.Model;
 
         Assert.Equal("Test.Assembly", classModel.TypeNamespace);
         Assert.Equal("MyDescriptors", classModel.TypeName);

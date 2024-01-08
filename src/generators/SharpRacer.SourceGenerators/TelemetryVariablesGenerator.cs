@@ -7,6 +7,10 @@ using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 
+using ContextVariableModelsResult = (
+    System.Collections.Immutable.ImmutableArray<SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel> ContextVariables,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
+
 namespace SharpRacer.SourceGenerators;
 
 [Generator(LanguageNames.CSharp)]
@@ -25,20 +29,17 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var variableModels = variableModelProviderResult.SelectMany(static (x, _) => x.Models);
 
         // Create descriptor generator models
-        var descriptorGeneratorModelProvider = DescriptorClassModelProvider.GetValueProvider(ref context, variableModelArray)
-            .WithTrackingName(TrackingNames.DescriptorClassModelProvider_GetValueProvider);
+        var descriptorGeneratorModelProvider = DescriptorClassModelProvider.GetValueProvider(context.SyntaxProvider, variableModelArray);
 
-        context.ReportDiagnostics(descriptorGeneratorModelProvider.Select(static (x, _) => x.Diagnostics));
-
-        // Create typed variable classes
+        // Create references to variable descriptor properties on the descriptor class, if we're generating one
         var descriptorPropertyReferences = descriptorGeneratorModelProvider.Select(static (item, _) =>
         {
-            if (!item.HasValue)
+            if (item.Model == default)
             {
                 return ImmutableArray<DescriptorPropertyReference>.Empty;
             }
 
-            return item.Value.DescriptorProperties.Select(x => new DescriptorPropertyReference(item.Value, x)).ToImmutableArray();
+            return item.Model.DescriptorProperties.Select(x => new DescriptorPropertyReference(item.Model, x)).ToImmutableArray();
         });
 
         var variableClassGeneratorModels = GetVariableClassGeneratorModels(
@@ -53,23 +54,21 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         var contextClasses = ContextClassInfoValuesProvider.GetValuesProvider(ref context)
             .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider);
 
-        var contextVariableModels = GetContextVariableModelsProvider(
-            ref context,
-            variableModels,
-            descriptorPropertyReferences,
-            variableClassReferences);
+        var contextVariableModels = GetContextVariableModelsProvider(variableModels, descriptorPropertyReferences, variableClassReferences);
 
-        var contextClassModels = contextClasses.Combine(contextVariableModels)
+        context.ReportDiagnostics(contextVariableModels.Select(static (x, _) => x.Diagnostics));
+
+        var contextClassModels = contextClasses.Combine(contextVariableModels.Select(static (x, _) => x.ContextVariables))
             .Select(static (item, ct) =>
             {
                 var variables = GetContextIncludedVariables(item.Left, item.Right, out var includedVariablesDiagnostics);
                 var model = new ContextClassModel(item.Left, variables);
 
-                return new PipelineValueResult<ContextClassModel>(model, includedVariablesDiagnostics);
+                return (model, includedVariablesDiagnostics);
             });
 
         // Generate
-        context.RegisterSourceOutput(descriptorGeneratorModelProvider.Select(static (x, _) => x.Value), GenerateDescriptorClass);
+        context.RegisterSourceOutput(descriptorGeneratorModelProvider, GenerateDescriptorClass);
         context.RegisterSourceOutput(variableClassGeneratorModels, GenerateVariableClass);
         context.RegisterSourceOutput(contextClassModels, GenerateContextClass);
     }
@@ -110,15 +109,14 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         return builder.ToImmutable();
     }
 
-    private static IncrementalValueProvider<ImmutableArray<ContextVariableModel>> GetContextVariableModelsProvider(
-        ref IncrementalGeneratorInitializationContext context,
+    private static IncrementalValueProvider<ContextVariableModelsResult> GetContextVariableModelsProvider(
         IncrementalValuesProvider<VariableModel> variableModels,
         IncrementalValueProvider<ImmutableArray<DescriptorPropertyReference>> descriptorPropertyReferences,
         IncrementalValuesProvider<VariableClassReference> variableClassReferences)
     {
         var descriptorAndVariableClassRefs = descriptorPropertyReferences.Combine(variableClassReferences.Collect());
 
-        var contextVariableModelsResult = variableModels.Collect()
+        return variableModels.Collect()
             .Combine(descriptorAndVariableClassRefs)
             .Select(static (item, ct) =>
             {
@@ -132,12 +130,8 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
                     diagnosticsBuilder.AddRange(modelDiagnostics);
                 }
 
-                return new PipelineValuesResult<ContextVariableModel>(factory.Build(), diagnosticsBuilder.ToImmutable());
+                return (factory.Build(), diagnosticsBuilder.ToImmutable());
             });
-
-        context.ReportDiagnostics(contextVariableModelsResult.Select(static (x, _) => x.Diagnostics));
-
-        return contextVariableModelsResult.Select(static (x, _) => x.Values);
     }
 
     private static IncrementalValuesProvider<VariableClassGeneratorModel> GetVariableClassGeneratorModels(
@@ -188,28 +182,25 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             variableOptionsProviderResult.Select(static (x, _) => x.Options));
     }
 
-    private static void GenerateContextClass(SourceProductionContext context, PipelineValueResult<ContextClassModel> pipelineResult)
+    private static void GenerateContextClass(SourceProductionContext context, (ContextClassModel Model, ImmutableArray<Diagnostic> Diagnostics) input)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        if (pipelineResult.Diagnostics.HasErrors())
+        // Report diagnostics, if any
+        foreach (var diagnostic in input.Diagnostics)
         {
-            foreach (var diagnostic in pipelineResult.Diagnostics)
-            {
-                context.CancellationToken.ThrowIfCancellationRequested();
-
-                context.ReportDiagnostic(diagnostic);
-            }
+            context.ReportDiagnostic(diagnostic);
         }
 
-        if (!pipelineResult.HasValue)
+        var model = input.Model;
+
+        // Return early if we don't have a model to generate
+        if (model == default)
         {
             return;
         }
 
-        var model = pipelineResult.Value;
-
-        var compilationUnit = ContextClassGenerator.Create(in model, context.CancellationToken)
+        var compilationUnit = ContextClassGenerator.Create(ref model, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
@@ -219,14 +210,23 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         context.AddSource($"{model.TypeName}.g.cs", generatedSourceText);
     }
 
-    private static void GenerateDescriptorClass(SourceProductionContext context, DescriptorClassModel generatorModel)
+    private static void GenerateDescriptorClass(SourceProductionContext context, (DescriptorClassModel Model, ImmutableArray<Diagnostic> Diagnostics) input)
     {
+        var generatorModel = input.Model;
+
+        // Report diagnostics, if any
+        foreach (var diagnostic in input.Diagnostics)
+        {
+            context.ReportDiagnostic(diagnostic);
+        }
+
+        // Return early if we don't have a model to generate
         if (generatorModel == default)
         {
             return;
         }
 
-        var compilationUnit = DescriptorClassGenerator.CreateCompilationUnit(in generatorModel, context.CancellationToken)
+        var compilationUnit = DescriptorClassGenerator.CreateCompilationUnit(ref generatorModel, context.CancellationToken)
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);

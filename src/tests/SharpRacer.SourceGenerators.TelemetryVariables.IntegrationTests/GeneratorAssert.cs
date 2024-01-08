@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Xunit.Sdk;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
@@ -36,7 +37,7 @@ internal static class GeneratorAssert
         }
     }
 
-    public static void TrackedStepExecuted(GeneratorRunResult runResult, string trackedStepName)
+    public static ImmutableArray<IncrementalGeneratorRunStep> TrackedStepExecuted(GeneratorRunResult runResult, string trackedStepName)
     {
         if (string.IsNullOrEmpty(trackedStepName))
         {
@@ -47,6 +48,8 @@ internal static class GeneratorAssert
         {
             throw new XunitException($"Generator did not execute tracked step '{trackedStepName}'");
         }
+
+        return runResult.TrackedSteps[trackedStepName];
     }
 
     public static void TrackedStepNotExecuted(GeneratorRunResult runResult, string trackedStepName)

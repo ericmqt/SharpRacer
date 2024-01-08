@@ -9,7 +9,7 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables;
 public class VariableOptionsProviderTests
 {
     [Fact]
-    public void NoOptionsFile_Test()
+    public void GetVariableOptionsFile_NoOptionsFileTest()
     {
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
