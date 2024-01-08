@@ -1,70 +1,180 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+using ContextClassInfoResult = (
+    SharpRacer.SourceGenerators.TelemetryVariables.InputModels.ContextClassInfo Model,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
+using ContextClassTargetResult = (
+    SharpRacer.SourceGenerators.TelemetryVariables.InputModels.ContextClassInfo Model,
+    SharpRacer.SourceGenerators.TelemetryVariables.InputModels.IncludedVariablesFileName IncludedVariablesFileName,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
+using ContextClassWithIncludedVariablesFileResult = (
+    SharpRacer.SourceGenerators.TelemetryVariables.InputModels.ContextClassInfo Model,
+    SharpRacer.SourceGenerators.TelemetryVariables.InputModels.IncludedVariablesFile IncludedVariablesFile,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 internal static class ContextClassInfoValuesProvider
 {
-    public static IncrementalValuesProvider<ContextClassInfo> GetValuesProvider(
-        ref IncrementalGeneratorInitializationContext context)
+    public static IncrementalValuesProvider<ContextClassInfoResult> GetValuesProvider(
+        SyntaxValueProvider syntaxValueProvider,
+        IncrementalValuesProvider<AdditionalText> additionalTexts)
     {
-        var contextClassResults = context.SyntaxProvider
-            .ForAttributeWithMetadataName(
+        return syntaxValueProvider.ForAttributeWithMetadataName(
                 SharpRacerIdentifiers.GenerateDataVariablesContextAttribute.ToQualifiedName(),
                 predicate: static (node, _) => node is ClassDeclarationSyntax,
-                transform: static (context, cancellationToken) => ContextClassResult.Create(context, cancellationToken))
-            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetContextClassResults);
-
-        context.ReportDiagnostics(contextClassResults.SelectMany(static (x, _) => x.Diagnostics));
-
-        var contextClasses = contextClassResults
-            .Where(static x => x.IsValid)
-            .Select(static (x, _) => x.ContextClassInfo);
-
-        var withIncludedVariablesFileResult = contextClasses.Combine(context.AdditionalTextsProvider.Collect())
-            .Select(static (item, ct) => GetIncludedVariablesFile(item.Left, item.Right, ct))
-            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_FindIncludedVariablesFiles);
-
-        context.ReportDiagnostics(withIncludedVariablesFileResult.SelectMany(static (x, _) => x.Diagnostics));
-
-        // Transform each included variables file into array of included variable names
-        var validContextClassesAndIncludedVariableFiles = withIncludedVariablesFileResult
-            .Where(static x => x.HasValue && !x.Diagnostics.HasErrors())
-            .Select(static (item, _) => item.Value);
-
-        var contextClassesWithIncludedVariablesResult = GetContextClassesWithIncludedVariables(validContextClassesAndIncludedVariableFiles)
-            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_ContextClassesWithIncludedVariables);
-
-        context.ReportDiagnostics(contextClassesWithIncludedVariablesResult.SelectMany(static (x, _) => x.Diagnostics));
-
-        return contextClassesWithIncludedVariablesResult.Where(static x => x.HasValue).Select(static (x, _) => x.Value);
+                transform: GetContextClassTarget)
+            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetContextClassResults)
+            .Combine(additionalTexts.Collect())
+            .Select(static (item, ct) => GetContextClassWithIncludedVariablesFile(item.Left, item.Right, ct))
+            .Select(GetContextClassWithIncludedVariables)
+            .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider);
     }
 
-    private static PipelineValueResult<(ContextClassInfo ContextClassInfo, IncludedVariablesFile IncludedVariablesFile)> GetIncludedVariablesFile(
-        ContextClassInfo contextClassInfo,
-        ImmutableArray<AdditionalText> additionalTexts,
-        CancellationToken cancellationToken = default)
+    private static ContextClassTargetResult GetContextClassTarget(GeneratorAttributeSyntaxContext context, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        if (contextClassInfo.IncludedVariablesFileName == default)
+        var classDeclarationNode = context.TargetNode as ClassDeclarationSyntax;
+        var classDeclarationSymbol = context.TargetSymbol as INamedTypeSymbol;
+
+        if (context.Attributes.Length > 1 ||
+            classDeclarationNode is null ||
+            classDeclarationSymbol is null ||
+            classDeclarationSymbol.ContainingNamespace.IsGlobalNamespace)
         {
-            return (contextClassInfo, default);
+            return (default, default, ImmutableArray<Diagnostic>.Empty);
         }
 
-        var fileName = contextClassInfo.IncludedVariablesFileName;
+        var attributeData = context.Attributes.First();
+        var attributeLocation = attributeData.GetLocation();
+
+        // Build result
+        bool isValid = true;
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        var classIdentifier = classDeclarationSymbol.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
+        var classDeclLocation = classDeclarationNode.Identifier.GetLocation();
+
+        if (!classDeclarationNode.IsPartialClass())
+        {
+            diagnosticsBuilder.Add(GeneratorDiagnostics.ContextClassMustBeDeclaredPartial(classIdentifier, classDeclLocation));
+
+            isValid = false;
+        }
+
+        if (classDeclarationNode.IsStaticClass())
+        {
+            diagnosticsBuilder.Add(GeneratorDiagnostics.ContextClassMustNotBeDeclaredStatic(classIdentifier, classDeclLocation));
+
+            isValid = false;
+        }
+
+        if (!classDeclarationSymbol.Interfaces.Any(SharpRacerSymbols.IsIDataVariablesContextInterface))
+        {
+            diagnosticsBuilder.Add(
+                GeneratorDiagnostics.ContextClassMustInheritIDataVariablesContextInterface(classIdentifier, classDeclLocation));
+
+            isValid = false;
+        }
+
+        var diagnostics = diagnosticsBuilder.ToImmutableArray();
+
+        if (!isValid)
+        {
+            return (default, default, diagnostics);
+        }
+
+        var includedVariablesFileName = GenerateDataVariablesContextAttributeInfo.GetIncludedVariablesFileNameOrDefault(attributeData);
+        var classInfo = new ContextClassInfo(classDeclarationSymbol, attributeLocation);
+
+        return (classInfo, includedVariablesFileName, diagnostics);
+    }
+
+    private static ContextClassInfoResult GetContextClassWithIncludedVariables(
+        ContextClassWithIncludedVariablesFileResult input,
+        CancellationToken cancellationToken)
+    {
+        if (input.IncludedVariablesFile == default)
+        {
+            return (input.Model, input.Diagnostics);
+        }
+
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
+
+        diagnosticsBuilder.AddRange(input.Diagnostics);
+
+        var includedVariableNameValues = input.IncludedVariablesFile.ReadJson(cancellationToken, out var readDiagnostic);
+
+        if (readDiagnostic != null)
+        {
+            diagnosticsBuilder.Add(readDiagnostic);
+
+            if (readDiagnostic.IsError())
+            {
+                return (input.Model, diagnosticsBuilder.ToImmutable());
+            }
+        }
+
+        // Build IncludedVariableName collection
+        var factory = new IncludedVariableNameFactory(input.IncludedVariablesFile);
+
+        foreach (var variableNameValue in includedVariableNameValues)
+        {
+            factory.TryAdd(variableNameValue, out var valueDiagnostics);
+
+            if (valueDiagnostics.Any())
+            {
+                diagnosticsBuilder.AddRange(valueDiagnostics);
+            }
+        }
+
+        var includedVariables = new IncludedVariables(factory.Build());
+
+        return (input.Model.WithIncludedVariables(includedVariables), diagnosticsBuilder.ToImmutable());
+    }
+
+    private static ContextClassWithIncludedVariablesFileResult GetContextClassWithIncludedVariablesFile(
+        ContextClassTargetResult contextTarget,
+        ImmutableArray<AdditionalText> additionalTexts,
+        CancellationToken cancellationToken)
+    {
+        if (contextTarget.Model == default)
+        {
+            return (contextTarget.Model, default, contextTarget.Diagnostics);
+        }
+
+        if (contextTarget.IncludedVariablesFileName == default)
+        {
+            // No include file specified
+            return (contextTarget.Model, default, contextTarget.Diagnostics);
+        }
+
+        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>(contextTarget.Diagnostics.Length + 1);
+
+        // Forward previous diagnostics
+        diagnosticsBuilder.AddRange(contextTarget.Diagnostics);
+
+        var fileName = contextTarget.IncludedVariablesFileName;
         var matches = additionalTexts.Where(fileName.IsMatch);
 
         if (!matches.Any())
         {
-            return GeneratorDiagnostics.IncludedVariablesFileNotFound(fileName);
+            diagnosticsBuilder.Add(
+                GeneratorDiagnostics.IncludedVariablesFileNotFound(fileName, contextTarget.Model.GeneratorAttributeLocation));
+
+            return (contextTarget.Model, default, diagnosticsBuilder.ToImmutable());
         }
 
         if (matches.Count() > 1)
         {
-            return GeneratorDiagnostics.AmbiguousIncludedVariablesFileName(fileName);
+            diagnosticsBuilder.Add(
+                GeneratorDiagnostics.AmbiguousIncludedVariablesFileName(fileName, contextTarget.Model.GeneratorAttributeLocation));
+
+            return (contextTarget.Model, default, diagnosticsBuilder.ToImmutable());
         }
 
         var file = matches.Single();
@@ -72,50 +182,13 @@ internal static class ContextClassInfoValuesProvider
 
         if (sourceText is null)
         {
-            return GeneratorDiagnostics.AdditionalTextContentReadError(file);
+            diagnosticsBuilder.Add(
+                GeneratorDiagnostics.AdditionalTextContentReadError(file, contextTarget.Model.GeneratorAttributeLocation));
+
+            return (contextTarget.Model, default, diagnosticsBuilder.ToImmutable());
         }
 
-        return (contextClassInfo, new IncludedVariablesFile(fileName, file, sourceText));
-    }
-
-    private static IncrementalValuesProvider<PipelineValueResult<ContextClassInfo>> GetContextClassesWithIncludedVariables(
-        IncrementalValuesProvider<(ContextClassInfo ContextClassInfo, IncludedVariablesFile IncludedVariablesFile)> source)
-    {
-        return source.Select(static (item, cancellationToken) =>
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (item.IncludedVariablesFile == default)
-            {
-                return new PipelineValueResult<ContextClassInfo>(item.ContextClassInfo, ImmutableArray<Diagnostic>.Empty);
-            }
-
-            var includedVariableNameValues = item.IncludedVariablesFile.ReadJson(cancellationToken, out var readDiagnostic);
-
-            if (readDiagnostic != null && readDiagnostic.IsError())
-            {
-                return readDiagnostic;
-            }
-
-            var factory = new IncludedVariableNameFactory(item.IncludedVariablesFile);
-            var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
-
-            foreach (var variableNameValue in includedVariableNameValues)
-            {
-                factory.TryAdd(variableNameValue, out var valueDiagnostics);
-
-                // Values with errors won't be emitted into the collection, but warnings still need to be reported out
-                if (valueDiagnostics.Any())
-                {
-                    diagnosticsBuilder.AddRange(valueDiagnostics);
-                }
-            }
-
-            var includedVariableNames = factory.Build();
-
-            var updatedModel = item.ContextClassInfo.WithIncludedVariables(new IncludedVariables(includedVariableNames));
-
-            return new PipelineValueResult<ContextClassInfo>(updatedModel, diagnosticsBuilder.ToImmutable());
-        });
+        var includesFile = new IncludedVariablesFile(fileName, file, sourceText);
+        return (contextTarget.Model, includesFile, diagnosticsBuilder.ToImmutable());
     }
 }

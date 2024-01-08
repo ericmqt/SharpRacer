@@ -27,9 +27,9 @@ internal static class DescriptorClassModelProvider
         var descriptorPropertiesResult = variableModelsProvider.Select(GetDescriptorProperties);
 
         return syntaxValueProvider.ForAttributeWithMetadataName(
-            SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute.ToQualifiedName(),
-            predicate: static (node, _) => node is ClassDeclarationSyntax,
-            transform: GetDescriptorClassTarget)
+                SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute.ToQualifiedName(),
+                predicate: static (node, _) => node is ClassDeclarationSyntax,
+                transform: GetDescriptorClassTarget)
             .Collect()
             .Select(SelectSingleClassModel)
             .Combine(descriptorPropertiesResult)

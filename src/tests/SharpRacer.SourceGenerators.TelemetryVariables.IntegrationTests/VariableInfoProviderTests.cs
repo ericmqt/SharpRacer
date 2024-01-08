@@ -51,7 +51,6 @@ public class VariableInfoProviderTests
 
         GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.TelemetryVariableAlreadyDefined);
         GeneratorAssert.TrackedStepExecuted(runResult, TrackingNames.VariableInfoProvider_GetValueProvider);
-        GeneratorAssert.TrackedStepNotExecuted(runResult, TrackingNames.VariableModelsValueProvider_GetVariableInfoProvider);
 
         var providerStep = runResult.TrackedSteps[TrackingNames.VariableInfoProvider_GetValueProvider].Single();
         var providerStepOutput = providerStep.Outputs.Single();
@@ -73,8 +72,6 @@ public class VariableInfoProviderTests
             .RunGenerator();
 
         GeneratorAssert.TrackedStepExecuted(runResult, TrackingNames.VariableInfoProvider_GetValueProvider);
-        //GeneratorAssert.TrackedStepExecuted(runResult, TrackingNames.VariableOptionsProvider_GetValueProvider);
-        GeneratorAssert.TrackedStepNotExecuted(runResult, TrackingNames.VariableModelsValueProvider_GetVariableInfoProvider);
 
         GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.AdditionalText_FileReadException);
 
@@ -159,7 +156,6 @@ public class VariableInfoProviderTests
             .RunGenerator();
 
         GeneratorAssert.TrackedStepExecuted(runResult, TrackingNames.VariableInfoProvider_GetVariableInfoFile);
-        GeneratorAssert.TrackedStepNotExecuted(runResult, TrackingNames.VariableModelsValueProvider_GetVariableInfoProvider);
 
         GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.TelemetryVariablesFileNotFound);
 

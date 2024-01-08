@@ -3,25 +3,22 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
 {
-    public ContextClassInfo(INamedTypeSymbol classSymbol, Location? generatorAttributeLocation, IncludedVariablesFileName includedVariablesFileName)
+    public ContextClassInfo(INamedTypeSymbol classSymbol, Location? generatorAttributeLocation)
     {
         ClassName = classSymbol.Name;
         ClassNamespace = classSymbol.ContainingNamespace.ToString();
         GeneratorAttributeLocation = generatorAttributeLocation;
-        IncludedVariablesFileName = includedVariablesFileName;
     }
 
     private ContextClassInfo(
         string className,
         string classNamespace,
         Location? generatorAttributeLocation,
-        IncludedVariablesFileName includedVariablesFileName,
         IncludedVariables includedVariables)
     {
         ClassName = className;
         ClassNamespace = classNamespace;
         GeneratorAttributeLocation = generatorAttributeLocation;
-        IncludedVariablesFileName = includedVariablesFileName;
         IncludedVariables = includedVariables;
     }
 
@@ -29,7 +26,6 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
     public readonly string ClassNamespace { get; }
     public readonly Location? GeneratorAttributeLocation { get; }
     public readonly IncludedVariables IncludedVariables { get; }
-    public readonly IncludedVariablesFileName IncludedVariablesFileName { get; }
 
     public readonly string ToFullyQualifiedName()
     {
@@ -38,24 +34,11 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
 
     public ContextClassInfo WithIncludedVariables(IncludedVariables includedVariables)
     {
-        return With(includedVariables: includedVariables);
-    }
-
-    public ContextClassInfo WithIncludedVariablesFileName(IncludedVariablesFileName includedVariablesFileName)
-    {
-        return With(includedVariablesFileName: includedVariablesFileName);
-    }
-
-    private ContextClassInfo With(
-        IncludedVariablesFileName? includedVariablesFileName = null,
-        IncludedVariables? includedVariables = null)
-    {
         return new ContextClassInfo(
             ClassName,
             ClassNamespace,
             GeneratorAttributeLocation,
-            includedVariablesFileName ?? IncludedVariablesFileName,
-            includedVariables ?? IncludedVariables);
+            includedVariables);
     }
 
     public override bool Equals(object obj)
@@ -68,7 +51,6 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
         return StringComparer.Ordinal.Equals(ClassName, other.ClassName) &&
             StringComparer.Ordinal.Equals(ClassNamespace, other.ClassNamespace) &&
             GeneratorAttributeLocation == other.GeneratorAttributeLocation &&
-            IncludedVariablesFileName == other.IncludedVariablesFileName &&
             IncludedVariables == other.IncludedVariables;
     }
 
@@ -79,7 +61,6 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
         hc.Add(ClassName);
         hc.Add(ClassNamespace);
         hc.Add(GeneratorAttributeLocation);
-        hc.Add(IncludedVariablesFileName);
         hc.Add(IncludedVariables);
 
         return hc.ToHashCode();
