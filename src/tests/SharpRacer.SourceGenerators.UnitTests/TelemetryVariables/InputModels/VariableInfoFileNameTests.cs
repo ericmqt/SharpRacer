@@ -42,10 +42,8 @@ public class VariableInfoFileNameTests
         var fileName1 = new VariableInfoFileName("Foo.bar");
         var fileName2 = new VariableInfoFileName("Foo.bar");
 
-        Assert.True(fileName1.Equals(fileName2));
-        Assert.True(fileName1 == fileName2);
-        Assert.False(fileName1 != fileName2);
-        Assert.Equal(fileName1.GetHashCode(), fileName2.GetHashCode());
+        EquatableStructAssert.Equal(fileName1, fileName2);
+        EquatableStructAssert.ObjectEqualsMethod(false, fileName1, int.MinValue);
     }
 
     [Fact]
@@ -53,25 +51,16 @@ public class VariableInfoFileNameTests
     {
         var fileName1 = new VariableInfoFileName("Foo.bar");
 
-        Assert.False(fileName1.Equals(default));
-        Assert.False(fileName1 == default);
-        Assert.True(fileName1 != default);
-        Assert.NotEqual(fileName1.GetHashCode(), default(VariableInfoFileName).GetHashCode());
-
-        Assert.False(default(VariableInfoFileName).Equals(fileName1));
-        Assert.False(default == fileName1);
-        Assert.True(default != fileName1);
+        EquatableStructAssert.NotEqual(fileName1, default);
     }
 
     [Fact]
     public void Equals_ObjectTest()
     {
         var fileName1 = new VariableInfoFileName("Foo.bar");
-        object fileName2 = new VariableInfoFileName("Foo.bar");
         object nonFileNameValue = 56;
 
-        Assert.True(fileName1.Equals(fileName2));
-        Assert.False(fileName1.Equals(nonFileNameValue));
+        EquatableStructAssert.ObjectEqualsMethod(false, fileName1, nonFileNameValue);
     }
 
     [Fact]

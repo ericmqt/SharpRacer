@@ -4,8 +4,6 @@ using Microsoft.CodeAnalysis;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 {
-    private readonly bool _isInitialized;
-
     public IncludedVariableName(string variableName, Location sourceLocation)
         : this(variableName, sourceLocation, ImmutableArray<Diagnostic>.Empty)
     {
@@ -20,8 +18,6 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
         SourceLocation = sourceLocation ?? throw new ArgumentNullException(nameof(sourceLocation));
 
         Diagnostics = diagnostics.GetEmptyIfDefault();
-
-        _isInitialized = true;
     }
 
     public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
@@ -35,26 +31,16 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 
     public bool Equals(IncludedVariableName other)
     {
-        if (!_isInitialized)
-        {
-            return !other._isInitialized;
-        }
-
-        if (!other._isInitialized)
-        {
-            return false;
-        }
-
         return StringComparer.Ordinal.Equals(Value, other.Value) &&
             SourceLocation == other.SourceLocation &&
-            Diagnostics.SequenceEqual(other.Diagnostics);
+            Diagnostics.SequenceEqualDefaultTolerant(other.Diagnostics);
     }
 
     public override int GetHashCode()
     {
         var hc = new HashCode();
 
-        hc.Add(Value, StringComparer.Ordinal);
+        hc.Add(Value);
         hc.Add(SourceLocation);
         hc.AddDiagnosticArray(Diagnostics);
 
@@ -73,6 +59,6 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 
     public static implicit operator string(IncludedVariableName variableName)
     {
-        return variableName.Value;
+        return variableName.Value ?? string.Empty;
     }
 }

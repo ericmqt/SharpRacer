@@ -28,10 +28,7 @@ public class VariableOptionsTests
 
         var variableOptions = new VariableOptions(jsonOptions, keyLocation, valueLocation);
 
-        Assert.False(variableOptions == default);
-        Assert.True(variableOptions != default);
-        Assert.False(variableOptions.Equals(default));
-        Assert.NotEqual(variableOptions.GetHashCode(), default(VariableOptions).GetHashCode());
+        EquatableStructAssert.NotEqual(variableOptions, default);
     }
 
     [Fact]
@@ -39,9 +36,6 @@ public class VariableOptionsTests
     {
         var variableOptions = new VariableOptions();
 
-        Assert.True(variableOptions == default);
-        Assert.False(variableOptions != default);
-        Assert.True(variableOptions.Equals(default));
-        Assert.Equal(variableOptions.GetHashCode(), default(VariableOptions).GetHashCode());
+        EquatableStructAssert.Equal(variableOptions, default);
     }
 }

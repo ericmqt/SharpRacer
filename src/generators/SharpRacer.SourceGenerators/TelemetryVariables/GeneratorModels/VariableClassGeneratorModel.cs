@@ -9,7 +9,6 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassGeneratorModel>
 {
     private readonly string _descriptorFieldName;
-    private readonly bool _implementCreateDataVariableInterface;
     private readonly string? _variableValueUnit;
 
     public VariableClassGeneratorModel(
@@ -34,17 +33,12 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         _variableValueUnit = variableModel.ValueUnit;
 
         _descriptorFieldName = "_Descriptor";
-
-        AddCreateDataVariableInterfaceBaseType = true;
-        _implementCreateDataVariableInterface = true;
     }
 
-    public readonly bool AddCreateDataVariableInterfaceBaseType { get; }
     public readonly string ClassName { get; }
     public readonly string ClassNamespace { get; }
     public readonly DescriptorPropertyReference? DescriptorPropertyReference { get; }
     public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
-    public readonly bool ImplementCreateDataVariableInterface => _implementCreateDataVariableInterface || AddCreateDataVariableInterfaceBaseType;
     public readonly bool IsClassInternal { get; }
     public readonly bool IsClassPartial { get; }
     public readonly string VariableName { get; }
@@ -121,9 +115,7 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
                 StringComparer.Ordinal.Equals(ClassName, other.ClassName) &&
                 StringComparer.Ordinal.Equals(ClassNamespace, other.ClassNamespace) &&
-                AddCreateDataVariableInterfaceBaseType == other.AddCreateDataVariableInterfaceBaseType &&
                 DescriptorPropertyReference == other.DescriptorPropertyReference &&
-                ImplementCreateDataVariableInterface == other.ImplementCreateDataVariableInterface &&
                 IsClassInternal == other.IsClassInternal &&
                 IsClassPartial == other.IsClassPartial &&
                 VariableValueCount == other.VariableValueCount &&
@@ -135,11 +127,9 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
     {
         var hc = new HashCode();
 
-        hc.Add(AddCreateDataVariableInterfaceBaseType);
         hc.Add(ClassName);
         hc.Add(ClassNamespace);
         hc.Add(DescriptorPropertyReference);
-        hc.Add(ImplementCreateDataVariableInterface);
         hc.Add(IsClassInternal);
         hc.Add(IsClassPartial);
         hc.Add(VariableName);

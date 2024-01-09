@@ -80,10 +80,8 @@ public class GeneratorConfigurationTests
             generateVariableClasses: true,
             variableClassesNamespace: "Test.Assembly");
 
-        Assert.True(config1 == config2);
-        Assert.False(config1 != config2);
-
-        Assert.True(config1.Equals(config2));
-        Assert.Equal(config1.GetHashCode(), config2.GetHashCode());
+        EquatableStructAssert.Equal(config1, config2);
+        EquatableStructAssert.NotEqual(config1, default);
+        EquatableStructAssert.ObjectEqualsMethod(false, config1, DateTime.MinValue);
     }
 }

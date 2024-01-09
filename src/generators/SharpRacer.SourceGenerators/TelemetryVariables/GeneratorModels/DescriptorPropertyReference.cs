@@ -77,10 +77,10 @@ internal readonly struct DescriptorPropertyReference : IEquatable<DescriptorProp
     {
         var hc = new HashCode();
 
-        hc.Add(DescriptorClassNamespace, StringComparer.Ordinal);
-        hc.Add(DescriptorClassName, StringComparer.Ordinal);
-        hc.Add(PropertyName, StringComparer.Ordinal);
-        hc.Add(VariableName, StringComparer.Ordinal);
+        hc.Add(DescriptorClassNamespace);
+        hc.Add(DescriptorClassName);
+        hc.Add(PropertyName);
+        hc.Add(VariableName);
 
         return hc.ToHashCode();
     }

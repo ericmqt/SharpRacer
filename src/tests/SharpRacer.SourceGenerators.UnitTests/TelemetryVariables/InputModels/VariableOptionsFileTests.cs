@@ -28,10 +28,7 @@ public class VariableOptionsFileTests
         var variableOptionsFile1 = new VariableOptionsFile(fileName, additionalText, sourceText);
         var variableOptionsFile2 = new VariableOptionsFile(fileName, additionalText, sourceText);
 
-        Assert.True(variableOptionsFile1 == variableOptionsFile2);
-        Assert.False(variableOptionsFile1 != variableOptionsFile2);
-        Assert.True(variableOptionsFile1.Equals(variableOptionsFile2));
-        Assert.Equal(variableOptionsFile1.GetHashCode(), variableOptionsFile2.GetHashCode());
+        EquatableStructAssert.Equal(variableOptionsFile1, variableOptionsFile2);
     }
 
     [Fact]
@@ -43,9 +40,7 @@ public class VariableOptionsFileTests
 
         var variableOptionsFile = new VariableOptionsFile(fileName, additionalText, sourceText);
 
-        Assert.False(variableOptionsFile == default);
-        Assert.True(variableOptionsFile != default);
-        Assert.False(variableOptionsFile.Equals(default));
+        EquatableStructAssert.NotEqual(variableOptionsFile, default);
     }
 
     [Fact]

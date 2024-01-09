@@ -49,13 +49,8 @@ public class IncludedVariablesFileTests
             additionalText,
             sourceText!);
 
-        Assert.True(includedVariablesFile1.Equals(includedVariablesFile2));
-        Assert.True(includedVariablesFile1.Equals((object)includedVariablesFile2));
-        Assert.False(includedVariablesFile1.Equals(DateTime.Now));
-
-        Assert.True(includedVariablesFile1 == includedVariablesFile2);
-        Assert.False(includedVariablesFile1 != includedVariablesFile2);
-        Assert.Equal(includedVariablesFile1.GetHashCode(), includedVariablesFile2.GetHashCode());
+        EquatableStructAssert.Equal(includedVariablesFile1, includedVariablesFile2);
+        EquatableStructAssert.ObjectEqualsMethod(false, includedVariablesFile1, DateTime.MinValue);
     }
 
     [Fact]
@@ -72,14 +67,7 @@ public class IncludedVariablesFileTests
 
         var includedVariablesFile2 = default(IncludedVariablesFile);
 
-        Assert.False(includedVariablesFile1 == includedVariablesFile2);
-        Assert.True(includedVariablesFile1 != includedVariablesFile2);
-
-        Assert.False(includedVariablesFile1.Equals(includedVariablesFile2));
-        Assert.False(includedVariablesFile2.Equals(includedVariablesFile1));
-        Assert.False(includedVariablesFile1.Equals((object)includedVariablesFile2));
-
-        Assert.NotEqual(includedVariablesFile1.GetHashCode(), includedVariablesFile2.GetHashCode());
+        EquatableStructAssert.NotEqual(includedVariablesFile1, includedVariablesFile2);
     }
 
     [Fact]

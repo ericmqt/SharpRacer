@@ -9,20 +9,23 @@ internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorProperty
     {
         PropertyName = propertyName;
         PropertyXmlSummary = propertyXmlSummary;
-        VariableModel = variableModel;
+        VariableModel = variableModel != default
+            ? variableModel
+            : throw new ArgumentException(
+                $"'{nameof(variableModel)}' cannot be equal to default({nameof(VariableModel)}.", nameof(variableModel));
     }
 
     public readonly string PropertyName { get; }
     public readonly string? PropertyXmlSummary { get; }
     public readonly VariableModel VariableModel { get; }
-    public string VariableName => VariableModel.VariableName;
+    public readonly string VariableName => VariableModel.VariableName;
 
-    public SyntaxToken PropertyIdentifier()
+    public readonly SyntaxToken PropertyIdentifier()
     {
         return Identifier(PropertyName);
     }
 
-    public IdentifierNameSyntax PropertyIdentifierName()
+    public readonly IdentifierNameSyntax PropertyIdentifierName()
     {
         return IdentifierName(PropertyName);
     }

@@ -77,13 +77,7 @@ public class IncludedVariableNameTests
         var includedVariable1 = new IncludedVariableName(name, location);
         var includedVariable2 = new IncludedVariableName(name, location);
 
-        Assert.True(includedVariable1 == includedVariable2);
-        Assert.False(includedVariable1 != includedVariable2);
-
-        Assert.True(includedVariable1.Equals(includedVariable2));
-        Assert.True(includedVariable1.Equals((object)includedVariable2));
-
-        Assert.Equal(includedVariable1.GetHashCode(), includedVariable2.GetHashCode());
+        EquatableStructAssert.Equal(includedVariable1, includedVariable2);
     }
 
     [Fact]
@@ -98,15 +92,7 @@ public class IncludedVariableNameTests
 
         var includedVariable1 = new IncludedVariableName(name, location);
 
-        Assert.False(includedVariable1 == default);
-        Assert.True(includedVariable1 != default);
-
-        Assert.False(includedVariable1.Equals(default));
-
-        Assert.False(default == includedVariable1);
-        Assert.True(default != includedVariable1);
-
-        Assert.False(default(IncludedVariableName).Equals(includedVariable1));
+        EquatableStructAssert.NotEqual(includedVariable1, default);
     }
 
     [Fact]
@@ -121,13 +107,8 @@ public class IncludedVariableNameTests
 
         var includedVariable2 = new IncludedVariableName("Lon", location);
 
-        Assert.False(includedVariable1 == includedVariable2);
-        Assert.True(includedVariable1 != includedVariable2);
-
-        Assert.False(includedVariable1.Equals(includedVariable2));
-        Assert.False(includedVariable1.Equals(DateTime.Now));
-
-        Assert.NotEqual(includedVariable1.GetHashCode(), includedVariable2.GetHashCode());
+        EquatableStructAssert.NotEqual(includedVariable1, includedVariable2);
+        EquatableStructAssert.ObjectEqualsMethod(false, includedVariable1, DateTime.MinValue);
     }
 
     [Fact]
@@ -139,5 +120,7 @@ public class IncludedVariableNameTests
 
         Assert.Equal("Lat", name);
         Assert.Equal(name, includedVariable1.Value);
+
+        Assert.Equal(string.Empty, default(IncludedVariableName));
     }
 }

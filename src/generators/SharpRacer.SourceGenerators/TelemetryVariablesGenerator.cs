@@ -114,42 +114,6 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
         return builder.ToImmutable();
     }
 
-    private static ImmutableArray<ContextVariableModel> GetContextIncludedVariables(
-        ContextClassInfo contextClassInfo,
-        ImmutableArray<ContextVariableModel> models,
-        out ImmutableArray<Diagnostic> diagnostics)
-    {
-        if (contextClassInfo.IncludedVariables.IncludeAll())
-        {
-            diagnostics = ImmutableArray<Diagnostic>.Empty;
-            return models;
-        }
-
-        var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
-        var builder = ImmutableArray.CreateBuilder<ContextVariableModel>();
-
-        foreach (var variableName in contextClassInfo.IncludedVariables.VariableNames)
-        {
-            var model = models.FirstOrDefault(x => x.VariableModel.VariableName.Equals(variableName, StringComparison.Ordinal));
-
-            if (model != default)
-            {
-                builder.Add(model);
-            }
-            else
-            {
-                var contextName = $"{contextClassInfo.ClassNamespace}.{contextClassInfo.ClassName}";
-
-                var diagnostic = GeneratorDiagnostics.ContextClassIncludedVariableNotFound(contextClassInfo.ToFullyQualifiedName(), variableName);
-
-                diagnosticsBuilder.Add(diagnostic);
-            }
-        }
-
-        diagnostics = diagnosticsBuilder.ToImmutable();
-        return builder.ToImmutable();
-    }
-
     private static IncrementalValueProvider<ContextVariableModelsResult> GetContextVariableModelsProvider(
         IncrementalValuesProvider<VariableModel> variableModels,
         IncrementalValueProvider<ImmutableArray<DescriptorPropertyReference>> descriptorPropertyReferences,

@@ -87,10 +87,9 @@ public class VariableInfoTests
             variable2Span,
             variable2Location);
 
-        Assert.True(variable1 == variable2);
-        Assert.False(variable1 != variable2);
-        Assert.True(variable1.Equals(variable2));
-        Assert.Equal(variable1.GetHashCode(), variable2.GetHashCode());
+        EquatableStructAssert.Equal(variable1, variable2);
+        EquatableStructAssert.Equal(variable2, variable1);
+        EquatableStructAssert.NotEqual(variable1, default);
     }
 
     [Fact]
@@ -133,9 +132,41 @@ public class VariableInfoTests
             variable2Span,
             variable2Location);
 
-        Assert.False(variable1 == variable2);
-        Assert.True(variable1 != variable2);
-        Assert.False(variable1.Equals(variable2));
-        Assert.NotEqual(variable1.GetHashCode(), variable2.GetHashCode());
+        EquatableStructAssert.NotEqual(variable1, variable2);
+        EquatableStructAssert.NotEqual(variable2, variable1);
+    }
+
+    [Fact]
+    public void Equals_WrongTypeObjectTest()
+    {
+        var name = "Test";
+        var valueType = VariableValueType.Int;
+        int valueCount = 4;
+        string description = "Test variable";
+        string? unit = "test/s";
+        bool isTimeSliceArray = true;
+        bool isDeprecated = true;
+        string? deprecatedBy = "TestEx";
+
+        var span = new TextSpan(2, 3);
+        var location = Location.Create(
+            "test.txt",
+            span,
+            new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
+
+        var variableInfo = new VariableInfo(
+            name,
+            valueType,
+            valueCount,
+            description,
+            unit,
+            isTimeSliceArray,
+            isDeprecated,
+            deprecatedBy,
+            span,
+            location);
+
+        EquatableStructAssert.ObjectEqualsMethod(false, variableInfo, DateTime.MinValue);
+        EquatableStructAssert.ObjectEqualsMethod(false, default(VariableInfo), DateTime.MinValue);
     }
 }

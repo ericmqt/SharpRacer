@@ -33,14 +33,8 @@ public class IncludedVariablesTests
             new IncludedVariableName("Test2", Location.None)
         ]);
 
-        Assert.True(includes1 == includes2);
-        Assert.False(includes1 != includes2);
-
-        Assert.True(includes1.Equals(includes2));
-        Assert.True(includes2.Equals(includes1));
-        Assert.True(includes1.Equals((object)includes2));
-
-        Assert.Equal(includes1.GetHashCode(), includes2.GetHashCode());
+        EquatableStructAssert.Equal(includes1, includes2);
+        EquatableStructAssert.ObjectEqualsMethod(false, includes1, int.MinValue);
     }
 
     [Fact]
@@ -51,15 +45,6 @@ public class IncludedVariablesTests
             new IncludedVariableName("Test2", Location.None)
         ]);
 
-        var includes2 = default(IncludedVariables);
-
-        Assert.False(includes1 == includes2);
-        Assert.True(includes1 != includes2);
-
-        Assert.False(includes1.Equals(includes2));
-        Assert.False(includes2.Equals(includes1));
-        Assert.False(includes1.Equals((object)includes2));
-
-        Assert.NotEqual(includes1.GetHashCode(), includes2.GetHashCode());
+        EquatableStructAssert.NotEqual(includes1, default);
     }
 }

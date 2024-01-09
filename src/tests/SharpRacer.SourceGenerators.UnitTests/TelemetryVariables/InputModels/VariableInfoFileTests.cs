@@ -28,10 +28,7 @@ public class VariableInfoFileTests
         var variableInfoFile1 = new VariableInfoFile(fileName, additionalText, sourceText);
         var variableInfoFile2 = new VariableInfoFile(fileName, additionalText, sourceText);
 
-        Assert.True(variableInfoFile1 == variableInfoFile2);
-        Assert.False(variableInfoFile1 != variableInfoFile2);
-        Assert.True(variableInfoFile1.Equals(variableInfoFile2));
-        Assert.Equal(variableInfoFile1.GetHashCode(), variableInfoFile2.GetHashCode());
+        EquatableStructAssert.Equal(variableInfoFile1, variableInfoFile2);
     }
 
     [Fact]
@@ -43,12 +40,7 @@ public class VariableInfoFileTests
 
         var variableInfoFile = new VariableInfoFile(fileName, additionalText, sourceText);
 
-        Assert.False(variableInfoFile == default);
-        Assert.False(default == variableInfoFile);
-        Assert.True(variableInfoFile != default);
-        Assert.True(default != variableInfoFile);
-        Assert.False(variableInfoFile.Equals(default));
-        Assert.False(default(VariableInfoFile).Equals(variableInfoFile));
+        EquatableStructAssert.NotEqual(variableInfoFile, default);
     }
 
     [Fact]

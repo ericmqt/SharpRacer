@@ -31,7 +31,7 @@ internal static class VariableClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var baseTypeList = CreateClassBaseTypeList(in model, cancellationToken);
+        var baseTypeList = BaseList(SingletonSeparatedList(model.BaseClassType()));
         var classMembers = CreateClassMembers(in model, cancellationToken);
 
         return ClassDeclaration(model.ClassName)
@@ -57,29 +57,11 @@ internal static class VariableClassGenerator
                 .WithLeadingTrivia(Trivia(ctorWithDataVariableInfoXmlDocs))
         };
 
-        if (model.ImplementCreateDataVariableInterface)
-        {
-            var createMethodDecl = VariableClassSyntaxFactory.ICreateDataVariableCreateMethodDeclaration(model.ClassName);
+        var createMethodDecl = VariableClassSyntaxFactory.ICreateDataVariableCreateMethodDeclaration(model.ClassName);
 
-            members.Add(createMethodDecl);
-        }
+        members.Add(createMethodDecl);
 
         return List(members);
-    }
-
-    private static BaseListSyntax CreateClassBaseTypeList(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken = default)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (model.AddCreateDataVariableInterfaceBaseType)
-        {
-            var interfaceBaseType = VariableClassSyntaxFactory.ICreateDataVariableInterfaceBaseType(model.ClassIdentifierName());
-
-            return BaseList(
-                SeparatedList([model.BaseClassType(), interfaceBaseType]));
-        }
-
-        return BaseList(SingletonSeparatedList(model.BaseClassType()));
     }
 
     private static string[] GetRequiredUsingNamespaces(ref readonly VariableClassGeneratorModel model)

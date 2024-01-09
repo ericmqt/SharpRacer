@@ -7,18 +7,13 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct ContextClassModel : IEquatable<ContextClassModel>
 {
-    private readonly bool _isInitialized;
-
     public ContextClassModel(ContextClassInfo classInfo, ImmutableArray<ContextVariableModel> variables)
     {
         TypeName = classInfo.ClassName;
         TypeNamespace = classInfo.ClassNamespace;
         Variables = variables.GetEmptyIfDefault();
-
-        _isInitialized = true;
     }
 
-    public readonly bool HasDataVariablesContextInterface { get; }
     public readonly string TypeName { get; }
     public readonly string TypeNamespace { get; }
     public readonly ImmutableArray<ContextVariableModel> Variables { get; }
@@ -40,40 +35,24 @@ internal readonly struct ContextClassModel : IEquatable<ContextClassModel>
 
     public bool Equals(ContextClassModel other)
     {
-        if (!_isInitialized)
-        {
-            return !other._isInitialized;
-        }
-
-        if (!other._isInitialized)
-        {
-            return false;
-        }
-
         return StringComparer.Ordinal.Equals(TypeName, other.TypeName) &&
             StringComparer.Ordinal.Equals(TypeNamespace, other.TypeNamespace) &&
-            HasDataVariablesContextInterface == other.HasDataVariablesContextInterface &&
-            Variables.SequenceEqual(other.Variables);
+            Variables.SequenceEqualDefaultTolerant(other.Variables);
     }
 
     public override int GetHashCode()
     {
         var hc = new HashCode();
 
-        hc.Add(_isInitialized);
-
-        if (!_isInitialized)
-        {
-            return hc.ToHashCode();
-        }
-
         hc.Add(TypeName);
         hc.Add(TypeNamespace);
-        hc.Add(HasDataVariablesContextInterface);
 
-        for (int i = 0; i < Variables.Length; i++)
+        if (!Variables.IsDefault)
         {
-            hc.Add(Variables[i]);
+            for (int i = 0; i < Variables.Length; i++)
+            {
+                hc.Add(Variables[i]);
+            }
         }
 
         return hc.ToHashCode();

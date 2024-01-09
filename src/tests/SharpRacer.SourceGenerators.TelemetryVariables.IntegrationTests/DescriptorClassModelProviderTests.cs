@@ -14,6 +14,46 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables;
 public class DescriptorClassModelProviderTests
 {
     [Fact]
+    public void GetValueProvider_Test()
+    {
+        var descriptorClass = @"
+using SharpRacer.Telemetry.Variables;
+namespace Test.Assembly;
+[GenerateDataVariableDescriptors]
+public static partial class MyDescriptors { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .WithCSharpSyntaxTree(descriptorClass)
+            .Build()
+            .RunGenerator();
+
+        var valueProviderStep = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.DescriptorClassModelProvider_GetValueProvider)
+            .Single();
+
+        Assert.Single(valueProviderStep.Outputs);
+
+        var valueProviderResult = valueProviderStep.Outputs.Single();
+        Assert.Equal(IncrementalStepRunReason.New, valueProviderResult.Reason);
+
+        var result = (DescriptorClassModelResult)valueProviderResult.Value;
+
+        Assert.NotEqual(default, result.Model);
+        Assert.Empty(result.Diagnostics);
+
+        var classModel = result.Model;
+
+        Assert.Equal("Test.Assembly", classModel.TypeNamespace);
+        Assert.Equal("MyDescriptors", classModel.TypeName);
+        Assert.Single(classModel.DescriptorProperties);
+    }
+
+    [Fact]
     public void GetValueProvider_DiagnosticsForMultipleDescriptorClassesTest()
     {
         var descriptorClass1 = @"
@@ -56,13 +96,13 @@ public static partial class MyDescriptors2 { }";
     }
 
     [Fact]
-    public void GetValueProvider_Test()
+    public void GetValueProvider_TargetClassIsNotPartialDiagnosticTest()
     {
         var descriptorClass = @"
 using SharpRacer.Telemetry.Variables;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
-public static partial class MyDescriptors { }";
+public static class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
@@ -78,20 +118,48 @@ public static partial class MyDescriptors { }";
             runResult, TrackingNames.DescriptorClassModelProvider_GetValueProvider)
             .Single();
 
-        Assert.Single(valueProviderStep.Outputs);
+        GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.DescriptorClassMustBeDeclaredPartial);
 
         var valueProviderResult = valueProviderStep.Outputs.Single();
-        Assert.Equal(IncrementalStepRunReason.New, valueProviderResult.Reason);
 
-        var pipelineValueResult = (DescriptorClassModelResult)valueProviderResult.Value;
+        var result = (DescriptorClassModelResult)valueProviderResult.Value;
 
-        Assert.NotEqual(default, pipelineValueResult.Model);
-        Assert.Empty(pipelineValueResult.Diagnostics);
+        Assert.Equal(default, result.Model);
+        Assert.Single(result.Diagnostics);
+        Assert.Single(result.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClassMustBeDeclaredPartial);
+    }
 
-        var classModel = pipelineValueResult.Model;
+    [Fact]
+    public void GetValueProvider_TargetClassIsNotStaticDiagnosticTest()
+    {
+        var descriptorClass = @"
+using SharpRacer.Telemetry.Variables;
+namespace Test.Assembly;
+[GenerateDataVariableDescriptors]
+public partial class MyDescriptors { }";
 
-        Assert.Equal("Test.Assembly", classModel.TypeNamespace);
-        Assert.Equal("MyDescriptors", classModel.TypeName);
-        Assert.Single(classModel.DescriptorProperties);
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .WithCSharpSyntaxTree(descriptorClass)
+            .Build()
+            .RunGenerator();
+
+        var valueProviderStep = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.DescriptorClassModelProvider_GetValueProvider)
+            .Single();
+
+        GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.DescriptorClassMustBeDeclaredStatic);
+
+        var valueProviderResult = valueProviderStep.Outputs.Single();
+
+        var result = (DescriptorClassModelResult)valueProviderResult.Value;
+
+        Assert.Equal(default, result.Model);
+        Assert.Single(result.Diagnostics);
+        Assert.Single(result.Diagnostics, x => x.Id == DiagnosticIds.DescriptorClassMustBeDeclaredStatic);
     }
 }

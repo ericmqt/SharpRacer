@@ -107,11 +107,32 @@ internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
 
     public bool Equals(ContextVariableModel other)
     {
-        return VariableModel == other.VariableModel &&
-            StringComparer.Ordinal.Equals(PropertyName, other.PropertyName) &&
-            StringComparer.Ordinal.Equals(PropertyXmlSummary, other.PropertyXmlSummary) &&
-            VariableClassReference == other.VariableClassReference &&
-            DescriptorReference == other.DescriptorReference;
+        if (VariableModel != other.VariableModel)
+        {
+            return false;
+        }
+
+        if (!StringComparer.Ordinal.Equals(PropertyName, other.PropertyName))
+        {
+            return false;
+        }
+
+        if (!StringComparer.Ordinal.Equals(PropertyXmlSummary, other.PropertyXmlSummary))
+        {
+            return false;
+        }
+
+        if (VariableClassReference != other.VariableClassReference)
+        {
+            return false;
+        }
+
+        if (DescriptorReference != other.DescriptorReference)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public override int GetHashCode()

@@ -40,13 +40,9 @@ public class VariableModelTests
             jsonVariable2,
             new VariableOptions(jsonVariable2.Name, "Latitude", "LatitudeVariable"));
 
-        Assert.True(variableModel1 == variableModel2);
-        Assert.False(variableModel1 != variableModel2);
-
-        Assert.True(variableModel1.Equals(variableModel2));
-        Assert.True(variableModel1.Equals((object)variableModel2));
-
-        Assert.Equal(variableModel1.GetHashCode(), variableModel2.GetHashCode());
+        EquatableStructAssert.Equal(variableModel1, variableModel2);
+        EquatableStructAssert.NotEqual(variableModel1, default);
+        EquatableStructAssert.ObjectEqualsMethod(false, variableModel1, jsonVariable2);
     }
 
     [Fact]
@@ -80,13 +76,6 @@ public class VariableModelTests
             jsonVariable2,
             new VariableOptions(jsonVariable2.Name, "Longitude", "LatitudeVariable"));
 
-        Assert.False(variableModel1 == variableModel2);
-        Assert.True(variableModel1 != variableModel2);
-
-        Assert.False(variableModel1.Equals(variableModel2));
-        Assert.False(variableModel1.Equals((object)variableModel2));
-        Assert.False(variableModel1.Equals(DateTime.Now));
-
-        Assert.NotEqual(variableModel1.GetHashCode(), variableModel2.GetHashCode());
+        EquatableStructAssert.NotEqual(variableModel1, variableModel2);
     }
 }

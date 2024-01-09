@@ -24,11 +24,7 @@ public class IncludedVariableNameValueTests
         var nameValue1 = new IncludedVariableNameValue(variableName, textSpan);
         var nameValue2 = new IncludedVariableNameValue(variableName, textSpan);
 
-        Assert.True(nameValue1 == nameValue2);
-        Assert.False(nameValue1 != nameValue2);
-        Assert.True(nameValue1.Equals(nameValue2));
-        Assert.Equal(nameValue1.GetHashCode(), nameValue2.GetHashCode());
-
-        Assert.True(nameValue1.Equals((object)nameValue2));
+        EquatableStructAssert.Equal(nameValue1, nameValue2);
+        EquatableStructAssert.ObjectEqualsMethod(false, nameValue1, DateTime.MinValue);
     }
 }
