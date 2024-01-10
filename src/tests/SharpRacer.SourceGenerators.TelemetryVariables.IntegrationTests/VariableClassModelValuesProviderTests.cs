@@ -11,6 +11,55 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables;
 public class VariableClassModelValuesProviderTests
 {
     [Fact]
+    public void DescriptorClass_DescriptorPropertyReferencesAreNotNullTest()
+    {
+        var descriptorClass = @"
+using SharpRacer.Telemetry.Variables;
+namespace Test.Assembly;
+[GenerateDataVariableDescriptors]
+public static partial class MyDescriptors { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("Lat", VariableValueType.Double, "GPS latitude", null)
+            .AddScalar("Lon", VariableValueType.Double, "GPS longitude", null)
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .ConfigureGlobalOptions(o => o.GenerateTelemetryVariableClasses = "true")
+            .WithCSharpSyntaxTree(descriptorClass)
+            .Build()
+            .RunGenerator();
+
+        var step = GeneratorAssert.TrackedStepExecuted(runResult, TrackingNames.VariableClassModelValuesProvider_GetValuesProvider).Single();
+
+        var results = step.Outputs.Select(x => (VariableClassModel)x.Value).ToList();
+
+        Assert.All(results, x => Assert.NotNull(x.DescriptorPropertyReference));
+    }
+
+    [Fact]
+    public void NoDescriptorClass_DescriptorPropertyReferencesAreNullTest()
+    {
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("Lat", VariableValueType.Double, "GPS latitude", null)
+            .AddScalar("Lon", VariableValueType.Double, "GPS longitude", null)
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .ConfigureGlobalOptions(o => o.GenerateTelemetryVariableClasses = "true")
+            .Build()
+            .RunGenerator();
+
+        var step = GeneratorAssert.TrackedStepExecuted(runResult, TrackingNames.VariableClassModelValuesProvider_GetValuesProvider).Single();
+
+        var results = step.Outputs.Select(x => (VariableClassModel)x.Value).ToList();
+
+        Assert.All(results, x => Assert.Null(x.DescriptorPropertyReference));
+    }
+
+    [Fact]
     public void DuplicateClassNameDiagnosticTest()
     {
         var variablesText = new VariableInfoDocumentBuilder()
@@ -22,9 +71,6 @@ public class VariableClassModelValuesProviderTests
             .Add("Lat", new JsonVariableOptionsValue("Latitude", null)) // produces LatitudeVariable via Name option
             .Add("Lon", new JsonVariableOptionsValue(null, "Latitude")) // produces LatitudeVariable via ClassName option
             .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableOptionsFileName);
-
-        var generatorOptions = new VariablesGeneratorGlobalOptions(
-            new VariablesGeneratorGlobalOptionsValues { GenerateTelemetryVariableClasses = "true" });
 
         var runResult = new VariablesGeneratorBuilder()
             .WithAdditionalText(variablesText)

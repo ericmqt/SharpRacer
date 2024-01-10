@@ -32,28 +32,6 @@ internal readonly struct VariableClassModel : IEquatable<VariableClassModel>
 
     }
 
-    public VariableClassModel(
-        string className,
-        string classNamespace,
-        VariableModel variableModel,
-        ImmutableArray<Diagnostic> diagnostics,
-        DescriptorPropertyReference? descriptorPropertyReference,
-        bool isClassInternal = false,
-        bool isClassPartial = true)
-        : this(className,
-              classNamespace,
-              descriptorPropertyReference,
-              variableModel.VariableName,
-              variableModel.ValueType,
-              variableModel.ValueCount,
-              variableModel.ValueUnit,
-              isClassInternal,
-              isClassPartial,
-              diagnostics)
-    {
-
-    }
-
     private VariableClassModel(
         string className,
         string classNamespace,
@@ -187,7 +165,8 @@ internal readonly struct VariableClassModel : IEquatable<VariableClassModel>
                 IsClassPartial == other.IsClassPartial &&
                 VariableValueCount == other.VariableValueCount &&
                 VariableValueType == other.VariableValueType &&
-                StringComparer.Ordinal.Equals(_variableValueUnit, other._variableValueUnit);
+                StringComparer.Ordinal.Equals(_variableValueUnit, other._variableValueUnit) &&
+                Diagnostics.SequenceEqualDefaultTolerant(other.Diagnostics);
     }
 
     public override int GetHashCode()
@@ -203,6 +182,14 @@ internal readonly struct VariableClassModel : IEquatable<VariableClassModel>
         hc.Add(VariableValueCount);
         hc.Add(VariableValueType);
         hc.Add(_variableValueUnit);
+
+        if (!Diagnostics.IsDefault)
+        {
+            for (int i = 0; i < Diagnostics.Length; i++)
+            {
+                hc.Add(Diagnostics[i]);
+            }
+        }
 
         return hc.ToHashCode();
     }

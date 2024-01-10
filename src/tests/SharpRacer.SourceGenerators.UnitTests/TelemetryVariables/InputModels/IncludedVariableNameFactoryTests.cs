@@ -21,7 +21,7 @@ public class IncludedVariableNameFactoryTests
     }
 
     [Fact]
-    public void Add_Test()
+    public void TryAdd_Test()
     {
         var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
 
@@ -32,16 +32,19 @@ public class IncludedVariableNameFactoryTests
 
         var factory = new IncludedVariableNameFactory(includedVariablesFile);
 
-        factory.Add(new IncludedVariableNameValue("Test", new TextSpan(4, 4)));
+        var result = factory.TryAdd(new IncludedVariableNameValue("Test", new TextSpan(4, 4)), out var diagnostics);
+        Assert.True(result);
 
         var includedNames = factory.Build();
 
         Assert.Single(includedNames);
         Assert.Equal("Test", includedNames.First().Value);
+        Assert.False(diagnostics.IsDefault);
+        Assert.Empty(diagnostics);
     }
 
     [Fact]
-    public void Add_EmptyNameDiagnosticTest()
+    public void TryAdd_EmptyNameDiagnosticTest()
     {
         var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
 
@@ -52,39 +55,39 @@ public class IncludedVariableNameFactoryTests
 
         var factory = new IncludedVariableNameFactory(includedVariablesFile);
 
-        factory.Add(new IncludedVariableNameValue(string.Empty, new TextSpan(4, 4)));
+        Assert.False(factory.TryAdd(new IncludedVariableNameValue(string.Empty, new TextSpan(4, 4)), out var diagnostics));
+
+        Assert.Single(diagnostics);
+        Assert.All(diagnostics, x => Assert.False(x.IsError()));
+        Assert.Single(diagnostics, x => x.Id == DiagnosticIds.IncludedVariablesFile_ContainsEmptyVariableName);
+
+        var includedNames = factory.Build();
+        Assert.Empty(includedNames);
+    }
+
+    [Fact]
+    public void TryAdd_VariableAlreadyIncludedDiagnosticTest()
+    {
+        var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
+
+        var includedVariablesFile = new IncludedVariablesFile(
+            new IncludedVariablesFileName("IncludedVariables.json"),
+            additionalText,
+            additionalText.GetText()!);
+
+        var factory = new IncludedVariableNameFactory(includedVariablesFile);
+
+        Assert.True(factory.TryAdd(new IncludedVariableNameValue("Test", new TextSpan(4, 4)), out var diagnostics1));
+        Assert.False(factory.TryAdd(new IncludedVariableNameValue("Test", new TextSpan(4, 4)), out var diagnostics2));
+
+        Assert.False(diagnostics1.IsDefault);
+        Assert.Empty(diagnostics1);
+
+        Assert.False(diagnostics2.IsDefault);
+        Assert.Single(diagnostics2);
+        Assert.Single(diagnostics2, x => x.Id == DiagnosticIds.IncludedVariablesFile_VariableAlreadyIncluded);
 
         var includedNames = factory.Build();
         Assert.Single(includedNames);
-
-        // Check we got the empty name warning diagnostic
-        Assert.False(includedNames.First().Diagnostics.HasErrors());
-        var diagnostic = includedNames.First().Diagnostics.First();
-        Assert.Equal(DiagnosticIds.IncludedVariablesFile_ContainsEmptyVariableName, diagnostic.Id);
-    }
-
-    [Fact]
-    public void Add_VariableAlreadyIncludedDiagnosticTest()
-    {
-        var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
-
-        var includedVariablesFile = new IncludedVariablesFile(
-            new IncludedVariablesFileName("IncludedVariables.json"),
-            additionalText,
-            additionalText.GetText()!);
-
-        var factory = new IncludedVariableNameFactory(includedVariablesFile);
-
-        factory.Add(new IncludedVariableNameValue("Test", new TextSpan(4, 4)));
-        factory.Add(new IncludedVariableNameValue("Test", new TextSpan(4, 4)));
-
-        var includedNames = factory.Build();
-        Assert.Equal(2, includedNames.Length);
-
-        var duplicatedName = includedNames.Last();
-        Assert.NotEmpty(duplicatedName.Diagnostics);
-
-        var diagnostic = duplicatedName.Diagnostics.First();
-        Assert.Equal(DiagnosticIds.IncludedVariablesFile_VariableAlreadyIncluded, diagnostic.Id);
     }
 }

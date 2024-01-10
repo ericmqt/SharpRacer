@@ -99,7 +99,7 @@ public static class EquatableStructAssert
     {
         if (first.GetHashCode() == second.GetHashCode())
         {
-            throw new XunitException($"Return values of {firstArg}.GetHashCode() and {secondArg}.GetHashCode() are not equal.");
+            throw new XunitException($"Return values of {firstArg}.GetHashCode() and {secondArg}.GetHashCode() are equal.");
         }
     }
 

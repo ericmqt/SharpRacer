@@ -115,11 +115,6 @@ internal static class VariableClassModelValuesProvider
         IList<VariableClassModel> existingModels,
         out Diagnostic? diagnostic)
     {
-        if (existingModels is null)
-        {
-            throw new ArgumentNullException(nameof(existingModels));
-        }
-
         var className = classModel.ClassName;
         var classNamespace = classModel.ClassNamespace;
 

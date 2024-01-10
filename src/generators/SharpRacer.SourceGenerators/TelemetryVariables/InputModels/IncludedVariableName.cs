@@ -1,26 +1,16 @@
-﻿using System.Collections.Immutable;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 {
     public IncludedVariableName(string variableName, Location sourceLocation)
-        : this(variableName, sourceLocation, ImmutableArray<Diagnostic>.Empty)
-    {
-
-    }
-
-    public IncludedVariableName(string variableName, Location sourceLocation, ImmutableArray<Diagnostic> diagnostics)
     {
         // Allow string.Empty but not null
         Value = variableName ?? throw new ArgumentException($"'{nameof(variableName)}' cannot be null.", nameof(variableName));
 
         SourceLocation = sourceLocation ?? throw new ArgumentNullException(nameof(sourceLocation));
-
-        Diagnostics = diagnostics.GetEmptyIfDefault();
     }
 
-    public readonly ImmutableArray<Diagnostic> Diagnostics { get; }
     public readonly Location SourceLocation { get; }
     public readonly string Value { get; }
 
@@ -32,8 +22,7 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
     public bool Equals(IncludedVariableName other)
     {
         return StringComparer.Ordinal.Equals(Value, other.Value) &&
-            SourceLocation == other.SourceLocation &&
-            Diagnostics.SequenceEqualDefaultTolerant(other.Diagnostics);
+            SourceLocation == other.SourceLocation;
     }
 
     public override int GetHashCode()
@@ -42,7 +31,6 @@ internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 
         hc.Add(Value);
         hc.Add(SourceLocation);
-        hc.AddDiagnosticArray(Diagnostics);
 
         return hc.ToHashCode();
     }
