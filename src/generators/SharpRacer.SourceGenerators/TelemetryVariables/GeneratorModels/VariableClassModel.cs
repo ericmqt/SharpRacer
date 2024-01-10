@@ -6,12 +6,33 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassGeneratorModel>
+internal readonly struct VariableClassModel : IEquatable<VariableClassModel>
 {
     private readonly string _descriptorFieldName;
     private readonly string? _variableValueUnit;
 
-    public VariableClassGeneratorModel(
+    public VariableClassModel(
+        string className,
+        string classNamespace,
+        VariableModel variableModel,
+        DescriptorPropertyReference? descriptorPropertyReference,
+        bool isClassInternal = false,
+        bool isClassPartial = true)
+        : this(className,
+              classNamespace,
+              descriptorPropertyReference,
+              variableModel.VariableName,
+              variableModel.ValueType,
+              variableModel.ValueCount,
+              variableModel.ValueUnit,
+              isClassInternal,
+              isClassPartial,
+              ImmutableArray<Diagnostic>.Empty)
+    {
+
+    }
+
+    public VariableClassModel(
         string className,
         string classNamespace,
         VariableModel variableModel,
@@ -19,18 +40,44 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         DescriptorPropertyReference? descriptorPropertyReference,
         bool isClassInternal = false,
         bool isClassPartial = true)
+        : this(className,
+              classNamespace,
+              descriptorPropertyReference,
+              variableModel.VariableName,
+              variableModel.ValueType,
+              variableModel.ValueCount,
+              variableModel.ValueUnit,
+              isClassInternal,
+              isClassPartial,
+              diagnostics)
+    {
+
+    }
+
+    private VariableClassModel(
+        string className,
+        string classNamespace,
+        DescriptorPropertyReference? descriptorPropertyReference,
+        string variableName,
+        VariableValueType variableValueType,
+        int variableValueCount,
+        string? variableValueUnit,
+        bool isClassInternal,
+        bool isClassPartial,
+        ImmutableArray<Diagnostic> diagnostics)
     {
         ClassName = className;
         ClassNamespace = classNamespace;
         DescriptorPropertyReference = descriptorPropertyReference;
-        Diagnostics = diagnostics.GetEmptyIfDefault();
         IsClassInternal = isClassInternal;
         IsClassPartial = isClassPartial;
 
-        VariableName = variableModel.VariableName;
-        VariableValueCount = variableModel.ValueCount;
-        VariableValueType = variableModel.ValueType;
-        _variableValueUnit = variableModel.ValueUnit;
+        VariableName = variableName;
+        VariableValueType = variableValueType;
+        VariableValueCount = variableValueCount;
+        _variableValueUnit = variableValueUnit;
+
+        Diagnostics = diagnostics.GetEmptyIfDefault();
 
         _descriptorFieldName = "_Descriptor";
     }
@@ -105,12 +152,32 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit, TypeNameFormat.Qualified);
     }
 
-    public override bool Equals(object obj)
+    public readonly VariableClassModel WithDiagnostics(Diagnostic diagnostic)
     {
-        return obj is VariableClassGeneratorModel other && Equals(other);
+        return WithDiagnostics(ImmutableArray.Create(diagnostic));
     }
 
-    public bool Equals(VariableClassGeneratorModel other)
+    public readonly VariableClassModel WithDiagnostics(ImmutableArray<Diagnostic> diagnostics)
+    {
+        return new VariableClassModel(
+            ClassName,
+            ClassNamespace,
+            DescriptorPropertyReference,
+            VariableName,
+            VariableValueType,
+            VariableValueCount,
+            _variableValueUnit,
+            IsClassInternal,
+            IsClassPartial,
+            diagnostics.GetEmptyIfDefault());
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is VariableClassModel other && Equals(other);
+    }
+
+    public bool Equals(VariableClassModel other)
     {
         return StringComparer.Ordinal.Equals(VariableName, other.VariableName) &&
                 StringComparer.Ordinal.Equals(ClassName, other.ClassName) &&
@@ -140,12 +207,12 @@ internal readonly struct VariableClassGeneratorModel : IEquatable<VariableClassG
         return hc.ToHashCode();
     }
 
-    public static bool operator ==(VariableClassGeneratorModel left, VariableClassGeneratorModel right)
+    public static bool operator ==(VariableClassModel left, VariableClassModel right)
     {
         return left.Equals(right);
     }
 
-    public static bool operator !=(VariableClassGeneratorModel left, VariableClassGeneratorModel right)
+    public static bool operator !=(VariableClassModel left, VariableClassModel right)
     {
         return !left.Equals(right);
     }

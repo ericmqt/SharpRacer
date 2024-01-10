@@ -8,6 +8,8 @@ internal static class TrackingNames
 
     public static string GeneratorConfigurationValueProvider_GetValueProvider { get; } = "GeneratorConfigurationValueProvider_GetValueProvider";
 
+    public static string VariableClassModelValuesProvider_GetValuesProvider { get; } = "VariableClassModelValuesProvider_GetValuesProvider";
+
     public static string VariableInfoProvider_GetValueProvider { get; } = "VariableInfoProvider_GetValueProvider";
     public static string VariableInfoProvider_GetVariableInfoFile { get; } = "VariableInfoProvider_GetVariableInfoFile";
 

@@ -16,21 +16,21 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
         Options = options;
     }
 
-    public string? DeprecatingVariableName => _variableInfo.DeprecatedBy;
-    public string Description => _variableInfo.Description;
-    public bool IsDeprecated => _variableInfo.IsDeprecated;
+    public readonly string? DeprecatingVariableName => _variableInfo.DeprecatedBy;
+    public readonly string Description => _variableInfo.Description;
+    public readonly bool IsDeprecated => _variableInfo.IsDeprecated;
     public readonly VariableOptions Options { get; }
-    public int ValueCount => _variableInfo.ValueCount;
-    public VariableValueType ValueType => _variableInfo.ValueType;
-    public string? ValueUnit => _variableInfo.ValueUnit;
-    public string VariableName => _variableInfo.Name;
+    public readonly int ValueCount => _variableInfo.ValueCount;
+    public readonly VariableValueType ValueType => _variableInfo.ValueType;
+    public readonly string? ValueUnit => _variableInfo.ValueUnit;
+    public readonly string VariableName => _variableInfo.Name;
 
-    public TypeSyntax DataVariableTypeArgument()
+    public readonly TypeSyntax DataVariableTypeArgument()
     {
         return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit, TypeNameFormat.Qualified);
     }
 
-    public string DescriptorPropertyName()
+    public readonly string DescriptorPropertyName()
     {
         if (Options != default && !string.IsNullOrWhiteSpace(Options.Name))
         {
@@ -38,24 +38,6 @@ internal readonly struct VariableModel : IEquatable<VariableModel>
         }
 
         return VariableName;
-    }
-
-    public string VariableClassName()
-    {
-        if (Options != default)
-        {
-            if (!string.IsNullOrWhiteSpace(Options.ClassName))
-            {
-                return $"{Options.ClassName}Variable";
-            }
-
-            if (!string.IsNullOrWhiteSpace(Options.Name))
-            {
-                return $"{Options.Name}Variable";
-            }
-        }
-
-        return $"{VariableName}Variable";
     }
 
     #region IEquatable Implementation

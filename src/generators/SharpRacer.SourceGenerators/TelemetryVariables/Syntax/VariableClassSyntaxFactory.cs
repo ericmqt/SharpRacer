@@ -39,7 +39,7 @@ internal static class VariableClassSyntaxFactory
     /// </summary>
     /// <param name="model"></param>
     /// <returns></returns>
-    public static ConstructorDeclarationSyntax Constructor(ref readonly VariableClassGeneratorModel model)
+    public static ConstructorDeclarationSyntax Constructor(ref readonly VariableClassModel model)
     {
         var baseCtorInitializer = BaseConstructorInitializerFromDescriptor(
             model.DescriptorFieldIdentifierName(),
@@ -52,7 +52,7 @@ internal static class VariableClassSyntaxFactory
             .WithBody(Block());
     }
 
-    public static ConstructorDeclarationSyntax ConstructorWithDataVariableInfoParameter(ref readonly VariableClassGeneratorModel model)
+    public static ConstructorDeclarationSyntax ConstructorWithDataVariableInfoParameter(ref readonly VariableClassModel model)
     {
         var dataVariableParameter = Parameter(Identifier(DataVariableInfoCtorParameterName))
             .WithType(NullableType(SharpRacerTypes.DataVariableInfo()));
@@ -69,7 +69,7 @@ internal static class VariableClassSyntaxFactory
             .WithBody(Block());
     }
 
-    public static DocumentationCommentTriviaSyntax ConstructorXmlDocumentation(ref readonly VariableClassGeneratorModel model)
+    public static DocumentationCommentTriviaSyntax ConstructorXmlDocumentation(ref readonly VariableClassModel model)
     {
         var classTypeIdentifier = model.ClassIdentifierName();
 
@@ -84,7 +84,7 @@ internal static class VariableClassSyntaxFactory
             .ToTrivia();
     }
 
-    public static DocumentationCommentTriviaSyntax ConstructorWithDataVariableInfoParameterXmlDocumentation(ref readonly VariableClassGeneratorModel model)
+    public static DocumentationCommentTriviaSyntax ConstructorWithDataVariableInfoParameterXmlDocumentation(ref readonly VariableClassModel model)
     {
         var classTypeIdentifier = model.ClassIdentifierName();
 

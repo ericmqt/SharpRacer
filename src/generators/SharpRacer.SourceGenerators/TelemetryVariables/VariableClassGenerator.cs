@@ -9,7 +9,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 internal static class VariableClassGenerator
 {
-    public static CompilationUnitSyntax Create(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken)
+    public static CompilationUnitSyntax Create(ref readonly VariableClassModel model, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -27,7 +27,7 @@ internal static class VariableClassGenerator
             .AddMembers(namespaceDecl);
     }
 
-    public static ClassDeclarationSyntax CreateClassDeclaration(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken)
+    public static ClassDeclarationSyntax CreateClassDeclaration(ref readonly VariableClassModel model, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -41,7 +41,7 @@ internal static class VariableClassGenerator
             .WithMembers(classMembers);
     }
 
-    private static SyntaxList<MemberDeclarationSyntax> CreateClassMembers(ref readonly VariableClassGeneratorModel model, CancellationToken cancellationToken = default)
+    private static SyntaxList<MemberDeclarationSyntax> CreateClassMembers(ref readonly VariableClassModel model, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -64,7 +64,7 @@ internal static class VariableClassGenerator
         return List(members);
     }
 
-    private static string[] GetRequiredUsingNamespaces(ref readonly VariableClassGeneratorModel model)
+    private static string[] GetRequiredUsingNamespaces(ref readonly VariableClassModel model)
     {
         var telemetryVariablesNamespace = "SharpRacer.Telemetry.Variables";
 
