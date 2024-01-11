@@ -29,6 +29,14 @@ internal static class GeneratorAssert
         }
     }
 
+    public static void NoException(GeneratorRunResult runResult)
+    {
+        if (runResult.Exception != null)
+        {
+            throw new XunitException($"Run result threw {runResult.Exception.GetType()}: {runResult.Exception.Message}");
+        }
+    }
+
     public static void NoErrorDiagnostics(GeneratorRunResult runResult)
     {
         if (runResult.Diagnostics.Where(x => x.IsError()).Any())

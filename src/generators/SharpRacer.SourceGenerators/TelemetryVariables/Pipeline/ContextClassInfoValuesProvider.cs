@@ -98,7 +98,7 @@ internal static class ContextClassInfoValuesProvider
         ContextClassWithIncludedVariablesFileResult input,
         CancellationToken cancellationToken)
     {
-        if (input.IncludedVariablesFile == default)
+        if (input.Model == default || input.IncludedVariablesFile == default)
         {
             return (input.Model, input.Diagnostics);
         }

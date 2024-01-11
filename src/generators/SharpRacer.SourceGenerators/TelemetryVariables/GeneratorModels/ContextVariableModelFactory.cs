@@ -6,16 +6,9 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class ContextVariableModelFactory
 {
     private readonly ImmutableArray<ContextVariableModel>.Builder _builder;
-    private readonly ImmutableArray<DescriptorPropertyReference> _descriptorPropertyReferences;
-    private readonly ImmutableArray<VariableClassReference> _variableClassReferences;
 
-    public ContextVariableModelFactory(
-        ImmutableArray<VariableClassReference> variableClassReferences,
-        ImmutableArray<DescriptorPropertyReference> descriptorPropertyReferences)
+    public ContextVariableModelFactory()
     {
-        _variableClassReferences = variableClassReferences.GetEmptyIfDefault();
-        _descriptorPropertyReferences = descriptorPropertyReferences.GetEmptyIfDefault();
-
         _builder = ImmutableArray.CreateBuilder<ContextVariableModel>();
     }
 
@@ -24,7 +17,11 @@ internal class ContextVariableModelFactory
         return _builder.ToImmutable();
     }
 
-    public bool TryAdd(VariableModel variableModel, out ImmutableArray<Diagnostic> diagnostics)
+    public bool TryAdd(
+        VariableModel variableModel,
+        DescriptorPropertyReference? descriptorReference,
+        VariableClassReference? variableClassReference,
+        out ImmutableArray<Diagnostic> diagnostics)
     {
         if (variableModel == default)
         {
@@ -39,19 +36,6 @@ internal class ContextVariableModelFactory
         }
 
         diagnostics = ImmutableArray<Diagnostic>.Empty;
-
-        DescriptorPropertyReference? descriptorReference = null;
-        VariableClassReference? variableClassReference = null;
-
-        if (_variableClassReferences.Any(x => x.VariableName.Equals(variableModel.VariableName)))
-        {
-            variableClassReference = _variableClassReferences.First(x => x.VariableName.Equals(variableModel.VariableName));
-        }
-
-        if (_descriptorPropertyReferences.Any(x => x.VariableName.Equals(variableModel.VariableName)))
-        {
-            descriptorReference = _descriptorPropertyReferences.First(x => x.VariableName.Equals(variableModel.VariableName));
-        }
 
         var model = new ContextVariableModel(
             variableModel,

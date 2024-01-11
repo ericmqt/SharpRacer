@@ -11,6 +11,30 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables;
 public class VariableClassModelValuesProviderTests
 {
     [Fact]
+    public void GenerateTelemetryVariableClasses_DisabledTest()
+    {
+        var descriptorClass = @"
+using SharpRacer.Telemetry.Variables;
+namespace Test.Assembly;
+[GenerateDataVariableDescriptors]
+public static partial class MyDescriptors { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("Lat", VariableValueType.Double, "GPS latitude", null)
+            .AddScalar("Lon", VariableValueType.Double, "GPS longitude", null)
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .ConfigureGlobalOptions(o => o.GenerateTelemetryVariableClasses = "false")
+            .WithCSharpSyntaxTree(descriptorClass)
+            .Build()
+            .RunGenerator();
+
+        GeneratorAssert.TrackedStepNotExecuted(runResult, TrackingNames.VariableClassModelValuesProvider_GetValuesProvider);
+    }
+
+    [Fact]
     public void DescriptorClass_DescriptorPropertyReferencesAreNotNullTest()
     {
         var descriptorClass = @"

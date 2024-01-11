@@ -22,7 +22,7 @@ public class GeneratorConfigurationTests
         var configStepOutput = configResult.Outputs.Single();
         var generatorConfig = (GeneratorConfiguration)configStepOutput.Value;
 
-        Assert.True(configStepOutput.Reason == IncrementalStepRunReason.New);
+        Assert.Equal(IncrementalStepRunReason.New, configStepOutput.Reason);
         Assert.Equal(GeneratorConfigurationDefaults.GenerateTypedVariableClasses, generatorConfig.GenerateVariableClasses);
         Assert.Equal(GeneratorConfigurationDefaults.TelemetryVariableClassesNamespace, generatorConfig.VariableClassesNamespace);
         Assert.Equal(GeneratorConfigurationDefaults.VariableInfoFileName, generatorConfig.VariableInfoFileName);
@@ -45,7 +45,7 @@ public class GeneratorConfigurationTests
         var configStepOutput = configResult.Outputs.Single();
         var generatorConfig = (GeneratorConfiguration)configStepOutput.Value;
 
-        Assert.True(configStepOutput.Reason == IncrementalStepRunReason.New);
+        Assert.Equal(IncrementalStepRunReason.New, configStepOutput.Reason);
 
         // Mutate
         var newOptions = testModel.OptionsProvider.Mutate(options =>

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
@@ -30,7 +29,10 @@ internal static class VariableInfoProvider
                     return (ImmutableArray<VariableInfo>.Empty, ImmutableArray.Create(providerValue.Diagnostic));
                 }
 
-                Debug.Assert(providerValue.File != default, $"{nameof(VariableInfoFile)} has default value but no diagnostics");
+                if (providerValue.File == default)
+                {
+                    return (ImmutableArray<VariableInfo>.Empty, ImmutableArray<Diagnostic>.Empty);
+                }
 
                 var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
