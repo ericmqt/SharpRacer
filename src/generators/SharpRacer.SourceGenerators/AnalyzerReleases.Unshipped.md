@@ -4,7 +4,7 @@ Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
 SR1010 | SharpRacer.InputFiles | Error | AdditionalTextContentReadError
 SR1011 | SharpRacer.InputFiles | Error | AdditionalTextFileReadException
-SR1100 | SharpRacer.InputFiles | Error | TelemetryVariablesFileNotFound
+SR1100 | SharpRacer.InputFiles | Warning | TelemetryVariablesFileNotFound
 SR1101 | SharpRacer.InputFiles | Error | IncludedVariablesFileNotFound
 SR1110 | SharpRacer.InputFiles | Error | AmbiguousTelemetryVariablesFileName
 SR1111 | SharpRacer.InputFiles | Error | AmbiguousIncludedVariablesFileName

@@ -198,7 +198,7 @@ internal static partial class GeneratorDiagnosticDescriptors
             "Telemetry variables file not found",
             "Telemetry variables file was not found: '{0}'",
             GeneratorDiagnosticCategories.InputFiles,
-            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
     public static readonly DiagnosticDescriptor TelemetryVariableAlreadyDefined
