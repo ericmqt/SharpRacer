@@ -4,11 +4,11 @@ namespace SharpRacer.SourceGenerators;
 
 internal static class AttributeDataExtensions
 {
-    public static Location? GetLocation(this AttributeData attributeData)
+    public static Location GetLocation(this AttributeData attributeData)
     {
         if (attributeData?.ApplicationSyntaxReference is null)
         {
-            return null;
+            return Location.None;
         }
 
         return Location.Create(

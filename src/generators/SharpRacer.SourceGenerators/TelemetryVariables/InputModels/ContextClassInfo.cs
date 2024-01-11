@@ -3,7 +3,7 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
 {
-    public ContextClassInfo(INamedTypeSymbol classSymbol, Location? generatorAttributeLocation)
+    public ContextClassInfo(INamedTypeSymbol classSymbol, Location generatorAttributeLocation)
     {
         ClassName = classSymbol.Name;
         ClassNamespace = classSymbol.ContainingNamespace.ToString();
@@ -13,7 +13,7 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
     private ContextClassInfo(
         string className,
         string classNamespace,
-        Location? generatorAttributeLocation,
+        Location generatorAttributeLocation,
         IncludedVariables includedVariables)
     {
         ClassName = className;
@@ -24,7 +24,7 @@ internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
 
     public readonly string ClassName { get; }
     public readonly string ClassNamespace { get; }
-    public readonly Location? GeneratorAttributeLocation { get; }
+    public readonly Location GeneratorAttributeLocation { get; }
     public readonly IncludedVariables IncludedVariables { get; }
 
     public readonly string ToFullyQualifiedName()

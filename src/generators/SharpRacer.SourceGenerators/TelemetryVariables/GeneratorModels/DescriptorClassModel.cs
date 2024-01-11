@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
 {
-    public DescriptorClassModel(string typeName, string typeNamespace, Location? generatorAttributeLocation)
+    public DescriptorClassModel(string typeName, string typeNamespace, Location generatorAttributeLocation)
     {
         TypeName = !string.IsNullOrEmpty(typeName)
             ? typeName
@@ -22,7 +22,7 @@ internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
     private DescriptorClassModel(
         string typeName,
         string typeNamespace,
-        Location? generatorAttributeLocation,
+        Location generatorAttributeLocation,
         ImmutableArray<DescriptorPropertyModel> descriptorProperties)
     {
         TypeName = typeName;
@@ -32,7 +32,7 @@ internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
     }
 
     public readonly ImmutableArray<DescriptorPropertyModel> DescriptorProperties { get; }
-    public readonly Location? GeneratorAttributeLocation { get; }
+    public readonly Location GeneratorAttributeLocation { get; }
     public readonly string TypeName { get; }
     public readonly string TypeNamespace { get; }
 
