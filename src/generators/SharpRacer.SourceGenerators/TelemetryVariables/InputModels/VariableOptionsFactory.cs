@@ -95,7 +95,7 @@ internal class VariableOptionsFactory
         }
 
         var existing = _builder
-            .Where(x => !string.IsNullOrEmpty(x.ClassName) && x.ClassName!.Equals(optionsValue.ClassName))
+            .Where(x => string.Equals(x.ClassName, optionsValue.ClassName))
             .FirstOrDefault();
 
         if (existing == default)
@@ -126,7 +126,7 @@ internal class VariableOptionsFactory
         }
 
         var existing = _builder
-            .Where(x => !string.IsNullOrEmpty(x.Name) && x.Name!.Equals(optionsValue.Name))
+            .Where(x => string.Equals(x.Name, optionsValue.Name))
             .FirstOrDefault();
 
         if (existing == default)

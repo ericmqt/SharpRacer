@@ -37,6 +37,16 @@ public class IncludedVariablesFileNameTests
     }
 
     [Fact]
+    public void IsMatch_DefaultValueTest()
+    {
+        var matchingFile = new AdditionalTextFile("Foo.bar", "Hello, world!");
+
+        var fileName = default(IncludedVariablesFileName);
+
+        Assert.False(fileName.IsMatch(matchingFile));
+    }
+
+    [Fact]
     public void Equals_Test()
     {
         var fileName1 = new IncludedVariablesFileName("Foo.bar");

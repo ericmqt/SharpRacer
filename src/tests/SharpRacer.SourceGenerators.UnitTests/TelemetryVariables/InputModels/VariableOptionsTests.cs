@@ -6,6 +6,13 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public class VariableOptionsTests
 {
     [Fact]
+    public void Ctor_ThrowOnNullOrEmptyVariableKeyArgTest()
+    {
+        Assert.Throws<ArgumentException>(() => new VariableOptions(variableKey: null!));
+        Assert.Throws<ArgumentException>(() => new VariableOptions(variableKey: string.Empty));
+    }
+
+    [Fact]
     public void Equals_DefaultTest()
     {
         var jsonOptions = new JsonVariableOptions(
@@ -29,6 +36,7 @@ public class VariableOptionsTests
         var variableOptions = new VariableOptions(jsonOptions, keyLocation, valueLocation);
 
         EquatableStructAssert.NotEqual(variableOptions, default);
+        EquatableStructAssert.ObjectEqualsMethod(false, variableOptions, valueLocation);
     }
 
     [Fact]

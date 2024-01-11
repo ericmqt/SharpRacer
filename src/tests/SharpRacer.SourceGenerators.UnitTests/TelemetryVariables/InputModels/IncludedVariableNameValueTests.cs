@@ -4,6 +4,16 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public class IncludedVariableNameValueTests
 {
     [Fact]
+    public void Ctor_Test()
+    {
+        var variableName = "Test";
+        var nameValue = new IncludedVariableNameValue(variableName);
+
+        Assert.Equal(variableName, nameValue.Value);
+        Assert.Equal(default, nameValue.ValueSpan);
+    }
+
+    [Fact]
     public void Ctor_StringTextSpanTest()
     {
         var variableName = "Test";
@@ -13,6 +23,12 @@ public class IncludedVariableNameValueTests
 
         Assert.Equal(variableName, nameValue.Value);
         Assert.Equal(textSpan, nameValue.ValueSpan);
+    }
+
+    [Fact]
+    public void Ctor_ThrowOnNullButNotEmptyStringTest()
+    {
+        Assert.Throws<ArgumentNullException>(() => new IncludedVariableNameValue(variableName: null, new TextSpan(0, 0)));
     }
 
     [Fact]

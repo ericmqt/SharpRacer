@@ -1,5 +1,6 @@
 ﻿using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.Testing;
+using SharpRacer.SourceGenerators.Testing.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public class VariableInfoFileTests
@@ -19,6 +20,17 @@ public class VariableInfoFileTests
     }
 
     [Fact]
+    public void Ctor_ThrowOnNullArgsTest()
+    {
+        var fileName = new VariableInfoFileName("Foo.bar");
+        var additionalText = new AdditionalTextFile("Foo.bar", "Hello, world!");
+        var sourceText = additionalText.GetText()!;
+
+        Assert.Throws<ArgumentNullException>(() => new VariableInfoFile(fileName, null!, sourceText));
+        Assert.Throws<ArgumentNullException>(() => new VariableInfoFile(fileName, additionalText, null!));
+    }
+
+    [Fact]
     public void Equals_Test()
     {
         var fileName = new VariableInfoFileName("Foo.bar");
@@ -29,6 +41,7 @@ public class VariableInfoFileTests
         var variableInfoFile2 = new VariableInfoFile(fileName, additionalText, sourceText);
 
         EquatableStructAssert.Equal(variableInfoFile1, variableInfoFile2);
+        EquatableStructAssert.ObjectEqualsMethod(false, variableInfoFile1, sourceText);
     }
 
     [Fact]
@@ -78,6 +91,23 @@ public class VariableInfoFileTests
         var fileName = new VariableInfoFileName("Foo.bar");
         var additionalText = new AdditionalTextFile("Foo.bar", "Hello, world!");
         var sourceText = additionalText.GetText()!;
+
+        var variableInfoFile = new VariableInfoFile(fileName, additionalText, sourceText);
+
+        var result = variableInfoFile.Read(default, out var diagnostic);
+
+        Assert.False(result.IsDefault);
+        Assert.True(result.IsEmpty);
+        Assert.NotNull(diagnostic);
+        Assert.Equal(DiagnosticIds.AdditionalText_FileReadException, diagnostic.Id);
+    }
+
+    [Fact]
+    public void Read_FileReadExceptionDiagnosticOnSourceTextReturnNullStringTest()
+    {
+        var fileName = new VariableInfoFileName("Foo.bar");
+        var additionalText = new AdditionalTextFile("Foo.bar", "Hello, world!");
+        var sourceText = new NullSourceText();
 
         var variableInfoFile = new VariableInfoFile(fileName, additionalText, sourceText);
 

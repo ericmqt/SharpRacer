@@ -76,12 +76,12 @@ public class VariableOptionsFactoryTests
 
         Assert.Null(readDiagnostic);
 
-        var addResult = factory.TryAdd(inputOptions.First(), out var addDiagnostics);
+        var addResult = factory.TryAdd(inputOptions[0], out var addDiagnostics);
 
         Assert.True(addResult);
         Assert.Empty(addDiagnostics);
 
-        addResult = factory.TryAdd(inputOptions.Last(), out addDiagnostics);
+        addResult = factory.TryAdd(inputOptions[1], out addDiagnostics);
 
         Assert.False(addResult);
         Assert.Single(addDiagnostics);

@@ -71,6 +71,6 @@ internal readonly struct IncludedVariablesFileName : IEquatable<IncludedVariable
             return string.Empty;
         }
 
-        return fileName._fileName ?? string.Empty;
+        return fileName._fileName;
     }
 }

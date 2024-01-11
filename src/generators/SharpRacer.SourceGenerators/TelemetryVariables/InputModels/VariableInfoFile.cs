@@ -35,9 +35,7 @@ public readonly struct VariableInfoFile : IEquatable<VariableInfoFile>
                 ? GeneratorDiagnostics.TelemetryVariablesFileContainsNoVariables(FileName)
                 : null;
 
-            return !jsonVariables.IsDefault
-                ? jsonVariables
-                : ImmutableArray<VariableInfo>.Empty;
+            return jsonVariables;
         }
         catch (JsonException jsonEx)
         {

@@ -44,6 +44,25 @@ public class IncludedVariableNameFactoryTests
     }
 
     [Fact]
+    public void TryAdd_DefaultValueTest()
+    {
+        var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
+
+        var includedVariablesFile = new IncludedVariablesFile(
+            new IncludedVariablesFileName("IncludedVariables.json"),
+            additionalText,
+            additionalText.GetText()!);
+
+        var factory = new IncludedVariableNameFactory(includedVariablesFile);
+
+        Assert.False(factory.TryAdd(default, out var diagnostics));
+        Assert.Empty(diagnostics);
+
+        var results = factory.Build();
+        Assert.Empty(results);
+    }
+
+    [Fact]
     public void TryAdd_EmptyNameDiagnosticTest()
     {
         var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");

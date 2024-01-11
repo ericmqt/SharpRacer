@@ -11,12 +11,6 @@ internal readonly struct IncludedVariableNameValue : IEquatable<IncludedVariable
 
     }
 
-    public IncludedVariableNameValue(IncludedVariableNameValue variableNameValue, TextSpan valueSpan)
-        : this(variableNameValue.Value, valueSpan)
-    {
-
-    }
-
     public IncludedVariableNameValue(string variableName, TextSpan valueSpan)
     {
         // Allow string.Empty but not null

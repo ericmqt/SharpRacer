@@ -19,6 +19,7 @@ internal class IncludedVariableNameFactory
     {
         if (value == default)
         {
+            diagnostics = ImmutableArray<Diagnostic>.Empty;
             return false;
         }
 
@@ -45,11 +46,6 @@ internal class IncludedVariableNameFactory
 
     private ImmutableArray<Diagnostic> GetDiagnostics(IncludedVariableNameValue value)
     {
-        if (value == default)
-        {
-            return ImmutableArray<Diagnostic>.Empty;
-        }
-
         var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
         if (string.IsNullOrEmpty(value.Value))

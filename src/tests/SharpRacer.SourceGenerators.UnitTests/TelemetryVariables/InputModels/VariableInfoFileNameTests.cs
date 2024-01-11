@@ -37,6 +37,16 @@ public class VariableInfoFileNameTests
     }
 
     [Fact]
+    public void IsMatch_DefaultValueTest()
+    {
+        var matchingFile = new AdditionalTextFile("Foo.bar", "Hello, world!");
+
+        var fileName = default(VariableInfoFileName);
+
+        Assert.False(fileName.IsMatch(matchingFile));
+    }
+
+    [Fact]
     public void Equals_Test()
     {
         var fileName1 = new VariableInfoFileName("Foo.bar");
@@ -69,5 +79,13 @@ public class VariableInfoFileNameTests
         VariableInfoFileName fileName = default;
 
         Assert.Equal(string.Empty, fileName);
+    }
+
+    [Fact]
+    public void DefaultValue_ToStringReturnsEmptyTest()
+    {
+        VariableInfoFileName fileName = default;
+
+        Assert.Equal(string.Empty, fileName.ToString());
     }
 }
