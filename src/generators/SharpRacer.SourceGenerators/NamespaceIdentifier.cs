@@ -1,5 +1,5 @@
 ﻿namespace SharpRacer.SourceGenerators;
-public readonly struct NamespaceIdentifier
+public readonly struct NamespaceIdentifier : IEquatable<NamespaceIdentifier>
 {
     private readonly string _namespace;
 
@@ -12,7 +12,27 @@ public readonly struct NamespaceIdentifier
 
     public readonly TypeIdentifier CreateType(string typeName)
     {
+        if (string.IsNullOrEmpty(typeName))
+        {
+            throw new ArgumentException($"'{nameof(typeName)}' cannot be null or empty.", nameof(typeName));
+        }
+
         return new TypeIdentifier(typeName, this);
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is NamespaceIdentifier other && Equals(other);
+    }
+
+    public bool Equals(NamespaceIdentifier other)
+    {
+        return StringComparer.Ordinal.Equals(_namespace, other._namespace);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_namespace);
     }
 
     public readonly string ToGlobalQualifiedName()
@@ -48,5 +68,15 @@ public readonly struct NamespaceIdentifier
     public static implicit operator string(NamespaceIdentifier namespaceIdentifier)
     {
         return namespaceIdentifier._namespace ?? string.Empty;
+    }
+
+    public static bool operator ==(NamespaceIdentifier left, NamespaceIdentifier right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(NamespaceIdentifier left, NamespaceIdentifier right)
+    {
+        return !left.Equals(right);
     }
 }

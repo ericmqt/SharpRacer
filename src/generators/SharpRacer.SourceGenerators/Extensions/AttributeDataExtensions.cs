@@ -6,7 +6,12 @@ internal static class AttributeDataExtensions
 {
     public static Location GetLocation(this AttributeData attributeData)
     {
-        if (attributeData?.ApplicationSyntaxReference is null)
+        if (attributeData is null)
+        {
+            return Location.None;
+        }
+
+        if (attributeData.ApplicationSyntaxReference is null)
         {
             return Location.None;
         }
