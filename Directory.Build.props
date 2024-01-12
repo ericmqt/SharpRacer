@@ -5,7 +5,7 @@
 		<RepositoryArtifactsDirectory>$(RepositoryRootDirectory)\artifacts</RepositoryArtifactsDirectory>
 		<RepositoryBinDirectory>$(RepositoryArtifactsDirectory)\bin</RepositoryBinDirectory>
 		<RepositoryPackageOutputDirectory>$(RepositoryArtifactsDirectory)\nupkg</RepositoryPackageOutputDirectory>
-		<RepositoryTestOutputPath>$(RepositoryArtifactsDirectory)\test</RepositoryTestOutputPath>
+		<RepositoryTestCoverageOutputPath>$(RepositoryArtifactsDirectory)\test\coverage</RepositoryTestCoverageOutputPath>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -30,6 +30,6 @@
 
 	<!-- Coverlet -->
 	<PropertyGroup>
-		<CoverletOutput>$([MSBuild]::EnsureTrailingSlash('$(RepositoryTestOutputPath)\$(MSBuildProjectName)'))</CoverletOutput>
+		<CoverletOutput>$([MSBuild]::EnsureTrailingSlash('$(RepositoryTestCoverageOutputPath)\$(MSBuildProjectName)'))</CoverletOutput>
 	</PropertyGroup>
 </Project>
