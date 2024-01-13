@@ -3,7 +3,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct VariableModel : IEquatable<VariableModel>
+public readonly struct VariableModel : IEquatable<VariableModel>
 {
     private readonly VariableInfo _variableInfo;
 

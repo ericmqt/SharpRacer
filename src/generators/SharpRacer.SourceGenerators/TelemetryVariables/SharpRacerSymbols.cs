@@ -5,7 +5,9 @@ internal static class SharpRacerSymbols
 {
     public static bool IsTelemetryVariablesNamespace(INamespaceSymbol namespaceSymbol)
     {
-        return namespaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Equals(SharpRacerIdentifiers.TelemetryVariablesNamespace.ToGlobalQualifiedName());
+        var namespaceSymbolDisplayString = namespaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+        return namespaceSymbolDisplayString.Equals(SharpRacerIdentifiers.TelemetryVariablesNamespace.ToGlobalQualifiedName());
     }
 
     public static bool IsIDataVariablesContextInterface(INamedTypeSymbol symbol)
@@ -15,7 +17,7 @@ internal static class SharpRacerSymbols
             return false;
         }
 
-        if (!IsTelemetryVariablesNamespace(symbol.ContainingNamespace))
+        if (!SharpRacerIdentifiers.IDataVariablesContext.Namespace.Equals(symbol.ContainingNamespace))
         {
             return false;
         }

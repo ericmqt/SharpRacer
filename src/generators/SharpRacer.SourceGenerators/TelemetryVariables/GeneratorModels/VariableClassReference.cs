@@ -4,7 +4,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 
-internal readonly struct VariableClassReference : IEquatable<VariableClassReference>
+public readonly struct VariableClassReference : IEquatable<VariableClassReference>
 {
     public VariableClassReference(string variableName, string className, string classNamespace)
     {

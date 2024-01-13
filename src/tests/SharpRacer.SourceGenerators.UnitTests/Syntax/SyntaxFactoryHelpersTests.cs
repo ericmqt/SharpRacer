@@ -1,9 +1,22 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.Syntax;
 public class SyntaxFactoryHelpersTests
 {
+    [Fact]
+    public static void GeneratedCodeAttribute_Test()
+    {
+        string toolName = "SharpRacer.SourceGenerators.UnitTests";
+        string toolVersion = "1.2.3.4";
+
+        var attr = SyntaxFactoryHelpers.GeneratedCodeAttribute(toolName, toolVersion).NormalizeWhitespace().ToFullString();
+
+        var expected = $"System.CodeDom.Compiler.GeneratedCodeAttribute(\"{toolName}\", \"{toolVersion}\")";
+        Assert.Equal(expected, attr);
+    }
+
     [Fact]
     public void ModifiersFromAccessibility_InternalTest()
     {
@@ -49,5 +62,32 @@ public class SyntaxFactoryHelpersTests
 
         Assert.Single(tokens);
         Assert.Equal(SyntaxKind.PublicKeyword, tokens.Single().Kind());
+    }
+
+    [Fact]
+    public void NullCheck_IdentifierTest()
+    {
+        var result = SyntaxFactoryHelpers.NullCheck("myVar").NormalizeWhitespace(eol: "\r\n").ToFullString();
+
+        var expected = "if (myVar is null)\r\n{\r\n    throw new ArgumentNullException(\"myVar\");\r\n}";
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void NullCheck_IdentifierNameTest()
+    {
+        var result = SyntaxFactoryHelpers.NullCheck(IdentifierName("myVar")).NormalizeWhitespace(eol: "\r\n").ToFullString();
+
+        var expected = "if (myVar is null)\r\n{\r\n    throw new ArgumentNullException(\"myVar\");\r\n}";
+
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void NullCheck_ThrowOnNullOrEmptyIdentifierStringTest()
+    {
+        string identifier = null!;
+        Assert.Throws<ArgumentException>(() => SyntaxFactoryHelpers.NullCheck(identifier));
     }
 }

@@ -107,7 +107,7 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
         var generatedSourceTextStr = generatedSourceText.ToString();
 
-        context.AddSource($"{model.TypeName}.g.cs", generatedSourceText);
+        context.AddSource($"{model.ClassName}.g.cs", generatedSourceText);
     }
 
     private static void GenerateDescriptorClass(SourceProductionContext context, (DescriptorClassModel Model, ImmutableArray<Diagnostic> Diagnostics) input)

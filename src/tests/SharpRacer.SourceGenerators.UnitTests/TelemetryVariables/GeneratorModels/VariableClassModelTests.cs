@@ -6,6 +6,8 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class VariableClassModelTests
 {
+    public static TheoryData<VariableClassModel, VariableClassModel> InequalityData => ModelInequalityData.VariableClassModelData();
+
     [Fact]
     public void Ctor_Test()
     {
@@ -64,6 +66,186 @@ public class VariableClassModelTests
     }
 
     [Fact]
+    public void BaseClassType_ArrayTest()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            isClassInternal: false,
+            isClassPartial: true);
+
+        Assert.Equal("ArrayDataVariable<int>", classModel.BaseClassType().ToFullString());
+    }
+
+    [Fact]
+    public void BaseClassType_ScalarTest()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            isClassInternal: false,
+            isClassPartial: true);
+
+        Assert.Equal("ScalarDataVariable<int>", classModel.BaseClassType().ToFullString());
+    }
+
+    [Fact]
+    public void ClassAccessibility_InternalTest()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            isClassInternal: true,
+            isClassPartial: true);
+
+        Assert.Equal(Accessibility.Internal, classModel.ClassAccessibility());
+    }
+
+    [Fact]
+    public void ClassAccessibility_PublicTest()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            isClassInternal: false,
+            isClassPartial: true);
+
+        Assert.Equal(Accessibility.Public, classModel.ClassAccessibility());
+    }
+
+    [Fact]
+    public void ClassIdentifier_Test()
+    {
+        var className = "TestVariable";
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            className,
+            "TestApp.Variables",
+            variableModel,
+            null,
+            isClassInternal: false,
+            isClassPartial: true);
+
+        Assert.Equal(className, classModel.ClassIdentifier().ValueText);
+    }
+
+    [Fact]
+    public void ClassIdentifierName_Test()
+    {
+        var className = "TestVariable";
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            className,
+            "TestApp.Variables",
+            variableModel,
+            null,
+            isClassInternal: false,
+            isClassPartial: true);
+
+        Assert.Equal(className, classModel.ClassIdentifierName().ToFullString());
+    }
+
+    [Fact]
+    public void DescriptorFieldDeclaration_FromDescriptorPropertyReferenceTest()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            descriptorRef,
+            false,
+            true);
+
+        var expected = "private static readonly DataVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;";
+        var fieldDecl = classModel.DescriptorFieldDeclaration().NormalizeWhitespace().ToFullString();
+
+        Assert.Equal(expected, fieldDecl);
+    }
+
+    [Fact]
+    public void DescriptorFieldDeclaration_FromLiteralValuesTest()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            false,
+            true);
+
+        var expected = "private static readonly DataVariableDescriptor _Descriptor = new DataVariableDescriptor(\"Test\", DataVariableValueType.Int, 3);";
+        var fieldDecl = classModel.DescriptorFieldDeclaration().NormalizeWhitespace().ToFullString();
+
+        Assert.Equal(expected, fieldDecl);
+    }
+
+    [Fact]
+    public void DescriptorFieldIdentifier_Test()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            false,
+            true);
+
+        Assert.Equal("_Descriptor", classModel.DescriptorFieldIdentifier().ToFullString());
+    }
+
+    [Fact]
+    public void DescriptorFieldIdentifierName_Test()
+    {
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
+            variableModel,
+            null,
+            false,
+            true);
+
+        Assert.Equal("_Descriptor", classModel.DescriptorFieldIdentifierName().ToFullString());
+    }
+
+    [Fact]
     public void Equals_Test()
     {
         var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
@@ -94,64 +276,28 @@ public class VariableClassModelTests
         EquatableStructAssert.ObjectEqualsMethod(false, classModel1, classNamespace);
     }
 
-    [Fact]
-    public void Equals_IdenticalExceptDescriptorRefTest()
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(VariableClassModel model1, VariableClassModel model2)
     {
-        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
-        var variableModel = new VariableModel(variableInfo, default);
-
-        var descriptorRef1 = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
-        var descriptorRef2 = new DescriptorPropertyReference("Test1", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
-
-        var className = "TestVariable";
-        var classNamespace = "TestApp.Variables";
-
-        var classModel1 = new VariableClassModel(
-            className,
-            classNamespace,
-            variableModel,
-            descriptorRef1,
-            false,
-            true);
-
-        var classModel2 = new VariableClassModel(
-            className,
-            classNamespace,
-            variableModel,
-            descriptorRef2,
-            false,
-            true);
-
-        EquatableStructAssert.NotEqual(classModel1, classModel2);
+        EquatableStructAssert.NotEqual(model1, model2);
     }
 
     [Fact]
-    public void Equals_IdenticalExceptNullDescriptorRefTest()
+    public void VariableValueTypeArg_Test()
     {
         var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
         var variableModel = new VariableModel(variableInfo, default);
-        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
 
-        var className = "TestVariable";
-        var classNamespace = "TestApp.Variables";
-
-        var classModel1 = new VariableClassModel(
-            className,
-            classNamespace,
-            variableModel,
-            descriptorRef,
-            false,
-            true);
-
-        var classModel2 = new VariableClassModel(
-            className,
-            classNamespace,
+        var classModel = new VariableClassModel(
+            "TestVariable",
+            "TestApp.Variables",
             variableModel,
             null,
             false,
             true);
 
-        EquatableStructAssert.NotEqual(classModel1, classModel2);
+        Assert.Equal("int", classModel.VariableValueTypeArg().ToFullString());
     }
 
     [Fact]

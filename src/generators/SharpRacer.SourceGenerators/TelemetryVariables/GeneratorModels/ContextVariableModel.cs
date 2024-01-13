@@ -5,7 +5,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 
-internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
+public readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
 {
     public ContextVariableModel(
         VariableModel variableModel,
@@ -122,17 +122,8 @@ internal readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
             return false;
         }
 
-        if (VariableClassReference != other.VariableClassReference)
-        {
-            return false;
-        }
-
-        if (DescriptorReference != other.DescriptorReference)
-        {
-            return false;
-        }
-
-        return true;
+        return VariableClassReference == other.VariableClassReference &&
+            DescriptorReference == other.DescriptorReference;
     }
 
     public override int GetHashCode()

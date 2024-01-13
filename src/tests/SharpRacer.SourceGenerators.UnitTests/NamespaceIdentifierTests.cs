@@ -1,4 +1,7 @@
-﻿namespace SharpRacer.SourceGenerators;
+﻿using Microsoft.CodeAnalysis;
+using Moq;
+
+namespace SharpRacer.SourceGenerators;
 public class NamespaceIdentifierTests
 {
     [Fact]
@@ -55,6 +58,32 @@ public class NamespaceIdentifierTests
         EquatableStructAssert.ObjectEqualsMethod(false, identifier1, int.MaxValue);
 
         EquatableStructAssert.NotEqual(identifier1, default);
+    }
+
+    [Fact]
+    public void Equals_INamespaceSymbolTest()
+    {
+        var namespaceSymbolMock = new Mock<INamespaceSymbol>();
+
+        namespaceSymbolMock.Setup(x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
+            .Returns("global::Test.App");
+
+        var identifier = new NamespaceIdentifier("Test.App");
+
+        Assert.True(identifier.Equals(namespaceSymbolMock.Object));
+    }
+
+    [Fact]
+    public void Equals_INamespaceSymbol_DefaultValueTest()
+    {
+        var namespaceSymbolMock = new Mock<INamespaceSymbol>();
+
+        namespaceSymbolMock.Setup(x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
+            .Returns("global::Test.App");
+
+        NamespaceIdentifier identifier = default;
+
+        Assert.False(identifier.Equals(namespaceSymbolMock.Object));
     }
 
     [Fact]

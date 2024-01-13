@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.Syntax;
@@ -81,6 +82,27 @@ public class ClassDeclarationSyntaxExtensionsTests
                     ]));
 
         Assert.False(classDecl.IsStaticPartialClass());
+
+        var partialClassDecl = ClassDeclaration(Identifier("Foo"))
+            .WithModifiers(
+                TokenList([
+                    Token(SyntaxKind.PublicKeyword),
+                    Token(SyntaxKind.PartialKeyword)
+                    ]));
+
+        Assert.False(classDecl.IsStaticPartialClass());
+
+        var publicClassDecl = ClassDeclaration(Identifier("Foo"))
+            .WithModifiers(
+                TokenList([
+                    Token(SyntaxKind.PublicKeyword)
+                    ]));
+
+        Assert.False(classDecl.IsStaticPartialClass());
+
+        var noModifiersClassDecl = ClassDeclaration(Identifier("Foo"));
+
+        Assert.False(classDecl.IsStaticPartialClass());
     }
 
     [Theory]
@@ -116,6 +138,14 @@ public class ClassDeclarationSyntaxExtensionsTests
         {
             Assert.DoesNotContain(SyntaxKind.PartialKeyword, classDeclModifierTokenKindList);
         }
+    }
+
+    [Fact]
+    public void WithModifiers_ThrowOnNullNodeArg()
+    {
+        ClassDeclarationSyntax node = null!;
+
+        Assert.Throws<ArgumentNullException>(() => node.WithModifiers(Accessibility.Public, false, true));
     }
 
     public static IEnumerable<object[]> GetModifiersAndStaticPartialInputData()

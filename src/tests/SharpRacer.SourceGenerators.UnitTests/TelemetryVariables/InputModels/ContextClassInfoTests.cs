@@ -85,6 +85,31 @@ public class ContextClassInfoTests
         Assert.Equal($"{classNamespace}.{className}", classInfo.ToFullyQualifiedName());
     }
 
+    [Fact]
+    public void WithIncludedVariables_Test()
+    {
+        var classTypeSymbol = CreateContextClassNamedTypeSymbol("MyTestClass", "Test.App");
+
+        var originalClassInfo = new ContextClassInfo(classTypeSymbol, Location.None);
+
+        Assert.Equal(default, originalClassInfo.IncludedVariables);
+
+        var includedVariables = new IncludedVariables(
+            [
+                new IncludedVariableName("SessionTime", Location.None),
+                new IncludedVariableName("SessionTick", Location.None)
+            ]);
+
+        var mutatedClassInfo = originalClassInfo.WithIncludedVariables(includedVariables);
+
+        EquatableStructAssert.NotEqual(originalClassInfo, mutatedClassInfo);
+        Assert.Equal(includedVariables, mutatedClassInfo.IncludedVariables);
+        Assert.Equal(2, mutatedClassInfo.IncludedVariables.VariableNames.Length);
+
+        Assert.Single(mutatedClassInfo.IncludedVariables.VariableNames, x => x.Value == "SessionTime");
+        Assert.Single(mutatedClassInfo.IncludedVariables.VariableNames, x => x.Value == "SessionTick");
+    }
+
     private static INamedTypeSymbol CreateContextClassNamedTypeSymbol(string className, string classNamespace)
     {
         var classTypeSymbol = new Mock<INamedTypeSymbol>(MockBehavior.Strict);

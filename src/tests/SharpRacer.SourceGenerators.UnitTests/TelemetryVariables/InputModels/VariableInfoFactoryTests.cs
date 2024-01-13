@@ -28,6 +28,9 @@ public class VariableInfoFactoryTests
         var addResult = factory.TryAdd(default, out var diagnostics);
         Assert.False(addResult);
         Assert.Empty(diagnostics);
+
+        var results = factory.Build();
+        Assert.Empty(results);
     }
 
     [Fact]
@@ -56,5 +59,8 @@ public class VariableInfoFactoryTests
 
         var diagnostic = testVariableDiagnostics.First();
         Assert.Equal(DiagnosticIds.TelemetryVariableAlreadyDefined, diagnostic.Id);
+
+        var results = factory.Build();
+        Assert.Single(results);
     }
 }

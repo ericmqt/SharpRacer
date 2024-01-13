@@ -55,7 +55,8 @@ if ($UnitTests)
             -CoverageFiles @($script:UnitTestsCoverageFile) `
             -OutputDirectory $script:UnitTestsReportPath `
             -ReportTitle "SharpRacer.SourceGenerators Unit Test Results" `
-            -ExcludedAssemblies @("SharpRacer")
+            -ExcludedAssemblies @("SharpRacer") `
+            -ExcludedClasses @("SharpRacer.SourceGenerators.TelemetryVariablesGenerator", "SharpRacer.SourceGenerators.TelemetryVariables.Pipeline.*")
     }
 }
 

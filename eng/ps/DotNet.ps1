@@ -140,6 +140,9 @@ function New-TestCoverageReport
         [string[]]$ExcludedAssemblies,
 
         [Parameter(Mandatory=$false)]
+        [string[]]$ExcludedClasses,
+
+        [Parameter(Mandatory=$false)]
         [string]$ReportTitle,
 
         [Parameter(Mandatory=$false)]
@@ -156,9 +159,17 @@ function New-TestCoverageReport
 
     if ($ExcludedAssemblies.Length -gt 0)
     {
-        $local:excludedAssemblyFilters = "-{0}" -f $ExcludedAssemblies
+        $local:excludedAssemblyFilters = $ExcludedAssemblies | ForEach-Object { "-{0}" -f $_ }
         $local:assemblyFiltersArg = $local:excludedAssemblyFilters -join ";"
         $local:args += "`"-assemblyfilters:$local:assemblyFiltersArg`""
+    }
+
+    if ($ExcludedClasses.Length -gt 0)
+    {
+        $local:excludedClassesFilters = $ExcludedClasses | ForEach-Object { "-{0}" -f $_ }
+        $local:classFiltersArg = $local:excludedClassesFilters -join ";"
+
+        $local:args += "`"-classfilters:$local:classFiltersArg`""
     }
 
     try

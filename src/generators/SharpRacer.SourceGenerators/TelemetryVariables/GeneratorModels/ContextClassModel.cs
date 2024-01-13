@@ -5,27 +5,34 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct ContextClassModel : IEquatable<ContextClassModel>
+public readonly struct ContextClassModel : IEquatable<ContextClassModel>
 {
     public ContextClassModel(ContextClassInfo classInfo, ImmutableArray<ContextVariableModel> variables)
     {
-        TypeName = classInfo.ClassName;
-        TypeNamespace = classInfo.ClassNamespace;
+        ClassName = classInfo.ClassName;
+        ClassNamespace = classInfo.ClassNamespace;
         Variables = variables.GetEmptyIfDefault();
     }
 
-    public readonly string TypeName { get; }
-    public readonly string TypeNamespace { get; }
+    public ContextClassModel(string className, string classNamespace, ImmutableArray<ContextVariableModel> variables)
+    {
+        ClassName = className;
+        ClassNamespace = classNamespace;
+        Variables = variables.GetEmptyIfDefault();
+    }
+
+    public readonly string ClassName { get; }
+    public readonly string ClassNamespace { get; }
     public readonly ImmutableArray<ContextVariableModel> Variables { get; }
 
     public SyntaxToken ClassIdentifier()
     {
-        return Identifier(TypeName);
+        return Identifier(ClassName);
     }
 
     public IdentifierNameSyntax ClassIdentifierName()
     {
-        return IdentifierName(TypeName);
+        return IdentifierName(ClassName);
     }
 
     public override bool Equals(object obj)
@@ -35,8 +42,8 @@ internal readonly struct ContextClassModel : IEquatable<ContextClassModel>
 
     public bool Equals(ContextClassModel other)
     {
-        return StringComparer.Ordinal.Equals(TypeName, other.TypeName) &&
-            StringComparer.Ordinal.Equals(TypeNamespace, other.TypeNamespace) &&
+        return StringComparer.Ordinal.Equals(ClassName, other.ClassName) &&
+            StringComparer.Ordinal.Equals(ClassNamespace, other.ClassNamespace) &&
             Variables.SequenceEqualDefaultTolerant(other.Variables);
     }
 
@@ -44,8 +51,8 @@ internal readonly struct ContextClassModel : IEquatable<ContextClassModel>
     {
         var hc = new HashCode();
 
-        hc.Add(TypeName);
-        hc.Add(TypeNamespace);
+        hc.Add(ClassName);
+        hc.Add(ClassNamespace);
 
         if (!Variables.IsDefault)
         {

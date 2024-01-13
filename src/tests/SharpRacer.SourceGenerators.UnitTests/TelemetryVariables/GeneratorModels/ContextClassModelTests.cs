@@ -6,6 +6,8 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class ContextClassModelTests
 {
+    public static TheoryData<ContextClassModel, ContextClassModel> InequalityData => ModelInequalityData.ContextClassModelData();
+
     [Fact]
     public void Ctor_Test()
     {
@@ -17,8 +19,22 @@ public class ContextClassModelTests
 
         var model = new ContextClassModel(classInfo, contextVariableModels);
 
-        Assert.Equal(className, model.TypeName);
-        Assert.Equal(classNamespace, model.TypeNamespace);
+        Assert.Equal(className, model.ClassName);
+        Assert.Equal(classNamespace, model.ClassNamespace);
+        Assert.False(model.Variables.IsDefault);
+        Assert.Empty(model.Variables);
+    }
+
+    [Fact]
+    public void Ctor_FromStringsTest()
+    {
+        var className = "MyContext";
+        var classNamespace = "TestAssembly.Variables";
+
+        var model = new ContextClassModel(className, classNamespace, []);
+
+        Assert.Equal(className, model.ClassName);
+        Assert.Equal(classNamespace, model.ClassNamespace);
         Assert.False(model.Variables.IsDefault);
         Assert.Empty(model.Variables);
     }
@@ -77,6 +93,13 @@ public class ContextClassModelTests
         EquatableStructAssert.NotEqual(model1, default);
         EquatableStructAssert.ObjectEqualsMethod(false, model1, int.MinValue);
         EquatableStructAssert.Equal<ContextClassModel>(default, default);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(ContextClassModel model1, ContextClassModel model2)
+    {
+        EquatableStructAssert.NotEqual(model1, model2);
     }
 
     private static ContextClassInfo CreateContextClassInfo(string className, string classNamespace)

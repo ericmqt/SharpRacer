@@ -36,7 +36,7 @@ internal static class VariableClassGenerator
 
         return ClassDeclaration(model.ClassName)
             .WithKeyword(Token(SyntaxKind.ClassKeyword))
-            .WithModifiers(model.ClassAccesibility(), false, model.IsClassPartial)
+            .WithModifiers(model.ClassAccessibility(), false, model.IsClassPartial)
             .WithBaseList(baseTypeList)
             .WithMembers(classMembers);
     }

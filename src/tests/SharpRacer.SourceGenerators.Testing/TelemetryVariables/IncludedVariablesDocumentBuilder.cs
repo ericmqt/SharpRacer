@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.Testing.Text;
 
 namespace SharpRacer.SourceGenerators.Testing.TelemetryVariables;
@@ -35,5 +36,22 @@ public class IncludedVariablesDocumentBuilder
         var jsonSourceText = new JsonSourceText(json);
 
         return new AdditionalTextFile(documentPath, jsonSourceText);
+    }
+
+    public IncludedVariablesFile ToIncludedVariablesFile(string documentPath)
+    {
+        var fileName = new IncludedVariablesFileName(Path.GetFileName(documentPath));
+
+        return ToIncludedVariablesFile(documentPath, fileName);
+    }
+
+    public IncludedVariablesFile ToIncludedVariablesFile(string documentPath, IncludedVariablesFileName fileName)
+    {
+        var json = JsonSerializer.Serialize(_variableNames);
+
+        var jsonSourceText = new JsonSourceText(json);
+        var additionalText = new AdditionalTextFile(documentPath, jsonSourceText);
+
+        return new IncludedVariablesFile(fileName, additionalText, jsonSourceText);
     }
 }

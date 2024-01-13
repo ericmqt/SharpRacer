@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct VariableClassModel : IEquatable<VariableClassModel>
+public readonly struct VariableClassModel : IEquatable<VariableClassModel>
 {
     private readonly string _descriptorFieldName;
     private readonly string? _variableValueUnit;
@@ -79,7 +79,7 @@ internal readonly struct VariableClassModel : IEquatable<VariableClassModel>
         return SimpleBaseType(baseType);
     }
 
-    public readonly Accessibility ClassAccesibility()
+    public readonly Accessibility ClassAccessibility()
     {
         return IsClassInternal ? Accessibility.Internal : Accessibility.Public;
     }

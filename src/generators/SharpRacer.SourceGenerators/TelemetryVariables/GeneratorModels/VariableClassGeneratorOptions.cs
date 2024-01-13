@@ -1,4 +1,6 @@
-﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+
+namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClassGeneratorOptions>
 {
     public VariableClassGeneratorOptions(
@@ -6,7 +8,10 @@ internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClas
         string targetNamespace)
     {
         IsGeneratorEnabled = isGeneratorEnabled;
-        TargetNamespace = !string.IsNullOrEmpty(targetNamespace) ? targetNamespace : "SharpRacer.Telemetry.Variables.Generated";
+
+        TargetNamespace = !string.IsNullOrEmpty(targetNamespace)
+            ? targetNamespace
+            : GeneratorConfigurationDefaults.TelemetryVariableClassesNamespace;
 
         ClassNameFormat = "{0}Variable";
     }
@@ -41,5 +46,15 @@ internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClas
         hc.Add(ClassNameFormat);
 
         return hc.ToHashCode();
+    }
+
+    public static bool operator ==(VariableClassGeneratorOptions left, VariableClassGeneratorOptions right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(VariableClassGeneratorOptions left, VariableClassGeneratorOptions right)
+    {
+        return !left.Equals(right);
     }
 }

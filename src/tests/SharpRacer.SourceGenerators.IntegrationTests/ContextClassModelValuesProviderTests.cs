@@ -85,8 +85,8 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
 
         var result = (ContextClassModelsResult)stepOutput.Value;
 
-        Assert.Equal("Test.Assembly", result.Model.TypeNamespace);
-        Assert.Equal("TelemetryVariables", result.Model.TypeName);
+        Assert.Equal("Test.Assembly", result.Model.ClassNamespace);
+        Assert.Equal("TelemetryVariables", result.Model.ClassName);
         Assert.Empty(result.Diagnostics);
         Assert.Equal(2, result.Model.Variables.Length);
     }
@@ -122,8 +122,8 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
 
         var result = (ContextClassModelsResult)stepOutput.Value;
 
-        Assert.Equal("Test.Assembly", result.Model.TypeNamespace);
-        Assert.Equal("TelemetryVariables", result.Model.TypeName);
+        Assert.Equal("Test.Assembly", result.Model.ClassNamespace);
+        Assert.Equal("TelemetryVariables", result.Model.ClassName);
         Assert.Empty(result.Diagnostics);
         Assert.Single(result.Model.Variables);
         Assert.Single(result.Model.Variables, x => x.VariableModel.VariableName == "SessionTime");

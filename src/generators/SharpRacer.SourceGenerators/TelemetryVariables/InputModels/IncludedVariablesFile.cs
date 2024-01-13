@@ -6,7 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFile>
+public readonly struct IncludedVariablesFile : IEquatable<IncludedVariablesFile>
 {
     private readonly bool _isInitialized;
 

@@ -3,7 +3,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
-internal readonly struct VariableOptions : IEquatable<VariableOptions>
+public readonly struct VariableOptions : IEquatable<VariableOptions>
 {
     public VariableOptions(string variableKey)
     {
@@ -16,7 +16,7 @@ internal readonly struct VariableOptions : IEquatable<VariableOptions>
     }
 
     public VariableOptions(string variableKey, string? name, string? className)
-        : this (variableKey)
+        : this(variableKey)
     {
         Name = name;
         ClassName = className;
@@ -30,7 +30,7 @@ internal readonly struct VariableOptions : IEquatable<VariableOptions>
         VariableKey = jsonVariableOptions.Key;
         VariableKeyLocation = variableKeyLocation;
         ValueLocation = valueLocation;
-        
+
         ClassName = jsonVariableOptions.Value.ClassName;
         Name = jsonVariableOptions.Value.Name;
     }

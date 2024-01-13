@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct IncludedVariables : IEquatable<IncludedVariables>
+public readonly struct IncludedVariables : IEquatable<IncludedVariables>
 {
     private readonly bool _isInitialized;
 

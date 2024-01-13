@@ -70,4 +70,26 @@ public class MSBuildPropertyValueTests
         var falsePropertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "false");
         Assert.False(falsePropertyValue.GetBooleanOrDefault(true));
     }
+
+    [Fact]
+    public void GetValueOrDefault_DoesNotExistTest()
+    {
+        var propertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null);
+
+        Assert.Null(propertyValue.Value);
+        Assert.False(propertyValue.Exists);
+
+        Assert.Equal("defaultValue", propertyValue.GetValueOrDefault("defaultValue"));
+    }
+
+    [Fact]
+    public void GetValueOrDefault_ExistsTest()
+    {
+        var propertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "Test");
+
+        Assert.NotNull(propertyValue.Value);
+        Assert.True(propertyValue.Exists);
+
+        Assert.Equal("Test", propertyValue.GetValueOrDefault("defaultValue"));
+    }
 }

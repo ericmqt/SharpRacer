@@ -1,5 +1,7 @@
-﻿namespace SharpRacer.SourceGenerators;
-public readonly struct NamespaceIdentifier : IEquatable<NamespaceIdentifier>
+﻿using Microsoft.CodeAnalysis;
+
+namespace SharpRacer.SourceGenerators;
+public readonly struct NamespaceIdentifier : IEquatable<NamespaceIdentifier>, IEquatable<INamespaceSymbol>
 {
     private readonly string _namespace;
 
@@ -28,6 +30,16 @@ public readonly struct NamespaceIdentifier : IEquatable<NamespaceIdentifier>
     public bool Equals(NamespaceIdentifier other)
     {
         return StringComparer.Ordinal.Equals(_namespace, other._namespace);
+    }
+
+    public bool Equals(INamespaceSymbol namespaceSymbol)
+    {
+        if (_namespace == null)
+        {
+            return false;
+        }
+
+        return namespaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat).Equals(ToGlobalQualifiedName());
     }
 
     public override int GetHashCode()

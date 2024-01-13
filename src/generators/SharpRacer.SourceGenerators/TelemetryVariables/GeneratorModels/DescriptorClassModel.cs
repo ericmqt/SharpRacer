@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
+public readonly struct DescriptorClassModel : IEquatable<DescriptorClassModel>
 {
     public DescriptorClassModel(string typeName, string typeNamespace, Location generatorAttributeLocation)
     {

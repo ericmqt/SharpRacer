@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct IncludedVariableNameValue : IEquatable<IncludedVariableNameValue>
+public readonly struct IncludedVariableNameValue : IEquatable<IncludedVariableNameValue>
 {
     [JsonConstructor]
     public IncludedVariableNameValue(string variableName)

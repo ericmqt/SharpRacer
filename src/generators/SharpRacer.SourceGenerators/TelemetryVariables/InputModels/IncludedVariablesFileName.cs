@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct IncludedVariablesFileName : IEquatable<IncludedVariablesFileName>
+public readonly struct IncludedVariablesFileName : IEquatable<IncludedVariablesFileName>
 {
     private readonly string _fileName;
     private readonly bool _isInitialized;

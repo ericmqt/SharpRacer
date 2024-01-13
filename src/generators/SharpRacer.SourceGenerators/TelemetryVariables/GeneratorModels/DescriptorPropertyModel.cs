@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct DescriptorPropertyModel : IEquatable<DescriptorPropertyModel>
+public readonly struct DescriptorPropertyModel : IEquatable<DescriptorPropertyModel>
 {
     public DescriptorPropertyModel(string propertyName, string propertyXmlSummary, VariableModel variableModel)
     {

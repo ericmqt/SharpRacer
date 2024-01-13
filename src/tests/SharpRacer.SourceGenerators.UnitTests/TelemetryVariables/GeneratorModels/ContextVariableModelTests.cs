@@ -5,6 +5,8 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class ContextVariableModelTests
 {
+    public static TheoryData<ContextVariableModel, ContextVariableModel> InequalityData => ModelInequalityData.ContextVariableModelData();
+
     [Fact]
     public void Ctor_ArrayTest()
     {
@@ -169,9 +171,26 @@ public class ContextVariableModelTests
         EquatableStructAssert.Equal(model1, model2);
         EquatableStructAssert.NotEqual(model1, default);
         EquatableStructAssert.ObjectEqualsMethod(false, model1, int.MaxValue);
+
+        model1 = new ContextVariableModel(variableModel, propertyName, propertyXmlSummary, null, null);
+        model2 = new ContextVariableModel(variableModel, propertyName, propertyXmlSummary, null, null);
+
+        EquatableStructAssert.Equal(model1, model2);
+
+        model1 = new ContextVariableModel(variableModel, propertyName, propertyXmlSummary, classRef, null);
+        model2 = new ContextVariableModel(variableModel, propertyName, propertyXmlSummary, classRef, null);
+
+        EquatableStructAssert.Equal(model1, model2);
     }
 
-    [Fact]
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(ContextVariableModel model1, ContextVariableModel model2)
+    {
+        EquatableStructAssert.NotEqual(model1, model2);
+    }
+
+    /*[Fact]
     public void Equals_DifferentValuesTest()
     {
         var variableInfo1 = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
@@ -214,6 +233,12 @@ public class ContextVariableModelTests
         model2 = new ContextVariableModel(variableModel1, "Test1", "this is test1", null, descriptorRef2);
 
         EquatableStructAssert.NotEqual(model1, model2);
+
+        // Same class refs, different descriptor refs
+        model1 = new ContextVariableModel(variableModel1, "Test1", "this is test1", classRef1, descriptorRef1);
+        model2 = new ContextVariableModel(variableModel1, "Test1", "this is test1", classRef1, descriptorRef2);
+
+        EquatableStructAssert.NotEqual(model1, model2);
     }
 
     [Fact]
@@ -232,7 +257,7 @@ public class ContextVariableModelTests
         var model2 = new ContextVariableModel(variableModel2, propertyName, propertyXmlSummary, null, null);
 
         EquatableStructAssert.NotEqual(model1, model2);
-    }
+    }*/
 
     [Fact]
     public void PropertyIdentifier_Test()

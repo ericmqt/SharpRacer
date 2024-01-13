@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
+public readonly struct ContextClassInfo : IEquatable<ContextClassInfo>
 {
     public ContextClassInfo(INamedTypeSymbol classSymbol, Location generatorAttributeLocation)
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
+public readonly struct IncludedVariableName : IEquatable<IncludedVariableName>
 {
     public IncludedVariableName(string variableName, Location sourceLocation)
     {
