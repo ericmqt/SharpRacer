@@ -11,6 +11,9 @@ namespace SharpRacer.SourceGenerators;
 [Generator(LanguageNames.CSharp)]
 public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 {
+    public static string ToolName = "SharpRacer.SourceGenerators";
+    public static string ToolVersion = "0.1.0.0";
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var generatorConfiguration = GeneratorConfigurationValueProvider.GetValueProvider(context.AnalyzerConfigOptionsProvider);

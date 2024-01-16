@@ -96,7 +96,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
-[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
+[GenerateDataVariablesContext(""Assets\\TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -105,7 +105,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
             .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
 
         var includedVariables1 = IncludedVariablesDocumentBuilder.FromNames("SessionTime")
-            .ToAdditionalTextFile("TelemetryVariables_VariableNames.json");
+            .ToAdditionalTextFile("Assets\\TelemetryVariables_VariableNames.json");
 
         var runResult = new VariablesGeneratorBuilder()
             .WithAdditionalText(variablesText)

@@ -86,17 +86,6 @@ public class DescriptorPropertyReferenceTests
     }
 
     [Fact]
-    public void GlobalQualifiedTypeName_Test()
-    {
-        var descriptorClassName = "MyDescriptors";
-        var descriptorClassNamespace = "TestApp.Variables";
-
-        var propertyRef = new DescriptorPropertyReference("Test", "TestProperty", descriptorClassName, descriptorClassNamespace);
-
-        Assert.Equal($"global::{descriptorClassNamespace}.{descriptorClassName}", propertyRef.GlobalQualifiedTypeName().ToFullString());
-    }
-
-    [Fact]
     public void StaticPropertyMemberAccess_Test()
     {
         var propertyName = "TestProperty";

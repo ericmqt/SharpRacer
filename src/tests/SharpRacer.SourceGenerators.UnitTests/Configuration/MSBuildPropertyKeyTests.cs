@@ -7,31 +7,32 @@ public class MSBuildPropertyKeyTests
         var key1 = MSBuildPropertyKey.FromPropertyName("MyProperty");
         var key2 = MSBuildPropertyKey.FromPropertyName("MyProperty");
 
-        Assert.True(key1.Equals(key2));
-        Assert.True(key2.Equals(key1));
-
-        Assert.True(key1.Equals((object)key2));
-        Assert.False(key1.Equals(DateTime.Now));
-
-        Assert.True(key1 == key2);
-        Assert.False(key1 != key2);
-
-        Assert.Equal(key1.GetHashCode(), key2.GetHashCode());
+        EquatableStructAssert.Equal(key1, key2);
     }
 
     [Fact]
-    public void Equals_DefaultTest()
+    public void Equals_DefaultValueTest()
     {
         var key1 = MSBuildPropertyKey.FromPropertyName("MyProperty");
-        var key2 = default(MSBuildPropertyKey);
 
-        Assert.False(key1.Equals(key2));
-        Assert.False(key2.Equals(key1));
+        EquatableStructAssert.NotEqual(key1, default);
+    }
 
-        Assert.False(key1 == key2);
-        Assert.True(key1 != key2);
+    [Fact]
+    public void Equals_InequalityTest()
+    {
+        var key1 = MSBuildPropertyKey.FromPropertyName("MyProperty1");
+        var key2 = MSBuildPropertyKey.FromPropertyName("MyProperty2");
 
-        Assert.NotEqual(key1.GetHashCode(), key2.GetHashCode());
+        EquatableStructAssert.NotEqual(key1, key2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var key1 = MSBuildPropertyKey.FromPropertyName("MyProperty");
+
+        EquatableStructAssert.ObjectEqualsMethod(false, key1, int.MaxValue);
     }
 
     [Fact]

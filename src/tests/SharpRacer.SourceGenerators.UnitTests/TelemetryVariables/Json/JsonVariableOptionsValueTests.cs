@@ -1,6 +1,8 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 public class JsonVariableOptionsValueTests
 {
+    public static TheoryData<JsonVariableOptionsValue, JsonVariableOptionsValue> InequalityData => ModelInequalityData.JsonVariableOptionsValueData();
+
     [Fact]
     public void Ctor_Test()
     {
@@ -22,21 +24,21 @@ public class JsonVariableOptionsValueTests
         var optionsValue1 = new JsonVariableOptionsValue(name, className);
         var optionsValue2 = new JsonVariableOptionsValue(name, className);
 
-        Assert.True(optionsValue1 == optionsValue2);
-        Assert.False(optionsValue1 != optionsValue2);
-        Assert.True(optionsValue1.Equals(optionsValue2));
-        Assert.Equal(optionsValue1.GetHashCode(), optionsValue2.GetHashCode());
+        EquatableStructAssert.Equal(optionsValue1, optionsValue2);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(JsonVariableOptionsValue options1, JsonVariableOptionsValue options2)
+    {
+        EquatableStructAssert.NotEqual(options1, options2);
     }
 
     [Fact]
-    public void Equals_UnequalTest()
+    public void Equals_WrongObjectTypeTest()
     {
         var options1 = new JsonVariableOptionsValue("Latitude", "LatitudeVariable");
-        var options2 = new JsonVariableOptionsValue("SessionTime", "SessionTimeVariable");
 
-        Assert.False(options1 == options2);
-        Assert.True(options1 != options2);
-        Assert.False(options1.Equals(options2));
-        Assert.NotEqual(options1.GetHashCode(), options2.GetHashCode());
+        EquatableStructAssert.ObjectEqualsMethod(false, options1, int.MaxValue);
     }
 }

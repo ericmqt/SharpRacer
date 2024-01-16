@@ -63,19 +63,6 @@ internal static class VariableContextSyntaxFactory
             .WithBody(Block(bodyStatements));
     }
 
-    public static ParameterListSyntax ConstructorParameterList(string dataVariableProviderParameterName)
-    {
-        if (string.IsNullOrEmpty(dataVariableProviderParameterName))
-        {
-            throw new ArgumentException($"'{nameof(dataVariableProviderParameterName)}' cannot be null or empty.", nameof(dataVariableProviderParameterName));
-        }
-
-        var dataVariableInfoProviderParameter = Parameter(Identifier(dataVariableProviderParameterName))
-            .WithType(SharpRacerTypes.IDataVariableInfoProvider());
-
-        return ParameterList(SingletonSeparatedList(dataVariableInfoProviderParameter));
-    }
-
     public static MethodDeclarationSyntax EnumerateVariablesMethod(ref readonly ContextClassModel model)
     {
         var dataVariableType = IdentifierName(SharpRacerIdentifiers.IDataVariable);

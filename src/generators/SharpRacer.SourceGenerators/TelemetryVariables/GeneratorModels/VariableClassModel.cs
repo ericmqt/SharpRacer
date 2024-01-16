@@ -1,6 +1,5 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -98,14 +97,9 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
     {
         if (DescriptorPropertyReference != null)
         {
-            var descriptorAccessExpr = MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                DescriptorPropertyReference.Value.GlobalQualifiedTypeName(),
-                IdentifierName(DescriptorPropertyReference.Value.PropertyName));
-
             return VariableClassSyntaxFactory.DescriptorStaticFieldFromDescriptorReferenceDeclaration(
                 DescriptorFieldIdentifier(),
-                descriptorAccessExpr);
+                DescriptorPropertyReference.Value.StaticPropertyMemberAccess());
         }
 
         return VariableClassSyntaxFactory.DescriptorStaticField(

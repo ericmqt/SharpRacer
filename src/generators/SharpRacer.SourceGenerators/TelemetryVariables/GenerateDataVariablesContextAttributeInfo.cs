@@ -4,33 +4,20 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 internal static class GenerateDataVariablesContextAttributeInfo
 {
-    internal static string VariablesFileNamePropertyName = "IncludedVariableNamesFile";
-
     internal static IncludedVariablesFileName GetIncludedVariablesFileNameOrDefault(AttributeData attributeData)
     {
-        var fileNameArg = FindIncludedVariableNamesFileArgumentValue(attributeData);
+        var fileNameArg = attributeData.ConstructorArguments.FirstOrDefault();
 
-        if (string.IsNullOrWhiteSpace(fileNameArg))
+        if (fileNameArg.Value is not string fileNameArgValue)
         {
             return default;
         }
 
-        return new IncludedVariablesFileName(fileNameArg!);
-    }
-
-    internal static string? FindIncludedVariableNamesFileArgumentValue(AttributeData attributeData)
-    {
-        var fileNameArg = attributeData.ConstructorArguments.FirstOrDefault();
-
-        if (fileNameArg.Value is string fileNameArgValue)
+        if (string.IsNullOrWhiteSpace(fileNameArgValue))
         {
-            // This will resolve paths like 'Assets\TelemetryVariables.json' relative to the project directory so that the path can be
-            // easily compared with AdditionalTexts
-            var fileName = Path.GetFileName(fileNameArgValue);
-
-            return fileName;
+            return default;
         }
 
-        return null;
+        return new IncludedVariablesFileName(fileNameArgValue!);
     }
 }

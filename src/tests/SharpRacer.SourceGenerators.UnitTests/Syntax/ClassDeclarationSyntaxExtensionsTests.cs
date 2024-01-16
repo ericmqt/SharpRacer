@@ -18,8 +18,13 @@ public class ClassDeclarationSyntaxExtensionsTests
             ));
 
         Assert.True(decl.HasAttributes());
+    }
 
-        decl = ClassDeclaration("Foo");
+    [Fact]
+    public void HasAttributes_NoAttributesTest()
+    {
+        var decl = ClassDeclaration("Foo");
+
         Assert.False(decl.HasAttributes());
     }
 
@@ -34,7 +39,11 @@ public class ClassDeclarationSyntaxExtensionsTests
                     ]));
 
         Assert.True(partialClassDecl.IsPartialClass());
+    }
 
+    [Fact]
+    public void IsPartialClass_NoPartialModifierTest()
+    {
         var publicNonPartialClassDecl = ClassDeclaration(Identifier("Foo"))
             .WithModifiers(
                 TokenList([Token(SyntaxKind.PublicKeyword)]));
@@ -53,7 +62,11 @@ public class ClassDeclarationSyntaxExtensionsTests
                     ]));
 
         Assert.True(classDecl.IsStaticClass());
+    }
 
+    [Fact]
+    public void IsStaticClass_NoStaticModifierTest()
+    {
         var publicNonStaticClassDecl = ClassDeclaration(Identifier("Foo"))
             .WithModifiers(
                 TokenList([Token(SyntaxKind.PublicKeyword)]));
@@ -73,40 +86,17 @@ public class ClassDeclarationSyntaxExtensionsTests
                     ]));
 
         Assert.True(staticPartialClassDecl.IsStaticPartialClass());
+    }
 
-        var classDecl = ClassDeclaration(Identifier("Foo"))
-            .WithModifiers(
-                TokenList([
-                    Token(SyntaxKind.PublicKeyword),
-                    Token(SyntaxKind.StaticKeyword)
-                    ]));
-
-        Assert.False(classDecl.IsStaticPartialClass());
-
-        var partialClassDecl = ClassDeclaration(Identifier("Foo"))
-            .WithModifiers(
-                TokenList([
-                    Token(SyntaxKind.PublicKeyword),
-                    Token(SyntaxKind.PartialKeyword)
-                    ]));
-
-        Assert.False(classDecl.IsStaticPartialClass());
-
-        var publicClassDecl = ClassDeclaration(Identifier("Foo"))
-            .WithModifiers(
-                TokenList([
-                    Token(SyntaxKind.PublicKeyword)
-                    ]));
-
-        Assert.False(classDecl.IsStaticPartialClass());
-
-        var noModifiersClassDecl = ClassDeclaration(Identifier("Foo"));
-
+    [Theory]
+    [MemberData(nameof(NotStaticPartialClassData))]
+    public void IsStaticPartialClass_NotStaticPartialClassTest(ClassDeclarationSyntax classDecl)
+    {
         Assert.False(classDecl.IsStaticPartialClass());
     }
 
     [Theory]
-    [MemberData(nameof(GetModifiersAndStaticPartialInputData))]
+    [MemberData(nameof(WithModifiers_AccessibilityStaticPartialData))]
     public void WithModifiers_Test(Accessibility accessibility, bool isStatic, bool isPartial)
     {
         var classDecl = ClassDeclaration(Identifier("Foo"))
@@ -148,9 +138,34 @@ public class ClassDeclarationSyntaxExtensionsTests
         Assert.Throws<ArgumentNullException>(() => node.WithModifiers(Accessibility.Public, false, true));
     }
 
-    public static IEnumerable<object[]> GetModifiersAndStaticPartialInputData()
+    public static TheoryData<ClassDeclarationSyntax> NotStaticPartialClassData()
     {
-        var data = new List<object[]>();
+        var data = new TheoryData<ClassDeclarationSyntax>();
+
+        var classDecl = ClassDeclaration(Identifier("Foo"));
+
+        // No modifiers
+        data.Add(classDecl);
+
+        // Public, not partial or static
+        data.Add(classDecl.WithModifiers(TokenList([Token(SyntaxKind.PublicKeyword)])));
+
+        // Public partial, not static
+        data.Add(classDecl.WithModifiers(TokenList([
+            Token(SyntaxKind.PublicKeyword),
+            Token(SyntaxKind.PartialKeyword)])));
+
+        // Public static, not partial
+        data.Add(classDecl.WithModifiers(TokenList([
+            Token(SyntaxKind.PublicKeyword),
+            Token(SyntaxKind.StaticKeyword)])));
+
+        return data;
+    }
+
+    public static TheoryData<Accessibility, bool, bool> WithModifiers_AccessibilityStaticPartialData()
+    {
+        var data = new TheoryData<Accessibility, bool, bool>();
 
         var accessibilityValues = new List<Accessibility>()
         {
@@ -163,12 +178,13 @@ public class ClassDeclarationSyntaxExtensionsTests
 
         foreach (var accessibility in accessibilityValues)
         {
-            data.AddRange([
-                [accessibility, false, false],
-                [accessibility, false, true],
-                [accessibility, true, true],
-                [accessibility, true, false]
-            ]);
+            foreach (var isStatic in (bool[])[false, true])
+            {
+                foreach (var isPartial in (bool[])[false, true])
+                {
+                    data.Add(accessibility, isStatic, isPartial);
+                }
+            }
         }
 
         return data;

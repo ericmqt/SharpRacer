@@ -18,7 +18,7 @@ internal static class ContextClassGenerator
 
         var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry.Variables")));
 
-        var namespaceDecl = NamespaceDeclaration(IdentifierName(model.ClassNamespace))
+        var namespaceDecl = NamespaceDeclaration(ParseName(model.ClassNamespace))
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
@@ -111,11 +111,11 @@ internal static class ContextClassGenerator
         {
             if (!string.IsNullOrEmpty(deprecatingPropertyName))
             {
-                return $"Telemetry variable '{deprecatedVariableName}' is deprecated by variable '{deprecatedVariableName}'. Use context " +
+                return $"Telemetry variable '{deprecatedVariableName}' is deprecated by variable '{deprecatingVariableName}'. Use context " +
                     $"property '{deprecatingPropertyName}' instead.";
             }
 
-            return $"Telemetry variable '{deprecatedVariableName}' is deprecated by variable '{deprecatedVariableName}'.";
+            return $"Telemetry variable '{deprecatedVariableName}' is deprecated by variable '{deprecatingVariableName}'.";
         }
 
         return $"Telemetry variable '{deprecatedVariableName}' is deprecated.";

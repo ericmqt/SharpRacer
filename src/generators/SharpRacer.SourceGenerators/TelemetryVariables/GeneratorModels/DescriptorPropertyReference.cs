@@ -47,16 +47,13 @@ public readonly struct DescriptorPropertyReference : IEquatable<DescriptorProper
     public readonly string PropertyName { get; }
     public readonly string VariableName { get; }
 
-    public NameSyntax GlobalQualifiedTypeName()
-    {
-        return ParseName($"global::{DescriptorClassNamespace}.{DescriptorClassName}");
-    }
-
     public MemberAccessExpressionSyntax StaticPropertyMemberAccess()
     {
+        var descriptorClassExpr = (MemberAccessExpressionSyntax)ParseExpression($"global::{DescriptorClassNamespace}.{DescriptorClassName}");
+
         return MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
-            GlobalQualifiedTypeName(),
+            descriptorClassExpr,
             IdentifierName(PropertyName));
     }
 

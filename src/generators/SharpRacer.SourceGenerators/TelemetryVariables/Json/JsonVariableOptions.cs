@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
-public readonly struct JsonVariableOptions
+public readonly struct JsonVariableOptions : IEquatable<JsonVariableOptions>
 {
     public JsonVariableOptions(string key, TextSpan keySpan, JsonVariableOptionsValue value, TextSpan valueSpan)
     {
@@ -39,7 +39,7 @@ public readonly struct JsonVariableOptions
     {
         var hc = new HashCode();
 
-        hc.Add(Key, StringComparer.Ordinal);
+        hc.Add(Key);
         hc.Add(KeySpan);
         hc.Add(Value);
         hc.Add(ValueSpan);

@@ -11,7 +11,7 @@ internal class VariableInfoCollectionConverter : JsonConverter<ImmutableArray<Va
     {
         if (reader.TokenType != JsonTokenType.StartArray)
         {
-            throw new JsonException();
+            throw new JsonException($"Expected token type '{JsonTokenType.StartArray}'");
         }
 
         var builder = ImmutableArray.CreateBuilder<VariableInfo>();
@@ -25,14 +25,14 @@ internal class VariableInfoCollectionConverter : JsonConverter<ImmutableArray<Va
 
             if (reader.TokenType != JsonTokenType.StartObject)
             {
-                throw new JsonException();
+                throw new JsonException($"Expected token type '{JsonTokenType.StartObject}'");
             }
 
             var objStart = (int)reader.TokenStartIndex;
 
             var variableInfo = JsonSerializer.Deserialize(ref reader, TelemetryGeneratorSerializationContext.Default.VariableInfo);
 
-            var objSpan = GetTextSpanFromStartToCurrentPosition(objStart, ref reader);
+            var objSpan = new TextSpan(objStart, (int)reader.BytesConsumed - objStart);
 
             variableInfo = variableInfo.WithJsonSpan(objSpan);
 
@@ -52,22 +52,5 @@ internal class VariableInfoCollectionConverter : JsonConverter<ImmutableArray<Va
         }
 
         writer.WriteEndArray();
-    }
-
-    private TextSpan GetTextSpanFromStartToCurrentPosition(int start, ref Utf8JsonReader reader)
-    {
-        var currentPosition = (int)reader.BytesConsumed;
-
-        if (start > currentPosition)
-        {
-            throw new ArgumentOutOfRangeException(nameof(start), $"Value '{nameof(start)}' cannot be greater than the current position.");
-        }
-
-        if (start == currentPosition)
-        {
-            return new TextSpan(start, 1);
-        }
-
-        return new TextSpan(start, currentPosition - start);
     }
 }

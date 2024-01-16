@@ -19,12 +19,34 @@ internal class XmlDocumentationTriviaBuilder
 
     public XmlDocumentationTriviaBuilder Exception(CrefSyntax exceptionCref, Action<XmlElementContentBuilder> configure)
     {
-        var nodes = new List<XmlNodeSyntax>();
-
-        var builder = new XmlElementContentBuilder(nodes);
+        var builder = new XmlElementContentBuilder();
         configure(builder);
 
+        var nodes = builder.Build();
         _exceptions.Add(XmlExceptionElement(exceptionCref, FormatMultiLineContent(nodes)));
+
+        return this;
+    }
+
+    public XmlDocumentationTriviaBuilder Param(string parameterName, string text)
+    {
+        var paramElement = XmlParamElement(parameterName, FormatMultiLineContent([XmlText(text)]));
+
+        _params.Add(paramElement);
+
+        return this;
+    }
+
+    public XmlDocumentationTriviaBuilder Param(string parameterName, Action<XmlElementContentBuilder> configure)
+    {
+        var builder = new XmlElementContentBuilder();
+        configure(builder);
+
+        var nodes = builder.Build();
+
+        var paramElement = XmlParamElement(parameterName, FormatMultiLineContent(nodes));
+
+        _params.Add(paramElement);
 
         return this;
     }
@@ -38,11 +60,10 @@ internal class XmlDocumentationTriviaBuilder
 
     public XmlDocumentationTriviaBuilder Remarks(Action<XmlElementContentBuilder> configure)
     {
-        var nodes = new List<XmlNodeSyntax>();
-
-        var builder = new XmlElementContentBuilder(nodes);
+        var builder = new XmlElementContentBuilder();
         configure(builder);
 
+        var nodes = builder.Build();
         _remarks = XmlRemarksElement(FormatMultiLineContent(nodes));
 
         return this;
@@ -57,10 +78,10 @@ internal class XmlDocumentationTriviaBuilder
 
     public XmlDocumentationTriviaBuilder Summary(Action<XmlElementContentBuilder> configure)
     {
-        var nodes = new List<XmlNodeSyntax>();
-
-        var builder = new XmlElementContentBuilder(nodes);
+        var builder = new XmlElementContentBuilder();
         configure(builder);
+
+        var nodes = builder.Build();
 
         _summary = XmlSummaryElement(FormatMultiLineContent(nodes));
 

@@ -63,4 +63,38 @@ public class VariableInfoCollectionConverterTests
         Assert.Equal(variable1, readVariable1);
         Assert.Equal(variable2, readVariable2);
     }
+
+    [Fact]
+    public void Read_ThrowJsonExceptionIfFirstTokenIsNotStartArrayTest()
+    {
+        var converter = new VariableInfoCollectionConverter();
+
+        var ex = Assert.Throws<JsonException>(() =>
+        {
+            ReadOnlySpan<byte> json = Encoding.UTF8.GetBytes("{ \"test\" }");
+            var reader = new Utf8JsonReader(json);
+            reader.Read();
+
+            converter.Read(ref reader, typeof(VariableInfo), new JsonSerializerOptions());
+        });
+
+        Assert.Equal($"Expected token type '{JsonTokenType.StartArray}'", ex.Message);
+    }
+
+    [Fact]
+    public void Read_ThrowJsonExceptionIfValueStartTokenIsNotStartObjectTest()
+    {
+        var converter = new VariableInfoCollectionConverter();
+
+        var ex = Assert.Throws<JsonException>(() =>
+        {
+            ReadOnlySpan<byte> json = Encoding.UTF8.GetBytes("[ [\"test\"] ]");
+            var reader = new Utf8JsonReader(json);
+            reader.Read();
+
+            converter.Read(ref reader, typeof(VariableInfo), new JsonSerializerOptions());
+        });
+
+        Assert.Equal($"Expected token type '{JsonTokenType.StartObject}'", ex.Message);
+    }
 }

@@ -3,6 +3,8 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 public class JsonVariableOptionsTests
 {
+    public static TheoryData<JsonVariableOptions, JsonVariableOptions> InequalityData => ModelInequalityData.JsonVariableOptionsData();
+
     [Fact]
     public void Ctor_Test()
     {
@@ -36,8 +38,15 @@ public class JsonVariableOptionsTests
         Assert.Equal(options1.GetHashCode(), options2.GetHashCode());
     }
 
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(JsonVariableOptions options1, JsonVariableOptions options2)
+    {
+        EquatableStructAssert.NotEqual(options1, options2);
+    }
+
     [Fact]
-    public void Equals_UnequalTest()
+    public void Equals_WrongObjectTypeTest()
     {
         var options1 = new JsonVariableOptions(
             "Lat",
@@ -45,15 +54,6 @@ public class JsonVariableOptionsTests
             new JsonVariableOptionsValue("Latitude", "LatitudeVariable"),
             new TextSpan(220, 256));
 
-        var options2 = new JsonVariableOptions(
-            "SessionTime",
-            new TextSpan(200, 3),
-            new JsonVariableOptionsValue("SessionTime", "SessionTimeVariable"),
-            new TextSpan(220, 256));
-
-        Assert.False(options1 == options2);
-        Assert.True(options1 != options2);
-        Assert.False(options1.Equals(options2));
-        Assert.NotEqual(options1.GetHashCode(), options2.GetHashCode());
+        EquatableStructAssert.ObjectEqualsMethod(false, options1, int.MaxValue);
     }
 }

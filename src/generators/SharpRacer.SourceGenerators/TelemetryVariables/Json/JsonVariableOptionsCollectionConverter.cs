@@ -10,7 +10,7 @@ internal class JsonVariableOptionsCollectionConverter : JsonConverter<ImmutableA
     {
         if (reader.TokenType != JsonTokenType.StartObject)
         {
-            throw new JsonException();
+            throw new JsonException($"Expected token type '{JsonTokenType.StartObject}'");
         }
 
         var builder = ImmutableArray.CreateBuilder<JsonVariableOptions>();
@@ -48,11 +48,6 @@ internal class JsonVariableOptionsCollectionConverter : JsonConverter<ImmutableA
 
     private string ReadOptionsKey(ref Utf8JsonReader reader, out TextSpan keySpan)
     {
-        if (reader.TokenType != JsonTokenType.PropertyName)
-        {
-            throw new JsonException();
-        }
-
         var keyStart = (int)reader.TokenStartIndex;
         var key = reader.GetString();
 
@@ -61,40 +56,25 @@ internal class JsonVariableOptionsCollectionConverter : JsonConverter<ImmutableA
             throw new JsonException("Expected key that is not null or empty.");
         }
 
-        keySpan = GetTextSpanFromStartToCurrentPosition(keyStart, ref reader);
+        keySpan = new TextSpan(keyStart, (int)reader.BytesConsumed - keyStart);
 
         return key!;
     }
 
     private JsonVariableOptionsValue ReadOptionsValue(ref Utf8JsonReader reader, out TextSpan valueSpan)
     {
-        if (!reader.Read() || reader.TokenType != JsonTokenType.StartObject)
+        reader.Read();
+
+        if (reader.TokenType != JsonTokenType.StartObject)
         {
-            throw new JsonException();
+            throw new JsonException($"Expected token type '{JsonTokenType.StartObject}'");
         }
 
         var valueStart = (int)reader.TokenStartIndex;
         var value = JsonSerializer.Deserialize(ref reader, TelemetryGeneratorSerializationContext.Default.JsonVariableOptionsValue);
 
-        valueSpan = GetTextSpanFromStartToCurrentPosition(valueStart, ref reader);
+        valueSpan = new TextSpan(valueStart, (int)reader.BytesConsumed - valueStart);
 
         return value;
-    }
-
-    private TextSpan GetTextSpanFromStartToCurrentPosition(int start, ref Utf8JsonReader reader)
-    {
-        var currentPosition = (int)reader.BytesConsumed;
-
-        if (start > currentPosition)
-        {
-            throw new ArgumentOutOfRangeException(nameof(start), $"Value '{nameof(start)}' cannot be greater than the current position.");
-        }
-
-        if (start == currentPosition)
-        {
-            return new TextSpan(start, 1);
-        }
-
-        return new TextSpan(start, currentPosition - start);
     }
 }

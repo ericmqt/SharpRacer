@@ -30,16 +30,16 @@ public readonly struct JsonLocationFactory
         }
 
         var lineNumber = (int)jsonException.LineNumber.Value;
-        var exLinePositionStart = (int)jsonException.BytePositionInLine.GetValueOrDefault();
+        var linePositionStart = (int)jsonException.BytePositionInLine.GetValueOrDefault();
 
         var sourceLine = _sourceText.Lines[lineNumber];
         LinePositionSpan linePositionSpan;
 
-        if (sourceLine.Span.Length >= exLinePositionStart + 1)
+        if (sourceLine.Span.Length >= linePositionStart + 1)
         {
             linePositionSpan = new LinePositionSpan(
-                new LinePosition(lineNumber, exLinePositionStart),
-                new LinePosition(lineNumber, exLinePositionStart + 1));
+                new LinePosition(lineNumber, linePositionStart),
+                new LinePosition(lineNumber, linePositionStart + 1));
         }
         else
         {

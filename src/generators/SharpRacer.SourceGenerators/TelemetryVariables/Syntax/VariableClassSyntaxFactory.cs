@@ -161,9 +161,4 @@ internal static class VariableClassSyntaxFactory
                 ReturnStatement(createClassInstanceExpr))))
             .WithLeadingTrivia(Trivia(xmlDoc));
     }
-
-    public static BaseTypeSyntax ICreateDataVariableInterfaceBaseType(IdentifierNameSyntax selfTypeArgument)
-    {
-        return SimpleBaseType(SharpRacerTypes.ICreateDataVariableInterfaceType(selfTypeArgument));
-    }
 }

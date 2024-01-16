@@ -11,7 +11,7 @@ internal class IncludedVariableNameValueCollectionConverter : JsonConverter<Immu
     {
         if (reader.TokenType != JsonTokenType.StartArray)
         {
-            throw new JsonException();
+            throw new JsonException($"Expected token type '{JsonTokenType.StartArray}'");
         }
 
         var builder = ImmutableArray.CreateBuilder<IncludedVariableNameValue>();
@@ -38,32 +38,16 @@ internal class IncludedVariableNameValueCollectionConverter : JsonConverter<Immu
     {
         if (reader.TokenType != JsonTokenType.String)
         {
-            throw new JsonException();
+            throw new JsonException($"Expected token type '{JsonTokenType.String}'");
         }
 
         var objStart = (int)reader.TokenStartIndex;
 
-        var includedVariableName = reader.GetString() ?? string.Empty;
+        // With check for TokenType == JsonTokenType.String above, GetString() won't return null
+        var includedVariableName = reader.GetString()!;
 
-        var objSpan = GetTextSpanFromStartToCurrentPosition(objStart, ref reader);
+        var objSpan = new TextSpan(objStart, (int)reader.BytesConsumed - objStart);
 
         return new IncludedVariableNameValue(includedVariableName, objSpan);
-    }
-
-    private TextSpan GetTextSpanFromStartToCurrentPosition(int start, ref Utf8JsonReader reader)
-    {
-        var currentPosition = (int)reader.BytesConsumed;
-
-        if (start > currentPosition)
-        {
-            throw new ArgumentOutOfRangeException(nameof(start), $"Value '{nameof(start)}' cannot be greater than the current position.");
-        }
-
-        if (start == currentPosition)
-        {
-            return new TextSpan(start, 1);
-        }
-
-        return new TextSpan(start, currentPosition - start);
     }
 }

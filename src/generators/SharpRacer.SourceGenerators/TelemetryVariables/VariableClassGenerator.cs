@@ -16,11 +16,11 @@ internal static class VariableClassGenerator
         var classDecl = CreateClassDeclaration(in model, cancellationToken);
         var requiredUsings = GetRequiredUsingNamespaces(in model);
 
-        var namespaceDecl = NamespaceDeclaration(IdentifierName(model.ClassNamespace))
+        var namespaceDecl = NamespaceDeclaration(ParseName(model.ClassNamespace))
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
-        var usingDirectives = requiredUsings.OrderBy(x => x).Select(x => UsingDirective(IdentifierName(x)));
+        var usingDirectives = requiredUsings.OrderBy(x => x).Select(x => UsingDirective(ParseName(x)));
 
         return CompilationUnit()
             .WithUsings(new SyntaxList<UsingDirectiveSyntax>(usingDirectives))

@@ -8,7 +8,7 @@ namespace SharpRacer.SourceGenerators.Syntax;
 internal static class SyntaxFactoryHelpers
 {
     public static AttributeSyntax GeneratedCodeAttribute()
-        => GeneratedCodeAttribute("SharpRacer.SourceGenerators", "0.1.0.0");
+        => GeneratedCodeAttribute("SharpRacer.SourceGenerators", TelemetryVariablesGenerator.ToolVersion);
 
     public static AttributeSyntax GeneratedCodeAttribute(string tool, string version)
     {

@@ -1,6 +1,8 @@
 ﻿namespace SharpRacer.SourceGenerators.Configuration;
 public class MSBuildPropertyValueTests
 {
+    public static TheoryData<MSBuildPropertyValue, MSBuildPropertyValue> InequalityData => GetInequalityData();
+
     [Fact]
     public void Ctor_ExistsTest()
     {
@@ -19,8 +21,15 @@ public class MSBuildPropertyValueTests
         var key = MSBuildPropertyKey.FromPropertyName("MyProperty");
         var propertyValue = new MSBuildPropertyValue(key, null);
 
+        Assert.Equal(key, propertyValue.PropertyKey);
         Assert.Null(propertyValue.Value);
         Assert.False(propertyValue.Exists);
+    }
+
+    [Fact]
+    public void Ctor_ThrowOnDefaultPropertyKeyArgTest()
+    {
+        Assert.Throws<ArgumentException>(() => new MSBuildPropertyValue(default, null));
     }
 
     [Fact]
@@ -29,46 +38,70 @@ public class MSBuildPropertyValueTests
         var propertyValue1 = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "Test");
         var propertyValue2 = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "Test");
 
-        Assert.True(propertyValue1.Equals(propertyValue2));
-        Assert.True(propertyValue1.Equals((object)propertyValue2));
-        Assert.False(propertyValue1.Equals(DateTime.Now));
-
-        Assert.True(propertyValue1 == propertyValue2);
-        Assert.False(propertyValue1 != propertyValue2);
-
-        Assert.Equal(propertyValue1.GetHashCode(), propertyValue2.GetHashCode());
+        EquatableStructAssert.Equal(propertyValue1, propertyValue2);
     }
 
     [Fact]
-    public void Equals_DefaultTest()
+    public void Equals_PropertyDoesNotExistTest()
     {
-        var propertyValue1 = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "Test");
-        var propertyValue2 = default(MSBuildPropertyValue);
+        var propertyValue1 = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null);
+        var propertyValue2 = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null);
 
-        Assert.False(propertyValue1.Equals(propertyValue2));
-        Assert.False(propertyValue2.Equals(propertyValue1));
+        EquatableStructAssert.Equal(propertyValue1, propertyValue2);
+    }
 
-        Assert.False(propertyValue1 == propertyValue2);
-        Assert.True(propertyValue1 != propertyValue2);
-
-        Assert.NotEqual(propertyValue1.GetHashCode(), propertyValue2.GetHashCode());
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(MSBuildPropertyValue propertyValue1, MSBuildPropertyValue propertyValue2)
+    {
+        EquatableStructAssert.NotEqual(propertyValue1, propertyValue2);
     }
 
     [Fact]
-    public void GetBooleanOrDefault_Test()
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var propertyValue1 = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null);
+
+        EquatableStructAssert.ObjectEqualsMethod(false, propertyValue1, int.MaxValue);
+    }
+
+    [Fact]
+    public void GetBooleanOrDefault_NonBooleanValueTest()
     {
         var stringPropertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "Test");
         Assert.False(stringPropertyValue.GetBooleanOrDefault(false));
+    }
 
-        var notExistsPropertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null);
-        Assert.False(notExistsPropertyValue.GetBooleanOrDefault(false));
-        Assert.True(notExistsPropertyValue.GetBooleanOrDefault(true));
+    [Fact]
+    public void GetBooleanOrDefault_PropertyDoesNotExistTest()
+    {
+        var propertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null);
 
-        var truePropertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "true");
-        Assert.True(truePropertyValue.GetBooleanOrDefault(false));
+        Assert.Null(propertyValue.Value);
+        Assert.False(propertyValue.Exists);
 
-        var falsePropertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "false");
-        Assert.False(falsePropertyValue.GetBooleanOrDefault(true));
+        Assert.False(propertyValue.GetBooleanOrDefault(false));
+        Assert.True(propertyValue.GetBooleanOrDefault(true));
+    }
+
+    [Fact]
+    public void GetBooleanOrDefault_PropertyHasFalseValueTest()
+    {
+        var propertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "false");
+
+        Assert.NotNull(propertyValue.Value);
+        Assert.True(propertyValue.Exists);
+        Assert.False(propertyValue.GetBooleanOrDefault(true));
+    }
+
+    [Fact]
+    public void GetBooleanOrDefault_PropertyHasTrueValueTest()
+    {
+        var propertyValue = new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "true");
+
+        Assert.NotNull(propertyValue.Value);
+        Assert.True(propertyValue.Exists);
+        Assert.True(propertyValue.GetBooleanOrDefault(false));
     }
 
     [Fact]
@@ -92,4 +125,32 @@ public class MSBuildPropertyValueTests
 
         Assert.Equal("Test", propertyValue.GetValueOrDefault("defaultValue"));
     }
+
+    private static TheoryData<MSBuildPropertyValue, MSBuildPropertyValue> GetInequalityData()
+        => new TheoryData<MSBuildPropertyValue, MSBuildPropertyValue>()
+        {
+            // Value and default value
+            {
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "test"),
+                default
+            },
+
+            // Different property keys
+            {
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty1"), null),
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty2"), null)
+            },
+
+            // Same property keys, one value exists, one does not
+            {
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "test"),
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), null)
+            },
+
+            // Same property keys, values differ
+            {
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "test1"),
+                new MSBuildPropertyValue(MSBuildPropertyKey.FromPropertyName("MyProperty"), "test2")
+            }
+        };
 }

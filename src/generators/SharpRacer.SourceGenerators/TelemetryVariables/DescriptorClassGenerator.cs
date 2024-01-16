@@ -16,11 +16,11 @@ internal static class DescriptorClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var xmlDoc = XmlDocumentationFactory.CreateDocumentationCommentTrivia(
-            XmlDocumentationFactory.Summary(
-                XmlText("Provides "),
-                XmlSeeElement(TypeCref(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.Qualified))),
-                XmlText(" values that describe telemetry variables.")));
+        var xmlDoc = new XmlDocumentationTriviaBuilder()
+            .Summary(b =>
+                b.Text("Provides ").See(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.Qualified))
+                .Text(" values that describe telemetry variables."))
+            .ToTrivia();
 
         return ClassDeclaration(model.TypeName)
             .WithKeyword(Token(SyntaxKind.ClassKeyword))
@@ -37,7 +37,7 @@ internal static class DescriptorClassGenerator
 
         var classDecl = CreateClassDeclaration(in model, cancellationToken);
 
-        var namespaceDecl = NamespaceDeclaration(IdentifierName(model.TypeNamespace))
+        var namespaceDecl = NamespaceDeclaration(ParseName(model.TypeNamespace))
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
@@ -70,11 +70,6 @@ internal static class DescriptorClassGenerator
         ref readonly DescriptorPropertyModel descriptorPropertyModel,
         Accessibility accessibility)
     {
-        if (descriptorPropertyModel == default)
-        {
-            throw new ArgumentException($"'{nameof(descriptorPropertyModel)}' cannot be a default value.", nameof(descriptorPropertyModel));
-        }
-
         var objectCreationExpr = DataVariableDescriptorSyntaxFactory.ImplicitNewInstanceExpression(
             descriptorPropertyModel.VariableModel.VariableName,
             descriptorPropertyModel.VariableModel.ValueType,
@@ -97,8 +92,9 @@ internal static class DescriptorClassGenerator
 
         if (descriptorPropertyModel.PropertyXmlSummary != null)
         {
-            var docTrivia = XmlDocumentationFactory.CreateDocumentationCommentTrivia(
-                XmlDocumentationFactory.Summary(XmlText(descriptorPropertyModel.PropertyXmlSummary)));
+            var docTrivia = new XmlDocumentationTriviaBuilder()
+                .Summary(descriptorPropertyModel.PropertyXmlSummary)
+                .ToTrivia();
 
             decl = decl.WithLeadingTrivia(Trivia(docTrivia));
         }

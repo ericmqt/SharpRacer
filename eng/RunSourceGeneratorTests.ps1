@@ -56,7 +56,10 @@ if ($UnitTests)
             -OutputDirectory $script:UnitTestsReportPath `
             -ReportTitle "SharpRacer.SourceGenerators Unit Test Results" `
             -ExcludedAssemblies @("SharpRacer") `
-            -ExcludedClasses @("SharpRacer.SourceGenerators.TelemetryVariablesGenerator", "SharpRacer.SourceGenerators.TelemetryVariables.Pipeline.*")
+            -ExcludedClasses @(
+                "SharpRacer.SourceGenerators.IncrementalGeneratorInitializationContextExtensions",
+                "SharpRacer.SourceGenerators.TelemetryVariablesGenerator",
+                "SharpRacer.SourceGenerators.TelemetryVariables.Pipeline.*")
     }
 }
 

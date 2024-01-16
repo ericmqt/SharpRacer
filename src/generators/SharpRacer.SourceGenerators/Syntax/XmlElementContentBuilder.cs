@@ -6,9 +6,14 @@ internal class XmlElementContentBuilder
 {
     private readonly List<XmlNodeSyntax> _nodes;
 
-    public XmlElementContentBuilder(List<XmlNodeSyntax> nodes)
+    public XmlElementContentBuilder()
     {
-        _nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
+        _nodes = new List<XmlNodeSyntax>();
+    }
+
+    public IList<XmlNodeSyntax> Build()
+    {
+        return _nodes;
     }
 
     public XmlElementContentBuilder Langword(string langword)
@@ -37,12 +42,6 @@ internal class XmlElementContentBuilder
             XmlTextNewLine("\n"),
             XmlTextNewLine("\n"),
             XmlTextLiteral(" "));
-
-        /*_nodes.Add(XmlNewLine("\n"));
-        _nodes.Add(XmlNewLine("\n"));
-        _nodes.Add(XmlText("-OR-"));
-        _nodes.Add(XmlNewLine("\n"));
-        _nodes.Add(XmlNewLine("\n"));*/
 
         _nodes.Add(node);
 

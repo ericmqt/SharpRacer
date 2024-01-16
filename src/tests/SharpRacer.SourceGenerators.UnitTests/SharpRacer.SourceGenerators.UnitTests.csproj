@@ -34,4 +34,12 @@
 		<ProjectReference Include="..\SharpRacer.SourceGenerators.Testing\SharpRacer.SourceGenerators.Testing.csproj" />
 	</ItemGroup>
 
+    <Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+        <ItemGroup>
+            <ReferencePath Condition="'%(FileName)' == 'System.Memory'">
+                <Aliases>SystemMemory</Aliases>
+            </ReferencePath>
+        </ItemGroup>
+    </Target>
+
 </Project>

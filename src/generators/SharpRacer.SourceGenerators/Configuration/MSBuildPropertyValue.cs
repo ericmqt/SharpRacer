@@ -2,14 +2,13 @@
 
 public readonly struct MSBuildPropertyValue : IEquatable<MSBuildPropertyValue>
 {
-    private readonly bool _isInitialized;
-
     public MSBuildPropertyValue(MSBuildPropertyKey propertyKey, string? value)
     {
-        PropertyKey = propertyKey;
-        Value = value;
+        PropertyKey = propertyKey != default
+            ? propertyKey
+            : throw new ArgumentException($"'{nameof(propertyKey)}' cannot be a default value.", nameof(propertyKey));
 
-        _isInitialized = true;
+        Value = value;
     }
 
     public bool Exists => !string.IsNullOrWhiteSpace(Value);
@@ -38,11 +37,6 @@ public readonly struct MSBuildPropertyValue : IEquatable<MSBuildPropertyValue>
 
     public bool Equals(MSBuildPropertyValue other)
     {
-        if (!_isInitialized)
-        {
-            return !other._isInitialized;
-        }
-
         return PropertyKey == other.PropertyKey && StringComparer.Ordinal.Equals(Value, other.Value);
     }
 
@@ -50,13 +44,8 @@ public readonly struct MSBuildPropertyValue : IEquatable<MSBuildPropertyValue>
     {
         var hc = new HashCode();
 
-        if (!_isInitialized)
-        {
-            return hc.ToHashCode();
-        }
-
         hc.Add(PropertyKey);
-        hc.Add(Value, StringComparer.Ordinal);
+        hc.Add(Value);
 
         return hc.ToHashCode();
     }

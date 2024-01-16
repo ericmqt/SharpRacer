@@ -2,14 +2,10 @@
 
 public readonly struct MSBuildPropertyKey : IEquatable<MSBuildPropertyKey>
 {
-    private readonly bool _isInitialized;
-
     private MSBuildPropertyKey(string key, string propertyName)
     {
         Key = key;
         PropertyName = propertyName;
-
-        _isInitialized = true;
     }
 
     public readonly string PropertyName { get; }
@@ -32,22 +28,12 @@ public readonly struct MSBuildPropertyKey : IEquatable<MSBuildPropertyKey>
 
     public bool Equals(MSBuildPropertyKey other)
     {
-        if (!_isInitialized)
-        {
-            return !other._isInitialized;
-        }
-
         return StringComparer.OrdinalIgnoreCase.Equals(Key, other.Key);
     }
 
     public override int GetHashCode()
     {
-        if (!_isInitialized)
-        {
-            return 0;
-        }
-
-        return Key.GetHashCode();
+        return HashCode.Combine(Key);
     }
 
     public static bool operator ==(MSBuildPropertyKey left, MSBuildPropertyKey right)

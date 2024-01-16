@@ -7,6 +7,57 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 public class JsonVariableOptionsCollectionConverterTests
 {
     [Fact]
+    public void Read_ThrowJsonExceptionIfFirstTokenIsNotStartObjectTest()
+    {
+        var converter = new JsonVariableOptionsCollectionConverter();
+
+        var ex = Assert.Throws<JsonException>(() =>
+        {
+            ReadOnlySpan<byte> json = Encoding.UTF8.GetBytes("[ { \"test\" } ]");
+            var reader = new Utf8JsonReader(json);
+            reader.Read();
+
+            converter.Read(ref reader, typeof(JsonVariableOptions), new JsonSerializerOptions());
+        });
+
+        Assert.Equal($"Expected token type '{JsonTokenType.StartObject}'", ex.Message);
+    }
+
+    [Fact]
+    public void Read_ThrowJsonExceptionIfKeyIsNullOrEmptyTest()
+    {
+        var converter = new JsonVariableOptionsCollectionConverter();
+
+        var ex = Assert.Throws<JsonException>(() =>
+        {
+            ReadOnlySpan<byte> json = Encoding.UTF8.GetBytes("{ \"\": {} }");
+            var reader = new Utf8JsonReader(json);
+            reader.Read();
+
+            converter.Read(ref reader, typeof(JsonVariableOptions), new JsonSerializerOptions());
+        });
+
+        Assert.Equal("Expected key that is not null or empty.", ex.Message);
+    }
+
+    [Fact]
+    public void Read_ThrowJsonExceptionIfOptionsValueFirstTokenIsNotStartObjectTest()
+    {
+        var converter = new JsonVariableOptionsCollectionConverter();
+
+        var ex = Assert.Throws<JsonException>(() =>
+        {
+            ReadOnlySpan<byte> json = Encoding.UTF8.GetBytes("{ \"Test\": [] }");
+            var reader = new Utf8JsonReader(json);
+            reader.Read();
+
+            converter.Read(ref reader, typeof(JsonVariableOptions), new JsonSerializerOptions());
+        });
+
+        Assert.Equal($"Expected token type '{JsonTokenType.StartObject}'", ex.Message);
+    }
+
+    [Fact]
     public void Write_Test()
     {
         var options1 = CreateOptions(

@@ -8,6 +8,15 @@ public class SyntaxFactoryHelpersTests
     [Fact]
     public static void GeneratedCodeAttribute_Test()
     {
+        var attr = SyntaxFactoryHelpers.GeneratedCodeAttribute().NormalizeWhitespace().ToFullString();
+
+        var expected = $"System.CodeDom.Compiler.GeneratedCodeAttribute(\"{TelemetryVariablesGenerator.ToolName}\", \"{TelemetryVariablesGenerator.ToolVersion}\")";
+        Assert.Equal(expected, attr);
+    }
+
+    [Fact]
+    public static void GeneratedCodeAttribute_WithToolNameAndVersionArgsTest()
+    {
         string toolName = "SharpRacer.SourceGenerators.UnitTests";
         string toolVersion = "1.2.3.4";
 
