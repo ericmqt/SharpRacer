@@ -4,20 +4,28 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public readonly struct IncludedVariablesFileName : IEquatable<IncludedVariablesFileName>
 {
     private readonly string _fileName;
-    private readonly bool _isInitialized;
 
     public IncludedVariablesFileName(string fileName)
     {
         _fileName = !string.IsNullOrEmpty(fileName)
             ? fileName
             : throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
+    }
 
-        _isInitialized = true;
+    public static IncludedVariablesFileName CreateOrGetDefault(string? fileName)
+    {
+        if (string.IsNullOrEmpty(fileName))
+        {
+            return default;
+        }
+
+        return new IncludedVariablesFileName(fileName!);
     }
 
     public bool IsMatch(AdditionalText additionalText)
     {
-        if (!_isInitialized)
+        // Return false if uninitialized
+        if (_fileName == null)
         {
             return false;
         }
@@ -32,26 +40,12 @@ public readonly struct IncludedVariablesFileName : IEquatable<IncludedVariablesF
 
     public bool Equals(IncludedVariablesFileName other)
     {
-        if (!_isInitialized)
-        {
-            return !other._isInitialized;
-        }
-
         return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()
     {
-        var hc = new HashCode();
-
-        if (!_isInitialized)
-        {
-            return hc.ToHashCode();
-        }
-
-        hc.Add(_fileName, StringComparer.Ordinal);
-
-        return hc.ToHashCode();
+        return HashCode.Combine(_fileName);
     }
 
     public static bool operator ==(IncludedVariablesFileName lhs, IncludedVariablesFileName rhs)
@@ -66,11 +60,6 @@ public readonly struct IncludedVariablesFileName : IEquatable<IncludedVariablesF
 
     public static implicit operator string(IncludedVariablesFileName fileName)
     {
-        if (!fileName._isInitialized)
-        {
-            return string.Empty;
-        }
-
-        return fileName._fileName;
+        return fileName._fileName ?? string.Empty;
     }
 }

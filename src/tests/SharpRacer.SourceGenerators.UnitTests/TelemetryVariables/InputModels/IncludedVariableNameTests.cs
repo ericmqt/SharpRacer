@@ -45,10 +45,8 @@ public class IncludedVariableNameTests
             new TextSpan(2, 3),
             new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
 
-        var name = "Lat";
-
-        var includedVariable1 = new IncludedVariableName(name, location);
-        var includedVariable2 = new IncludedVariableName(name, location);
+        var includedVariable1 = new IncludedVariableName("Lat", location);
+        var includedVariable2 = new IncludedVariableName("Lat", location);
 
         EquatableStructAssert.Equal(includedVariable1, includedVariable2);
     }
@@ -61,15 +59,20 @@ public class IncludedVariableNameTests
             new TextSpan(2, 3),
             new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
 
-        var name = "Lat";
-
-        var includedVariable1 = new IncludedVariableName(name, location);
+        var includedVariable1 = new IncludedVariableName("Lat", location);
 
         EquatableStructAssert.NotEqual(includedVariable1, default);
     }
 
+    [Theory]
+    [MemberData(nameof(GetInequalityData))]
+    public void Equals_InequalityTest(IncludedVariableName includedVariable1, IncludedVariableName includedVariable2)
+    {
+        EquatableStructAssert.NotEqual(includedVariable1, includedVariable2);
+    }
+
     [Fact]
-    public void Equals_UnequalTest()
+    public void EqualsObject_WrongObjectTypeTest()
     {
         var location = Location.Create(
             "test.txt",
@@ -77,9 +80,7 @@ public class IncludedVariableNameTests
             new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
 
         var includedVariable1 = new IncludedVariableName("Lat", location);
-        var includedVariable2 = new IncludedVariableName("Lon", location);
 
-        EquatableStructAssert.NotEqual(includedVariable1, includedVariable2);
         EquatableStructAssert.ObjectEqualsMethod(false, includedVariable1, location);
     }
 
@@ -94,5 +95,28 @@ public class IncludedVariableNameTests
         Assert.Equal(name, includedVariable1.Value);
 
         Assert.Equal(string.Empty, default(IncludedVariableName));
+    }
+
+    public static TheoryData<IncludedVariableName, IncludedVariableName> GetInequalityData()
+    {
+        var location = Location.Create(
+            "test.txt",
+            new TextSpan(2, 3),
+            new LinePositionSpan(new LinePosition(0, 2), new LinePosition(0, 3)));
+
+        return new TheoryData<IncludedVariableName, IncludedVariableName>()
+        {
+            // Value
+            {
+                new IncludedVariableName("Test1", location),
+                new IncludedVariableName("Test2", location)
+            },
+
+            // Location
+            {
+                new IncludedVariableName("Test", location),
+                new IncludedVariableName("Test", Location.None)
+            }
+        };
     }
 }

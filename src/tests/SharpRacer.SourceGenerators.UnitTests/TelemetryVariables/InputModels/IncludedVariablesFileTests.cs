@@ -50,11 +50,10 @@ public class IncludedVariablesFileTests
             sourceText!);
 
         EquatableStructAssert.Equal(includedVariablesFile1, includedVariablesFile2);
-        EquatableStructAssert.ObjectEqualsMethod(false, includedVariablesFile1, DateTime.MinValue);
     }
 
     [Fact]
-    public void Equals_DefaultTest()
+    public void Equals_DefaultValueTest()
     {
         var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
         var sourceText = additionalText.GetText();
@@ -65,9 +64,29 @@ public class IncludedVariablesFileTests
             additionalText,
             sourceText!);
 
-        var includedVariablesFile2 = default(IncludedVariablesFile);
+        EquatableStructAssert.NotEqual(includedVariablesFile1, default);
+    }
 
-        EquatableStructAssert.NotEqual(includedVariablesFile1, includedVariablesFile2);
+    [Theory]
+    [MemberData(nameof(GetInequalityData))]
+    public void Equals_InequalityTest(IncludedVariablesFile file1, IncludedVariablesFile file2)
+    {
+        EquatableStructAssert.NotEqual(file1, file2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var additionalText = new AdditionalTextFile("IncludedVariables.json", "[ \"Test\", \"Test2\" ]");
+        var sourceText = additionalText.GetText();
+        var fileName = new IncludedVariablesFileName("IncludedVariables.json");
+
+        var includedVariablesFile1 = new IncludedVariablesFile(
+            fileName,
+            additionalText,
+            sourceText!);
+
+        EquatableStructAssert.ObjectEqualsMethod(false, includedVariablesFile1, int.MaxValue);
     }
 
     [Fact]
@@ -155,5 +174,34 @@ public class IncludedVariablesFileTests
         Assert.NotNull(readDiagnostic);
         Assert.Equal(DiagnosticIds.AdditionalText_FileReadException, readDiagnostic.Id);
         Assert.Empty(names);
+    }
+
+    public static TheoryData<IncludedVariablesFile, IncludedVariablesFile> GetInequalityData()
+    {
+        // IncludedVariablesFile only determines equality via the FileName and File properties
+
+        var additionalText1 = new AdditionalTextFile("IncludedVariables1.json", "[ \"Test\", \"Test2\" ]");
+        var sourceText1 = additionalText1.GetText()!;
+
+        var additionalText2 = new AdditionalTextFile("IncludedVariables2.json", "[ \"Test\", \"Test2\" ]");
+        var sourceText2 = additionalText1.GetText()!;
+
+        var fileName1 = new IncludedVariablesFileName("IncludedVariables1.json");
+        var fileName2 = new IncludedVariablesFileName("IncludedVariables2.json");
+
+        return new TheoryData<IncludedVariablesFile, IncludedVariablesFile>()
+        {
+            // FileName
+            {
+                new IncludedVariablesFile(fileName1, additionalText1, sourceText1),
+                new IncludedVariablesFile(fileName2, additionalText1, sourceText1)
+            },
+
+            // File
+            {
+                new IncludedVariablesFile(fileName1, additionalText1, sourceText1),
+                new IncludedVariablesFile(fileName1, additionalText2, sourceText2)
+            }
+        };
     }
 }

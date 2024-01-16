@@ -1,5 +1,5 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-internal readonly struct GeneratorConfiguration : IEquatable<GeneratorConfiguration>
+public readonly struct GeneratorConfiguration : IEquatable<GeneratorConfiguration>
 {
     public GeneratorConfiguration(
         VariableInfoFileName variableInfoFileName,

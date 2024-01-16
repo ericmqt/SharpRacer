@@ -25,6 +25,15 @@ public readonly struct VariableOptions : IEquatable<VariableOptions>
         ValueLocation = Location.None;
     }
 
+    public VariableOptions(string variableKey, string? name, string? className, Location variableKeyLocation, Location valueLocation)
+        : this(variableKey)
+    {
+        Name = name;
+        ClassName = className;
+        VariableKeyLocation = variableKeyLocation;
+        ValueLocation = valueLocation;
+    }
+
     public VariableOptions(JsonVariableOptions jsonVariableOptions, Location variableKeyLocation, Location valueLocation)
     {
         VariableKey = jsonVariableOptions.Key;

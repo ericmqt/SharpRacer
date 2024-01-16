@@ -53,7 +53,6 @@ public class VariableInfoFileNameTests
         var fileName2 = new VariableInfoFileName("Foo.bar");
 
         EquatableStructAssert.Equal(fileName1, fileName2);
-        EquatableStructAssert.ObjectEqualsMethod(false, fileName1, int.MinValue);
     }
 
     [Fact]
@@ -65,7 +64,16 @@ public class VariableInfoFileNameTests
     }
 
     [Fact]
-    public void Equals_ObjectTest()
+    public void Equals_InequalityTest()
+    {
+        var fileName1 = new VariableInfoFileName("Foo.bar");
+        var fileName2 = new VariableInfoFileName("Bar.foo");
+
+        EquatableStructAssert.NotEqual(fileName1, fileName2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
     {
         var fileName1 = new VariableInfoFileName("Foo.bar");
         object nonFileNameValue = 56;

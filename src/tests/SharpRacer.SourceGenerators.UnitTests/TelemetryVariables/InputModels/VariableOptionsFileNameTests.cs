@@ -64,7 +64,16 @@ public class VariableOptionsFileNameTests
     }
 
     [Fact]
-    public void Equals_ObjectTest()
+    public void Equals_InequalityTest()
+    {
+        var fileName1 = new VariableOptionsFileName("Foo.bar");
+        var fileName2 = new VariableOptionsFileName("Bar.foo");
+
+        EquatableStructAssert.NotEqual(fileName1, fileName2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
     {
         var fileName1 = new VariableOptionsFileName("Foo.bar");
         object nonFileNameValue = 56;

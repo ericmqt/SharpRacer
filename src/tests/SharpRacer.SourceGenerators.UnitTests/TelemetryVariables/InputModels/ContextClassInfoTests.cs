@@ -1,9 +1,12 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Moq;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public class ContextClassInfoTests
 {
+    public static TheoryData<ContextClassInfo, ContextClassInfo> InequalityData => GetInequalityData();
+
     [Fact]
     public void Ctor_Test()
     {
@@ -31,20 +34,7 @@ public class ContextClassInfoTests
     }
 
     [Fact]
-    public void Equals_WrongTypeObjectTest()
-    {
-        string className = "MyTestClass";
-        string classNamespace = "TestAssembly";
-
-        var typeSymbol1 = CreateContextClassNamedTypeSymbol(className, classNamespace);
-
-        var classInfo1 = new ContextClassInfo(typeSymbol1, Location.None);
-
-        EquatableStructAssert.ObjectEqualsMethod(false, classInfo1, DateTime.MinValue);
-    }
-
-    [Fact]
-    public void Equals_IdenticalValueTest()
+    public void Equals_Test()
     {
         string className = "MyTestClass";
         string classNamespace = "TestAssembly";
@@ -56,7 +46,6 @@ public class ContextClassInfoTests
         var classInfo2 = new ContextClassInfo(typeSymbol2, Location.None);
 
         EquatableStructAssert.Equal(classInfo1, classInfo2);
-        EquatableStructAssert.Equal(classInfo2, classInfo1);
     }
 
     [Fact]
@@ -70,7 +59,41 @@ public class ContextClassInfoTests
         var classInfo1 = new ContextClassInfo(typeSymbol1, Location.None);
 
         EquatableStructAssert.NotEqual(classInfo1, default);
-        EquatableStructAssert.NotEqual(default, classInfo1);
+    }
+
+    [Fact]
+    public void Equals_IncludedVariablesTest()
+    {
+        string className = "MyTestClass";
+        string classNamespace = "TestAssembly";
+
+        var includedVariables = new IncludedVariables([new IncludedVariableName("Test", Location.None)]);
+        var typeSymbol = CreateContextClassNamedTypeSymbol(className, classNamespace);
+
+        var classInfo1 = new ContextClassInfo(typeSymbol, Location.None).WithIncludedVariables(includedVariables);
+        var classInfo2 = new ContextClassInfo(typeSymbol, Location.None).WithIncludedVariables(includedVariables);
+
+        EquatableStructAssert.Equal(classInfo1, classInfo2);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(ContextClassInfo classInfo1, ContextClassInfo classInfo2)
+    {
+        EquatableStructAssert.NotEqual(classInfo1, classInfo2);
+    }
+
+    [Fact]
+    public void Equals_WrongTypeObjectTest()
+    {
+        string className = "MyTestClass";
+        string classNamespace = "TestAssembly";
+
+        var typeSymbol1 = CreateContextClassNamedTypeSymbol(className, classNamespace);
+
+        var classInfo1 = new ContextClassInfo(typeSymbol1, Location.None);
+
+        EquatableStructAssert.ObjectEqualsMethod(false, classInfo1, DateTime.MinValue);
     }
 
     [Fact]
@@ -125,5 +148,53 @@ public class ContextClassInfoTests
             .Returns(classContainingNamespaceSymbol.Object);
 
         return classTypeSymbol.Object;
+    }
+
+    private static TheoryData<ContextClassInfo, ContextClassInfo> GetInequalityData()
+    {
+        var fakeLocation = Location.Create(
+            "test.json",
+            new TextSpan(10, 20),
+            new LinePositionSpan(new LinePosition(1, 2), new LinePosition(4, 5)));
+
+        var includedVariables1 = new IncludedVariables([new IncludedVariableName("Test", Location.None)]);
+        var includedVariables2 = new IncludedVariables([new IncludedVariableName("TestEx", Location.None)]);
+
+        return new TheoryData<ContextClassInfo, ContextClassInfo>()
+        {
+            // Class name
+            {
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass1", "TestApp.Variables"), Location.None),
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass2", "TestApp.Variables"), Location.None)
+            },
+
+            // Class namespace
+            {
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), Location.None),
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables.Contexts"), Location.None)
+            },
+
+            // Location
+            {
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), Location.None),
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), fakeLocation)
+            },
+
+            // IncludedVariables, one is default
+            {
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), Location.None)
+                    .WithIncludedVariables(includedVariables1),
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), Location.None)
+                    .WithIncludedVariables(default)
+            },
+
+            // IncludedVariables, different includes
+            {
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), Location.None)
+                    .WithIncludedVariables(includedVariables1),
+                new ContextClassInfo(CreateContextClassNamedTypeSymbol("TestClass", "TestApp.Variables"), Location.None)
+                    .WithIncludedVariables(includedVariables2)
+            },
+        };
     }
 }

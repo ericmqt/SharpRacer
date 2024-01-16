@@ -6,8 +6,6 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class ContextClassModelTests
 {
-    public static TheoryData<ContextClassModel, ContextClassModel> InequalityData => ModelInequalityData.ContextClassModelData();
-
     [Fact]
     public void Ctor_Test()
     {
@@ -96,7 +94,7 @@ public class ContextClassModelTests
     }
 
     [Theory]
-    [MemberData(nameof(InequalityData))]
+    [MemberData(nameof(GetInequalityData))]
     public void Equals_InequalityTest(ContextClassModel model1, ContextClassModel model2)
     {
         EquatableStructAssert.NotEqual(model1, model2);
@@ -117,5 +115,39 @@ public class ContextClassModelTests
             .Returns(classContainingNamespaceSymbol.Object);
 
         return new ContextClassInfo(classTypeSymbol.Object, Location.None);
+    }
+
+    public static TheoryData<ContextClassModel, ContextClassModel> GetInequalityData()
+    {
+        var data = new TheoryData<ContextClassModel, ContextClassModel>()
+        {
+            // Type name
+            {
+                new ContextClassModel("MyContext", "Test.App.Contexts", []),
+                new ContextClassModel("MyContext2", "Test.App.Contexts", [])
+            },
+
+            // Type namespace
+            {
+                new ContextClassModel("MyContext", "Test.App.Contexts", []),
+                new ContextClassModel("MyContext", "Test.App.Variables.Contexts", [])
+            }
+        };
+
+        // Different variables
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var classRef = new VariableClassReference("Test", "TestVariable", "MyApp.Variables");
+        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
+
+        var propertyName = "Test";
+        var contextVariableModel = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", classRef, descriptorRef);
+
+        data.Add(
+            new ContextClassModel("MyContext", "Test.App.Contexts", []),
+            new ContextClassModel("MyContext", "Test.App.Contexts", [contextVariableModel]));
+
+        return data;
     }
 }

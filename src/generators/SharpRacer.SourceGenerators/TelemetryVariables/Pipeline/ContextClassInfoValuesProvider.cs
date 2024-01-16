@@ -88,7 +88,19 @@ internal static class ContextClassInfoValuesProvider
             return (default, default, diagnostics);
         }
 
-        var includedVariablesFileName = GenerateDataVariablesContextAttributeInfo.GetIncludedVariablesFileNameOrDefault(attributeData);
+        // Get the file name ctor arg
+        IncludedVariablesFileName includedVariablesFileName;
+        var fileNameArg = attributeData.ConstructorArguments.FirstOrDefault();
+
+        if (fileNameArg.Value is string fileNameArgValue)
+        {
+            includedVariablesFileName = IncludedVariablesFileName.CreateOrGetDefault(fileNameArgValue);
+        }
+        else
+        {
+            includedVariablesFileName = default;
+        }
+
         var classInfo = new ContextClassInfo(classDeclarationSymbol, attributeLocation);
 
         return (classInfo, includedVariablesFileName, diagnostics);

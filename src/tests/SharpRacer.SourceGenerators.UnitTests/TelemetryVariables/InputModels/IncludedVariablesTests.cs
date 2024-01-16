@@ -34,17 +34,42 @@ public class IncludedVariablesTests
         ]);
 
         EquatableStructAssert.Equal(includes1, includes2);
-        EquatableStructAssert.ObjectEqualsMethod(false, includes1, int.MinValue);
     }
 
     [Fact]
-    public void Equals_DefaultTest()
+    public void Equals_DefaultValueTest()
     {
         var includes1 = new IncludedVariables([
-           new IncludedVariableName("Test", Location.None),
+            new IncludedVariableName("Test", Location.None),
             new IncludedVariableName("Test2", Location.None)
         ]);
 
         EquatableStructAssert.NotEqual(includes1, default);
+    }
+
+    [Fact]
+    public void Equals_InequalityTest()
+    {
+        var includes1 = new IncludedVariables([
+            new IncludedVariableName("Test", Location.None),
+            new IncludedVariableName("Test2", Location.None)
+        ]);
+
+        var includes2 = new IncludedVariables([
+            new IncludedVariableName("TestEx", Location.None)
+        ]);
+
+        EquatableStructAssert.NotEqual(includes1, includes2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var includes1 = new IncludedVariables([
+            new IncludedVariableName("Test", Location.None),
+            new IncludedVariableName("Test2", Location.None)
+        ]);
+
+        EquatableStructAssert.ObjectEqualsMethod(false, includes1, int.MinValue);
     }
 }

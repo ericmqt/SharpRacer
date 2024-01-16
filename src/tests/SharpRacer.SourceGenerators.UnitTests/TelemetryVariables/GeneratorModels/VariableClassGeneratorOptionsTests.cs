@@ -34,31 +34,51 @@ public class VariableClassGeneratorOptionsTests
     }
 
     [Fact]
-    public void Equals_IdenticalValuesTest()
+    public void Equals_Test()
     {
         var generatorOptions1 = new VariableClassGeneratorOptions(true, "Test.Variables");
         var generatorOptions2 = new VariableClassGeneratorOptions(true, "Test.Variables");
 
         EquatableStructAssert.Equal(generatorOptions1, generatorOptions2);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueTest()
+    {
+        var generatorOptions1 = new VariableClassGeneratorOptions(true, "Test.Variables");
         EquatableStructAssert.NotEqual(generatorOptions1, default);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInequalityData))]
+    public void Equals_InequalityTest(VariableClassGeneratorOptions options1, VariableClassGeneratorOptions options2)
+    {
+        EquatableStructAssert.NotEqual(options1, options2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var generatorOptions1 = new VariableClassGeneratorOptions(true, "Test.Variables");
+
         EquatableStructAssert.ObjectEqualsMethod(false, generatorOptions1, int.MaxValue);
     }
 
-    [Fact]
-    public void Equals_DifferentGeneratorEnabledValuesTest()
+    public static TheoryData<VariableClassGeneratorOptions, VariableClassGeneratorOptions> GetInequalityData()
     {
-        var generatorOptions1 = new VariableClassGeneratorOptions(true, "Test.Variables");
-        var generatorOptions2 = new VariableClassGeneratorOptions(false, "Test.Variables");
+        return new TheoryData<VariableClassGeneratorOptions, VariableClassGeneratorOptions>()
+        {
+            // IsGeneratorEnabled
+            {
+                new VariableClassGeneratorOptions(true, "Test.Variables"),
+                new VariableClassGeneratorOptions(false, "Test.Variables")
+            },
 
-        EquatableStructAssert.NotEqual(generatorOptions1, generatorOptions2);
-    }
-
-    [Fact]
-    public void Equals_DifferentTargetNamespacesTest()
-    {
-        var generatorOptions1 = new VariableClassGeneratorOptions(true, "Test.Variables");
-        var generatorOptions2 = new VariableClassGeneratorOptions(true, "Test.Variables2");
-
-        EquatableStructAssert.NotEqual(generatorOptions1, generatorOptions2);
+            // Target namespace
+            {
+                new VariableClassGeneratorOptions(true, "Test.Variables1"),
+                new VariableClassGeneratorOptions(true, "Test.Variables2")
+            }
+        };
     }
 }

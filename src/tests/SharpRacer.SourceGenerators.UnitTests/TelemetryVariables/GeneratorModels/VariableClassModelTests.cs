@@ -6,8 +6,6 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class VariableClassModelTests
 {
-    public static TheoryData<VariableClassModel, VariableClassModel> InequalityData => ModelInequalityData.VariableClassModelData();
-
     [Fact]
     public void Ctor_Test()
     {
@@ -277,7 +275,7 @@ public class VariableClassModelTests
     }
 
     [Theory]
-    [MemberData(nameof(InequalityData))]
+    [MemberData(nameof(GetInequalityData))]
     public void Equals_InequalityTest(VariableClassModel model1, VariableClassModel model2)
     {
         EquatableStructAssert.NotEqual(model1, model2);
@@ -361,5 +359,70 @@ public class VariableClassModelTests
         Assert.Single(classModel2.Diagnostics, x => x.Id == DiagnosticIds.VariableClassNameInUse);
 
         EquatableStructAssert.NotEqual(classModel1, classModel2);
+    }
+
+    public static TheoryData<VariableClassModel, VariableClassModel> GetInequalityData()
+    {
+        var data = new TheoryData<VariableClassModel, VariableClassModel>
+        {
+            // Class name
+            { CreateVariableClassModel(className: "Test"), CreateVariableClassModel(className: "Test2") },
+
+            // Namespace
+            { CreateVariableClassModel(classNamespace: "Test.App"), CreateVariableClassModel(classNamespace: "Test.App.Variables") },
+
+            // Variable name
+            { CreateVariableClassModel(variableName: "Test"), CreateVariableClassModel(variableName: "Test2") },
+
+            // Value type
+            { CreateVariableClassModel(valueType: VariableValueType.Float), CreateVariableClassModel(valueType: VariableValueType.Double) },
+
+            // Value count
+            { CreateVariableClassModel(valueCount: 1), CreateVariableClassModel(valueCount: 2) },
+
+            // Value unit
+            { CreateVariableClassModel(valueUnit: "s"), CreateVariableClassModel(valueUnit: "test/s") },
+
+            // IsClassInternal
+            { CreateVariableClassModel(isClassInternal: true), CreateVariableClassModel(isClassInternal: false) },
+
+            // IsClassPartial
+            { CreateVariableClassModel(isClassPartial: true), CreateVariableClassModel(isClassPartial: false) },
+
+            // Non-null descriptor property references
+            {
+                CreateVariableClassModel(descriptorPropertyReferenceFactory: x=> new DescriptorPropertyReference(x, "TestProperty", "MyDescriptors", "Test.App")),
+                CreateVariableClassModel(descriptorPropertyReferenceFactory: x=> new DescriptorPropertyReference(x, "TestProperty2", "MyDescriptors", "Test.App"))
+            },
+
+            // One null descriptor property reference
+            {
+                CreateVariableClassModel(descriptorPropertyReferenceFactory: x=> new DescriptorPropertyReference(x, "TestProperty", "MyDescriptors", "Test.App")),
+                CreateVariableClassModel(descriptorPropertyReferenceFactory: _ => null)
+            }
+        };
+
+        return data;
+    }
+
+    private static VariableClassModel CreateVariableClassModel(
+        string className = "TestClass",
+        string classNamespace = "Test.App.Variables",
+        string variableName = "Test",
+        VariableValueType valueType = VariableValueType.Int,
+        int valueCount = 1,
+        string? valueUnit = null,
+        Func<string, DescriptorPropertyReference?>? descriptorPropertyReferenceFactory = null,
+        bool isClassInternal = false,
+        bool isClassPartial = true)
+    {
+        var variableInfo = new VariableInfo(variableName, valueType, valueCount, "test", valueUnit, false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        DescriptorPropertyReference? descriptorPropertyReference = null;
+
+        descriptorPropertyReference = descriptorPropertyReferenceFactory?.Invoke(variableName);
+
+        return new VariableClassModel(className, classNamespace, variableModel, descriptorPropertyReference, isClassInternal, isClassPartial);
     }
 }

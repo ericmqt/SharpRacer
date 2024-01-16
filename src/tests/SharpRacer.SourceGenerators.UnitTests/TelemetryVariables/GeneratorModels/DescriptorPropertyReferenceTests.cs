@@ -81,8 +81,28 @@ public class DescriptorPropertyReferenceTests
         var propertyRef2 = new DescriptorPropertyReference(variableName, propertyName, descriptorClassName, descriptorClassNamespace);
 
         EquatableStructAssert.Equal(propertyRef1, propertyRef2);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueTest()
+    {
+        var propertyRef1 = new DescriptorPropertyReference("Test", "TestProperty", "MyDescriptors", "TestApp.Variables");
         EquatableStructAssert.NotEqual(propertyRef1, default);
-        EquatableStructAssert.ObjectEqualsMethod(false, propertyRef1, variableName);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInequalityData))]
+    public void Equals_InequalityTest(DescriptorPropertyReference propertyRef1, DescriptorPropertyReference propertyRef2)
+    {
+        EquatableStructAssert.NotEqual(propertyRef1, propertyRef2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var propertyRef1 = new DescriptorPropertyReference("Test", "TestProperty", "MyDescriptors", "TestApp.Variables");
+
+        EquatableStructAssert.ObjectEqualsMethod(false, propertyRef1, int.MaxValue);
     }
 
     [Fact]
@@ -97,5 +117,35 @@ public class DescriptorPropertyReferenceTests
         Assert.Equal(
             $"global::{descriptorClassNamespace}.{descriptorClassName}.{propertyName}",
             propertyRef.StaticPropertyMemberAccess().ToFullString());
+    }
+
+    public static TheoryData<DescriptorPropertyReference, DescriptorPropertyReference> GetInequalityData()
+    {
+        return new TheoryData<DescriptorPropertyReference, DescriptorPropertyReference>()
+        {
+            // VariableName
+            {
+                new DescriptorPropertyReference("Test1", "TestProperty", "MyDescriptors", "TestApp.Variables"),
+                new DescriptorPropertyReference("Test2", "TestProperty", "MyDescriptors", "TestApp.Variables")
+            },
+
+            // PropertyName
+            {
+                new DescriptorPropertyReference("Test", "TestProperty1", "MyDescriptors", "TestApp.Variables"),
+                new DescriptorPropertyReference("Test", "TestProperty2", "MyDescriptors", "TestApp.Variables")
+            },
+
+            // DescriptorClassName
+            {
+                new DescriptorPropertyReference("Test", "TestProperty", "MyDescriptors1", "TestApp.Variables"),
+                new DescriptorPropertyReference("Test", "TestProperty", "MyDescriptors2", "TestApp.Variables")
+            },
+
+            // DescriptorClassNamespace
+            {
+                new DescriptorPropertyReference("Test", "TestProperty", "MyDescriptors", "TestApp.Variables1"),
+                new DescriptorPropertyReference("Test", "TestProperty", "MyDescriptors", "TestApp.Variables2")
+            },
+        };
     }
 }

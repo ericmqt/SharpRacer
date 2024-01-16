@@ -1,8 +1,6 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class VariableClassReferenceTests
 {
-    public static TheoryData<VariableClassReference, VariableClassReference> InequalityData => ModelInequalityData.VariableClassReferenceData();
-
     [Fact]
     public void Ctor_Test()
     {
@@ -46,7 +44,7 @@ public class VariableClassReferenceTests
     }
 
     [Theory]
-    [MemberData(nameof(InequalityData))]
+    [MemberData(nameof(GetInequalityData))]
     public void Equals_InequalityTest(VariableClassReference model1, VariableClassReference model2)
     {
         EquatableStructAssert.NotEqual(model1, model2);
@@ -58,5 +56,29 @@ public class VariableClassReferenceTests
         var classRef = new VariableClassReference("SessionTime", "SessionTimeVariable", "Test.App.Variables");
 
         EquatableStructAssert.ObjectEqualsMethod(false, classRef, int.MaxValue);
+    }
+
+    public static TheoryData<VariableClassReference, VariableClassReference> GetInequalityData()
+    {
+        return new TheoryData<VariableClassReference, VariableClassReference>()
+        {
+            // Variable name
+            {
+                new VariableClassReference("SessionTime", "SessionTimeVariable", "Test.App.Variables"),
+                new VariableClassReference("SessionTick", "SessionTimeVariable", "Test.App.Variables")
+            },
+
+            // Class name
+            {
+                new VariableClassReference("SessionTime", "SessionTimeVariable", "Test.App.Variables"),
+                new VariableClassReference("SessionTime", "TimeVariable", "Test.App.Variables")
+            },
+
+            // Class namespace
+            {
+                new VariableClassReference("SessionTime", "SessionTimeVariable", "Test.App.Variables"),
+                new VariableClassReference("SessionTime", "SessionTimeVariable", "Test.App.Telemetry.Variables")
+            }
+        };
     }
 }

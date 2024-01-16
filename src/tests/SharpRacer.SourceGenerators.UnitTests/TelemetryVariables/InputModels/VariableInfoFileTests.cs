@@ -41,7 +41,6 @@ public class VariableInfoFileTests
         var variableInfoFile2 = new VariableInfoFile(fileName, additionalText, sourceText);
 
         EquatableStructAssert.Equal(variableInfoFile1, variableInfoFile2);
-        EquatableStructAssert.ObjectEqualsMethod(false, variableInfoFile1, sourceText);
     }
 
     [Fact]
@@ -54,6 +53,25 @@ public class VariableInfoFileTests
         var variableInfoFile = new VariableInfoFile(fileName, additionalText, sourceText);
 
         EquatableStructAssert.NotEqual(variableInfoFile, default);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetInequalityData))]
+    public void Equals_InequalityTest(VariableInfoFile file1, VariableInfoFile file2)
+    {
+        EquatableStructAssert.NotEqual(file1, file2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
+    {
+        var fileName = new VariableInfoFileName("Foo.bar");
+        var additionalText = new AdditionalTextFile("Foo.bar", "Hello, world!");
+        var sourceText = additionalText.GetText()!;
+
+        var variableInfoFile = new VariableInfoFile(fileName, additionalText, sourceText);
+
+        EquatableStructAssert.ObjectEqualsMethod(false, variableInfoFile, sourceText);
     }
 
     [Fact]
@@ -133,5 +151,34 @@ public class VariableInfoFileTests
         Assert.True(result.IsEmpty);
         Assert.NotNull(diagnostic);
         Assert.Equal(DiagnosticIds.TelemetryVariablesFileContainsNoVariables, diagnostic.Id);
+    }
+
+    public static TheoryData<VariableInfoFile, VariableInfoFile> GetInequalityData()
+    {
+        // IncludedVariablesFile only determines equality via the FileName and File properties
+
+        var additionalText1 = new AdditionalTextFile("Variables1.json", "[ \"Test\", \"Test2\" ]");
+        var sourceText1 = additionalText1.GetText()!;
+
+        var additionalText2 = new AdditionalTextFile("Variables2.json", "[ \"Test\", \"Test2\" ]");
+        var sourceText2 = additionalText1.GetText()!;
+
+        var fileName1 = new VariableInfoFileName("Variables1.json");
+        var fileName2 = new VariableInfoFileName("Variables2.json");
+
+        return new TheoryData<VariableInfoFile, VariableInfoFile>()
+        {
+            // FileName
+            {
+                new VariableInfoFile(fileName1, additionalText1, sourceText1),
+                new VariableInfoFile(fileName2, additionalText1, sourceText1)
+            },
+
+            // File
+            {
+                new VariableInfoFile(fileName1, additionalText1, sourceText1),
+                new VariableInfoFile(fileName1, additionalText2, sourceText2)
+            }
+        };
     }
 }

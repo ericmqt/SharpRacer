@@ -5,8 +5,6 @@ using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class ContextVariableModelTests
 {
-    public static TheoryData<ContextVariableModel, ContextVariableModel> InequalityData => ModelInequalityData.ContextVariableModelData();
-
     [Fact]
     public void Ctor_ArrayTest()
     {
@@ -184,7 +182,7 @@ public class ContextVariableModelTests
     }
 
     [Theory]
-    [MemberData(nameof(InequalityData))]
+    [MemberData(nameof(GetInequalityData))]
     public void Equals_InequalityTest(ContextVariableModel model1, ContextVariableModel model2)
     {
         EquatableStructAssert.NotEqual(model1, model2);
@@ -338,5 +336,73 @@ public class ContextVariableModelTests
         var propertyType = model.PropertyType();
 
         Assert.Equal($"global::{classRef.ClassNamespace}.{classRef.ClassName}", propertyType.ToFullString());
+    }
+
+    public static TheoryData<ContextVariableModel, ContextVariableModel> GetInequalityData()
+    {
+        var variableInfo1 = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
+        var variableModel1 = new VariableModel(variableInfo1, default);
+
+        var variableInfo2 = new VariableInfo("Test2", VariableValueType.Float, 3, "Test variable", "test/s", false, false, null);
+        var variableModel2 = new VariableModel(variableInfo2, default);
+
+        var classRef1 = new VariableClassReference("Test", "TestVariable", "MyApp.Variables");
+        var classRef2 = new VariableClassReference("Test2", "TestVariable", "MyApp.Variables");
+
+        var descriptorRef1 = new DescriptorPropertyReference("Test1", "TestDescriptor1", "VariableDescriptors", "MyApp.Variables");
+        var descriptorRef2 = new DescriptorPropertyReference("Test2", "TestDescriptor2", "VariableDescriptors", "MyApp.Variables");
+
+        var propertyXmlSummary = "This is the test variable.";
+
+        return new TheoryData<ContextVariableModel, ContextVariableModel>
+        {
+            // Variable models
+            {
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, null, null),
+                new ContextVariableModel(variableModel2, "Test", propertyXmlSummary, null, null)
+            },
+
+            // Property names
+            {
+                new ContextVariableModel(variableModel1, "Test1", propertyXmlSummary, null, null),
+                new ContextVariableModel(variableModel1, "Test2", propertyXmlSummary, null, null)
+            },
+
+            // Property XML summaries
+            {
+                new ContextVariableModel(variableModel1, "Test", "this is test1", null, null),
+                new ContextVariableModel(variableModel1, "Test", "this is test2", null, null)
+            },
+
+            // Class refs
+            {
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, classRef1, null),
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, classRef2, null)
+            },
+
+            // Class refs, one is null
+            {
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, classRef1, null),
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, null, null)
+            },
+
+            // Descriptor refs, null class refs
+            {
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, null, descriptorRef1),
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, null, descriptorRef2)
+            },
+
+            // Descriptor refs, one is null
+            {
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, null, descriptorRef1),
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, null, null)
+            },
+
+            // Descriptor refs, same class refs
+            {
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, classRef1, descriptorRef1),
+                new ContextVariableModel(variableModel1, "Test", propertyXmlSummary, classRef1, descriptorRef2)
+            }
+        };
     }
 }

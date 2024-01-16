@@ -3,8 +3,6 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Json;
 public class JsonVariableOptionsTests
 {
-    public static TheoryData<JsonVariableOptions, JsonVariableOptions> InequalityData => ModelInequalityData.JsonVariableOptionsData();
-
     [Fact]
     public void Ctor_Test()
     {
@@ -22,7 +20,7 @@ public class JsonVariableOptionsTests
     }
 
     [Fact]
-    public void Equals_EqualTest()
+    public void Equals_Test()
     {
         var key = "Lat";
         var keySpan = new TextSpan(200, key.Length);
@@ -32,21 +30,18 @@ public class JsonVariableOptionsTests
         var options1 = new JsonVariableOptions(key, keySpan, optionsValue, valueSpan);
         var options2 = new JsonVariableOptions(key, keySpan, optionsValue, valueSpan);
 
-        Assert.True(options1 == options2);
-        Assert.False(options1 != options2);
-        Assert.True(options1.Equals(options2));
-        Assert.Equal(options1.GetHashCode(), options2.GetHashCode());
+        EquatableStructAssert.Equal(options1, options2);
     }
 
     [Theory]
-    [MemberData(nameof(InequalityData))]
+    [MemberData(nameof(GetInequalityData))]
     public void Equals_InequalityTest(JsonVariableOptions options1, JsonVariableOptions options2)
     {
         EquatableStructAssert.NotEqual(options1, options2);
     }
 
     [Fact]
-    public void Equals_WrongObjectTypeTest()
+    public void EqualsObject_WrongObjectTypeTest()
     {
         var options1 = new JsonVariableOptions(
             "Lat",
@@ -55,5 +50,44 @@ public class JsonVariableOptionsTests
             new TextSpan(220, 256));
 
         EquatableStructAssert.ObjectEqualsMethod(false, options1, int.MaxValue);
+    }
+
+    public static TheoryData<JsonVariableOptions, JsonVariableOptions> GetInequalityData()
+    {
+        var optionsValue1 = new JsonVariableOptionsValue("Test1", "TestClass");
+        var optionsValue2 = new JsonVariableOptionsValue("Test2", "TestClass");
+
+        var keySpan1 = new TextSpan(200, "Key1".Length);
+        var keySpan2 = new TextSpan(400, "Key2".Length);
+
+        var valueSpan1 = new TextSpan(250, 100);
+        var valueSpan2 = new TextSpan(450, 100);
+
+        return new TheoryData<JsonVariableOptions, JsonVariableOptions>()
+        {
+            // Key
+            {
+                new JsonVariableOptions("Key1", keySpan1, optionsValue1, valueSpan1),
+                new JsonVariableOptions("Key2", keySpan1, optionsValue1, valueSpan1)
+            },
+
+            // Key span
+            {
+                new JsonVariableOptions("Key1", keySpan1, optionsValue1, valueSpan1),
+                new JsonVariableOptions("Key1", keySpan2, optionsValue1, valueSpan1)
+            },
+
+            // Value
+            {
+                new JsonVariableOptions("Key1", keySpan1, optionsValue1, valueSpan1),
+                new JsonVariableOptions("Key1", keySpan1, optionsValue2, valueSpan1)
+            },
+
+            // Value span
+            {
+                new JsonVariableOptions("Key1", keySpan1, optionsValue1, valueSpan1),
+                new JsonVariableOptions("Key1", keySpan1, optionsValue1, valueSpan2)
+            },
+        };
     }
 }

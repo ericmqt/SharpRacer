@@ -21,6 +21,30 @@ public class IncludedVariablesFileNameTests
     }
 
     [Fact]
+    public void CreateOrGetDefault_Test()
+    {
+        var fileNameString = "test.json";
+        var includedFileName = IncludedVariablesFileName.CreateOrGetDefault(fileNameString);
+
+        Assert.NotEqual(default, includedFileName);
+        Assert.Equal(fileNameString, includedFileName);
+    }
+
+    [Fact]
+    public void CreateOrGetDefault_ReturnDefaultOnNullOrEmptyArgTest()
+    {
+        var includedFileName = IncludedVariablesFileName.CreateOrGetDefault(null);
+
+        Assert.Equal(default, includedFileName);
+        Assert.Equal(string.Empty, includedFileName);
+
+        includedFileName = IncludedVariablesFileName.CreateOrGetDefault(string.Empty);
+
+        Assert.Equal(default, includedFileName);
+        Assert.Equal(string.Empty, includedFileName);
+    }
+
+    [Fact]
     public void IsMatch_Test()
     {
         var matchingFile = new AdditionalTextFile("Foo.bar", "Hello, world!");
@@ -52,10 +76,7 @@ public class IncludedVariablesFileNameTests
         var fileName1 = new IncludedVariablesFileName("Foo.bar");
         var fileName2 = new IncludedVariablesFileName("Foo.bar");
 
-        Assert.True(fileName1.Equals(fileName2));
-        Assert.True(fileName1 == fileName2);
-        Assert.False(fileName1 != fileName2);
-        Assert.Equal(fileName1.GetHashCode(), fileName2.GetHashCode());
+        EquatableStructAssert.Equal(fileName1, fileName2);
     }
 
     [Fact]
@@ -63,25 +84,24 @@ public class IncludedVariablesFileNameTests
     {
         var fileName1 = new IncludedVariablesFileName("Foo.bar");
 
-        Assert.False(fileName1.Equals(default));
-        Assert.False(fileName1 == default);
-        Assert.True(fileName1 != default);
-        Assert.NotEqual(fileName1.GetHashCode(), default(IncludedVariablesFileName).GetHashCode());
-
-        Assert.False(default(IncludedVariablesFileName).Equals(fileName1));
-        Assert.False(default == fileName1);
-        Assert.True(default != fileName1);
+        EquatableStructAssert.NotEqual(fileName1, default);
     }
 
     [Fact]
-    public void Equals_ObjectTest()
+    public void Equals_InequalityTest()
+    {
+        var fileName1 = new IncludedVariablesFileName("Foo1.bar");
+        var fileName2 = new IncludedVariablesFileName("Foo2.bar");
+
+        EquatableStructAssert.NotEqual(fileName1, fileName2);
+    }
+
+    [Fact]
+    public void EqualsObject_WrongObjectTypeTest()
     {
         var fileName1 = new IncludedVariablesFileName("Foo.bar");
-        object fileName2 = new IncludedVariablesFileName("Foo.bar");
-        object nonFileNameValue = 56;
 
-        Assert.True(fileName1.Equals(fileName2));
-        Assert.False(fileName1.Equals(nonFileNameValue));
+        EquatableStructAssert.ObjectEqualsMethod(false, fileName1, int.MaxValue);
     }
 
     [Fact]

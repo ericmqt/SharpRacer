@@ -3,8 +3,6 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 public class VariableModelTests
 {
-    public static TheoryData<VariableModel, VariableModel> InequalityData => ModelInequalityData.VariableModelData();
-
     [Fact]
     public void Ctor_Test()
     {
@@ -173,9 +171,47 @@ public class VariableModelTests
     }
 
     [Theory]
-    [MemberData(nameof(InequalityData))]
+    [MemberData(nameof(GetInequalityData))]
     public void Equals_InequalityTest(VariableModel model1, VariableModel model2)
     {
         EquatableStructAssert.NotEqual(model1, model2);
+    }
+
+    public static TheoryData<VariableModel, VariableModel> GetInequalityData()
+    {
+        var variable1 = new VariableInfo(
+            "Lat",
+            VariableValueType.Int,
+            4,
+            "Test variable",
+            "test/s",
+            true,
+            false,
+            null);
+
+        var variable2 = new VariableInfo(
+            "Lon",
+            VariableValueType.Int,
+            1,
+            "Test variable",
+            "test/s",
+            true,
+            false,
+            null);
+
+        var variableOptions1 = new VariableOptions("Lat", "Latitude", "Latitude");
+        var variableOptions2 = new VariableOptions("Lon", "Longitude", "Longitude");
+
+        return new TheoryData<VariableModel, VariableModel>
+        {
+            // Different variables, default options
+            { new VariableModel(variable1, default), new VariableModel(variable2, default) },
+
+            // Same variables, one with option
+            { new VariableModel(variable1, default), new VariableModel(variable1, variableOptions1) },
+
+            // Same variables, different non-default options
+            { new VariableModel(variable1, variableOptions1), new VariableModel(variable1, variableOptions2) }
+        };
     }
 }

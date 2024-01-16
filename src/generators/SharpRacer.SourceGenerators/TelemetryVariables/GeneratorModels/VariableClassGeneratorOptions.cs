@@ -1,7 +1,7 @@
 ﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
-internal readonly struct VariableClassGeneratorOptions : IEquatable<VariableClassGeneratorOptions>
+public readonly struct VariableClassGeneratorOptions : IEquatable<VariableClassGeneratorOptions>
 {
     public VariableClassGeneratorOptions(
         bool isGeneratorEnabled,

@@ -186,7 +186,7 @@ internal static partial class GeneratorDiagnostics
 
     public static Diagnostic VariableOptionsFileContainsDuplicateClassName(
         string variableKey,
-        string contextPropertyName,
+        string configuredClassName,
         string duplicatedVariableKey,
         Location? location = null)
     {
@@ -194,7 +194,7 @@ internal static partial class GeneratorDiagnostics
             GeneratorDiagnosticDescriptors.VariableOptionsFileContainsDuplicateClassName,
             location,
             variableKey,
-            contextPropertyName,
+            configuredClassName,
             duplicatedVariableKey);
     }
 
@@ -205,7 +205,7 @@ internal static partial class GeneratorDiagnostics
 
     public static Diagnostic VariableOptionsFileContainsDuplicateVariableName(
         string variableKey,
-        string contextPropertyName,
+        string configuredVariableName,
         string duplicatedVariableKey,
         Location? location = null)
     {
@@ -213,7 +213,7 @@ internal static partial class GeneratorDiagnostics
             GeneratorDiagnosticDescriptors.VariableOptionsFileContainsDuplicateVariableName,
             location,
             variableKey,
-            contextPropertyName,
+            configuredVariableName,
             duplicatedVariableKey);
     }
 }
