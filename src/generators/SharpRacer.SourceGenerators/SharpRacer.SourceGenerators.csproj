@@ -24,11 +24,11 @@
     <PropertyGroup>
         <PackageId>SharpRacer.SourceGenerators</PackageId>
         <Version>$(SourceGeneratorPackageVersion)</Version>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <DevelopmentDependency>true</DevelopmentDependency>
+        <RepositoryUrl>https://github.com/ericmqt/SharpRacer.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="TelemetryVariablesGenerator.props" Pack="true" PackagePath="build\" Visible="true" />
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
@@ -48,6 +48,10 @@
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" GeneratePathProperty="true" PrivateAssets="all" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" GeneratePathProperty="true" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="SharpRacer.SourceGenerators.props" Pack="true" PackagePath="build\" Visible="true" />
     </ItemGroup>
 
     <PropertyGroup>
