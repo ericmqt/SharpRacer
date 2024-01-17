@@ -29,11 +29,6 @@ internal static class VariableInfoProvider
                     return (ImmutableArray<VariableInfo>.Empty, ImmutableArray.Create(providerValue.Diagnostic));
                 }
 
-                if (providerValue.File == default)
-                {
-                    return (ImmutableArray<VariableInfo>.Empty, ImmutableArray<Diagnostic>.Empty);
-                }
-
                 var diagnosticsBuilder = ImmutableArray.CreateBuilder<Diagnostic>();
 
                 // Deserialize variables from file

@@ -34,6 +34,7 @@ internal static partial class GeneratorDiagnostics
     }
 
     public static Diagnostic ContextClassConfiguredPropertyNameConflict(
+        string contextClassName,
         string variableName,
         string configuredPropertyName,
         string existingVariableName,
@@ -43,6 +44,7 @@ internal static partial class GeneratorDiagnostics
         return Diagnostic.Create(
             GeneratorDiagnosticDescriptors.ContextClassConfiguredPropertyNameConflict,
             location,
+            contextClassName,
             variableName,
             configuredPropertyName,
             existingVariableName,
@@ -82,6 +84,7 @@ internal static partial class GeneratorDiagnostics
     }
 
     public static Diagnostic ContextClassVariableNameCreatesPropertyNameConflict(
+        string contextClassName,
         string variableName,
         string existingVariableName,
         string existingPropertyName,
@@ -90,6 +93,7 @@ internal static partial class GeneratorDiagnostics
         return Diagnostic.Create(
             GeneratorDiagnosticDescriptors.ContextClassVariableNameCreatesPropertyNameConflict,
             location,
+            contextClassName,
             variableName,
             existingVariableName,
             existingPropertyName);

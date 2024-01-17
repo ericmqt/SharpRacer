@@ -4,20 +4,18 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 public readonly struct VariableOptionsFileName : IEquatable<VariableOptionsFileName>
 {
     private readonly string _fileName;
-    private readonly bool _isInitialized;
 
     public VariableOptionsFileName(string fileName)
     {
         _fileName = !string.IsNullOrEmpty(fileName)
             ? fileName
             : throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
-
-        _isInitialized = true;
     }
 
     public bool IsMatch(AdditionalText additionalText)
     {
-        if (!_isInitialized)
+        // Return false if uninitialized
+        if (_fileName == null)
         {
             return false;
         }
@@ -32,22 +30,17 @@ public readonly struct VariableOptionsFileName : IEquatable<VariableOptionsFileN
 
     public bool Equals(VariableOptionsFileName other)
     {
-        if (!_isInitialized)
-        {
-            return !other._isInitialized;
-        }
-
         return StringComparer.Ordinal.Equals(_fileName, other._fileName);
     }
 
     public override int GetHashCode()
     {
-        if (!_isInitialized)
-        {
-            return 0;
-        }
+        return HashCode.Combine(_fileName);
+    }
 
-        return _fileName.GetHashCode();
+    public override string ToString()
+    {
+        return _fileName ?? string.Empty;
     }
 
     public static bool operator ==(VariableOptionsFileName lhs, VariableOptionsFileName rhs)
@@ -62,11 +55,6 @@ public readonly struct VariableOptionsFileName : IEquatable<VariableOptionsFileN
 
     public static implicit operator string(VariableOptionsFileName fileName)
     {
-        if (!fileName._isInitialized)
-        {
-            return string.Empty;
-        }
-
-        return fileName._fileName;
+        return fileName._fileName ?? string.Empty;
     }
 }

@@ -51,7 +51,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetContextClassTarget_FileNameTest()
+    public void IncludedVariablesFileNameTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -86,7 +86,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetContextClassTarget_NoFileNameTest()
+    public void IncludedVariablesFileNameNotProvidedTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -117,7 +117,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetValuesProvider_IncludedVariablesAmbiguousFileNameTest()
+    public void IncludedVariablesAmbiguousFileNameTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -162,7 +162,124 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetValuesProvider_IncludedVariablesFileNotFoundTest()
+    public void IncludedVariablesFileAlreadyIncludesVariableTest()
+    {
+        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+namespace Test.Assembly;
+[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : IDataVariablesContext { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var includedVariables1 = IncludedVariablesDocumentBuilder.FromNames("SessionTime", "SessionTime")
+            .ToAdditionalTextFile("TelemetryVariables_VariableNames.json");
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .WithAdditionalText(includedVariables1)
+            .WithCSharpSyntaxTree(contextClassDefinition)
+            .Build()
+            .RunGenerator();
+
+        GeneratorAssert.NoException(runResult);
+        GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.IncludedVariablesFile_VariableAlreadyIncluded);
+
+        var stepResult = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider)
+            .Single();
+
+        var stepOutput = stepResult.Outputs.Single();
+
+        var result = (ContextClassInfoResult)stepOutput.Value;
+
+        // Check that the pipeline did not stop and that we only have the one included variable
+        Assert.NotEqual(default, result.Model);
+        Assert.Single(result.Model.IncludedVariables.VariableNames, x => x.Value == "SessionTime");
+        Assert.Single(result.Diagnostics, x => x.Id == DiagnosticIds.IncludedVariablesFile_VariableAlreadyIncluded);
+    }
+
+    [Fact]
+    public void IncludedVariablesFileContainsEmptyVariableNameTest()
+    {
+        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+namespace Test.Assembly;
+[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : IDataVariablesContext { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var includedVariables1 = IncludedVariablesDocumentBuilder.FromNames("SessionTime", "")
+            .ToAdditionalTextFile("TelemetryVariables_VariableNames.json");
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .WithAdditionalText(includedVariables1)
+            .WithCSharpSyntaxTree(contextClassDefinition)
+            .Build()
+            .RunGenerator();
+
+        GeneratorAssert.NoException(runResult);
+        GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.IncludedVariablesFile_ContainsEmptyVariableName);
+
+        var stepResult = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider)
+            .Single();
+
+        var stepOutput = stepResult.Outputs.Single();
+
+        var result = (ContextClassInfoResult)stepOutput.Value;
+
+        // Check that the pipeline did not stop and that we only have the one included variable
+        Assert.NotEqual(default, result.Model);
+        Assert.Single(result.Model.IncludedVariables.VariableNames, x => x.Value == "SessionTime");
+        Assert.Single(result.Diagnostics, x => x.Id == DiagnosticIds.IncludedVariablesFile_ContainsEmptyVariableName);
+    }
+
+    [Fact]
+    public void IncludedVariablesFileContainsNoVariableNamesTest()
+    {
+        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+namespace Test.Assembly;
+[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : IDataVariablesContext { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var includedVariables1 = IncludedVariablesDocumentBuilder.FromNames()
+            .ToAdditionalTextFile("TelemetryVariables_VariableNames.json");
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .WithAdditionalText(includedVariables1)
+            .WithCSharpSyntaxTree(contextClassDefinition)
+            .Build()
+            .RunGenerator();
+
+        GeneratorAssert.NoException(runResult);
+        GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.IncludedVariablesFileContainsNoVariableNames);
+
+        var stepResult = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.ContextClassInfoValuesProvider_GetValuesProvider)
+            .Single();
+
+        var stepOutput = stepResult.Outputs.Single();
+
+        var result = (ContextClassInfoResult)stepOutput.Value;
+
+        // Check that the pipeline did not stop and that we only have the one included variable
+        Assert.NotEqual(default, result.Model);
+        Assert.Empty(result.Model.IncludedVariables.VariableNames);
+        Assert.Single(result.Diagnostics, x => x.Id == DiagnosticIds.IncludedVariablesFileContainsNoVariableNames);
+    }
+
+    [Fact]
+    public void IncludedVariablesFileNotFoundTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -200,7 +317,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetValuesProvider_IncludedVariablesFileReadExceptionTest()
+    public void IncludedVariablesFileReadExceptionTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -234,7 +351,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetContextClassTarget_TargetClassDoesNotHaveIDataVariablesContextInterfaceTest()
+    public void TargetClassDoesNotHaveIDataVariablesContextInterfaceTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -265,7 +382,7 @@ internal partial class TelemetryVariables { }";
     }
 
     [Fact]
-    public void GetContextClassTarget_TargetClassIsNotPartialTest()
+    public void TargetClassIsNotPartialTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;
@@ -298,7 +415,7 @@ internal class TelemetryVariables : IDataVariablesContext { }";
     }
 
     [Fact]
-    public void GetContextClassTarget_TargetClassIsStaticTest()
+    public void TargetClassIsStaticTest()
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
 namespace Test.Assembly;

@@ -1,4 +1,6 @@
-﻿using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
+﻿using Microsoft.CodeAnalysis;
+using Moq;
+using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
@@ -19,7 +21,8 @@ public class ContextVariableModelFactoryTests
 
         var variableModel = new VariableModel(variable, default);
 
-        var factory = new ContextVariableModelFactory();
+        var contextClass = CreateContextClassInfo("TestContext", "TestApp.Variables");
+        var factory = new ContextVariableModelFactory(contextClass);
 
         Assert.True(factory.TryAdd(variableModel, null, null, out var diagnostics));
         Assert.Empty(diagnostics);
@@ -59,7 +62,8 @@ public class ContextVariableModelFactoryTests
         var variableModel1 = new VariableModel(variable1, variableOptions1);
         var variableModel2 = new VariableModel(variable2, variableOptions2);
 
-        var factory = new ContextVariableModelFactory();
+        var contextClass = CreateContextClassInfo("TestContext", "TestApp.Variables");
+        var factory = new ContextVariableModelFactory(contextClass);
 
         Assert.True(factory.TryAdd(variableModel1, null, null, out var diagnostics));
         Assert.Empty(diagnostics);
@@ -100,7 +104,8 @@ public class ContextVariableModelFactoryTests
         var variableModel1 = new VariableModel(variable1, default);
         var variableModel2 = new VariableModel(variable2, default);
 
-        var factory = new ContextVariableModelFactory();
+        var contextClass = CreateContextClassInfo("TestContext", "TestApp.Variables");
+        var factory = new ContextVariableModelFactory(contextClass);
 
         Assert.True(factory.TryAdd(variableModel1, null, null, out var diagnostics));
         Assert.Empty(diagnostics);
@@ -118,7 +123,8 @@ public class ContextVariableModelFactoryTests
     [Fact]
     public void TryAdd_DefaultValueModelTest()
     {
-        var factory = new ContextVariableModelFactory();
+        var contextClass = CreateContextClassInfo("TestContext", "TestApp.Variables");
+        var factory = new ContextVariableModelFactory(contextClass);
 
         var result = factory.TryAdd(default, null, null, out var diagnostics);
 
@@ -128,5 +134,22 @@ public class ContextVariableModelFactoryTests
         var models = factory.Build();
 
         Assert.Empty(models);
+    }
+
+    private static ContextClassInfo CreateContextClassInfo(string className, string classNamespace)
+    {
+        var classTypeSymbol = new Mock<INamedTypeSymbol>(MockBehavior.Strict);
+        var classContainingNamespaceSymbol = new Mock<INamespaceSymbol>();
+
+        classContainingNamespaceSymbol.Setup(x => x.ToString())
+            .Returns(classNamespace);
+
+        classTypeSymbol.SetupGet(x => x.Name)
+            .Returns(className);
+
+        classTypeSymbol.SetupGet(x => x.ContainingNamespace)
+            .Returns(classContainingNamespaceSymbol.Object);
+
+        return new ContextClassInfo(classTypeSymbol.Object, Location.None);
     }
 }

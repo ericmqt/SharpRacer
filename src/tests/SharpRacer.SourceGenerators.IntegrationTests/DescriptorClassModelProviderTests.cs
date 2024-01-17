@@ -2,12 +2,17 @@
 using Microsoft.CodeAnalysis.CSharp;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
+using SharpRacer.SourceGenerators.TelemetryVariables.Json;
 using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 
 using DescriptorClassModelResult = (
     SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorClassModel Model,
+    System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
+
+using DescriptorPropertiesResult = (
+    System.Collections.Immutable.ImmutableArray<SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyModel> Properties,
     System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
@@ -54,7 +59,48 @@ public static partial class MyDescriptors { }";
     }
 
     [Fact]
-    public void GetValueProvider_DiagnosticsForMultipleDescriptorClassesTest()
+    public void DescriptorNameConflictsWithExistingVariableTest()
+    {
+        var descriptorClass = @"
+using SharpRacer.Telemetry.Variables;
+namespace Test.Assembly;
+[GenerateDataVariableDescriptors]
+public static partial class MyDescriptors { }";
+
+        var variablesText = new VariableInfoDocumentBuilder()
+            .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
+            .AddScalar("SessionTick", VariableValueType.Int, "Current update number", null)
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableInfoFileName);
+
+        var variableOptionsText = new JsonVariableOptionsDocumentBuilder()
+            .Add("SessionTime", new JsonVariableOptionsValue(null, null))
+            .Add("SessionTick", new JsonVariableOptionsValue("SessionTime", null)) // produces SessionTime property conflict
+            .ToAdditionalTextFile(GeneratorConfigurationDefaults.VariableOptionsFileName);
+
+        var runResult = new VariablesGeneratorBuilder()
+            .WithAdditionalText(variablesText)
+            .WithAdditionalText(variableOptionsText)
+            .WithCSharpSyntaxTree(descriptorClass)
+            .Build()
+            .RunGenerator();
+
+        GeneratorAssert.NoException(runResult);
+        GeneratorAssert.ContainsDiagnostic(runResult, DiagnosticIds.DescriptorNameConflictsWithExistingVariable);
+
+        var stepResult = GeneratorAssert.TrackedStepExecuted(
+            runResult, TrackingNames.DescriptorClassModelProvider_GetDescriptorProperties)
+            .Single();
+
+        var stepOutput = stepResult.Outputs.Single();
+
+        var result = (DescriptorPropertiesResult)stepOutput.Value;
+
+        Assert.Single(result.Properties, x => x.VariableName == "SessionTime");
+        Assert.Single(result.Diagnostics, x => x.Id == DiagnosticIds.DescriptorNameConflictsWithExistingVariable);
+    }
+
+    [Fact]
+    public void MultipleDescriptorClassesDiagnosticTest()
     {
         var descriptorClass1 = @"
 using SharpRacer.Telemetry.Variables;
@@ -96,7 +142,7 @@ public static partial class MyDescriptors2 { }";
     }
 
     [Fact]
-    public void GetValueProvider_TargetClassIsNotPartialDiagnosticTest()
+    public void TargetClassIsNotPartialDiagnosticTest()
     {
         var descriptorClass = @"
 using SharpRacer.Telemetry.Variables;
@@ -130,7 +176,7 @@ public static class MyDescriptors { }";
     }
 
     [Fact]
-    public void GetValueProvider_TargetClassIsNotStaticDiagnosticTest()
+    public void TargetClassIsNotStaticDiagnosticTest()
     {
         var descriptorClass = @"
 using SharpRacer.Telemetry.Variables;

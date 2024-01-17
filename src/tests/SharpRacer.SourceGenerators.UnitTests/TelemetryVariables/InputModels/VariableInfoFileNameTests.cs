@@ -82,18 +82,36 @@ public class VariableInfoFileNameTests
     }
 
     [Fact]
-    public void DefaultValueImplicitStringOperatorReturnsEmptyTest()
+    public void ToString_Test()
+    {
+        var fileNameString = "Foo.bar";
+        var optionsFileName = new VariableInfoFileName(fileNameString);
+
+        Assert.Equal(fileNameString, optionsFileName.ToString());
+    }
+
+    [Fact]
+    public void ToString_DefaultValueTest()
+    {
+        Assert.Equal(string.Empty, default(VariableInfoFileName).ToString());
+    }
+
+    [Fact]
+    public void ImplicitConversionOperator_String_Test()
+    {
+        var fileNameValue = "Foo.bar";
+
+        var variableInfoFileName = new VariableInfoFileName(fileNameValue);
+        string fileNameString = variableInfoFileName;
+
+        Assert.Equal(fileNameValue, fileNameString);
+    }
+
+    [Fact]
+    public void ImplicitConversionOperator_String_DefaultValueReturnsEmptyTest()
     {
         VariableInfoFileName fileName = default;
 
         Assert.Equal(string.Empty, fileName);
-    }
-
-    [Fact]
-    public void DefaultValue_ToStringReturnsEmptyTest()
-    {
-        VariableInfoFileName fileName = default;
-
-        Assert.Equal(string.Empty, fileName.ToString());
     }
 }

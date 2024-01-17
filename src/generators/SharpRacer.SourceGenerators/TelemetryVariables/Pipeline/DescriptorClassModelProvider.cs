@@ -24,7 +24,8 @@ internal static class DescriptorClassModelProvider
         SyntaxValueProvider syntaxValueProvider,
         IncrementalValueProvider<ImmutableArray<VariableModel>> variableModelsProvider)
     {
-        var descriptorPropertiesResult = variableModelsProvider.Select(GetDescriptorProperties);
+        var descriptorPropertiesResult = variableModelsProvider.Select(GetDescriptorProperties)
+            .WithTrackingName(TrackingNames.DescriptorClassModelProvider_GetDescriptorProperties);
 
         return syntaxValueProvider.ForAttributeWithMetadataName(
                 SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute.ToQualifiedName(),

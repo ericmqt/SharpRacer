@@ -105,7 +105,18 @@ public class IncludedVariablesFileNameTests
     }
 
     [Fact]
-    public void DefaultValueImplicitStringOperatorReturnsEmptyTest()
+    public void ImplicitConversionOperator_String_Test()
+    {
+        var fileNameValue = "Foo.bar";
+
+        var includedVariablesFileName = new IncludedVariablesFileName(fileNameValue);
+        string fileNameString = includedVariablesFileName;
+
+        Assert.Equal(fileNameValue, fileNameString);
+    }
+
+    [Fact]
+    public void ImplicitConversionOperator_String_DefaultValueReturnsEmptyTest()
     {
         IncludedVariablesFileName fileName = default;
 

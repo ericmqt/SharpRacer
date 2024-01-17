@@ -1,15 +1,18 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
+using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 internal class ContextVariableModelFactory
 {
     private readonly ImmutableArray<ContextVariableModel>.Builder _builder;
+    private readonly ContextClassInfo _contextClass;
 
-    public ContextVariableModelFactory()
+    public ContextVariableModelFactory(ContextClassInfo contextClass)
     {
         _builder = ImmutableArray.CreateBuilder<ContextVariableModel>();
+        _contextClass = contextClass;
     }
 
     public ImmutableArray<ContextVariableModel> Build()
@@ -62,6 +65,7 @@ internal class ContextVariableModelFactory
             if (existing != default)
             {
                 diagnostic = GeneratorDiagnostics.ContextClassConfiguredPropertyNameConflict(
+                    _contextClass.ClassName,
                     variableModel.VariableName,
                     configuredPropertyName,
                     existing.VariableModel.VariableName,
@@ -82,6 +86,7 @@ internal class ContextVariableModelFactory
         if (existing != default)
         {
             diagnostic = GeneratorDiagnostics.ContextClassVariableNameCreatesPropertyNameConflict(
+                _contextClass.ClassName,
                 variableModel.VariableName,
                 existing.VariableModel.VariableName,
                 existing.PropertyName);

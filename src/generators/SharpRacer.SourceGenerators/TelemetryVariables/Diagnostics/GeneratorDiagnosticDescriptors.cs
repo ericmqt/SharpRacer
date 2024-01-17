@@ -52,7 +52,7 @@ internal static partial class GeneratorDiagnosticDescriptors
         = new(
             DiagnosticIds.ContextClassConfiguredPropertyNameConflict,
             "Configured variable property name conflicts with existing context variable property",
-            "Context class variable '{0}' is configured with Name option value '{1}' which conflicts with existing property '{3}' for variable '{2}'",
+            "Context {0} has variable '{1}' which is configured with Name option value '{2}' which conflicts with existing property '{4}' for variable '{3}'",
             GeneratorDiagnosticCategories.Validation,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);
@@ -97,7 +97,7 @@ internal static partial class GeneratorDiagnosticDescriptors
         = new(
             DiagnosticIds.ContextClassVariableNameCreatesPropertyNameConflict,
             "Variable name conflicts with existing context variable property",
-            "Context class variable '{0}' conflicts with existing property '{2}' for variable '{1}'",
+            "Context {0} has variable '{1}' which conflicts with existing property '{3}' for variable '{2}'",
             GeneratorDiagnosticCategories.Validation,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);

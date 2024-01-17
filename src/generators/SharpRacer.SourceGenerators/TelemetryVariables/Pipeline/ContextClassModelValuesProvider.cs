@@ -33,8 +33,11 @@ internal static class ContextClassModelValuesProvider
             variableModels,
             descriptorReferences.Combine(variableClassReferences));
 
-        return contextClassInfos.Combine(contextVariablePrototypes.Collect())
+        var contextClassIncludedVariables = contextClassInfos.Combine(contextVariablePrototypes.Collect())
             .Select(ContextClassIncludedVariables)
+            .WithTrackingName(TrackingNames.ContextClassModelValuesProvider_ContextClassIncludedVariables);
+
+        return contextClassIncludedVariables
             .Select(static (input, cancellationToken) =>
             {
                 if (input.ClassInfo == default)
@@ -68,7 +71,7 @@ internal static class ContextClassModelValuesProvider
 
         var contextClassInfo = contextClassInfoValuesProviderResult.ClassInfo;
 
-        var factory = new ContextVariableModelFactory();
+        var factory = new ContextVariableModelFactory(contextClassInfo);
 
         if (contextClassInfo.IncludedVariables.IncludeAll())
         {

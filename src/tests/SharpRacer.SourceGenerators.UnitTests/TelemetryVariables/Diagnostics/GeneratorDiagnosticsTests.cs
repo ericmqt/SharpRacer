@@ -51,6 +51,7 @@ public class GeneratorDiagnosticsTests
     public void ContextClassConfiguredPropertyNameConflict_Test()
     {
         var diagnostic = GeneratorDiagnostics.ContextClassConfiguredPropertyNameConflict(
+            "TestContext",
             "Test",
             "TestProperty",
             "TestEx",
@@ -94,7 +95,8 @@ public class GeneratorDiagnosticsTests
     [Fact]
     public void ContextClassVariableNameCreatesPropertyNameConflict_Test()
     {
-        var diagnostic = GeneratorDiagnostics.ContextClassVariableNameCreatesPropertyNameConflict("Test", "TextEx", "TextProperty");
+        var diagnostic = GeneratorDiagnostics.ContextClassVariableNameCreatesPropertyNameConflict(
+            "TestContext", "Test", "TextEx", "TextProperty");
 
         Assert.Equal(DiagnosticIds.ContextClassVariableNameCreatesPropertyNameConflict, diagnostic.Id);
     }
