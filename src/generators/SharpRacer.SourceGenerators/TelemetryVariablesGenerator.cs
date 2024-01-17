@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
+using SharpRacer.SourceGenerators.Internal;
 using SharpRacer.SourceGenerators.TelemetryVariables;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
@@ -11,8 +12,8 @@ namespace SharpRacer.SourceGenerators;
 [Generator(LanguageNames.CSharp)]
 public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 {
-    public static string ToolName = "SharpRacer.SourceGenerators";
-    public static string ToolVersion = "0.1.0.0";
+    public static string ToolName { get; } = AssemblyInfoProvider.GetProduct();
+    public static string ToolVersion { get; } = AssemblyInfoProvider.GetVersion().ToString();
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

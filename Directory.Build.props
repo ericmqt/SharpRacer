@@ -1,4 +1,6 @@
 <Project>
+	<Import Project="eng\Versions.props" />
+	
 	<PropertyGroup>
 		<RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
 		<RepositorySourceDirectory>$(RepositoryRootDirectory)\src</RepositorySourceDirectory>
@@ -19,8 +21,9 @@
 
 	<!-- Assembly information -->
 	<PropertyGroup>
-		<Authors>Eric Smith</Authors>
-		<Copyright>Copyright © 2023 Eric Smith.</Copyright>
+		<Authors>Eric Smith (@ericmqt)</Authors>
+		<Company>Eric Smith (@ericmqt)</Company>
+		<Copyright>Copyright © 2023-2024 Eric Smith (@ericmqt).</Copyright>
 	</PropertyGroup>
 
 	<!-- NuGet packaging -->

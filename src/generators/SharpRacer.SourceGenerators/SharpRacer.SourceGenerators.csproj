@@ -8,6 +8,14 @@
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
         <LangVersion>12</LangVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+        <AssemblyVersion>$(SourceGeneratorAssemblyVersion)</AssemblyVersion>
+    </PropertyGroup>
+    
+    <!-- Package -->
+    <PropertyGroup>
+        <PackageId>SharpRacer.SourceGenerators</PackageId>
+        <Version>$(SourceGeneratorPackageVersion)</Version>
     </PropertyGroup>
 
     <ItemGroup>
