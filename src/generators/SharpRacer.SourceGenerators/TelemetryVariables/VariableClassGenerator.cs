@@ -31,7 +31,10 @@ internal static class VariableClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var baseTypeList = BaseList(SingletonSeparatedList(model.BaseClassType()));
+        var baseTypeList = BaseList(SeparatedList([
+            model.BaseClassType(),
+            model.ICreateDataVariableBaseType()]));
+
         var classMembers = CreateClassMembers(in model, cancellationToken);
 
         return ClassDeclaration(model.ClassName)

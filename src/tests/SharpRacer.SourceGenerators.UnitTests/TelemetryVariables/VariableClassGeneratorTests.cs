@@ -111,7 +111,7 @@ using SharpRacer.Telemetry.Variables;
 #nullable enable
 namespace TestApp.Variables
 {{
-    public partial class TestVariable : ScalarDataVariable<int>
+    public partial class TestVariable : ScalarDataVariable<int>, ICreateDataVariable<TestVariable>
     {{
         private static readonly DataVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;
         /// <summary>
@@ -154,7 +154,7 @@ namespace TestApp.Variables
 #nullable enable
 namespace TestApp.Variables
 {{
-    public partial class TestVariable : ScalarDataVariable<int>
+    public partial class TestVariable : ScalarDataVariable<int>, ICreateDataVariable<TestVariable>
     {{
         private static readonly DataVariableDescriptor _Descriptor = global::TestApp.Variables.VariableDescriptors.TestDescriptor;
         /// <summary>
@@ -197,7 +197,7 @@ namespace TestApp.Variables
 #nullable enable
 namespace TestApp.Variables
 {{
-    public partial class TestVariable : ScalarDataVariable<int>
+    public partial class TestVariable : ScalarDataVariable<int>, ICreateDataVariable<TestVariable>
     {{
         private static readonly DataVariableDescriptor _Descriptor = global::SharpRacer.Telemetry.Variables.VariableDescriptors.TestDescriptor;
         /// <summary>

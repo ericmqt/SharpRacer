@@ -119,6 +119,13 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
         return IdentifierName(_descriptorFieldName);
     }
 
+    public readonly BaseTypeSyntax ICreateDataVariableBaseType()
+    {
+        var classTypeArg = ParseTypeName(ClassName);
+
+        return SimpleBaseType(SharpRacerTypes.ICreateDataVariableInterfaceType(classTypeArg));
+    }
+
     public readonly TypeSyntax VariableValueTypeArg()
     {
         return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit, TypeNameFormat.Qualified);
