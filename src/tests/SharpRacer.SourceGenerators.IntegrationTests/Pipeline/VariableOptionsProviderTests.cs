@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
-using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 
@@ -15,7 +14,7 @@ using VariableOptionsFileResult = (
     SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptionsFile File,
     Microsoft.CodeAnalysis.Diagnostic? Diagnostic);
 
-namespace SharpRacer.SourceGenerators.TelemetryVariables;
+namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 public class VariableOptionsProviderTests
 {
     [Fact]

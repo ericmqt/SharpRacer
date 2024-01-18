@@ -1,7 +1,6 @@
 ﻿using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Json;
-using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 using ContextClassInfoIncludedVariables = (
@@ -12,7 +11,7 @@ using ContextClassModelsResult = (
     SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextClassModel Model,
     System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
-namespace SharpRacer.SourceGenerators.TelemetryVariables;
+namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 public class ContextClassModelValuesProviderTests
 {
     [Fact]

@@ -1,9 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 
-namespace SharpRacer.SourceGenerators.TelemetryVariables;
+namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 public class GeneratorConfigurationTests
 {
     [Fact]

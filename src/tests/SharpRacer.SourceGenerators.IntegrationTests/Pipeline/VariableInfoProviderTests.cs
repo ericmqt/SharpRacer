@@ -2,13 +2,12 @@
 using Microsoft.CodeAnalysis;
 using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
-using SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 using VariableInfoCollectionResult = (
     System.Collections.Immutable.ImmutableArray<SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo> Variables,
     System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
-namespace SharpRacer.SourceGenerators.TelemetryVariables;
+namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
 public class VariableInfoProviderTests
 {
     [Fact]

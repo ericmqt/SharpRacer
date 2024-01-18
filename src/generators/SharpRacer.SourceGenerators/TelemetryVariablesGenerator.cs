@@ -109,8 +109,6 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
 
-        var generatedSourceTextStr = generatedSourceText.ToString();
-
         context.AddSource($"{model.ClassName}.g.cs", generatedSourceText);
     }
 
@@ -134,8 +132,6 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
-
-        var generatedSourceTextStr = generatedSourceText.ToString();
 
         context.AddSource($"{generatorModel.TypeName}.g.cs", generatedSourceText);
     }
@@ -164,8 +160,6 @@ public sealed class TelemetryVariablesGenerator : IIncrementalGenerator
             .NormalizeWhitespace(eol: "\n");
 
         var generatedSourceText = compilationUnit.GetText(Encoding.UTF8);
-
-        var generatedSourceTextStr = generatedSourceText.ToString();
 
         context.AddSource($"Variables/{model.ClassName}.g.cs", generatedSourceText);
     }
