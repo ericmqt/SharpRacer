@@ -1,0 +1,40 @@
+<Project>
+  <PropertyGroup>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);PackBuildOutputs</TargetsForTfmSpecificContentInPackage>
+    <_RoslynAnalyzersPackagePath>analyzers\dotnet\roslyn$(AnalyzerRoslynVersion)\cs</_RoslynAnalyzersPackagePath>
+  </PropertyGroup>
+
+  <Target Name="GetDependencyTargetPaths" DependsOnTargets="ResolveReferences">
+    <ItemGroup>
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgMicrosoft_Bcl_HashCode)\lib\netstandard2.0\Microsoft.Bcl.HashCode.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Text_Json)\lib\netstandard2.0\System.Text.Json.dll" IncludeRuntimeDependency="false" />
+
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\Microsoft.Bcl.AsyncInterfaces.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Buffers)\lib\netstandard2.0\System.Buffers.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Numerics_Vectors)\lib\netstandard2.0\System.Numerics.Vectors.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Text_Encodings_Web)\lib\netstandard2.0\System.Text.Encodings.Web.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgSystem_Threading_Tasks_Extensions)\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="PackBuildOutputs" DependsOnTargets="ResolveProjectReferences;SatelliteDllsProjectOutputGroup;SatelliteDllsProjectOutputGroupDependencies">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'Microsoft.Bcl.AsyncInterfaces.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'Microsoft.Bcl.HashCode.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Buffers.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Memory.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Numerics.Vectors.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Runtime.CompilerServices.Unsafe.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Text.Encodings.Web.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Text.Json.dll' " />
+      <TfmSpecificPackageFile Include="@(ReferencePath)" PackagePath="$(_RoslynAnalyzersPackagePath)\" Condition=" '%(FileName)%(Extension)' == 'System.Threading.Tasks.Extensions.dll' " />
+      <TfmSpecificPackageFile Include="@(SatelliteDllsProjectOutputGroupDependency)" PackagePath="$(_RoslynAnalyzersPackagePath)\%(SatelliteDllsProjectOutputGroupDependency.DestinationSubDirectory)" Condition=" '%(SatelliteDllsProjectOutputGroupDependency.DestinationSubDirectory)' != '' " />
+      <TfmSpecificPackageFile Include="@(SatelliteDllsProjectOutputGroupOutput->'%(FinalOutputPath)')" PackagePath="$(_RoslynAnalyzersPackagePath)\%(SatelliteDllsProjectOutputGroupOutput.Culture)\" />
+      <TfmSpecificPackageFile Include="%(_ResolvedProjectReferencePaths.Identity)" PackagePath="$(_RoslynAnalyzersPackagePath)\" />
+    </ItemGroup>
+  </Target>
+</Project>

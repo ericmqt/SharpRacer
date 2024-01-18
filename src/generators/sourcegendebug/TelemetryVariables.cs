@@ -3,14 +3,6 @@
 namespace SourceGeneratorDebugApp;
 
 [GenerateDataVariablesContext("TelemetryVariables_VariableNames.json")]
-internal partial class TelemetryVariables
+internal partial class TelemetryVariables : IDataVariablesContext
 {
-    /*public TelemetryVariables(IDataVariableInfoProvider variableProvider)
-    {
-        ArgumentNullException.ThrowIfNull(variableProvider);
-
-        DataVariableFactory factory = new(variableProvider);
-
-        var myVar = factory.CreateScalar<int>("Variable");
-    }*/
 }

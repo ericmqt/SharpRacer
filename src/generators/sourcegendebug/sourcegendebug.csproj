@@ -10,14 +10,10 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<None Remove="TelemetryVariables.config.json" />
-		<None Remove="TelemetryVariables.json" />
 		<None Remove="TelemetryVariables_VariableNames.json" />
 	</ItemGroup>
 	
 	<ItemGroup>
-		<AdditionalFiles Include="TelemetryVariables.json" />
-		<AdditionalFiles Include="TelemetryVariables.config.json" />
 		<AdditionalFiles Include="TelemetryVariables_VariableNames.json" />
 	</ItemGroup>
 
@@ -28,6 +24,6 @@
 		
 	</ItemGroup>
 
-	<Import Project="..\SharpRacer.SourceGenerators\TelemetryVariablesGenerator.props" />
+	<Import Project="..\SharpRacer.SourceGenerators\Assets\nupkg\build\net8.0\SharpRacer.SourceGenerators.props" />
 
 </Project>

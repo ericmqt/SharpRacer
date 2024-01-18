@@ -1,14 +1,17 @@
 {
+  "Alt": {
+    "Name": "Altitude"
+  },
   "ChanLatency": {
-    "ContextPropertyName": "ChannelLatency",
-    "DescriptorName": "ChannelLatency"
+    "Name": "ChannelLatency"
+  },
+  "LatAccel": {
+    "Name": "LateralAcceleration"
   },
   "Lon": {
-    "Name": "Longitude",
-    "DescriptorName": "Longitude"
+    "Name": "Longitude"
   },
   "PitstopActive": {
-    "Name": "PitStopActive",
-    "DescriptorName": "PitStopActive"
+    "Name": "PitStopActive"
   }
 }
