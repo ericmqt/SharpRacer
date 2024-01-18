@@ -1,0 +1,31 @@
+<Project>
+
+  <!-- Generator configuration options-->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="GenerateTelemetryVariableClasses" />
+    <CompilerVisibleProperty Include="TelemetryVariableClassesNamespace" />
+    <CompilerVisibleProperty Include="TelemetryVariablesFileName" />
+    <CompilerVisibleProperty Include="TelemetryVariableOptionsFileName" />
+  </ItemGroup>
+
+  <!-- MSBuild project properties to make visible to generator -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="RootNamespace" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <GenerateTelemetryVariableClasses Condition=" '$(GenerateTelemetryVariableClasses)' == '' ">true</GenerateTelemetryVariableClasses>
+    <TelemetryVariableClassesNamespace Condition=" '$(GeneratedTelemetryVariableClassesNamespace)' == '' ">$(RootNamespace)</TelemetryVariableClassesNamespace>
+    <TelemetryVariablesFileName Condition=" $(TelemetryVariablesFileName) == '' ">TelemetryVariables.json</TelemetryVariablesFileName>
+    <TelemetryVariableOptionsFileName Condition=" $(TelemetryVariableOptionsFileName) == '' ">TelemetryVariables.config.json</TelemetryVariableOptionsFileName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="$(TelemetryVariablesFileName)" />
+    <AdditionalFiles Include="$(TelemetryVariablesFileName)" Condition="Exists('$(TelemetryVariablesFileName)')" />
+
+    <None Remove="$(TelemetryVariableOptionsFileName)" />
+    <AdditionalFiles Include="$(TelemetryVariableOptionsFileName)" Condition="Exists('$(TelemetryVariableOptionsFileName)')" />
+  </ItemGroup>
+
+</Project>

@@ -81,6 +81,20 @@ public sealed class DataVariableFactory : IDataVariableFactory
         return TImplementation.Create(dataVariableInfo);
     }
 
+    /// <inheritdoc />
+    public TImplementation CreateType<TImplementation>(DataVariableDescriptor descriptor)
+        where TImplementation : class, IDataVariable, ICreateDataVariable<TImplementation>, new()
+    {
+        ArgumentNullException.ThrowIfNull(descriptor);
+
+        if (!TryGetDataVariableInfo(descriptor.Name, out var dataVariableInfo))
+        {
+            return new TImplementation();
+        }
+
+        return TImplementation.Create(dataVariableInfo);
+    }
+
     internal static bool IsValueTypeMatch<T>(DataVariableValueType valueType)
         where T : unmanaged
     {

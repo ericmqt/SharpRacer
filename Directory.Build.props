@@ -1,11 +1,13 @@
 <Project>
+	<Import Project="eng\Versions.props" />
+	
 	<PropertyGroup>
 		<RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
 		<RepositorySourceDirectory>$(RepositoryRootDirectory)\src</RepositorySourceDirectory>
 		<RepositoryArtifactsDirectory>$(RepositoryRootDirectory)\artifacts</RepositoryArtifactsDirectory>
 		<RepositoryBinDirectory>$(RepositoryArtifactsDirectory)\bin</RepositoryBinDirectory>
 		<RepositoryPackageOutputDirectory>$(RepositoryArtifactsDirectory)\nupkg</RepositoryPackageOutputDirectory>
-		<RepositoryTestOutputPath>$(RepositoryArtifactsDirectory)\test</RepositoryTestOutputPath>
+		<RepositoryTestCoverageOutputPath>$(RepositoryArtifactsDirectory)\test\coverage</RepositoryTestCoverageOutputPath>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -19,8 +21,9 @@
 
 	<!-- Assembly information -->
 	<PropertyGroup>
-		<Authors>Eric Smith</Authors>
-		<Copyright>Copyright © 2023 Eric Smith.</Copyright>
+		<Authors>Eric Smith (@ericmqt)</Authors>
+		<Company>Eric Smith (@ericmqt)</Company>
+		<Copyright>Copyright © 2023-2024 Eric Smith (@ericmqt).</Copyright>
 	</PropertyGroup>
 
 	<!-- NuGet packaging -->
@@ -30,6 +33,6 @@
 
 	<!-- Coverlet -->
 	<PropertyGroup>
-		<CoverletOutput>$([MSBuild]::EnsureTrailingSlash('$(RepositoryTestOutputPath)\$(MSBuildProjectName)'))</CoverletOutput>
+		<CoverletOutput>$([MSBuild]::EnsureTrailingSlash('$(RepositoryTestCoverageOutputPath)\$(MSBuildProjectName)'))</CoverletOutput>
 	</PropertyGroup>
 </Project>

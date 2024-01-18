@@ -1,0 +1,17 @@
+{
+  "Alt": {
+    "Name": "Altitude"
+  },
+  "ChanLatency": {
+    "Name": "ChannelLatency"
+  },
+  "LatAccel": {
+    "Name": "LateralAcceleration"
+  },
+  "Lon": {
+    "Name": "Longitude"
+  },
+  "PitstopActive": {
+    "Name": "PitStopActive"
+  }
+}

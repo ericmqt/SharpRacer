@@ -1,0 +1,8 @@
+<Project>
+    <!-- Source Generator -->
+    <PropertyGroup>
+        <SourceGeneratorAssemblyVersion>0.1.0.0</SourceGeneratorAssemblyVersion>
+        <SourceGeneratorPackageVersion>0.1.0-beta0</SourceGeneratorPackageVersion>
+    </PropertyGroup>
+    
+</Project>
