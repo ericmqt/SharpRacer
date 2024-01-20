@@ -5,7 +5,7 @@ namespace SharpRacer.SessionInfo.Yaml;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
-public sealed class SessionInfoDocument
+public sealed class SessionInfoDocumentModel
 {
     public CameraInfoNode CameraInfo { get; set; } = new CameraInfoNode();
     public DriverInfoNode DriverInfo { get; set; } = new DriverInfoNode();
@@ -18,7 +18,7 @@ public sealed class SessionInfoDocument
     public SplitTimeInfoNode SplitTimeInfo { get; set; } = new SplitTimeInfoNode();
     public WeekendInfoNode WeekendInfo { get; set; } = new WeekendInfoNode();
 
-    public static SessionInfoDocument FromYaml(string yaml)
+    public static SessionInfoDocumentModel FromYaml(string yaml)
     {
         if (string.IsNullOrEmpty(yaml))
         {
@@ -30,6 +30,6 @@ public sealed class SessionInfoDocument
             .IgnoreUnmatchedProperties()
             .Build();
 
-        return deserializer.Deserialize<SessionInfoDocument>(yaml);
+        return deserializer.Deserialize<SessionInfoDocumentModel>(yaml);
     }
 }

@@ -52,7 +52,7 @@ internal class ImportTelemetryCommandHandler
                 await _dataVariableImporter.ImportAsync(variableModels, cancellationToken).ConfigureAwait(false);
 
                 // Import car and associate its variables
-                var sessionInfo = SessionInfoDocument.FromYaml(telemetryFile.SessionInfo);
+                var sessionInfo = SessionInfoDocumentModel.FromYaml(telemetryFile.SessionInfo);
                 var driverCar = sessionInfo.DriverInfo.Drivers.Single(x => x.CarIdx == sessionInfo.DriverInfo.DriverCarIdx);
 
                 var carModel = new CarModel(driverCar, variableModels.Select(x => x.Name));
