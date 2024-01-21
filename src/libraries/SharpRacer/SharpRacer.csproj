@@ -14,7 +14,6 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Nito.AsyncEx.Interop.WaitHandles" Version="5.1.2" PrivateAssets="compile" />
-		<PackageReference Include="YamlDotNet" Version="13.7.1" />
 	</ItemGroup>
 	
 	<ItemGroup>
