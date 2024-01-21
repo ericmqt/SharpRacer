@@ -25,6 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\libraries\SharpRacer.SessionInfo.Yaml\SharpRacer.SessionInfo.Yaml.csproj" />
 	  <ProjectReference Include="..\..\..\libraries\SharpRacer\SharpRacer.csproj" />
 	  <ProjectReference Include="..\SharpRacer.Tools.TelemetryVariables.Data\SharpRacer.Tools.TelemetryVariables.Data.csproj" />
 	</ItemGroup>

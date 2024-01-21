@@ -1,5 +1,5 @@
 ﻿namespace SharpRacer.SessionInfo.Yaml;
-public class SessionInfoDocumentTests
+public class SessionInfoDocumentModelTests
 {
     [Fact]
     public void Ctor_Test()
