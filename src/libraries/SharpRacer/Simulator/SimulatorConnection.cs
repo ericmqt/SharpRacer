@@ -142,7 +142,8 @@ internal sealed class SimulatorConnection : ISimulatorConnection
                     // TODO: Update or event maybe?
                 }
 
-                // TODO: Signal to waiters
+                // Signal to waiters
+                _dataReadySignal.Set(autoReset: true);
             }
             else
             {
