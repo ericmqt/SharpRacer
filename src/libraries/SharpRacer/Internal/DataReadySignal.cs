@@ -1,6 +1,6 @@
 ﻿using DotNext.Threading;
 
-namespace SharpRacer.Simulator;
+namespace SharpRacer.Internal;
 
 /// <summary>
 /// Provides coordinated synchronous and Task-based asynchronous wait functionality for the data-ready event.

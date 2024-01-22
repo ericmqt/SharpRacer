@@ -2,8 +2,10 @@
 using System.Runtime.Versioning;
 using DotNext.IO.MemoryMappedFiles;
 using Nito.AsyncEx.Interop;
+using SharpRacer.Interop;
+using SharpRacer.Simulator;
 
-namespace SharpRacer.Simulator;
+namespace SharpRacer.Internal;
 [SupportedOSPlatform("windows5.1.2600")]
 internal sealed class SimulatorDataFile : ISimulatorDataFile
 {

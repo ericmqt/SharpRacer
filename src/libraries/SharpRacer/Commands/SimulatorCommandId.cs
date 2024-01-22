@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Simulator;
+﻿namespace SharpRacer.Commands;
 
 /// <summary>
 /// Defines window message IDs used to send commands to the simulator.

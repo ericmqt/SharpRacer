@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Simulator;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Represents a connection to a simulator session.

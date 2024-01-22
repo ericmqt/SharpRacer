@@ -1,9 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
+using SharpRacer.Commands;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 
-namespace SharpRacer.Simulator;
+namespace SharpRacer.Interop;
 
 [SupportedOSPlatform("windows5.1.2600")]
 internal static class BroadcastMessage
@@ -23,7 +24,9 @@ internal static class BroadcastMessage
 
     public static void Send(SimulatorCommandId commandId, int param1, float param2)
     {
-        throw new NotImplementedException();
+        int real = (int)(param2 * 65536.0f);
+
+        Send(commandId, param1, real);
     }
 
     public static void Send(SimulatorCommandId commandId, int param1, int param2, int param3)
@@ -43,12 +46,12 @@ internal static class BroadcastMessage
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static LPARAM CreateLParam(int low, int high)
     {
-        return (int)(((ushort)low) | (((uint)high) << 16));
+        return (int)((ushort)low | (uint)high << 16);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static WPARAM CreateWParam(SimulatorCommandId commandId, int high)
     {
-        return ((ushort)commandId) | (((uint)high) << 16);
+        return (ushort)commandId | (uint)high << 16;
     }
 }
