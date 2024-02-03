@@ -52,11 +52,9 @@ internal sealed class DataReadySignal : IDisposable
     {
         try
         {
-            var waitTask = _asyncSignal.WaitAsync(cancellationToken);
+            await _asyncSignal.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            await waitTask.ConfigureAwait(false);
-
-            return waitTask.IsCompletedSuccessfully;
+            return true;
         }
         catch (OperationCanceledException)
         {
