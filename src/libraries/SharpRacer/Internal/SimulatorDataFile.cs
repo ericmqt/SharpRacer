@@ -1,9 +1,6 @@
 ﻿using System.IO.MemoryMappedFiles;
 using System.Runtime.Versioning;
 using DotNext.IO.MemoryMappedFiles;
-using Nito.AsyncEx.Interop;
-using SharpRacer.Interop;
-using SharpRacer.Simulator;
 
 namespace SharpRacer.Internal;
 [SupportedOSPlatform("windows5.1.2600")]
@@ -15,7 +12,7 @@ internal sealed class SimulatorDataFile : ISimulatorDataFile
     private readonly MemoryMappedFile _dataFile;
     private bool _isDisposed;
 
-    public SimulatorDataFile(MemoryMappedFile dataFile)
+    private SimulatorDataFile(MemoryMappedFile dataFile)
     {
         _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
         _dataAccessor = dataFile.CreateDirectAccessor(offset: 0, size: 0, access: MemoryMappedFileAccess.Read);
@@ -26,19 +23,9 @@ internal sealed class SimulatorDataFile : ISimulatorDataFile
         Dispose();
     }
 
-    public static async Task<SimulatorDataFile> OpenOnDataReadyAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+    public static SimulatorDataFile Open()
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        using var hDataReadyEvent = DataReadyEventHandle.CreateSafeWaitHandle();
-        using var dataReadyEvent = new AutoResetEvent(false) { SafeWaitHandle = hDataReadyEvent };
-
-        if (await WaitHandleAsyncFactory.FromWaitHandle(dataReadyEvent, timeout, cancellationToken).ConfigureAwait(false))
-        {
-            return new SimulatorDataFile(MemoryMappedFile.OpenExisting(MemoryMappedFileName, MemoryMappedFileRights.Read));
-        }
-
-        throw new TimeoutException("The timeout period elapsed before the file could be acquired.");
+        return new SimulatorDataFile(MemoryMappedFile.OpenExisting(MemoryMappedFileName, MemoryMappedFileRights.Read));
     }
 
     /// <inheritdoc />

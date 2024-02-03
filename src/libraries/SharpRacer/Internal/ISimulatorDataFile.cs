@@ -1,9 +1,9 @@
-﻿namespace SharpRacer.Simulator;
+﻿namespace SharpRacer.Internal;
 
 /// <summary>
 /// Provides access to the simulator data file for a simulator session.
 /// </summary>
-public interface ISimulatorDataFile : IDisposable
+internal interface ISimulatorDataFile : IDisposable
 {
     /// <summary>
     /// Gets a read-only span of bytes over the contents of the simulator data file.
