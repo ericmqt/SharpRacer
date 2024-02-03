@@ -121,7 +121,7 @@ public sealed class SimulatorConnection : ISimulatorConnection
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        if (State != SimulatorConnectionState.Open)
+        if (State == SimulatorConnectionState.Closed)
         {
             return false;
         }
@@ -135,7 +135,7 @@ public sealed class SimulatorConnection : ISimulatorConnection
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        if (State != SimulatorConnectionState.Open)
+        if (State == SimulatorConnectionState.Closed)
         {
             return ValueTask.FromResult(false);
         }
@@ -148,7 +148,7 @@ public sealed class SimulatorConnection : ISimulatorConnection
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        if (State != SimulatorConnectionState.Open)
+        if (State == SimulatorConnectionState.Closed)
         {
             return false;
         }
