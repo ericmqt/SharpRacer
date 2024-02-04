@@ -11,5 +11,6 @@ public interface IDataVariableInfoProvider
     /// <returns>
     /// A collection of <see cref="DataVariableInfo"/> objects from the data source.
     /// </returns>
+    /// <exception cref="InvalidOperationException">The data source is in an invalid state for reading.</exception>
     IEnumerable<DataVariableInfo> GetDataVariables();
 }

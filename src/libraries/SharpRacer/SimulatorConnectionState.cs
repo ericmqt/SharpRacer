@@ -6,9 +6,9 @@
 public enum SimulatorConnectionState
 {
     /// <summary>
-    /// The connection to the simulator is closed.
+    /// The connection object is initialized but is not attempting a connection nor has it ever held an active connection.
     /// </summary>
-    Closed = 0,
+    None = 0,
 
     /// <summary>
     /// The connection object is connecting to the simulator.
@@ -18,5 +18,10 @@ public enum SimulatorConnectionState
     /// <summary>
     /// The connection to the simulator is open.
     /// </summary>
-    Open = 2
+    Open = 2,
+
+    /// <summary>
+    /// The connection to the simulator is closed.
+    /// </summary>
+    Closed = 3,
 }
