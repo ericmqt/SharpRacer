@@ -1,5 +1,6 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Hosting;
+using System.Runtime.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 using SharpRacer.Tools.TelemetryVariables.Commands;
 
@@ -11,7 +12,12 @@ internal static class ImportCommandFactory
         var cmd = new CliCommand("import");
 
         cmd.Subcommands.Add(JsonCommand());
-        cmd.Subcommands.Add(SimulatorCommand());
+
+        if (IsPlatformCompatible())
+        {
+            cmd.Subcommands.Add(SimulatorCommand());
+        }
+
         cmd.Subcommands.Add(TelemetryCommand());
 
         return cmd;
@@ -49,14 +55,18 @@ internal static class ImportCommandFactory
         return cmd;
     }
 
+    [SupportedOSPlatform("windows5.1.2600")]
     private static CliCommand SimulatorCommand()
     {
         var cmd = new CliCommand("simulator");
 
         cmd.SetAction((parseResult, cancellationToken) =>
         {
-            Console.WriteLine("Not implemented");
-            return Task.FromResult(-1);
+            var host = parseResult.GetHost();
+
+            var handler = ActivatorUtilities.CreateInstance<ImportSimulatorCommandHandler>(host.Services);
+
+            return handler.ExecuteAsync(cancellationToken);
         });
 
         return cmd;
@@ -99,5 +109,11 @@ internal static class ImportCommandFactory
         });
 
         return cmd;
+    }
+
+    [SupportedOSPlatformGuard("windows5.1.2600")]
+    private static bool IsPlatformCompatible()
+    {
+        return OperatingSystem.IsOSPlatformVersionAtLeast("windows", 5, 1, 2600);
     }
 }
