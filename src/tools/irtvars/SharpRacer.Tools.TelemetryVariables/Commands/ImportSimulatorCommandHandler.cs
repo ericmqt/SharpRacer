@@ -1,8 +1,5 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-using System.Text;
+﻿using System.Runtime.Versioning;
 using Microsoft.Extensions.Logging;
-using SharpRacer.Interop;
 using SharpRacer.SessionInfo;
 using SharpRacer.SessionInfo.Yaml;
 using SharpRacer.Tools.TelemetryVariables.Models;
@@ -92,22 +89,19 @@ internal class ImportSimulatorCommandHandler
             throw new InvalidOperationException("The connection is not open.");
         }
 
-        var header = MemoryMarshal.Read<DataFileHeader>(connection.Data);
-        var version = header.SessionInfoVersion;
+        var reader = new SimulatorDataReader(connection);
 
-        var sessionInfoSpan = connection.Data.Slice(header.SessionInfoOffset, header.SessionInfoLength);
-        var sessionInfoString = Encoding.Latin1.GetString(sessionInfoSpan);
+        var sessionInfoVersion = reader.ReadSessionInfoVersion();
+        var sessionInfoString = reader.ReadSessionInfo();
 
         // Check the version hasn't changed
-        var checkVersion = MemoryMarshal.Read<int>(connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoVersion, sizeof(int)));
-
-        if (checkVersion != version)
+        if (sessionInfoVersion != reader.ReadSessionInfoVersion())
         {
             // Try again
             return ReadSessionInfo(connection);
         }
 
-        return new SessionInfoDocument(sessionInfoString, version);
+        return new SessionInfoDocument(sessionInfoString, sessionInfoVersion);
     }
 
 
