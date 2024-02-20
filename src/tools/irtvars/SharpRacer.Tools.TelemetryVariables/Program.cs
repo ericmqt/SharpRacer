@@ -1,14 +1,13 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
-using SharpRacer.Tools.TelemetryVariables.Configuration;
+using SharpRacer.Tools.TelemetryVariables.Commands;
 using SharpRacer.Tools.TelemetryVariables.Data;
-using SharpRacer.Tools.TelemetryVariables.Services;
+using SharpRacer.Tools.TelemetryVariables.Import;
 
 namespace SharpRacer.Tools.TelemetryVariables;
 
@@ -16,62 +15,59 @@ internal class Program
 {
     public static Task<int> Main(string[] args)
     {
-        var cliConfig = new CliConfiguration(CreateRootCommand());
+        var rootCommand = new CliRootCommand("SharpRacer Telemetry Variables Manager");
 
-        cliConfig.UseHost(
-            _ => Host.CreateDefaultBuilder(args),
-            host =>
-            {
-                host.ConfigureAppConfiguration(Configure);
+        rootCommand.Subcommands.Add(new DatabaseCommand());
+        rootCommand.Subcommands.Add(new ExportCommand());
+        rootCommand.Subcommands.Add(new ImportCommand());
 
-                host.ConfigureLogging((ctx, logging) =>
-                {
-                    var logConfig = ctx.Configuration.GetSection("Logging");
-
-                    logging.ClearProviders();
-                    logging.AddConfiguration(ctx.Configuration.GetSection("Logging"));
-
-                    logging.AddConsole();
-
-                });
-
-                host.ConfigureServices((ctx, svc) => ConfigureServices(svc, ctx.Configuration));
-            });
+        var cliConfig = new CliConfiguration(rootCommand)
+            .UseHost(_ => Host.CreateDefaultBuilder(args), ConfigureHost);
 
         return cliConfig.InvokeAsync(args);
     }
 
-    private static void Configure(HostBuilderContext context, IConfigurationBuilder configuration)
+    private static void ConfigureHost(IHostBuilder host)
     {
-        configuration.AddJsonFile(JsonAppConfiguration.GetPath(), optional: false);
+        var parseResult = host.GetParseResult();
+
+        host.ConfigureLogging((ctx, logging) =>
+        {
+            logging.ClearProviders();
+
+            logging.AddFilter("Microsoft", LogLevel.Warning);
+            logging.AddSimpleConsole(con => con.SingleLine = true);
+
+        });
+
+        host.ConfigureServices(ConfigureServices);
     }
 
-    private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
     {
-        services.Configure<DatabaseOptions>(configuration.GetSection("Database"));
+        // Importers
+        services.AddScoped<JsonImporter>();
 
-        services.AddTelemetryVariablesDbContext(
-            (svc, csb) =>
+        if (SimulatorPlatformGuard.IsSupportedPlatform())
+        {
+            services.AddScoped<SimulatorSessionImporter>();
+        }
+
+        services.AddScoped<TelemetryFileImporter>();
+
+        // Data services
+        var parseResult = hostBuilderContext.GetParseResult();
+
+        if (parseResult.CommandResult.Command is IDatabaseFileNameProviderCommand databaseFileNameProviderCommand)
+        {
+            var csb = new SqliteConnectionStringBuilder()
             {
-                var dbOptions = svc.GetRequiredService<IOptions<DatabaseOptions>>().Value;
-                var dbFile = new FileInfo(dbOptions.Path);
+                DataSource = databaseFileNameProviderCommand.GetDatabaseFileName(parseResult)
+            };
 
-                csb.DataSource = dbFile.FullName;
-            })
-            .AddTelemetryVariablesDataServices();
+            services.AddTelemetryVariablesDbContext(csb.ConnectionString);
+        }
 
-        services.AddScoped<DataVariableImporter>();
-    }
-
-    private static CliRootCommand CreateRootCommand()
-    {
-        var cmd = new CliRootCommand("SharpRacer Telemetry Variables Manager");
-
-        cmd.Subcommands.Add(CommandFactory.ConfigureCommand());
-        cmd.Subcommands.Add(DatabaseCommandFactory.DatabaseCommand());
-        cmd.Subcommands.Add(CommandFactory.ExportCommand());
-        cmd.Subcommands.Add(ImportCommandFactory.ImportCommand());
-
-        return cmd;
+        services.AddTelemetryVariablesDataServices();
     }
 }

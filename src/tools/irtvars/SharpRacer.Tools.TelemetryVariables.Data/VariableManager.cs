@@ -24,6 +24,7 @@ internal class VariableManager : IVariableManager
         string? valueUnit,
         int valueCount,
         bool isTimeSliceArray,
+        bool isDeprecated,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
@@ -38,6 +39,7 @@ internal class VariableManager : IVariableManager
             ValueCount = valueCount,
             ValueType = valueType,
             ValueUnit = valueUnit,
+            IsDeprecated = isDeprecated
         };
 
         return CreateAsync(entity, cancellationToken);

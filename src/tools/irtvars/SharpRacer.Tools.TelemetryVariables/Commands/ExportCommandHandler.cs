@@ -1,11 +1,12 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Configuration;
 using SharpRacer.Tools.TelemetryVariables.Data;
 using SharpRacer.Tools.TelemetryVariables.Models;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class ExportCommandHandler
+internal class ExportCommandHandler : ICommandHandler<ExportCommandOptions>
 {
     private readonly ICarManager _carManager;
     private readonly ILogger<ExportCommandHandler> _logger;

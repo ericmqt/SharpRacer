@@ -11,6 +11,7 @@ public interface IVariableManager
         string? valueUnit,
         int valueCount,
         bool isTimeSliceArray,
+        bool isDeprecated,
         CancellationToken cancellationToken = default);
 
     Task<VariableEntity?> FindByNameAsync(string variableName, CancellationToken cancellationToken = default);

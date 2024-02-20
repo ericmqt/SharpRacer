@@ -3,16 +3,9 @@ using SharpRacer.Tools.TelemetryVariables.Data;
 using SharpRacer.Tools.TelemetryVariables.Data.Entities;
 using SharpRacer.Tools.TelemetryVariables.Models;
 
-namespace SharpRacer.Tools.TelemetryVariables.Services;
+namespace SharpRacer.Tools.TelemetryVariables.Import;
 internal class DataVariableImporter
 {
-    private static readonly IReadOnlyDictionary<string, string?> _deprecatedVariables = new Dictionary<string, string?>()
-    {
-        { "SessionLapsRemain", "SessionLapsRemainEx" },
-        { "TrackTemp", "TrackTempCrew" },
-        { "ShiftIndicatorPct", null }
-    };
-
     private readonly ICarManager _carManager;
     private int _carsAdded;
     private readonly ILogger<DataVariableImporter> _logger;
@@ -47,29 +40,30 @@ internal class DataVariableImporter
         }
 
         // Update deprecated variables
-        foreach (var entity in variableEntities)
+        foreach (var variableModel in variables.Where(DeprecatedVariables.IsDeprecated))
         {
-            if (!IsVariableDeprecated(entity.Name, out var deprecatingVariableName))
+            var entity = variableEntities.Single(x => x.Name.Equals(variableModel.Name, StringComparison.Ordinal));
+
+            var deprecatingVariableName = DeprecatedVariables.GetDeprecatingVariableName(variableModel);
+
+            if (string.IsNullOrEmpty(deprecatingVariableName))
             {
                 continue;
             }
 
-            VariableEntity? deprecatingVariable = null;
+            var deprecatingEntity = await _variableManager.FindByNameAsync(deprecatingVariableName, cancellationToken).ConfigureAwait(false);
 
-            if (deprecatingVariableName != null)
+            if (deprecatingEntity != null)
             {
-                deprecatingVariable = await _variableManager.FindByNameAsync(deprecatingVariableName, cancellationToken).ConfigureAwait(false);
-
-                if (deprecatingVariable is null)
-                {
-                    _logger.LogWarning(
-                        "Variable '{VariableName}' is deprecated by variable '{DeprecatingVariableName}', but the deprecating variable does not exist in the database.",
-                        entity.Name,
-                        deprecatingVariableName);
-                }
+                await _variableManager.SetDeprecatedAsync(entity, deprecatingEntity, cancellationToken).ConfigureAwait(false);
             }
-
-            await _variableManager.SetDeprecatedAsync(entity, deprecatingVariable, cancellationToken).ConfigureAwait(false);
+            else
+            {
+                _logger.LogWarning(
+                    "Variable '{VariableName}' is deprecated by variable '{DeprecatingVariableName}', but the deprecating variable does not exist in the database.",
+                    entity.Name,
+                    deprecatingVariableName);
+            }
         }
     }
 
@@ -148,6 +142,7 @@ internal class DataVariableImporter
                 variableModel.ValueUnit,
                 variableModel.ValueCount,
                 variableModel.IsTimeSliceArray,
+                DeprecatedVariables.IsDeprecated(variableModel),
                 cancellationToken)
                 .ConfigureAwait(false);
 
@@ -156,12 +151,5 @@ internal class DataVariableImporter
         }
 
         return entity;
-    }
-
-    private bool IsVariableDeprecated(string variableName, out string? deprecatingVariableName)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(variableName);
-
-        return _deprecatedVariables.TryGetValue(variableName, out deprecatingVariableName);
     }
 }

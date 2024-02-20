@@ -7,9 +7,19 @@
 		<Nullable>enable</Nullable>
 		<RootNamespace>SharpRacer.Tools.TelemetryVariables</RootNamespace>
 		<AssemblyName>irtvars</AssemblyName>
-		<PackAsTool>true</PackAsTool>
-		<ToolCommandName>irtvars</ToolCommandName>
-	</PropertyGroup>
+        <AssemblyVersion>$(TelemetryToolAssemblyVersion)</AssemblyVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    </PropertyGroup>
+
+    <!-- Package -->
+    <PropertyGroup>
+        <ToolCommandName>irtvars</ToolCommandName>
+        <PackAsTool>true</PackAsTool>
+        <PackageId>SharpRacer.Tools.TelemetryVariables</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/ericmqt/SharpRacer.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+    </PropertyGroup>
 
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
@@ -18,9 +28,9 @@
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
-	  <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.23407.1" />
-	  <PackageReference Include="System.CommandLine.Hosting" Version="0.4.0-alpha.23407.1" />
-	  <PackageReference Include="System.CommandLine.Rendering" Version="0.4.0-alpha.23407.1" />
+	  <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.24112.1" />
+	  <PackageReference Include="System.CommandLine.Hosting" Version="0.4.0-alpha.24112.1" />
+	  <PackageReference Include="System.CommandLine.Rendering" Version="0.4.0-alpha.24112.1" />
 	  <PackageReference Include="YamlDotNet" Version="13.7.1" />
 	</ItemGroup>
 
@@ -28,12 +38,6 @@
 	  <ProjectReference Include="..\..\..\libraries\SharpRacer.SessionInfo.Yaml\SharpRacer.SessionInfo.Yaml.csproj" />
 	  <ProjectReference Include="..\..\..\libraries\SharpRacer\SharpRacer.csproj" />
 	  <ProjectReference Include="..\SharpRacer.Tools.TelemetryVariables.Data\SharpRacer.Tools.TelemetryVariables.Data.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="irtvars.config.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
 	</ItemGroup>
 
 </Project>

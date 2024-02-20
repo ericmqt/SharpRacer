@@ -22,6 +22,26 @@ public static class DependencyInjectionExtensions
 
     public static IServiceCollection AddTelemetryVariablesDbContext(
         this IServiceCollection services,
+        string connectionString,
+        Action<SqliteDbContextOptionsBuilder>? configureSqlite = null)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        return services.AddDbContext<TelemetryVariablesDbContext>(
+            (svc, db) =>
+            {
+                db.UseSqlite(connectionString,
+                    sqlite =>
+                    {
+                        sqlite.UseSharpRacerMigrationsAssembly();
+
+                        configureSqlite?.Invoke(sqlite);
+                    });
+            });
+    }
+
+    public static IServiceCollection AddTelemetryVariablesDbContext(
+        this IServiceCollection services,
         Action<IServiceProvider, SqliteConnectionStringBuilder> configureConnectionString,
         Action<SqliteDbContextOptionsBuilder>? configureSqlite = null)
     {
@@ -37,7 +57,7 @@ public static class DependencyInjectionExtensions
                 db.UseSqlite(csb.ConnectionString,
                     sqlite =>
                     {
-                        sqlite.MigrationsAssembly("SharpRacer.Tools.TelemetryVariables.Data");
+                        sqlite.UseSharpRacerMigrationsAssembly();
 
                         configureSqlite?.Invoke(sqlite);
                     });
@@ -53,5 +73,10 @@ public static class DependencyInjectionExtensions
             .AddScoped<IVariableStore, VariableStore>()
             .AddScoped<ICarManager, CarManager>()
             .AddScoped<IVariableManager, VariableManager>();
+    }
+
+    public static SqliteDbContextOptionsBuilder UseSharpRacerMigrationsAssembly(this SqliteDbContextOptionsBuilder builder)
+    {
+        return builder.MigrationsAssembly("SharpRacer.Tools.TelemetryVariables.Data");
     }
 }

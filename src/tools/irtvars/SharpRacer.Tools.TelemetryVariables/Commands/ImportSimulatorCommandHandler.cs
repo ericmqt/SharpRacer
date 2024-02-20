@@ -2,42 +2,62 @@
 using Microsoft.Extensions.Logging;
 using SharpRacer.SessionInfo;
 using SharpRacer.SessionInfo.Yaml;
+using SharpRacer.Tools.TelemetryVariables.CommandLine;
+using SharpRacer.Tools.TelemetryVariables.Import;
 using SharpRacer.Tools.TelemetryVariables.Models;
-using SharpRacer.Tools.TelemetryVariables.Services;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal class ImportSimulatorCommandHandler
+internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimulatorCommandOptions>
 {
     private readonly DataVariableImporter _dataVariableImporter;
     private readonly ILogger<ImportSimulatorCommandHandler> _logger;
 
-    public ImportSimulatorCommandHandler(DataVariableImporter dataVariableImporter, ILogger<ImportSimulatorCommandHandler> logger)
+    public ImportSimulatorCommandHandler(
+        ImportSimulatorCommandOptions options,
+        DataVariableImporter dataVariableImporter,
+        ILogger<ImportSimulatorCommandHandler> logger)
     {
+        Options = options ?? throw new ArgumentNullException(nameof(options));
+
         _dataVariableImporter = dataVariableImporter ?? throw new ArgumentNullException(nameof(dataVariableImporter));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
+
+    public ImportSimulatorCommandOptions Options { get; }
 
     public async Task<int> ExecuteAsync(CancellationToken cancellationToken)
     {
         using var connection = new SimulatorConnection();
         connection.StateChanged += (sender, e) => Console.WriteLine($"ConnectionState: {e.NewState}");
 
-        Console.WriteLine("Waiting for simulator...");
-
         try
         {
-            await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            if (Options.WaitForConnection)
+            {
+                Console.WriteLine("Waiting for simulator...");
+                await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await connection.OpenAsync(TimeSpan.FromMilliseconds(64), cancellationToken).ConfigureAwait(false);
+            }
+        }
+        catch (TimeoutException)
+        {
+            Console.WriteLine("Simulator is not running.");
+
+            return 0;
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Import canceled.");
-            return -1;
+            return 0;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error connecting to simulator");
+            _logger.LogError(ex, "Error connecting to the simulator");
+
             return -1;
         }
 

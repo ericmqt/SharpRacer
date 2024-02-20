@@ -1,10 +1,11 @@
 ﻿using System.Text.Json;
+using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Configuration;
+using SharpRacer.Tools.TelemetryVariables.Import;
 using SharpRacer.Tools.TelemetryVariables.Models;
-using SharpRacer.Tools.TelemetryVariables.Services;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class ImportJsonCommandHandler
+internal sealed class ImportJsonCommandHandler : ICommandHandler<ImportJsonCommandOptions>
 {
     private readonly DataVariableImporter _variableImporter;
 

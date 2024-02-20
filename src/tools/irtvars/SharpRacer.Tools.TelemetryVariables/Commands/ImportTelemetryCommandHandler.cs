@@ -1,11 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 using SharpRacer.SessionInfo.Yaml;
 using SharpRacer.Telemetry;
+using SharpRacer.Tools.TelemetryVariables.CommandLine;
+using SharpRacer.Tools.TelemetryVariables.Import;
 using SharpRacer.Tools.TelemetryVariables.Models;
-using SharpRacer.Tools.TelemetryVariables.Services;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class ImportTelemetryCommandHandler
+internal class ImportTelemetryCommandHandler : ICommandHandler<ImportTelemetryCommandOptions>
 {
     private readonly DataVariableImporter _dataVariableImporter;
     private readonly ILogger<ImportTelemetryCommandHandler> _logger;
@@ -61,7 +62,7 @@ internal class ImportTelemetryCommandHandler
             }
             catch (OperationCanceledException)
             {
-                Console.WriteLine("Operation cancelled.");
+                Console.WriteLine("Operation canceled.");
 
                 return -1;
             }

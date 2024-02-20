@@ -1,16 +1,19 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class CreateDatabaseCommandHandler
+internal class CreateDatabaseCommandHandler : ICommandHandler<CreateDatabaseCommandOptions>
 {
+    private readonly TelemetryVariablesDbContext _dbContext;
     private readonly ILogger<CreateDatabaseCommandHandler> _logger;
 
-    public CreateDatabaseCommandHandler(CreateDatabaseCommandOptions options, ILogger<CreateDatabaseCommandHandler> logger)
+    public CreateDatabaseCommandHandler(CreateDatabaseCommandOptions options, TelemetryVariablesDbContext dbContext, ILogger<CreateDatabaseCommandHandler> logger)
     {
         Options = options ?? throw new ArgumentNullException(nameof(options));
+
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -18,13 +21,6 @@ internal class CreateDatabaseCommandHandler
 
     public async Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        if (Options.DatabaseFile.Exists)
-        {
-            Console.WriteLine($"Database already exists: {Options.DatabaseFile.FullName}");
-
-            return -1;
-        }
-
         // Create parent directory if it does not exist, otherwise SQLite throws error 14
         if (Options.DatabaseFile.Directory != null && !Options.DatabaseFile.Directory.Exists)
         {
@@ -33,9 +29,7 @@ internal class CreateDatabaseCommandHandler
 
         try
         {
-            using var dbContext = CreateDbContext();
-
-            await dbContext.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+            await _dbContext.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
@@ -54,23 +48,5 @@ internal class CreateDatabaseCommandHandler
 
         Console.WriteLine($"Created database: {Options.DatabaseFile.FullName}");
         return 0;
-    }
-
-    private TelemetryVariablesDbContext CreateDbContext()
-    {
-        var csb = new SqliteConnectionStringBuilder()
-        {
-            DataSource = Options.DatabaseFile.FullName
-        };
-
-        var builder = new DbContextOptionsBuilder<TelemetryVariablesDbContext>();
-
-        builder.UseSqlite(csb.ConnectionString,
-            sqlite =>
-            {
-                sqlite.MigrationsAssembly("SharpRacer.Tools.TelemetryVariables.Data");
-            });
-
-        return new TelemetryVariablesDbContext(builder.Options);
     }
 }
