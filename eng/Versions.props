@@ -4,5 +4,11 @@
         <SourceGeneratorAssemblyVersion>0.1.0.0</SourceGeneratorAssemblyVersion>
         <SourceGeneratorPackageVersion>0.1.0-beta0</SourceGeneratorPackageVersion>
     </PropertyGroup>
+
+    <!-- Telemetry Variables tool -->
+    <PropertyGroup>
+        <TelemetryToolAssemblyVersion>0.1.0.0</TelemetryToolAssemblyVersion>
+        <TelemetryToolPackageVersion>0.1.0-beta0</TelemetryToolPackageVersion>
+    </PropertyGroup>
     
 </Project>
