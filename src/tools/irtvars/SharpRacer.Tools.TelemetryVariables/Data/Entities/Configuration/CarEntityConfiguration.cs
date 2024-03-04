@@ -39,6 +39,13 @@ internal static class CarEntityConfiguration
             .HasColumnOrder(4)
             .IsRequired();
 
+        builder.Property(t => t.ContentVersion)
+            .HasColumnName("ContentVersion")
+            .HasColumnOrder(5)
+            .HasConversion(
+                v => v.ToString(),
+                s => ContentVersion.Parse(s, null));
+
         // Relationships
         builder.HasMany(t => t.Variables)
             .WithMany()

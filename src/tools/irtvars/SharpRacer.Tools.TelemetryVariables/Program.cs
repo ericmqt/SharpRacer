@@ -1,12 +1,12 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Hosting;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Commands;
 using SharpRacer.Tools.TelemetryVariables.Data;
+using SharpRacer.Tools.TelemetryVariables.Data.Stores;
 using SharpRacer.Tools.TelemetryVariables.Import;
 
 namespace SharpRacer.Tools.TelemetryVariables;
@@ -36,7 +36,7 @@ internal class Program
             logging.ClearProviders();
 
             logging.AddFilter("Microsoft", LogLevel.Warning);
-            logging.AddSimpleConsole(con => con.SingleLine = true);
+            logging.AddSimpleConsole();
 
         });
 
@@ -45,29 +45,19 @@ internal class Program
 
     private static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
     {
-        // Importers
-        services.AddScoped<JsonImporter>();
-
-        if (SimulatorPlatformGuard.IsSupportedPlatform())
-        {
-            services.AddScoped<SimulatorSessionImporter>();
-        }
-
-        services.AddScoped<TelemetryFileImporter>();
-
         // Data services
         var parseResult = hostBuilderContext.GetParseResult();
 
-        if (parseResult.CommandResult.Command is IDatabaseFileNameProviderCommand databaseFileNameProviderCommand)
+        if (parseResult.CommandResult.Command is IConfigureDbContextCommand dbContextCommand)
         {
-            var csb = new SqliteConnectionStringBuilder()
-            {
-                DataSource = databaseFileNameProviderCommand.GetDatabaseFileName(parseResult)
-            };
-
-            services.AddTelemetryVariablesDbContext(csb.ConnectionString);
+            services.AddDbContext<TelemetryVariablesDbContext>((svc, db) => dbContextCommand.ConfigureDbContext(db, parseResult, svc));
         }
 
-        services.AddTelemetryVariablesDataServices();
+        services.AddScoped<ICarStore, CarStore>();
+        services.AddScoped<ICarVariableStore, CarVariableStore>();
+        services.AddScoped<IVariableStore, VariableStore>();
+
+        services.AddScoped<VariableImporter>();
+        services.AddScoped<CarImporter>();
     }
 }

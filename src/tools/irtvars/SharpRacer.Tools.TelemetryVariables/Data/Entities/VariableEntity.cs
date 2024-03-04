@@ -39,6 +39,8 @@ public class VariableEntity
     [MaxLength(DataFileConstants.MaxStringLength)]
     public string NormalizedName { get; private set; } = string.Empty;
 
+    public ContentVersion SimulatorVersion { get; set; }
+
     public int ValueCount { get; set; }
     public DataVariableValueType ValueType { get; set; }
     public string? ValueUnit { get; set; }

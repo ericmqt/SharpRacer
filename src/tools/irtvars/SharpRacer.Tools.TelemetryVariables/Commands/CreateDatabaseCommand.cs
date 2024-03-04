@@ -1,13 +1,15 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Parsing;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class CreateDatabaseCommand : CliCommand<CreateDatabaseCommandHandler, CreateDatabaseCommandOptions>, IDatabaseFileNameProviderCommand
+internal class CreateDatabaseCommand : CliCommand<CreateDatabaseCommandHandler, CreateDatabaseCommandOptions>, IConfigureDbContextCommand
 {
-    private static string _DefaultDatabaseFileName = "TelemetryVariables.db";
+    private static readonly string _DefaultDatabaseFileName = "TelemetryVariables.db";
 
     public CreateDatabaseCommand()
         : base("create", "Creates a new telemetry variables database.")
@@ -27,11 +29,16 @@ internal class CreateDatabaseCommand : CliCommand<CreateDatabaseCommandHandler, 
 
     public CliArgument<FileInfo?> DatabaseFileArgument { get; }
 
-    public string GetDatabaseFileName(ParseResult parseResult)
+    public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {
         var databaseFile = parseResult.GetValue(DatabaseFileArgument) ?? GetDefaultDatabaseFile();
 
-        return databaseFile.FullName;
+        var csb = new SqliteConnectionStringBuilder()
+        {
+            DataSource = databaseFile.FullName
+        };
+
+        builder.UseSqlite(csb.ConnectionString);
     }
 
     protected override CreateDatabaseCommandOptions CreateOptions(ParseResult parseResult)

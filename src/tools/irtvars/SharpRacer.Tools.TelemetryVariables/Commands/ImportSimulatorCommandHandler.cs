@@ -11,17 +11,20 @@ namespace SharpRacer.Tools.TelemetryVariables.Commands;
 [SupportedOSPlatform("windows5.1.2600")]
 internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimulatorCommandOptions>
 {
-    private readonly DataVariableImporter _dataVariableImporter;
+    private readonly CarImporter _carImporter;
     private readonly ILogger<ImportSimulatorCommandHandler> _logger;
+    private readonly VariableImporter _variableImporter;
 
     public ImportSimulatorCommandHandler(
         ImportSimulatorCommandOptions options,
-        DataVariableImporter dataVariableImporter,
+        VariableImporter variableImporter,
+        CarImporter carImporter,
         ILogger<ImportSimulatorCommandHandler> logger)
     {
         Options = options ?? throw new ArgumentNullException(nameof(options));
 
-        _dataVariableImporter = dataVariableImporter ?? throw new ArgumentNullException(nameof(dataVariableImporter));
+        _variableImporter = variableImporter ?? throw new ArgumentNullException(nameof(variableImporter));
+        _carImporter = carImporter ?? throw new ArgumentNullException(nameof(carImporter));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -30,50 +33,24 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
     public async Task<int> ExecuteAsync(CancellationToken cancellationToken)
     {
         using var connection = new SimulatorConnection();
-        connection.StateChanged += (sender, e) => Console.WriteLine($"ConnectionState: {e.NewState}");
 
-        try
+        if (!await OpenConnectionAsync(connection, Options.WaitForConnection, cancellationToken).ConfigureAwait(false))
         {
-            if (Options.WaitForConnection)
-            {
-                Console.WriteLine("Waiting for simulator...");
-                await connection.OpenAsync(cancellationToken).ConfigureAwait(false);
-            }
-            else
-            {
-                await connection.OpenAsync(TimeSpan.FromMilliseconds(64), cancellationToken).ConfigureAwait(false);
-            }
-        }
-        catch (TimeoutException)
-        {
-            Console.WriteLine("Simulator is not running.");
-
-            return 0;
-        }
-        catch (OperationCanceledException)
-        {
-            return 0;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error connecting to the simulator");
-
             return -1;
         }
 
         try
         {
+            Console.WriteLine("Reading telemetry variables from simulator...");
             await connection.WaitForDataReadyAsync(cancellationToken).ConfigureAwait(false);
 
             var simulatorVariables = connection.GetDataVariables();
             var sessionInfo = ReadSessionInfo(connection);
 
-            Console.WriteLine($"Importing {simulatorVariables.Count()} variables...");
-
             // Import variables
             var variableModels = simulatorVariables.Select(x => new DataVariableModel(x));
 
-            await _dataVariableImporter.ImportAsync(variableModels, cancellationToken).ConfigureAwait(false);
+            await _variableImporter.ImportVariablesAsync(variableModels, cancellationToken).ConfigureAwait(false);
 
             // Import car and associate it with its variables
             var sessionInfoModel = SessionInfoDocumentModel.FromYaml(sessionInfo.YamlDocument);
@@ -81,11 +58,11 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
 
             var carModel = new CarModel(driverCar, variableModels.Select(x => x.Name));
 
-            await _dataVariableImporter.ImportCarAsync(carModel, cancellationToken).ConfigureAwait(false);
+            await _carImporter.ImportAsync(carModel, cancellationToken).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine("Operation canceled.");
+            Console.WriteLine("Import canceled");
 
             return -1;
         }
@@ -96,7 +73,6 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
             return -1;
         }
 
-        Console.WriteLine($"Imported {_dataVariableImporter.VariablesAddedCount} variable(s) and {_dataVariableImporter.CarsAddedCount} car(s)");
         Console.WriteLine("Import completed");
 
         return 0;
@@ -124,5 +100,39 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
         return new SessionInfoDocument(sessionInfoString, sessionInfoVersion);
     }
 
+    private async Task<bool> OpenConnectionAsync(
+        SimulatorConnection simulatorConnection,
+        bool waitForConnection,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            if (waitForConnection)
+            {
+                Console.WriteLine("Waiting for simulator...");
+                await simulatorConnection.OpenAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
+            {
+                await simulatorConnection.OpenAsync(TimeSpan.FromMilliseconds(64), cancellationToken).ConfigureAwait(false);
+            }
 
+            Console.WriteLine("Connected to simulator");
+            return true;
+        }
+        catch (TimeoutException)
+        {
+            Console.WriteLine("Simulator is not running");
+        }
+        catch (OperationCanceledException)
+        {
+            Console.WriteLine("Import canceled");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error connecting to simulator");
+        }
+
+        return false;
+    }
 }

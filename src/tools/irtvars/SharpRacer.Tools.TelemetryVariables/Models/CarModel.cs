@@ -19,6 +19,12 @@ public class CarModel
     }
 
     public CarModel(DriverNode driverNode, IEnumerable<string> carVariableNames)
+        : this(driverNode, carVariableNames, default)
+    {
+
+    }
+
+    public CarModel(DriverNode driverNode, IEnumerable<string> carVariableNames, ContentVersion contentVersion)
     {
         ArgumentNullException.ThrowIfNull(driverNode);
         ArgumentNullException.ThrowIfNull(carVariableNames);
@@ -28,8 +34,10 @@ public class CarModel
         ShortName = driverNode.CarScreenNameShort;
 
         VariableNames = carVariableNames.Distinct().ToList();
+        ContentVersion = contentVersion;
     }
 
+    public ContentVersion ContentVersion { get; }
     public string Name { get; set; } = string.Empty;
     public string Path { get; set; } = string.Empty;
     public string ShortName { get; set; } = string.Empty;

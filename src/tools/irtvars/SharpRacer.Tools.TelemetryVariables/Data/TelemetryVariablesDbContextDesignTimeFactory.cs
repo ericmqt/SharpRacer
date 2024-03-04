@@ -1,9 +1,8 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using SharpRacer.Tools.TelemetryVariables.Data;
 
-namespace SharpRacer.Tools.TelemetryVariables.Configuration;
+namespace SharpRacer.Tools.TelemetryVariables.Data;
 internal class TelemetryVariablesDbContextDesignTimeFactory : IDesignTimeDbContextFactory<TelemetryVariablesDbContext>
 {
     public TelemetryVariablesDbContext CreateDbContext(string[] args)

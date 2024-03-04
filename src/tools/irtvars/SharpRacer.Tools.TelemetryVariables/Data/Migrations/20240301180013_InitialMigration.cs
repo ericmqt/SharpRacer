@@ -19,7 +19,8 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
                     Path = table.Column<string>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     ShortName = table.Column<string>(type: "TEXT", nullable: false),
-                    NormalizedPath = table.Column<string>(type: "TEXT", nullable: false)
+                    NormalizedPath = table.Column<string>(type: "TEXT", nullable: false),
+                    ContentVersion = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -41,7 +42,8 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
                     IsTimeSliceArray = table.Column<bool>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 64, nullable: false),
                     IsDeprecated = table.Column<bool>(type: "INTEGER", nullable: false),
-                    DeprecatingVariableKey = table.Column<int>(type: "INTEGER", nullable: true)
+                    DeprecatingVariableKey = table.Column<int>(type: "INTEGER", nullable: true),
+                    SimulatorVersion = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -100,16 +102,6 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
                 name: "IX_Variable_DeprecatingVariableKey",
                 table: "Variable",
                 column: "DeprecatingVariableKey");
-
-            // Views
-            migrationBuilder.Sql(@"CREATE VIEW [SessionVariables] AS
-SELECT
-	v.[Id] AS [VariableKey]
-FROM [CarVariable] cv
-JOIN [Variable] v ON cv.[VariableKey] = v.[Id]
-GROUP BY cv.[VariableKey]
-HAVING COUNT(cv.[CarKey]) = (SELECT COUNT(*) FROM [Car])
-ORDER BY v.[Id]");
         }
 
         /// <inheritdoc />
@@ -123,8 +115,6 @@ ORDER BY v.[Id]");
 
             migrationBuilder.DropTable(
                 name: "Variable");
-
-            migrationBuilder.Sql(@"DROP VIEW [SessionVariables];");
         }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System.CommandLine;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
+using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOptions>, IDatabaseFileNameProviderCommand
+internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOptions>, IConfigureDbContextCommand
 {
     public ExportCommand()
         : base(name: "export", description: "Exports telemetry variable information.")
@@ -27,7 +30,6 @@ internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOpt
         };
 
         DatabaseFileOption.AcceptExistingOnly();
-        DatabaseFileOption.Validators.Add(ArgumentValidators.SqliteDbContextFileHasNoPendingMigrations);
 
         IncludeDeprecatedOption = new CliOption<bool>("--include-deprecated")
         {
@@ -51,9 +53,16 @@ internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOpt
     public CliOption<bool> IncludeDeprecatedOption { get; }
     public CliArgument<FileSystemInfo> OutputFileOrDirectoryArgument { get; }
 
-    public string GetDatabaseFileName(ParseResult parseResult)
+    public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {
-        return parseResult.GetValue(DatabaseFileOption)!.FullName;
+        var databaseFile = parseResult.GetValue(DatabaseFileOption)!;
+
+        var csb = new SqliteConnectionStringBuilder()
+        {
+            DataSource = databaseFile.FullName
+        };
+
+        builder.UseSqlite(csb.ConnectionString);
     }
 
     protected override ExportCommandOptions CreateOptions(ParseResult parseResult)
@@ -68,6 +77,16 @@ internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOpt
 
     protected override async Task<int> InvokeAsync(ExportCommandHandler handler, IServiceProvider serviceProvider, CancellationToken cancellationToken)
     {
+        // Check database is up to date
+        var dbContext = serviceProvider.GetRequiredService<TelemetryVariablesDbContext>();
+
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            Console.WriteLine("Database must be updated before operation can proceed. See command: database migrate");
+
+            return -1;
+        }
+
         var logger = serviceProvider.GetRequiredService<ILogger<ExportCommand>>();
 
         try { return await handler.ExecuteAsync(cancellationToken).ConfigureAwait(false); }

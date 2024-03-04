@@ -1,16 +1,24 @@
 ﻿using System.CommandLine;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
+using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal sealed class ImportJsonCommand
-    : CliCommand<ImportJsonCommandHandler, ImportJsonCommandOptions>, IDatabaseFileNameProviderCommand
+internal sealed class ImportJsonCommand : CliCommand<ImportJsonCommandHandler, ImportJsonCommandOptions>, IConfigureDbContextCommand
 {
-    public ImportJsonCommand(CliOption<FileInfo> databaseFileOption)
+    public ImportJsonCommand()
         : base("json", "Imports telemetry variables from a JSON document exported by this tool.")
     {
-        DatabaseFileOption = databaseFileOption ?? throw new ArgumentNullException(nameof(databaseFileOption));
+        DatabaseFileOption = new CliOption<FileInfo>("--database", ["--database", "-d"])
+        {
+            Description = "The database file path.",
+            Required = true,
+        };
+
+        DatabaseFileOption.AcceptExistingOnly();
 
         InputFileArgument = new CliArgument<FileInfo>("input-file")
         {
@@ -20,14 +28,22 @@ internal sealed class ImportJsonCommand
         .AcceptExistingOnly();
 
         Arguments.Add(InputFileArgument);
+        Options.Add(DatabaseFileOption);
     }
 
     public CliOption<FileInfo> DatabaseFileOption { get; }
     public CliArgument<FileInfo> InputFileArgument { get; }
 
-    public string GetDatabaseFileName(ParseResult parseResult)
+    public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {
-        return parseResult.GetValue(DatabaseFileOption)!.FullName;
+        var databaseFile = parseResult.GetValue(DatabaseFileOption)!;
+
+        var csb = new SqliteConnectionStringBuilder()
+        {
+            DataSource = databaseFile.FullName
+        };
+
+        builder.UseSqlite(csb.ConnectionString);
     }
 
     protected override ImportJsonCommandOptions CreateOptions(ParseResult parseResult)
@@ -43,6 +59,16 @@ internal sealed class ImportJsonCommand
         IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
+        // Check database is up to date
+        var dbContext = serviceProvider.GetRequiredService<TelemetryVariablesDbContext>();
+
+        if (dbContext.Database.GetPendingMigrations().Any())
+        {
+            Console.WriteLine("Database must be updated before operation can proceed. See command: database migrate");
+
+            return -1;
+        }
+
         var logger = serviceProvider.GetRequiredService<ILogger<ImportJsonCommand>>();
 
         try { return await handler.ExecuteAsync(cancellationToken).ConfigureAwait(false); }

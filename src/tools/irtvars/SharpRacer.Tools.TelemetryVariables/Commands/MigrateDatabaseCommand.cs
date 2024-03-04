@@ -1,10 +1,12 @@
 ﻿using System.CommandLine;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class MigrateDatabaseCommand : CliCommand<MigrateDatabaseCommandHandler>, IDatabaseFileNameProviderCommand
+internal class MigrateDatabaseCommand : CliCommand<MigrateDatabaseCommandHandler>, IConfigureDbContextCommand
 {
     public MigrateDatabaseCommand()
         : base("migrate", "Migrates a telemetry variables database schema to the latest version.")
@@ -22,9 +24,16 @@ internal class MigrateDatabaseCommand : CliCommand<MigrateDatabaseCommandHandler
 
     public CliArgument<FileInfo> DatabaseFileArgument { get; }
 
-    public string GetDatabaseFileName(ParseResult parseResult)
+    public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {
-        return parseResult.GetValue(DatabaseFileArgument)!.FullName;
+        var databaseFile = parseResult.GetValue(DatabaseFileArgument)!;
+
+        var csb = new SqliteConnectionStringBuilder()
+        {
+            DataSource = databaseFile.FullName
+        };
+
+        builder.UseSqlite(csb.ConnectionString);
     }
 
     protected override async Task<int> InvokeAsync(

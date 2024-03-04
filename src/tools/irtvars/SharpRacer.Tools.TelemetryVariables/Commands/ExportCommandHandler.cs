@@ -1,27 +1,30 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
-using SharpRacer.Tools.TelemetryVariables.Configuration;
-using SharpRacer.Tools.TelemetryVariables.Data;
+using SharpRacer.Tools.TelemetryVariables.Json;
+using SharpRacer.Tools.TelemetryVariables.Data.Stores;
 using SharpRacer.Tools.TelemetryVariables.Models;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
 internal class ExportCommandHandler : ICommandHandler<ExportCommandOptions>
 {
-    private readonly ICarManager _carManager;
+    private readonly ICarStore _carStore;
+    private readonly ICarVariableStore _carVariableStore;
     private readonly ILogger<ExportCommandHandler> _logger;
-    private readonly IVariableManager _variableManager;
+    private readonly IVariableStore _variableStore;
 
     public ExportCommandHandler(
         ExportCommandOptions options,
-        IVariableManager variableManager,
-        ICarManager carManager,
+        IVariableStore variableStore,
+        ICarStore carStore,
+        ICarVariableStore carVariableStore,
         ILogger<ExportCommandHandler> logger)
     {
         Options = options ?? throw new ArgumentNullException(nameof(options));
 
-        _variableManager = variableManager ?? throw new ArgumentNullException(nameof(variableManager));
-        _carManager = carManager ?? throw new ArgumentNullException(nameof(carManager));
+        _variableStore = variableStore ?? throw new ArgumentNullException(nameof(variableStore));
+        _carStore = carStore ?? throw new ArgumentNullException(nameof(carStore));
+        _carVariableStore = carVariableStore ?? throw new ArgumentNullException(nameof(carVariableStore));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -92,11 +95,11 @@ internal class ExportCommandHandler : ICommandHandler<ExportCommandOptions>
     {
         var results = new List<CarModel>();
 
-        var carEntities = await _carManager.ListAsync(cancellationToken).ConfigureAwait(false);
+        var carEntities = await _carStore.ListAsync(cancellationToken).ConfigureAwait(false);
 
         foreach (var car in carEntities)
         {
-            var carVariableNames = await _carManager.GetVariableNamesAsync(car, cancellationToken).ConfigureAwait(false);
+            var carVariableNames = await _carVariableStore.GetVariableNamesAsync(car, cancellationToken).ConfigureAwait(false);
 
             results.Add(new CarModel(car) { VariableNames = carVariableNames });
         }
@@ -106,9 +109,9 @@ internal class ExportCommandHandler : ICommandHandler<ExportCommandOptions>
 
     private async Task<IEnumerable<DataVariableModel>> GetVariableModelsAsync(CancellationToken cancellationToken = default)
     {
-        var sessionVariables = await _variableManager.GetSessionVariablesAsync(cancellationToken).ConfigureAwait(false);
-
-        var carDependentVariables = await _variableManager.GetCarDependentVariablesAsync(cancellationToken).ConfigureAwait(false);
+        // Order session variables first in the resulting collection
+        var sessionVariables = await _variableStore.ListSessionVariablesAsync(cancellationToken).ConfigureAwait(false);
+        var carDependentVariables = await _variableStore.ListCarDependentVariablesAsync(cancellationToken).ConfigureAwait(false);
 
         return sessionVariables.Concat(carDependentVariables).Select(x => new DataVariableModel(x));
     }

@@ -22,6 +22,13 @@ public sealed class WeekendInfoNode
     public int SeasonID { get; set; }
     public int SeriesID { get; set; }
     public int SessionID { get; set; }
+
+    /// <summary>
+    /// Gets or sets the SimMode value.
+    /// </summary>
+    /// <remarks>
+    /// Value is "full" or "replay".
+    /// </remarks>
     public string SimMode { get; set; } = string.Empty;
     public int SubSessionID { get; set; }
     public int TeamRacing { get; set; }

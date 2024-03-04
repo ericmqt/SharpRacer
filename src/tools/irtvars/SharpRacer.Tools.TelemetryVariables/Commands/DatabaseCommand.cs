@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using System.CommandLine.Help;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
 internal class DatabaseCommand : CliCommand
@@ -8,5 +9,11 @@ internal class DatabaseCommand : CliCommand
     {
         Subcommands.Add(new CreateDatabaseCommand());
         Subcommands.Add(new MigrateDatabaseCommand());
+
+        SetAction((parseResult, cancellationToken) =>
+        {
+            var helpAction = new HelpAction();
+            return Task.FromResult(helpAction.Invoke(parseResult));
+        });
     }
 }

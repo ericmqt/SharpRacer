@@ -47,7 +47,7 @@ internal sealed class CarStore : EntityStore<CarEntity>, ICarStore
 
         return EntitySet
             .Include(x => x.Variables)
-            .SingleOrDefaultAsync(x => x.Path == path, cancellationToken);
+            .SingleOrDefaultAsync(x => x.NormalizedPath == path.ToUpperInvariant(), cancellationToken);
     }
 
     public async Task<IEnumerable<VariableEntity>> GetVariablesAsync(CarEntity car, CancellationToken cancellationToken = default)

@@ -17,6 +17,7 @@ public class DataVariableModel
         IsDeprecated = variableEntity.IsDeprecated;
         IsTimeSliceArray = variableEntity.IsTimeSliceArray;
         Name = variableEntity.Name;
+        SimulatorVersion = variableEntity.SimulatorVersion;
         ValueCount = variableEntity.ValueCount;
         ValueType = variableEntity.ValueType;
         ValueUnit = variableEntity.ValueUnit;
@@ -28,12 +29,19 @@ public class DataVariableModel
     }
 
     public DataVariableModel(DataVariableInfo variableInfo)
+        : this(variableInfo, default)
+    {
+
+    }
+
+    public DataVariableModel(DataVariableInfo variableInfo, ContentVersion simulatorVersion)
     {
         ArgumentNullException.ThrowIfNull(variableInfo);
 
         Description = variableInfo.Description;
         IsTimeSliceArray = variableInfo.IsTimeSliceArray;
         Name = variableInfo.Name;
+        SimulatorVersion = simulatorVersion;
         ValueCount = variableInfo.ValueCount;
         ValueType = variableInfo.ValueType;
         ValueUnit = variableInfo.ValueUnit;
@@ -44,6 +52,7 @@ public class DataVariableModel
     public bool IsDeprecated { get; set; }
     public bool IsTimeSliceArray { get; set; }
     public string Name { get; set; } = string.Empty;
+    public ContentVersion SimulatorVersion { get; set; }
     public int ValueCount { get; set; }
     public DataVariableValueType ValueType { get; set; }
     public string? ValueUnit { get; set; }

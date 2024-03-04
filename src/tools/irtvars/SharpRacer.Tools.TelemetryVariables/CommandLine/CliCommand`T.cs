@@ -1,6 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace SharpRacer.Tools.TelemetryVariables.CommandLine;
 
@@ -13,18 +14,35 @@ internal abstract class CliCommand<THandler> : CliCommand
         SetAction((parseResult, cancellationToken) =>
         {
             var serviceProvider = parseResult.GetHost().Services;
-            var handler = CreateHandler(parseResult);
 
-            return InvokeAsync(handler, serviceProvider, cancellationToken);
+            return OnInvokedAsync(parseResult, serviceProvider, cancellationToken);
         });
     }
 
     protected abstract Task<int> InvokeAsync(THandler handler, IServiceProvider serviceProvider, CancellationToken cancellationToken);
 
-    protected virtual THandler CreateHandler(ParseResult parseResult)
+    protected virtual THandler CreateHandler(ParseResult parseResult, IServiceProvider serviceProvider)
     {
-        var host = parseResult.GetHost();
+        return ActivatorUtilities.CreateInstance<THandler>(serviceProvider);
+    }
 
-        return ActivatorUtilities.CreateInstance<THandler>(host.Services);
+    private async Task<int> OnInvokedAsync(ParseResult parseResult, IServiceProvider serviceProvider, CancellationToken cancellationToken)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<CliCommand<THandler>>>();
+
+        using var serviceScope = serviceProvider.CreateScope();
+
+        try
+        {
+            var handler = CreateHandler(parseResult, serviceScope.ServiceProvider);
+
+            return await InvokeAsync(handler, serviceScope.ServiceProvider, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An unhandled exception was thrown while executing the operation.");
+
+            return -2;
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.1");
 
             modelBuilder.Entity("SharpRacer.Tools.TelemetryVariables.Data.Entities.CarEntity", b =>
                 {
@@ -24,6 +24,12 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("Id")
                         .HasColumnOrder(0);
+
+                    b.Property<string>("ContentVersion")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("ContentVersion")
+                        .HasColumnOrder(5);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -137,6 +143,12 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
                         .HasColumnType("TEXT")
                         .HasColumnName("NormalizedName")
                         .HasColumnOrder(2);
+
+                    b.Property<string>("SimulatorVersion")
+                        .IsRequired()
+                        .HasColumnType("TEXT")
+                        .HasColumnName("SimulatorVersion")
+                        .HasColumnOrder(10);
 
                     b.Property<int>("ValueCount")
                         .HasColumnType("INTEGER")

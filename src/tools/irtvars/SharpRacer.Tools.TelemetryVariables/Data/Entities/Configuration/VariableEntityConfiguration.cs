@@ -63,6 +63,13 @@ internal static class VariableEntityConfiguration
             .HasColumnOrder(9)
             .IsRequired(false);
 
+        builder.Property(t => t.SimulatorVersion)
+            .HasColumnName("SimulatorVersion")
+            .HasColumnOrder(10)
+            .HasConversion(
+                v => v.ToString(),
+                s => ContentVersion.Parse(s, null));
+
         // Relationships
         builder.HasOne(t => t.DeprecatingVariable)
             .WithMany()

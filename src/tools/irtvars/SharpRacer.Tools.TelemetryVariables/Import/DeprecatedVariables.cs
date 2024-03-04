@@ -1,4 +1,5 @@
-﻿using SharpRacer.Tools.TelemetryVariables.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using SharpRacer.Tools.TelemetryVariables.Models;
 
 namespace SharpRacer.Tools.TelemetryVariables.Import;
 internal static class DeprecatedVariables
@@ -32,5 +33,19 @@ internal static class DeprecatedVariables
         _knownDeprecatedVariables.TryGetValue(variableModel.Name, out var deprecatingVariableName);
 
         return deprecatingVariableName;
+    }
+
+    public static bool TryGetDeprecatingVariableName(DataVariableModel variableModel, [NotNullWhen(true)] out string? deprecatingVariableName)
+    {
+        if (!string.IsNullOrEmpty(variableModel.DeprecatedBy))
+        {
+            deprecatingVariableName = variableModel.DeprecatedBy;
+
+            return true;
+        }
+
+        _knownDeprecatedVariables.TryGetValue(variableModel.Name, out deprecatingVariableName);
+
+        return !string.IsNullOrEmpty(deprecatingVariableName);
     }
 }

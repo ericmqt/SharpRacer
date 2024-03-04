@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SharpRacer.Tools.TelemetryVariables.Configuration;
+namespace SharpRacer.Tools.TelemetryVariables.Json;
 internal static class JsonSerializerConfiguration
 {
     public static JsonSerializerOptions SerializerOptions { get; } = CreateJsonSerializerOptions();

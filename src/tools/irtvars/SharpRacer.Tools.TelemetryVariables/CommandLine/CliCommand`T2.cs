@@ -1,5 +1,4 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SharpRacer.Tools.TelemetryVariables.CommandLine;
@@ -15,10 +14,9 @@ internal abstract class CliCommand<THandler, TOptions> : CliCommand<THandler>
 
     protected abstract TOptions CreateOptions(ParseResult parseResult);
 
-    protected override THandler CreateHandler(ParseResult parseResult)
+    protected override THandler CreateHandler(ParseResult parseResult, IServiceProvider serviceProvider)
     {
         var commandOptions = CreateOptions(parseResult);
-        var serviceProvider = parseResult.GetHost().Services;
 
         return ActivatorUtilities.CreateInstance<THandler>(serviceProvider, commandOptions);
     }
