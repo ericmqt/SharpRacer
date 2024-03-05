@@ -8,7 +8,7 @@ public class DriverInfoNodeTests
 
         Assert.NotNull(node.Drivers);
 
-        Assert.Equal(string.Empty, node.DriverCarVersion);
+        Assert.Equal(default, node.DriverCarVersion);
         Assert.Equal(string.Empty, node.DriverSetupLoadTypeName);
         Assert.Equal(string.Empty, node.DriverSetupName);
 
