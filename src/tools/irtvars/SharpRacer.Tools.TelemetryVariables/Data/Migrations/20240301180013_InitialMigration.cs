@@ -102,6 +102,16 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
                 name: "IX_Variable_DeprecatingVariableKey",
                 table: "Variable",
                 column: "DeprecatingVariableKey");
+
+            // Views
+            migrationBuilder.Sql(@"CREATE VIEW [SessionVariables] AS
+SELECT
+	v.[Id] AS [VariableKey]
+FROM [CarVariable] cv
+JOIN [Variable] v ON cv.[VariableKey] = v.[Id]
+GROUP BY cv.[VariableKey]
+HAVING COUNT(cv.[CarKey]) = (SELECT COUNT(*) FROM [Car])
+ORDER BY v.[Id]");
         }
 
         /// <inheritdoc />
@@ -115,6 +125,8 @@ namespace SharpRacer.Tools.TelemetryVariables.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Variable");
+
+            migrationBuilder.Sql(@"DROP VIEW [SessionVariables];");
         }
     }
 }
