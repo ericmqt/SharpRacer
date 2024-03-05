@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
-using SharpRacer.Tools.TelemetryVariables.Json;
 using SharpRacer.Tools.TelemetryVariables.Import;
+using SharpRacer.Tools.TelemetryVariables.Json;
 using SharpRacer.Tools.TelemetryVariables.Models;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
@@ -29,6 +29,8 @@ internal sealed class ImportJsonCommandHandler : ICommandHandler<ImportJsonComma
 
     public async Task<int> ExecuteAsync(CancellationToken cancellationToken = default)
     {
+        Console.WriteLine($"Importing: {Options.InputFile.FullName}");
+
         TelemetryVariablesDataModel document;
 
         try { document = await ReadInputFileAsync(cancellationToken).ConfigureAwait(false); }

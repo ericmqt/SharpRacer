@@ -11,7 +11,9 @@ internal sealed class VariableStore : EntityStore<VariableEntity>, IVariableStor
 
     public Task<VariableEntity?> FindByNameAsync(string variableName, CancellationToken cancellationToken = default)
     {
-        return EntitySet.SingleOrDefaultAsync(x => x.NormalizedName == variableName.ToUpperInvariant(), cancellationToken);
+        var normalizedVariableName = variableName.ToUpperInvariant();
+
+        return EntitySet.SingleOrDefaultAsync(x => x.NormalizedName == normalizedVariableName, cancellationToken);
     }
 
     public async Task<List<VariableEntity>> ListCarDependentVariablesAsync(CancellationToken cancellationToken = default)

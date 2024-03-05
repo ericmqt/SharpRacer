@@ -41,10 +41,12 @@ internal class VariableImporter
 
             var deprecatingVariable = await _variableStore.FindByNameAsync(deprecatingVariableName, cancellationToken).ConfigureAwait(false);
 
+            deprecatingVariable ??= results.FirstOrDefault(x => x.Model.Name.Equals(deprecatingVariableName, StringComparison.Ordinal))?.Entity;
+
             if (deprecatingVariable is null)
             {
                 _logger.LogWarning(
-                    "Variable '{VariableName}' is deprecated by variable '{DeprecatingVariableName}', but the deprecating variable does not exist in the database.",
+                    "Variable '{VariableName}' is deprecated by variable '{DeprecatingVariableName}', but the deprecating variable does not exist in the database or import source.",
                     result.Model.Name,
                     deprecatingVariableName);
 
@@ -53,9 +55,9 @@ internal class VariableImporter
 
             result.Entity!.IsDeprecated = true;
             result.Entity!.DeprecatingVariable = deprecatingVariable;
-        }
 
-        await _variableStore.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
+            await _variableStore.UpdateAsync(result.Entity!, true, cancellationToken).ConfigureAwait(false);
+        }
 
         return results;
     }
@@ -71,14 +73,7 @@ internal class VariableImporter
             // Check if update needed
             if (variableModel.SimulatorVersion > entity.SimulatorVersion)
             {
-                entity.SimulatorVersion = variableModel.SimulatorVersion;
-
-                entity.Description = variableModel.Description;
-                entity.IsDeprecated = IsDeprecated(variableModel);
-                entity.IsTimeSliceArray = variableModel.IsTimeSliceArray;
-                entity.ValueCount = variableModel.ValueCount;
-                entity.ValueUnit = variableModel.ValueUnit;
-                entity.ValueType = variableModel.ValueType;
+                entity = await UpdateAsync(entity, variableModel, cancellationToken).ConfigureAwait(false);
 
                 return ImportResult.Updated(variableModel, entity);
             }
@@ -86,7 +81,14 @@ internal class VariableImporter
             return ImportResult.Exists(variableModel, entity);
         }
 
-        entity = new VariableEntity
+        entity = await CreateAsync(variableModel, cancellationToken).ConfigureAwait(false);
+
+        return ImportResult.Added(variableModel, entity);
+    }
+
+    private Task<VariableEntity> CreateAsync(DataVariableModel variableModel, CancellationToken cancellationToken = default)
+    {
+        var entity = new VariableEntity
         {
             Description = variableModel.Description,
             IsTimeSliceArray = variableModel.IsTimeSliceArray,
@@ -98,20 +100,30 @@ internal class VariableImporter
             SimulatorVersion = variableModel.SimulatorVersion
         };
 
-        entity = await _variableStore.CreateAsync(entity, cancellationToken).ConfigureAwait(false);
-
-        return ImportResult.Added(variableModel, entity);
+        return _variableStore.CreateAsync(entity, true, cancellationToken);
     }
 
-    /*private Task<VariableEntity?> FindVariableByNameAsync(string name, CancellationToken cancellationToken = default)
+    private Task<VariableEntity> UpdateAsync(VariableEntity entity, DataVariableModel variableModel, CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrEmpty(name);
+        entity.SimulatorVersion = variableModel.SimulatorVersion;
 
-        return _dbContext.Variables.SingleOrDefaultAsync(x => x.NormalizedName == name.ToUpperInvariant(), cancellationToken);
-    }*/
+        entity.Description = variableModel.Description;
+        entity.IsDeprecated = IsDeprecated(variableModel);
+        entity.IsTimeSliceArray = variableModel.IsTimeSliceArray;
+        entity.ValueCount = variableModel.ValueCount;
+        entity.ValueUnit = variableModel.ValueUnit;
+        entity.ValueType = variableModel.ValueType;
+
+        return _variableStore.UpdateAsync(entity, true, cancellationToken);
+    }
 
     private static bool IsDeprecated(DataVariableModel variableModel)
     {
         return variableModel.IsDeprecated || DeprecatedVariables.IsDeprecated(variableModel.Name);
+    }
+
+    private static bool IsDeprecated(DataVariableModel variableModel, VariableEntity entity)
+    {
+        return IsDeprecated(variableModel) || entity.IsDeprecated;
     }
 }
