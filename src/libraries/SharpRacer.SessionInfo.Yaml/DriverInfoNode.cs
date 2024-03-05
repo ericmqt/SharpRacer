@@ -23,7 +23,7 @@ public sealed class DriverInfoNode
     public double DriverCarSLShiftRPM { get; set; }
     public double DriverCarSLLastRPM { get; set; }
     public double DriverCarSLBlinkRPM { get; set; }
-    public string DriverCarVersion { get; set; } = string.Empty;
+    public ContentVersion DriverCarVersion { get; set; } = default;
     public int DriverIncidentCount { get; set; }
     public double DriverPitTrkPct { get; set; }
     public string DriverSetupName { get; set; } = string.Empty;

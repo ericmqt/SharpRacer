@@ -6,7 +6,7 @@ public sealed class WeekendInfoNode
 {
     public string BuildTarget { get; set; } = string.Empty;
     public string BuildType { get; set; } = string.Empty;
-    public string BuildVersion { get; set; } = string.Empty;
+    public ContentVersion BuildVersion { get; set; } = default;
     public string Category { get; set; } = string.Empty;
     public string DCRuleSet { get; set; } = string.Empty;
     public string EventType { get; set; } = string.Empty;

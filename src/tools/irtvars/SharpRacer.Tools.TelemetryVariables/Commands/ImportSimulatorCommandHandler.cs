@@ -44,20 +44,20 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
             Console.WriteLine("Reading telemetry variables from simulator...");
             await connection.WaitForDataReadyAsync(cancellationToken).ConfigureAwait(false);
 
-            var simulatorVariables = connection.GetDataVariables();
+            // Read session info
             var sessionInfo = ReadSessionInfo(connection);
+            var sessionInfoModel = SessionInfoDocumentModel.FromYaml(sessionInfo.YamlDocument);
 
             // Import variables
-            var variableModels = simulatorVariables.Select(x => new DataVariableModel(x));
+            var simulatorVariables = connection.GetDataVariables();
+            var variableModels = simulatorVariables.Select(x => new DataVariableModel(x, sessionInfoModel.WeekendInfo.BuildVersion));
 
             await _variableImporter.ImportVariablesAsync(variableModels, cancellationToken).ConfigureAwait(false);
 
             // Import car and associate it with its variables
-            var sessionInfoModel = SessionInfoDocumentModel.FromYaml(sessionInfo.YamlDocument);
             var driverCar = sessionInfoModel.DriverInfo.Drivers.Single(x => x.CarIdx == sessionInfoModel.DriverInfo.DriverCarIdx);
 
-            var carVersion = ContentVersion.Parse(sessionInfoModel.DriverInfo.DriverCarVersion);
-            var carModel = new CarModel(driverCar, variableModels.Select(x => x.Name));
+            var carModel = new CarModel(driverCar, variableModels.Select(x => x.Name), sessionInfoModel.DriverInfo.DriverCarVersion);
 
             await _carImporter.ImportAsync(carModel, cancellationToken).ConfigureAwait(false);
         }

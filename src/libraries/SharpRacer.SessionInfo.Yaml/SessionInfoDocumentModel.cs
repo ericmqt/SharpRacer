@@ -1,4 +1,5 @@
-﻿using YamlDotNet.Serialization;
+﻿using SharpRacer.SessionInfo.Yaml.Converters;
+using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 namespace SharpRacer.SessionInfo.Yaml;
@@ -27,6 +28,7 @@ public sealed class SessionInfoDocumentModel
 
         var deserializer = new DeserializerBuilder()
             .WithNamingConvention(PascalCaseNamingConvention.Instance)
+            .WithTypeConverter(ContentVersionConverter.Instance)
             .IgnoreUnmatchedProperties()
             .Build();
 

@@ -19,12 +19,6 @@ public class CarModel
         ContentVersion = carEntity.ContentVersion;
     }
 
-    public CarModel(DriverNode driverNode, IEnumerable<string> carVariableNames)
-        : this(driverNode, carVariableNames, default)
-    {
-
-    }
-
     public CarModel(DriverNode driverNode, IEnumerable<string> carVariableNames, ContentVersion contentVersion)
     {
         ArgumentNullException.ThrowIfNull(driverNode);

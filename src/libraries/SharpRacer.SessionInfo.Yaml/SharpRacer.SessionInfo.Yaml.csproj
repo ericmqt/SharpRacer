@@ -10,4 +10,8 @@
     <PackageReference Include="YamlDotNet" Version="13.7.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharpRacer\SharpRacer.csproj" />
+  </ItemGroup>
+
 </Project>

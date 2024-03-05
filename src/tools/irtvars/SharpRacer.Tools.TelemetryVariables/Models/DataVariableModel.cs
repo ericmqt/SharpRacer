@@ -28,12 +28,6 @@ public class DataVariableModel
         }
     }
 
-    public DataVariableModel(DataVariableInfo variableInfo)
-        : this(variableInfo, default)
-    {
-
-    }
-
     public DataVariableModel(DataVariableInfo variableInfo, ContentVersion simulatorVersion)
     {
         ArgumentNullException.ThrowIfNull(variableInfo);

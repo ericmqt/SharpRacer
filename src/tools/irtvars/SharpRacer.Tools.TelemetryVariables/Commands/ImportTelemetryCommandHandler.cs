@@ -74,17 +74,15 @@ internal class ImportTelemetryCommandHandler : ICommandHandler<ImportTelemetryCo
 
         var sessionInfo = SessionInfoDocumentModel.FromYaml(telemetryFile.SessionInfo);
 
-        var simVersion = ContentVersion.Parse(sessionInfo.WeekendInfo.BuildVersion, null);
-
         // Import variables
-        var variableModels = telemetryFile.DataVariables.Select(x => new DataVariableModel(x, simVersion));
+        var variableModels = telemetryFile.DataVariables.Select(x => new DataVariableModel(x, sessionInfo.WeekendInfo.BuildVersion));
 
         await _variableImporter.ImportVariablesAsync(variableModels, cancellationToken).ConfigureAwait(false);
 
         // Import car and associate its variables
         var driverCar = sessionInfo.DriverInfo.Drivers.Single(x => x.CarIdx == sessionInfo.DriverInfo.DriverCarIdx);
 
-        var carVersion = ContentVersion.Parse(sessionInfo.DriverInfo.DriverCarVersion);
+        var carVersion = sessionInfo.DriverInfo.DriverCarVersion;
         var carModel = new CarModel(driverCar, variableModels.Select(x => x.Name), carVersion);
 
         await _carImporter.ImportAsync(carModel, cancellationToken).ConfigureAwait(false);
