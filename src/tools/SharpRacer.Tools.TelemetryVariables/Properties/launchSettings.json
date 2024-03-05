@@ -2,7 +2,7 @@
   "profiles": {
     "irtvars": {
       "commandName": "Project",
-      "commandLineArgs": "import telemetry -d config\\tvars.db \\\\titan\\eric\\iracing\\telemetry",
+      "commandLineArgs": "import json -d config\\tvars-import.db config\\tvars.json",
       "workingDirectory": "$(RepositoryRootDirectory)"
     }
   }
