@@ -8,13 +8,13 @@ internal static class JsonSerializerConfiguration
 
     private static JsonSerializerOptions CreateJsonSerializerOptions()
     {
-        var enumConverter = new JsonStringEnumConverter();
         var serializerOptions = new JsonSerializerOptions()
         {
             WriteIndented = true
         };
 
-        serializerOptions.Converters.Add(enumConverter);
+        serializerOptions.Converters.Add(new ContentVersionConverter());
+        serializerOptions.Converters.Add(new JsonStringEnumConverter());
 
         return serializerOptions;
     }
