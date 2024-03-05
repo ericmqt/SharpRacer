@@ -16,6 +16,7 @@ public class CarModel
         Name = carEntity.Name;
         Path = carEntity.Path;
         ShortName = carEntity.ShortName;
+        ContentVersion = carEntity.ContentVersion;
     }
 
     public CarModel(DriverNode driverNode, IEnumerable<string> carVariableNames)

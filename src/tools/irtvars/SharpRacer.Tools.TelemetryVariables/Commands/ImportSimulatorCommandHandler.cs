@@ -56,6 +56,7 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
             var sessionInfoModel = SessionInfoDocumentModel.FromYaml(sessionInfo.YamlDocument);
             var driverCar = sessionInfoModel.DriverInfo.Drivers.Single(x => x.CarIdx == sessionInfoModel.DriverInfo.DriverCarIdx);
 
+            var carVersion = ContentVersion.Parse(sessionInfoModel.DriverInfo.DriverCarVersion);
             var carModel = new CarModel(driverCar, variableModels.Select(x => x.Name));
 
             await _carImporter.ImportAsync(carModel, cancellationToken).ConfigureAwait(false);
