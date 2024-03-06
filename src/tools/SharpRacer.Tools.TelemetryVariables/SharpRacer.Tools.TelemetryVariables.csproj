@@ -31,7 +31,6 @@
 	  <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.24112.1" />
 	  <PackageReference Include="System.CommandLine.Hosting" Version="0.4.0-alpha.24112.1" />
 	  <PackageReference Include="System.CommandLine.Rendering" Version="0.4.0-alpha.24112.1" />
-	  <PackageReference Include="YamlDotNet" Version="13.7.1" />
 	</ItemGroup>
 
 	<ItemGroup>
