@@ -96,6 +96,8 @@ public class TelemetryFileReader : IDisposable
             throw new IOException("Invalid file header.");
         }
 
+        DataFrameCount = _fileHeader.DiskSubHeader.SessionRecordCount;
+
         // An IBT file only contains one data buffer header, the remainder will be empty
         _dataBufferHeader = _fileHeader.DataBufferHeaders[0];
 
@@ -114,6 +116,11 @@ public class TelemetryFileReader : IDisposable
         // Assign file handle
         _fileHandle = fileHandle;
     }
+
+    /// <summary>
+    /// Gets the number of data frames contained in the telemetry file.
+    /// </summary>
+    public int DataFrameCount { get; }
 
     /// <summary>
     /// Gets the file header.
@@ -163,7 +170,7 @@ public class TelemetryFileReader : IDisposable
         VerifyCanRead();
 
         ArgumentOutOfRangeException.ThrowIfLessThan(frameIndex, 0);
-        ArgumentOutOfRangeException.ThrowIfGreaterThan(frameIndex, _fileHeader.DiskSubHeader.SessionRecordCount, nameof(frameIndex));
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(frameIndex, DataFrameCount, nameof(frameIndex));
 
         if (buffer.Length < _fileHeader.DataBufferElementLength)
         {
