@@ -4,7 +4,7 @@ using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer.Internal;
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed class SimulatorDataFile : ISimulatorDataFile
+internal sealed class MemoryMappedDataFile : ISimulatorDataFile
 {
     public const string MemoryMappedFileName = "Local\\IRSDKMemMapFileName";
 
@@ -12,20 +12,20 @@ internal sealed class SimulatorDataFile : ISimulatorDataFile
     private readonly MemoryMappedFile _dataFile;
     private bool _isDisposed;
 
-    private SimulatorDataFile(MemoryMappedFile dataFile)
+    private MemoryMappedDataFile(MemoryMappedFile dataFile)
     {
         _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
         _dataAccessor = dataFile.CreateDirectAccessor(offset: 0, size: 0, access: MemoryMappedFileAccess.Read);
     }
 
-    ~SimulatorDataFile()
+    ~MemoryMappedDataFile()
     {
         Dispose();
     }
 
-    public static SimulatorDataFile Open()
+    public static MemoryMappedDataFile Open()
     {
-        return new SimulatorDataFile(MemoryMappedFile.OpenExisting(MemoryMappedFileName, MemoryMappedFileRights.Read));
+        return new MemoryMappedDataFile(MemoryMappedFile.OpenExisting(MemoryMappedFileName, MemoryMappedFileRights.Read));
     }
 
     /// <inheritdoc />
@@ -36,6 +36,17 @@ internal sealed class SimulatorDataFile : ISimulatorDataFile
             ObjectDisposedException.ThrowIf(_isDisposed, this);
             return _dataAccessor.Bytes;
         }
+    }
+
+    public ISimulatorDataFile Freeze()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
+        var frozenData = new byte[Span.Length];
+
+        Span.CopyTo(frozenData);
+
+        return new FrozenDataFile(frozenData);
     }
 
     public void Dispose()

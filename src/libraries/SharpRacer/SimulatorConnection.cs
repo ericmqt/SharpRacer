@@ -1,70 +1,43 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using Nito.AsyncEx.Interop;
 using SharpRacer.Internal;
 using SharpRacer.Interop;
 using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer;
 
-/// <summary>
-/// Represents a connection to a simulator session.
-/// </summary>
 [SupportedOSPlatform("windows5.1.2600")]
-public sealed class SimulatorConnection : ISimulatorConnection
+public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 {
-    private int _connectionStateValue;
-    private int _connectionTimeoutMs;
-    private ISimulatorDataFile _dataFile;
-    private readonly DataReadySignal _dataReadySignal;
-    private bool _isDisposed;
-    private Task? _openTask;
-    private readonly object _openTaskLock = new object();
-    private readonly Thread _thread;
     private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly IConnectionPool _connectionPool;
+    private int _connectionStateValue;
+    private readonly SemaphoreSlim _connectionTransitionSemaphore;
+    private ISimulatorInternalConnection _internalConnection;
+    private readonly object _internalConnectionLock = new object();
+    private bool _isDisposed;
+    private readonly SemaphoreSlim _openSemaphore;
 
-    /// <summary>
-    /// Initializes a new instance of <see cref="SimulatorConnection"/>.
-    /// </summary>
     public SimulatorConnection()
+        : this(ConnectionPool.Default)
     {
-        ConnectionTimeout = TimeSpan.FromSeconds(5);
 
-        _dataFile = new EmptySimulatorDataFile();
-        _dataReadySignal = new DataReadySignal();
+    }
+
+    internal SimulatorConnection(IConnectionPool connectionPool)
+    {
+        _connectionPool = connectionPool ?? throw new ArgumentNullException(nameof(connectionPool));
 
         _cancellationTokenSource = new CancellationTokenSource();
-        _thread = new Thread(ConnectionWorkerThread);
+        _connectionStateValue = (int)SimulatorConnectionState.None;
+        _internalConnection = new InactiveInternalConnection(SimulatorConnectionState.None);
+
+        _connectionTransitionSemaphore = new SemaphoreSlim(1, 1);
+        _openSemaphore = new SemaphoreSlim(1, 1);
     }
 
     /// <inheritdoc />
-    public TimeSpan ConnectionTimeout
-    {
-        get => TimeSpan.FromMilliseconds(_connectionTimeoutMs);
-        set
-        {
-            if (value == Timeout.InfiniteTimeSpan)
-            {
-                throw new InvalidOperationException($"Value cannot be an infinite {nameof(TimeSpan)}.");
-            }
-
-            if (value < TimeSpan.Zero)
-            {
-                throw new InvalidOperationException($"Value cannot be a {nameof(TimeSpan)} less than the constant {nameof(TimeSpan)}.{nameof(TimeSpan.Zero)}.");
-            }
-
-            Interlocked.Exchange(ref _connectionTimeoutMs, (int)value.TotalMilliseconds);
-        }
-    }
-
-    /// <inheritdoc />
-    public ReadOnlySpan<byte> Data => _dataFile.Span;
-
-    /// <inheritdoc />
-    public bool IsActive { get; private set; }
-
-    /// <inheritdoc />
-    public bool IsOpen => State == SimulatorConnectionState.Open;
+    public ReadOnlySpan<byte> Data => _internalConnection.Data;
 
     /// <inheritdoc />
     public SimulatorConnectionState State => (SimulatorConnectionState)_connectionStateValue;
@@ -78,15 +51,44 @@ public sealed class SimulatorConnection : ISimulatorConnection
     /// <inheritdoc />
     public void Close()
     {
-        _cancellationTokenSource.Cancel();
+        _connectionTransitionSemaphore.Wait();
 
-        if (_thread.ThreadState != ThreadState.Unstarted)
+        try
         {
-            _thread.Join();
+            _cancellationTokenSource.Cancel();
+
+            _connectionPool.ReleaseOuterConnection(this);
+
+            // Replace the data file with an empty one, because only consumers should be calling Close(), not the internal connection, so there
+            // should be no need to preserve a copy of the data file to prevent uncoordinated reads from getting garbage data.
+
+            Interlocked.Exchange(ref _internalConnection, new InactiveInternalConnection(new FrozenDataFile([]), SimulatorConnectionState.Closed));
+            SetState(SimulatorConnectionState.Closed);
+            Closed?.Invoke(this, EventArgs.Empty);
+        }
+        finally
+        {
+            _connectionTransitionSemaphore.Release();
+        }
+    }
+
+    public void Dispose()
+    {
+        if (!_isDisposed)
+        {
+            _cancellationTokenSource.Cancel();
+            _cancellationTokenSource.Dispose();
+
+            _connectionPool.ReleaseOuterConnection(this);
+            // Internal connection is disposed by the pool so there is no need to dispose of it here
+
+            _openSemaphore.Dispose();
+            _connectionTransitionSemaphore.Dispose();
+
+            _isDisposed = true;
         }
 
-        SetState(SimulatorConnectionState.Closed);
-        Closed?.Invoke(this, EventArgs.Empty);
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -112,17 +114,17 @@ public sealed class SimulatorConnection : ISimulatorConnection
     }
 
     /// <inheritdoc />
-    public Task OpenAsync(CancellationToken cancellationToken = default)
+    public void Open()
     {
-        return OpenAsync(Timeout.InfiniteTimeSpan, cancellationToken);
+        Open(Timeout.InfiniteTimeSpan);
     }
 
     /// <inheritdoc />
-    public Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+    public void Open(TimeSpan timeout)
     {
         if (State == SimulatorConnectionState.Open)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (State == SimulatorConnectionState.Closed)
@@ -130,30 +132,79 @@ public sealed class SimulatorConnection : ISimulatorConnection
             throw new InvalidOperationException("The connection is closed and may not be reused.");
         }
 
-        // Capture task reference in case it changes out from under us
-        var capturedTask = _openTask;
-
-        // Examine captured task to avoid hitting the lock if at all possible
-        if (capturedTask is null || capturedTask.IsCompleted)
+        if (!_openSemaphore.Wait(0))
         {
-            // Prevent concurrent call from duplicating task creation
-            lock (_openTaskLock)
-            {
-                // Re-examine cached task
-                if (_openTask is null || _openTask.IsCompleted)
-                {
-                    _openTask = OpenCoreAsync(timeout, cancellationToken);
-                    capturedTask = _openTask;
-                }
-                else
-                {
-                    // Task has already started, update the captured task
-                    capturedTask = _openTask;
-                }
-            }
+            throw new InvalidOperationException($"A call to {nameof(Open)} or {nameof(OpenAsync)} is already in progress.");
         }
 
-        return capturedTask;
+        try
+        {
+            try
+            {
+                SetState(SimulatorConnectionState.Connecting);
+
+                _connectionPool.Connect(this, timeout);
+            }
+            catch (Exception)
+            {
+                SetState(SimulatorConnectionState.None);
+
+                throw;
+            }
+        }
+        finally
+        {
+            _openSemaphore.Release();
+        }
+    }
+
+    /// <inheritdoc />
+    public Task OpenAsync(CancellationToken cancellationToken = default)
+    {
+        return OpenAsync(Timeout.InfiniteTimeSpan, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+    {
+        if (State == SimulatorConnectionState.Open)
+        {
+            return;
+        }
+
+        if (State == SimulatorConnectionState.Closed)
+        {
+            throw new InvalidOperationException("The connection is closed and may not be reused.");
+        }
+
+        if (!_openSemaphore.Wait(0, CancellationToken.None))
+        {
+            throw new InvalidOperationException($"A call to {nameof(Open)} or {nameof(OpenAsync)} is already in progress.");
+        }
+
+        try
+        {
+            SetState(SimulatorConnectionState.Connecting);
+
+            using var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(
+                _cancellationTokenSource.Token,
+                cancellationToken);
+
+            try
+            {
+                await _connectionPool.ConnectAsync(this, timeout, linkedCancellationSource.Token).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                SetState(SimulatorConnectionState.None);
+
+                throw;
+            }
+        }
+        finally
+        {
+            _openSemaphore.Release();
+        }
     }
 
     /// <inheritdoc />
@@ -161,131 +212,81 @@ public sealed class SimulatorConnection : ISimulatorConnection
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        if (State == SimulatorConnectionState.Closed)
+        if (State != SimulatorConnectionState.Open || _cancellationTokenSource.Token.IsCancellationRequested)
         {
             return false;
         }
 
-        // Use the thread CancellationToken to ensure calls to this method will return in case the connection dies while waiting
-        return _dataReadySignal.Wait(_cancellationTokenSource.Token);
+        // Eensure calls to this method will return in case the connection dies while waiting
+        return _internalConnection.WaitForDataReady(_cancellationTokenSource.Token);
     }
 
     /// <inheritdoc />
-    public ValueTask<bool> WaitForDataReadyAsync()
+    public async ValueTask<bool> WaitForDataReadyAsync(CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        if (State == SimulatorConnectionState.Closed)
-        {
-            return ValueTask.FromResult(false);
-        }
-
-        return _dataReadySignal.WaitAsync(_cancellationTokenSource.Token);
-    }
-
-    /// <inheritdoc />
-    public async ValueTask<bool> WaitForDataReadyAsync(CancellationToken cancellationToken)
-    {
-        ObjectDisposedException.ThrowIf(_isDisposed, this);
-
-        if (State == SimulatorConnectionState.Closed)
+        if (State != SimulatorConnectionState.Open || _cancellationTokenSource.Token.IsCancellationRequested)
         {
             return false;
         }
 
-        // Combine our event monitor thread cancellation token with the provided one to ensure waiters are returned false as soon as
-        // the the connection is closed.
+        if (cancellationToken == default)
+        {
+            return await _internalConnection.WaitForDataReadyAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+        }
+
+        // Combine our cancellation token with the provided one to ensure waiters are returned false as soon as either this instance or the
+        // underlying connection is closed or disposed.
 
         using var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);
 
-        return await _dataReadySignal.WaitAsync(linkedCancellationSource.Token).ConfigureAwait(false);
+        return await _internalConnection.WaitForDataReadyAsync(linkedCancellationSource.Token).ConfigureAwait(false);
     }
 
-    private async Task OpenCoreAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+    internal void SetClosedInternalConnection(ISimulatorInternalConnection internalConnection)
     {
-        if (State == SimulatorConnectionState.Open)
-        {
-            return;
-        }
-
-        if (State != SimulatorConnectionState.None)
-        {
-            throw new InvalidOperationException(
-                $"Expected property {nameof(State)} to have value {nameof(SimulatorConnectionState.None)}.");
-        }
-
-        SetState(SimulatorConnectionState.Connecting);
+        _connectionTransitionSemaphore.Wait();
 
         try
         {
-            using var dataReadyEventHandle = DataReadyEventHandle.CreateSafeWaitHandle();
-            using var dataReadyEvent = new AutoResetEvent(false) { SafeWaitHandle = dataReadyEventHandle };
+            Console.WriteLine($"[SetClosedInternalConnection] {State} -> {internalConnection.State}, ConnectionId: {internalConnection.ConnectionId}");
 
-            if (!await WaitHandleAsyncFactory.FromWaitHandle(dataReadyEvent, timeout, cancellationToken).ConfigureAwait(false))
-            {
-                throw new TimeoutException("The timeout period elapsed before a connection could be established.");
-            }
+            // Cancel pending waiters
+            _cancellationTokenSource.Cancel();
 
-            // Acquire the data file
-            var dataFile = SimulatorDataFile.Open();
+            Interlocked.Exchange(ref _internalConnection, internalConnection);
 
-            // Atomically swap data file references and dispose of the placeholder file
-            var oldDataFile = Interlocked.Exchange(ref _dataFile, dataFile);
-
-            oldDataFile.Dispose();
+            SetState(SimulatorConnectionState.Closed);
         }
-        catch
+        finally
         {
-            // Atomically change the state back to None without raising the StateChanged event before re-throwing to allow caller to
-            // re-attempt opening the connection.
-
-            Interlocked.Exchange(ref _connectionStateValue, (int)SimulatorConnectionState.None);
-
-            throw;
+            _connectionTransitionSemaphore.Release();
         }
-
-        // Start the worker
-        _thread.Start();
-
-        SetState(SimulatorConnectionState.Open);
     }
 
-    private void ConnectionWorkerThread()
+    internal void SetOpenInternalConnection(ISimulatorInternalConnection internalConnection)
     {
-        using var dataReadyEventHandle = DataReadyEventHandle.CreateSafeWaitHandle();
-        using var dataReadyEvent = new AutoResetEvent(false) { SafeWaitHandle = dataReadyEventHandle };
+        // This should only be called when transitioning from Connecting -> Open
 
-        var waitHandles = new WaitHandle[] { dataReadyEvent, _cancellationTokenSource.Token.WaitHandle };
+        _connectionTransitionSemaphore.Wait();
 
-        while (!_cancellationTokenSource.Token.IsCancellationRequested)
+        try
         {
-            // Wait for data-ready signal, cancellation, or timeout
-            var waitIndex = WaitHandle.WaitAny(waitHandles, _connectionTimeoutMs);
-
-            IsActive = MemoryMarshal.Read<int>(Data.Slice(DataFileHeader.FieldOffsets.Status, sizeof(int))) != 0;
-
-            if (waitIndex == WaitHandle.WaitTimeout)
+            if (State != SimulatorConnectionState.Connecting)
             {
-                // Cancel any pending data-ready waiters
-                _cancellationTokenSource.Cancel();
-
-                SetState(SimulatorConnectionState.Closed);
-                Closed?.Invoke(this, EventArgs.Empty);
-
-                break;
+                return;
             }
 
-            if (waitIndex != 0)
-            {
-                // Canceled
-                break;
-            }
+            Console.WriteLine($"[SetOpenInternalConnection] {State} -> {internalConnection.State}, ConnectionId: {internalConnection.ConnectionId}");
 
-            _dataReadySignal.Set(autoReset: true);
+            Interlocked.Exchange(ref _internalConnection, internalConnection);
+            SetState(SimulatorConnectionState.Open);
         }
-
-        // Do not set Closed state or fire any events here, as that should only happen on timeout. Those actions occur during calls to
-        // Close() or Dispose(). Otherwise an event handler could block and prevent timely joining of the thread.
+        finally
+        {
+            _connectionTransitionSemaphore.Release();
+        }
     }
 
     private void SetState(SimulatorConnectionState state)
@@ -296,40 +297,5 @@ public sealed class SimulatorConnection : ISimulatorConnection
         {
             StateChanged?.Invoke(this, new SimulatorConnectionStateChangedEventArgs(state, oldState));
         }
-    }
-
-    private void Dispose(bool disposing)
-    {
-        if (!_isDisposed)
-        {
-            if (disposing)
-            {
-                Interlocked.Exchange(ref _connectionStateValue, (int)SimulatorConnectionState.Closed);
-
-                _cancellationTokenSource.Cancel();
-
-                if (_thread.ThreadState != ThreadState.Unstarted)
-                {
-                    _thread.Join();
-                }
-
-                _cancellationTokenSource.Dispose();
-
-                _dataFile.Dispose();
-                _dataReadySignal.Dispose();
-            }
-
-            _isDisposed = true;
-        }
-    }
-
-    /// <summary>
-    /// Releases resources used by <see cref="SimulatorConnection"/>.
-    /// </summary>
-    public void Dispose()
-    {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 }
