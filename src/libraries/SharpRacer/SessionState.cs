@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer;
 
 public enum SessionState : uint
 {

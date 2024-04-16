@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Describes the services to perform during a pit stop.

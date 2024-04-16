@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Describes spotter callouts for cars alongside the driver.

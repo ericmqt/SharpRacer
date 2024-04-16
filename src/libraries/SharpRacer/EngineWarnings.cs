@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Telemetry;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Describes values representing any active engine warnings.
