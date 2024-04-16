@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Internal;
+﻿namespace SharpRacer.IO;
 
 /// <summary>
 /// Provides access to the simulator data file for a simulator session.

@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Win32.SafeHandles;
 using SharpRacer.Interop;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.IO;
 
 /// <summary>
 /// Reads information from a telemetry file (*.IBT).
@@ -145,7 +145,7 @@ public class TelemetryFileReader : IDisposable
 
         var frameBlob = new byte[_fileHeader.DataBufferElementLength];
 
-        var offset = _dataBufferHeader.BufferOffset + (frameIndex * _fileHeader.DataBufferElementLength);
+        var offset = _dataBufferHeader.BufferOffset + frameIndex * _fileHeader.DataBufferElementLength;
 
         var bytesRead = RandomAccess.Read(_fileHandle, frameBlob, offset);
 
@@ -178,7 +178,7 @@ public class TelemetryFileReader : IDisposable
                 $"The specified buffer has a length ({buffer.Length}) less than the length of a data frame ({_fileHeader.DataBufferElementLength}).");
         }
 
-        var offset = _dataBufferHeader.BufferOffset + (frameIndex * _fileHeader.DataBufferElementLength);
+        var offset = _dataBufferHeader.BufferOffset + frameIndex * _fileHeader.DataBufferElementLength;
         var bytesRead = RandomAccess.Read(_fileHandle, buffer, offset);
 
         VerifyBytesRead(bytesRead, _fileHeader.DataBufferElementLength);
@@ -242,7 +242,7 @@ public class TelemetryFileReader : IDisposable
         fileLength = RandomAccess.GetLength(fileHandle);
 
         expectedLength = dataBufferHeader.BufferOffset +
-            (fileHeader.DataBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount);
+            fileHeader.DataBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount;
 
         return fileLength >= expectedLength;
     }

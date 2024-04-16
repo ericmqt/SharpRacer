@@ -2,7 +2,7 @@
 using System.Runtime.Versioning;
 using DotNext.IO.MemoryMappedFiles;
 
-namespace SharpRacer.Internal;
+namespace SharpRacer.IO;
 [SupportedOSPlatform("windows5.1.2600")]
 internal sealed class MemoryMappedDataFile : ISimulatorDataFile
 {

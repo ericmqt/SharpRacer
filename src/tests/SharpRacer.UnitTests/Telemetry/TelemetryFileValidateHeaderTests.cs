@@ -1,4 +1,5 @@
 ﻿using SharpRacer.Interop;
+using SharpRacer.IO;
 
 namespace SharpRacer.Telemetry;
 public class TelemetryFileValidateHeaderTests

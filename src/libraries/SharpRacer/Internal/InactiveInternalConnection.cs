@@ -1,4 +1,6 @@
 ﻿
+using SharpRacer.IO;
+
 namespace SharpRacer.Internal;
 internal class InactiveInternalConnection : ISimulatorInternalConnection
 {

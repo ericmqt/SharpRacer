@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using SharpRacer.Interop;
+using SharpRacer.IO;
 
 namespace SharpRacer.Internal;
 

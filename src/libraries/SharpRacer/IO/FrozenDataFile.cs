@@ -1,5 +1,4 @@
-﻿
-namespace SharpRacer.Internal;
+﻿namespace SharpRacer.IO;
 internal class FrozenDataFile : ISimulatorDataFile
 {
     private readonly Memory<byte> _data;

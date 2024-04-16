@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using SharpRacer.IO;
 using SharpRacer.SessionInfo.Yaml;
-using SharpRacer.Telemetry;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Import;
 using SharpRacer.Tools.TelemetryVariables.Models;
