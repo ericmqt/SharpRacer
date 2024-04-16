@@ -3,6 +3,7 @@ public static class SharpRacerIdentifiers
 {
     static SharpRacerIdentifiers()
     {
+        SharpRacerNamespace = new NamespaceIdentifier("SharpRacer");
         TelemetryNamespace = new NamespaceIdentifier("SharpRacer.Telemetry");
         TelemetryVariablesNamespace = new NamespaceIdentifier("SharpRacer.Telemetry.Variables");
 
@@ -22,19 +23,20 @@ public static class SharpRacerIdentifiers
         IScalarDataVariable = TelemetryVariablesNamespace.CreateType("IScalarDataVariable");
         ScalarDataVariable = TelemetryVariablesNamespace.CreateType("ScalarDataVariable");
 
-        CameraState = TelemetryNamespace.CreateType("CameraState");
-        CarLeftRight = TelemetryNamespace.CreateType("CarLeftRight");
-        EngineWarnings = TelemetryNamespace.CreateType("EngineWarnings");
-        PaceMode = TelemetryNamespace.CreateType("PaceMode");
-        PaceRacingFlags = TelemetryNamespace.CreateType("PaceRacingFlags");
-        PitServiceOptions = TelemetryNamespace.CreateType("PitServiceOptions");
-        PitServiceStatus = TelemetryNamespace.CreateType("PitServiceStatus");
-        RacingFlags = TelemetryNamespace.CreateType("RacingFlags");
-        SessionState = TelemetryNamespace.CreateType("SessionState");
-        TrackLocationType = TelemetryNamespace.CreateType("TrackLocationType");
-        TrackSurfaceType = TelemetryNamespace.CreateType("TrackSurfaceType");
+        CameraState = SharpRacerNamespace.CreateType("CameraState");
+        CarLeftRight = SharpRacerNamespace.CreateType("CarLeftRight");
+        EngineWarnings = SharpRacerNamespace.CreateType("EngineWarnings");
+        PaceMode = SharpRacerNamespace.CreateType("PaceMode");
+        PaceRacingFlags = SharpRacerNamespace.CreateType("PaceRacingFlags");
+        PitServiceOptions = SharpRacerNamespace.CreateType("PitServiceOptions");
+        PitServiceStatus = SharpRacerNamespace.CreateType("PitServiceStatus");
+        RacingFlags = SharpRacerNamespace.CreateType("RacingFlags");
+        SessionState = SharpRacerNamespace.CreateType("SessionState");
+        TrackLocationType = SharpRacerNamespace.CreateType("TrackLocationType");
+        TrackSurfaceType = SharpRacerNamespace.CreateType("TrackSurfaceType");
     }
 
+    public static NamespaceIdentifier SharpRacerNamespace { get; }
     public static NamespaceIdentifier TelemetryNamespace { get; }
     public static NamespaceIdentifier TelemetryVariablesNamespace { get; }
 

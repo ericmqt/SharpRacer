@@ -15,17 +15,17 @@ public class VariableValueTypesTests
     }
 
     [Theory]
-    [InlineData("irsdk_CameraState", "SharpRacer.Telemetry.CameraState")]
-    [InlineData("irsdk_CarLeftRight", "SharpRacer.Telemetry.CarLeftRight")]
-    [InlineData("irsdk_EngineWarnings", "SharpRacer.Telemetry.EngineWarnings")]
-    [InlineData("irsdk_Flags", "SharpRacer.Telemetry.RacingFlags")]
-    [InlineData("irsdk_PaceFlags", "SharpRacer.Telemetry.PaceRacingFlags")]
-    [InlineData("irsdk_PaceMode", "SharpRacer.Telemetry.PaceMode")]
-    [InlineData("irsdk_PitSvFlags", "SharpRacer.Telemetry.PitServiceOptions")]
-    [InlineData("irsdk_PitSvStatus", "SharpRacer.Telemetry.PitServiceStatus")]
-    [InlineData("irsdk_SessionState", "SharpRacer.Telemetry.SessionState")]
-    [InlineData("irsdk_TrkLoc", "SharpRacer.Telemetry.TrackLocationType")]
-    [InlineData("irsdk_TrkSurf", "SharpRacer.Telemetry.TrackSurfaceType")]
+    [InlineData("irsdk_CameraState", "SharpRacer.CameraState")]
+    [InlineData("irsdk_CarLeftRight", "SharpRacer.CarLeftRight")]
+    [InlineData("irsdk_EngineWarnings", "SharpRacer.EngineWarnings")]
+    [InlineData("irsdk_Flags", "SharpRacer.RacingFlags")]
+    [InlineData("irsdk_PaceFlags", "SharpRacer.PaceRacingFlags")]
+    [InlineData("irsdk_PaceMode", "SharpRacer.PaceMode")]
+    [InlineData("irsdk_PitSvFlags", "SharpRacer.PitServiceOptions")]
+    [InlineData("irsdk_PitSvStatus", "SharpRacer.PitServiceStatus")]
+    [InlineData("irsdk_SessionState", "SharpRacer.SessionState")]
+    [InlineData("irsdk_TrkLoc", "SharpRacer.TrackLocationType")]
+    [InlineData("irsdk_TrkSurf", "SharpRacer.TrackSurfaceType")]
     public void Enumeration_Test(string variableUnit, string expected)
     {
         var enumType = VariableValueTypes.Enumeration(variableUnit, TypeNameFormat.Qualified);
@@ -35,17 +35,17 @@ public class VariableValueTypesTests
     }
 
     [Theory]
-    [InlineData("irsdk_CameraState", "SharpRacer.Telemetry.CameraState")]
-    [InlineData("irsdk_CarLeftRight", "SharpRacer.Telemetry.CarLeftRight")]
-    [InlineData("irsdk_EngineWarnings", "SharpRacer.Telemetry.EngineWarnings")]
-    [InlineData("irsdk_Flags", "SharpRacer.Telemetry.RacingFlags")]
-    [InlineData("irsdk_PaceFlags", "SharpRacer.Telemetry.PaceRacingFlags")]
-    [InlineData("irsdk_PaceMode", "SharpRacer.Telemetry.PaceMode")]
-    [InlineData("irsdk_PitSvFlags", "SharpRacer.Telemetry.PitServiceOptions")]
-    [InlineData("irsdk_PitSvStatus", "SharpRacer.Telemetry.PitServiceStatus")]
-    [InlineData("irsdk_SessionState", "SharpRacer.Telemetry.SessionState")]
-    [InlineData("irsdk_TrkLoc", "SharpRacer.Telemetry.TrackLocationType")]
-    [InlineData("irsdk_TrkSurf", "SharpRacer.Telemetry.TrackSurfaceType")]
+    [InlineData("irsdk_CameraState", "SharpRacer.CameraState")]
+    [InlineData("irsdk_CarLeftRight", "SharpRacer.CarLeftRight")]
+    [InlineData("irsdk_EngineWarnings", "SharpRacer.EngineWarnings")]
+    [InlineData("irsdk_Flags", "SharpRacer.RacingFlags")]
+    [InlineData("irsdk_PaceFlags", "SharpRacer.PaceRacingFlags")]
+    [InlineData("irsdk_PaceMode", "SharpRacer.PaceMode")]
+    [InlineData("irsdk_PitSvFlags", "SharpRacer.PitServiceOptions")]
+    [InlineData("irsdk_PitSvStatus", "SharpRacer.PitServiceStatus")]
+    [InlineData("irsdk_SessionState", "SharpRacer.SessionState")]
+    [InlineData("irsdk_TrkLoc", "SharpRacer.TrackLocationType")]
+    [InlineData("irsdk_TrkSurf", "SharpRacer.TrackSurfaceType")]
     [InlineData("FooBarNotARealEnumName", "int")]
     public void EnumerationOrInt_Test(string variableUnit, string expected)
     {

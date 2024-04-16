@@ -5,8 +5,8 @@ public class SharpRacerTypesTests
 {
     [Theory]
     [InlineData(TypeNameFormat.Default, "CarLeftRight")]
-    [InlineData(TypeNameFormat.Qualified, "SharpRacer.Telemetry.CarLeftRight")]
-    [InlineData(TypeNameFormat.GlobalQualified, "global::SharpRacer.Telemetry.CarLeftRight")]
+    [InlineData(TypeNameFormat.Qualified, "SharpRacer.CarLeftRight")]
+    [InlineData(TypeNameFormat.GlobalQualified, "global::SharpRacer.CarLeftRight")]
     public void DataVariableTypeArgument_BitfieldTest(TypeNameFormat typeNameFormat, string expected)
     {
         var type = SharpRacerTypes.DataVariableTypeArgument(VariableValueType.Bitfield, "irsdk_CarLeftRight", typeNameFormat);
@@ -37,88 +37,88 @@ public class SharpRacerTypesTests
     public void Enumerations_CameraState_Test()
     {
         Assert.Equal("CameraState", SharpRacerTypes.CameraState(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.CameraState", SharpRacerTypes.CameraState(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.CameraState", SharpRacerTypes.CameraState(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.CameraState", SharpRacerTypes.CameraState(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.CameraState", SharpRacerTypes.CameraState(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_CarLeftRight_Test()
     {
         Assert.Equal("CarLeftRight", SharpRacerTypes.CarLeftRight(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.CarLeftRight", SharpRacerTypes.CarLeftRight(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.CarLeftRight", SharpRacerTypes.CarLeftRight(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.CarLeftRight", SharpRacerTypes.CarLeftRight(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.CarLeftRight", SharpRacerTypes.CarLeftRight(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_EngineWarnings_Test()
     {
         Assert.Equal("EngineWarnings", SharpRacerTypes.EngineWarnings(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.EngineWarnings", SharpRacerTypes.EngineWarnings(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.EngineWarnings", SharpRacerTypes.EngineWarnings(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.EngineWarnings", SharpRacerTypes.EngineWarnings(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.EngineWarnings", SharpRacerTypes.EngineWarnings(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_PaceMode_Test()
     {
         Assert.Equal("PaceMode", SharpRacerTypes.PaceMode(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.PaceMode", SharpRacerTypes.PaceMode(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.PaceMode", SharpRacerTypes.PaceMode(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.PaceMode", SharpRacerTypes.PaceMode(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.PaceMode", SharpRacerTypes.PaceMode(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_PaceRacingFlags_Test()
     {
         Assert.Equal("PaceRacingFlags", SharpRacerTypes.PaceRacingFlags(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.PaceRacingFlags", SharpRacerTypes.PaceRacingFlags(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.PaceRacingFlags", SharpRacerTypes.PaceRacingFlags(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.PaceRacingFlags", SharpRacerTypes.PaceRacingFlags(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.PaceRacingFlags", SharpRacerTypes.PaceRacingFlags(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_PitServiceOptions_Test()
     {
         Assert.Equal("PitServiceOptions", SharpRacerTypes.PitServiceOptions(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.PitServiceOptions", SharpRacerTypes.PitServiceOptions(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.PitServiceOptions", SharpRacerTypes.PitServiceOptions(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.PitServiceOptions", SharpRacerTypes.PitServiceOptions(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.PitServiceOptions", SharpRacerTypes.PitServiceOptions(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_PitServiceStatus_Test()
     {
         Assert.Equal("PitServiceStatus", SharpRacerTypes.PitServiceStatus(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.PitServiceStatus", SharpRacerTypes.PitServiceStatus(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.PitServiceStatus", SharpRacerTypes.PitServiceStatus(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.PitServiceStatus", SharpRacerTypes.PitServiceStatus(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.PitServiceStatus", SharpRacerTypes.PitServiceStatus(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_RacingFlags_Test()
     {
         Assert.Equal("RacingFlags", SharpRacerTypes.RacingFlags(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.RacingFlags", SharpRacerTypes.RacingFlags(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.RacingFlags", SharpRacerTypes.RacingFlags(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.RacingFlags", SharpRacerTypes.RacingFlags(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.RacingFlags", SharpRacerTypes.RacingFlags(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_SessionState_Test()
     {
         Assert.Equal("SessionState", SharpRacerTypes.SessionState(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.SessionState", SharpRacerTypes.SessionState(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.SessionState", SharpRacerTypes.SessionState(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.SessionState", SharpRacerTypes.SessionState(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.SessionState", SharpRacerTypes.SessionState(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_TrackLocationType_Test()
     {
         Assert.Equal("TrackLocationType", SharpRacerTypes.TrackLocationType(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.TrackLocationType", SharpRacerTypes.TrackLocationType(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.TrackLocationType", SharpRacerTypes.TrackLocationType(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.TrackLocationType", SharpRacerTypes.TrackLocationType(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.TrackLocationType", SharpRacerTypes.TrackLocationType(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
     public void Enumerations_TrackSurfaceType_Test()
     {
         Assert.Equal("TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.Default).ToFullString());
-        Assert.Equal("SharpRacer.Telemetry.TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.Qualified).ToFullString());
-        Assert.Equal("global::SharpRacer.Telemetry.TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.GlobalQualified).ToFullString());
+        Assert.Equal("SharpRacer.TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.Qualified).ToFullString());
+        Assert.Equal("global::SharpRacer.TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.GlobalQualified).ToFullString());
     }
 
     [Fact]
