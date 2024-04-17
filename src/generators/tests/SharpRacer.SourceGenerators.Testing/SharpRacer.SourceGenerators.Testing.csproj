@@ -14,8 +14,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\generators\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" />
-	  <ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
+	  <ProjectReference Include="..\..\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" />
+	  <ProjectReference Include="..\..\..\libraries\SharpRacer\SharpRacer.csproj" />
 	</ItemGroup>
 
 </Project>

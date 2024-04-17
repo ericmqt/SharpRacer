@@ -32,8 +32,8 @@ if (!$UnitTests -and !$IntegrationTests)
 }
 
 # Test project paths
-$script:IntegrationTestsProjectPath = Get-RelativeRepositoryPath -Path "src/tests/SharpRacer.SourceGenerators.IntegrationTests/SharpRacer.SourceGenerators.IntegrationTests.csproj"
-$script:UnitTestsProjectPath = Get-RelativeRepositoryPath -Path "src/tests/SharpRacer.SourceGenerators.UnitTests/SharpRacer.SourceGenerators.UnitTests.csproj"
+$script:IntegrationTestsProjectPath = Get-RelativeRepositoryPath -Path "src/generators/tests/SharpRacer.SourceGenerators.IntegrationTests/SharpRacer.SourceGenerators.IntegrationTests.csproj"
+$script:UnitTestsProjectPath = Get-RelativeRepositoryPath -Path "src/generators/tests/SharpRacer.SourceGenerators.UnitTests/SharpRacer.SourceGenerators.UnitTests.csproj"
 
 # Coverage output files
 $script:IntegrationTestsCoverageFile = Get-RelativeRepositoryPath -Path "artifacts/test/coverage/SharpRacer.SourceGenerators.IntegrationTests/coverage.cobertura.xml"

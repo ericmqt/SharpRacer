@@ -13,10 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "generators", "generators", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators", "src\generators\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj", "{5C84A90B-2A8A-40D6-9E5F-A474398CED52}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators.UnitTests", "src\tests\SharpRacer.SourceGenerators.UnitTests\SharpRacer.SourceGenerators.UnitTests.csproj", "{3542021A-A214-4625-8B55-51608C626403}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators.Testing", "src\tests\SharpRacer.SourceGenerators.Testing\SharpRacer.SourceGenerators.Testing.csproj", "{A092D1FC-4535-41EF-86FE-16F24D27803B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.UnitTests", "src\tests\SharpRacer.UnitTests\SharpRacer.UnitTests.csproj", "{E9F7337E-F90E-4959-91B9-27160F04D9A1}"
@@ -25,13 +21,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.IntegrationTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Extensions.Xunit", "src\tests\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj", "{7AC9344E-43AC-440B-B8D6-53DD3F9DD8EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators.IntegrationTests", "src\tests\SharpRacer.SourceGenerators.IntegrationTests\SharpRacer.SourceGenerators.IntegrationTests.csproj", "{BBB4375C-7C18-47BC-8B05-A1BD6624A235}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SessionInfo.Yaml", "src\libraries\SharpRacer.SessionInfo.Yaml\SharpRacer.SessionInfo.Yaml.csproj", "{7D437B39-CFE4-493C-896B-F90D413BBB26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SessionInfo.Yaml.UnitTests", "src\tests\SharpRacer.SessionInfo.Yaml.UnitTests\SharpRacer.SessionInfo.Yaml.UnitTests.csproj", "{437A5DAA-0339-490A-80BA-D5A887374CDA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.Tools.TelemetryVariables", "src\tools\SharpRacer.Tools.TelemetryVariables\SharpRacer.Tools.TelemetryVariables.csproj", "{8ACB4220-50F7-4303-8188-3D9ECE88361F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{34AF7BDE-9F5C-4D14-8F5D-E76D68C8925F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators.Testing", "src\generators\tests\SharpRacer.SourceGenerators.Testing\SharpRacer.SourceGenerators.Testing.csproj", "{442BECBD-36A9-4E89-A800-23BE7E6D0366}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators.UnitTests", "src\generators\tests\SharpRacer.SourceGenerators.UnitTests\SharpRacer.SourceGenerators.UnitTests.csproj", "{C6F20496-61AF-4502-89EC-6211A6308C31}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpRacer.SourceGenerators.IntegrationTests", "src\generators\tests\SharpRacer.SourceGenerators.IntegrationTests\SharpRacer.SourceGenerators.IntegrationTests.csproj", "{B935E299-2677-46F6-8820-DF3D05F1A7C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,14 +49,6 @@ Global
 		{5C84A90B-2A8A-40D6-9E5F-A474398CED52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C84A90B-2A8A-40D6-9E5F-A474398CED52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C84A90B-2A8A-40D6-9E5F-A474398CED52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3542021A-A214-4625-8B55-51608C626403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3542021A-A214-4625-8B55-51608C626403}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3542021A-A214-4625-8B55-51608C626403}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3542021A-A214-4625-8B55-51608C626403}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A092D1FC-4535-41EF-86FE-16F24D27803B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A092D1FC-4535-41EF-86FE-16F24D27803B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A092D1FC-4535-41EF-86FE-16F24D27803B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A092D1FC-4535-41EF-86FE-16F24D27803B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E9F7337E-F90E-4959-91B9-27160F04D9A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E9F7337E-F90E-4959-91B9-27160F04D9A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9F7337E-F90E-4959-91B9-27160F04D9A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,10 +61,6 @@ Global
 		{7AC9344E-43AC-440B-B8D6-53DD3F9DD8EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AC9344E-43AC-440B-B8D6-53DD3F9DD8EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AC9344E-43AC-440B-B8D6-53DD3F9DD8EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BBB4375C-7C18-47BC-8B05-A1BD6624A235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBB4375C-7C18-47BC-8B05-A1BD6624A235}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBB4375C-7C18-47BC-8B05-A1BD6624A235}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBB4375C-7C18-47BC-8B05-A1BD6624A235}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7D437B39-CFE4-493C-896B-F90D413BBB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7D437B39-CFE4-493C-896B-F90D413BBB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D437B39-CFE4-493C-896B-F90D413BBB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -83,6 +73,18 @@ Global
 		{8ACB4220-50F7-4303-8188-3D9ECE88361F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8ACB4220-50F7-4303-8188-3D9ECE88361F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8ACB4220-50F7-4303-8188-3D9ECE88361F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{442BECBD-36A9-4E89-A800-23BE7E6D0366}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442BECBD-36A9-4E89-A800-23BE7E6D0366}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442BECBD-36A9-4E89-A800-23BE7E6D0366}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{442BECBD-36A9-4E89-A800-23BE7E6D0366}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F20496-61AF-4502-89EC-6211A6308C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F20496-61AF-4502-89EC-6211A6308C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F20496-61AF-4502-89EC-6211A6308C31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F20496-61AF-4502-89EC-6211A6308C31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B935E299-2677-46F6-8820-DF3D05F1A7C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B935E299-2677-46F6-8820-DF3D05F1A7C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B935E299-2677-46F6-8820-DF3D05F1A7C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B935E299-2677-46F6-8820-DF3D05F1A7C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -90,15 +92,16 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3C00B6F0-CBA2-4048-9DA2-12C7A71E7699} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
 		{5C84A90B-2A8A-40D6-9E5F-A474398CED52} = {EBEA4519-B547-45F6-BE7D-8D01E872AB1D}
-		{3542021A-A214-4625-8B55-51608C626403} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
-		{A092D1FC-4535-41EF-86FE-16F24D27803B} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
 		{E9F7337E-F90E-4959-91B9-27160F04D9A1} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
 		{D01D1E39-B936-4347-9B6A-F1423B8ABA38} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
 		{7AC9344E-43AC-440B-B8D6-53DD3F9DD8EA} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
-		{BBB4375C-7C18-47BC-8B05-A1BD6624A235} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
 		{7D437B39-CFE4-493C-896B-F90D413BBB26} = {1BA19DF6-3C53-405A-95BF-AA0DEDA90E76}
 		{437A5DAA-0339-490A-80BA-D5A887374CDA} = {5A0D84BD-B702-4FA7-B96C-DC61F9B4D50B}
 		{8ACB4220-50F7-4303-8188-3D9ECE88361F} = {6B9D1423-882C-4C28-8F2B-ADA63F59349F}
+		{34AF7BDE-9F5C-4D14-8F5D-E76D68C8925F} = {EBEA4519-B547-45F6-BE7D-8D01E872AB1D}
+		{442BECBD-36A9-4E89-A800-23BE7E6D0366} = {34AF7BDE-9F5C-4D14-8F5D-E76D68C8925F}
+		{C6F20496-61AF-4502-89EC-6211A6308C31} = {34AF7BDE-9F5C-4D14-8F5D-E76D68C8925F}
+		{B935E299-2677-46F6-8820-DF3D05F1A7C2} = {34AF7BDE-9F5C-4D14-8F5D-E76D68C8925F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A81F0632-5D52-4663-A142-2E7EB2B9174D}

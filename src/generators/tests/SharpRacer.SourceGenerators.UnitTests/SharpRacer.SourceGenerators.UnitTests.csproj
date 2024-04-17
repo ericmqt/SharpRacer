@@ -28,9 +28,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\generators\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" />
-		<ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
-		<ProjectReference Include="..\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj" />
+		<ProjectReference Include="..\..\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" />
+		<ProjectReference Include="..\..\..\libraries\SharpRacer\SharpRacer.csproj" />
+		<ProjectReference Include="..\..\..\tests\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj" />
 		<ProjectReference Include="..\SharpRacer.SourceGenerators.Testing\SharpRacer.SourceGenerators.Testing.csproj" />
 	</ItemGroup>
 
