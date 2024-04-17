@@ -16,7 +16,7 @@ public class ContextClassInfoValuesProviderTests
     [Fact]
     public void GetValuesProvider_Test()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -52,7 +52,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileNameTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -87,7 +87,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileNameNotProvidedTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -118,7 +118,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesAmbiguousFileNameTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -163,7 +163,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileAlreadyIncludesVariableTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -202,7 +202,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileContainsEmptyVariableNameTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -241,7 +241,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileContainsNoVariableNamesTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -280,7 +280,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileNotFoundTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -318,7 +318,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void IncludedVariablesFileReadExceptionTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -352,7 +352,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void TargetClassDoesNotHaveIDataVariablesContextInterfaceTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables { }";
@@ -383,7 +383,7 @@ internal partial class TelemetryVariables { }";
     [Fact]
     public void TargetClassIsNotPartialTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal class TelemetryVariables : IDataVariablesContext { }";
@@ -416,7 +416,7 @@ internal class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void TargetClassIsStaticTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal static partial class TelemetryVariables : IDataVariablesContext { }";

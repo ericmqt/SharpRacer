@@ -5,23 +5,22 @@ public static class SharpRacerIdentifiers
     {
         SharpRacerNamespace = new NamespaceIdentifier("SharpRacer");
         TelemetryNamespace = new NamespaceIdentifier("SharpRacer.Telemetry");
-        TelemetryVariablesNamespace = new NamespaceIdentifier("SharpRacer.Telemetry.Variables");
 
-        ArrayDataVariable = TelemetryVariablesNamespace.CreateType("ArrayDataVariable");
-        DataVariableDescriptor = TelemetryVariablesNamespace.CreateType("DataVariableDescriptor");
-        DataVariableFactory = TelemetryVariablesNamespace.CreateType("DataVariableFactory");
-        DataVariableInfo = TelemetryVariablesNamespace.CreateType("DataVariableInfo");
-        DataVariableInitializationException = TelemetryVariablesNamespace.CreateType("DataVariableInitializationException");
-        DataVariableValueType = TelemetryVariablesNamespace.CreateType("DataVariableValueType");
-        GenerateDataVariableDescriptorsAttribute = TelemetryVariablesNamespace.CreateType("GenerateDataVariableDescriptorsAttribute");
-        GenerateDataVariablesContextAttribute = TelemetryVariablesNamespace.CreateType("GenerateDataVariablesContextAttribute");
-        IArrayDataVariable = TelemetryVariablesNamespace.CreateType("IArrayDataVariable");
-        ICreateDataVariable = TelemetryVariablesNamespace.CreateType("ICreateDataVariable");
-        IDataVariable = TelemetryVariablesNamespace.CreateType("IDataVariable");
-        IDataVariablesContext = TelemetryVariablesNamespace.CreateType("IDataVariablesContext");
-        IDataVariableInfoProvider = TelemetryVariablesNamespace.CreateType("IDataVariableInfoProvider");
-        IScalarDataVariable = TelemetryVariablesNamespace.CreateType("IScalarDataVariable");
-        ScalarDataVariable = TelemetryVariablesNamespace.CreateType("ScalarDataVariable");
+        ArrayDataVariable = TelemetryNamespace.CreateType("ArrayDataVariable");
+        DataVariableDescriptor = TelemetryNamespace.CreateType("DataVariableDescriptor");
+        DataVariableFactory = TelemetryNamespace.CreateType("DataVariableFactory");
+        DataVariableInfo = TelemetryNamespace.CreateType("DataVariableInfo");
+        DataVariableInitializationException = TelemetryNamespace.CreateType("DataVariableInitializationException");
+        DataVariableValueType = TelemetryNamespace.CreateType("DataVariableValueType");
+        GenerateDataVariableDescriptorsAttribute = TelemetryNamespace.CreateType("GenerateDataVariableDescriptorsAttribute");
+        GenerateDataVariablesContextAttribute = TelemetryNamespace.CreateType("GenerateDataVariablesContextAttribute");
+        IArrayDataVariable = TelemetryNamespace.CreateType("IArrayDataVariable");
+        ICreateDataVariable = TelemetryNamespace.CreateType("ICreateDataVariable");
+        IDataVariable = TelemetryNamespace.CreateType("IDataVariable");
+        IDataVariablesContext = TelemetryNamespace.CreateType("IDataVariablesContext");
+        IDataVariableInfoProvider = TelemetryNamespace.CreateType("IDataVariableInfoProvider");
+        IScalarDataVariable = TelemetryNamespace.CreateType("IScalarDataVariable");
+        ScalarDataVariable = TelemetryNamespace.CreateType("ScalarDataVariable");
 
         CameraState = SharpRacerNamespace.CreateType("CameraState");
         CarLeftRight = SharpRacerNamespace.CreateType("CarLeftRight");
@@ -38,7 +37,6 @@ public static class SharpRacerIdentifiers
 
     public static NamespaceIdentifier SharpRacerNamespace { get; }
     public static NamespaceIdentifier TelemetryNamespace { get; }
-    public static NamespaceIdentifier TelemetryVariablesNamespace { get; }
 
     public static TypeIdentifier ArrayDataVariable { get; }
     public static TypeIdentifier CameraState { get; }

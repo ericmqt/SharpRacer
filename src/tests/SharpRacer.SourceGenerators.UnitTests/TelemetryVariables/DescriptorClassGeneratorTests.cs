@@ -41,7 +41,6 @@ public class DescriptorClassGeneratorTests
             .WithDescriptorProperties([descriptorPropertyModel]);
 
         var compilationUnit = DescriptorClassGenerator.CreateCompilationUnit(ref classModel, default);
-
         var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(DeprecatedVariableWithoutDeprecatingModel_Source()).GetCompilationUnitRoot();
 
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
@@ -70,13 +69,13 @@ public class DescriptorClassGeneratorTests
     }
 
     private static string DeprecatedVariableWithoutDeprecatingModel_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestApp.Variables
 {
     /// <summary>
-    /// Provides <see cref = ""SharpRacer.Telemetry.Variables.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
     {
@@ -89,13 +88,13 @@ namespace TestApp.Variables
 }";
 
     private static string DeprecatedVariableWithoutDeprecatingVariableName_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestApp.Variables
 {
     /// <summary>
-    /// Provides <see cref = ""SharpRacer.Telemetry.Variables.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
     {
@@ -108,13 +107,13 @@ namespace TestApp.Variables
 }";
 
     private static string SingleVariableTest_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestApp.Variables
 {
     /// <summary>
-    /// Provides <see cref = ""SharpRacer.Telemetry.Variables.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
     {

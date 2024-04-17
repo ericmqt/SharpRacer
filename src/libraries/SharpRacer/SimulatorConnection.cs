@@ -3,7 +3,7 @@ using System.Runtime.Versioning;
 using SharpRacer.Internal;
 using SharpRacer.Interop;
 using SharpRacer.IO;
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 
 namespace SharpRacer;
 

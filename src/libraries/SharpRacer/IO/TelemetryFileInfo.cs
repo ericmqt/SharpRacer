@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using SharpRacer.Interop;
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 
 namespace SharpRacer.IO;
 

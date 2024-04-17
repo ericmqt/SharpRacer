@@ -148,7 +148,7 @@ public class ContextClassGeneratorTests
     }
 
     private static string Create_Test_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestAssembly.Variables
@@ -177,7 +177,7 @@ namespace TestAssembly.Variables
 }";
 
     private static string Create_ContainsDeprecatedVariableTest_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestAssembly.Variables
@@ -210,7 +210,7 @@ namespace TestAssembly.Variables
 }";
 
     private static string Create_ContainsDeprecatedVariableWithoutDeprecatingModelTest_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestAssembly.Variables
@@ -240,7 +240,7 @@ namespace TestAssembly.Variables
 }";
 
     private static string Create_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest_Source() =>
-        @"using SharpRacer.Telemetry.Variables;
+        @"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestAssembly.Variables

@@ -35,7 +35,7 @@ public class ContextClassModelValuesProviderTests
     [Fact]
     public void SingleContextTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -68,7 +68,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void SingleContextWithIncludesTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""Assets\\TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -106,7 +106,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void ConfiguredPropertyNameConflictTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -148,7 +148,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void DefaultModelValueOnContextClassInfoErrorTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext]
 internal class TelemetryVariables { }";
@@ -178,7 +178,7 @@ internal class TelemetryVariables { }";
     [Fact]
     public void IncludedVariableNotFoundTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";
@@ -205,7 +205,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     [Fact]
     public void VariableNameCreatesPropertyNameConflictTest()
     {
-        var contextClassDefinition = @"using SharpRacer.Telemetry.Variables
+        var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
 internal partial class TelemetryVariables : IDataVariablesContext { }";

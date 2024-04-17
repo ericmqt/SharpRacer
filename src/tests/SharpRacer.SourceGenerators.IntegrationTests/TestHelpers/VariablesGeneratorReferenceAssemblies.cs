@@ -1,5 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 internal static class VariablesGeneratorReferenceAssemblies

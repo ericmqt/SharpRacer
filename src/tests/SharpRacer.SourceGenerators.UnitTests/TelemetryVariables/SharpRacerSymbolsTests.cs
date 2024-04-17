@@ -11,7 +11,7 @@ public class SharpRacerSymbolsTests
         var namespaceSymbolMock = new Mock<INamespaceSymbol>();
 
         namespaceSymbolMock.Setup(x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
-            .Returns(SharpRacerIdentifiers.TelemetryVariablesNamespace.ToGlobalQualifiedName());
+            .Returns(SharpRacerIdentifiers.TelemetryNamespace.ToGlobalQualifiedName());
 
         symbolMock.SetupGet(x => x.TypeKind).Returns(TypeKind.Interface);
         symbolMock.SetupGet(x => x.Name).Returns(SharpRacerIdentifiers.IDataVariablesContext.TypeName);
@@ -47,14 +47,13 @@ public class SharpRacerSymbolsTests
     }
 
     [Fact]
-    public void IsTelemetryVariablesNamespaceTest()
+    public void IsTelemetryNamespaceTest()
     {
         var namespaceSymbolMock = new Mock<INamespaceSymbol>();
 
         namespaceSymbolMock.Setup(x => x.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat))
-            .Returns("global::SharpRacer.Telemetry.Variables");
+            .Returns("global::SharpRacer.Telemetry");
 
-        Assert.True(SharpRacerSymbols.IsTelemetryVariablesNamespace(namespaceSymbolMock.Object));
-
+        Assert.True(SharpRacerSymbols.IsTelemetryNamespace(namespaceSymbolMock.Object));
     }
 }

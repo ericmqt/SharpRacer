@@ -1,5 +1,4 @@
 ﻿using SharpRacer.Telemetry;
-using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer.SourceGenerators;
 public class SharpRacerIdentifiersTests
@@ -8,12 +7,6 @@ public class SharpRacerIdentifiersTests
     public void TelemetryNamespace_Test()
     {
         Assert.Equal("SharpRacer.Telemetry", SharpRacerIdentifiers.TelemetryNamespace);
-    }
-
-    [Fact]
-    public void TelemetryVariablesNamespace_Test()
-    {
-        Assert.Equal("SharpRacer.Telemetry.Variables", SharpRacerIdentifiers.TelemetryVariablesNamespace);
     }
 
     [Theory]

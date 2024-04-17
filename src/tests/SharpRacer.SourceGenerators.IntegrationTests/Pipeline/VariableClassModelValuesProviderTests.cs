@@ -13,7 +13,7 @@ public class VariableClassModelValuesProviderTests
     public void GenerateTelemetryVariableClasses_DisabledTest()
     {
         var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors { }";
@@ -37,7 +37,7 @@ public static partial class MyDescriptors { }";
     public void DescriptorClass_DescriptorPropertyReferencesAreNotNullTest()
     {
         var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors { }";

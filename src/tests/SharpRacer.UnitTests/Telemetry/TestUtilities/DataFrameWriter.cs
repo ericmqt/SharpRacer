@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using SharpRacer.Interop;
-using SharpRacer.Telemetry.Variables;
 
 namespace SharpRacer.Telemetry.TestUtilities;
 internal class DataFrameWriter

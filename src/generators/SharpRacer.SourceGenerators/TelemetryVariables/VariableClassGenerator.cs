@@ -69,7 +69,7 @@ internal static class VariableClassGenerator
 
     private static string[] GetRequiredUsingNamespaces(ref readonly VariableClassModel model)
     {
-        var telemetryVariablesNamespace = "SharpRacer.Telemetry.Variables";
+        var telemetryVariablesNamespace = "SharpRacer.Telemetry";
 
         if (model.DescriptorPropertyReference.HasValue)
         {

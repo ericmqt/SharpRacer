@@ -1,4 +1,4 @@
-﻿using SharpRacer.Telemetry.Variables;
+﻿using SharpRacer.Telemetry;
 using SharpRacer.Tools.TelemetryVariables.Data.Entities;
 
 namespace SharpRacer.Tools.TelemetryVariables.Models;

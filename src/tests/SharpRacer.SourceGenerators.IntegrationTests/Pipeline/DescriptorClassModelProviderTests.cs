@@ -21,7 +21,7 @@ public class DescriptorClassModelProviderTests
     public void GetValueProvider_Test()
     {
         var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors { }";
@@ -61,7 +61,7 @@ public static partial class MyDescriptors { }";
     public void DescriptorNameConflictsWithExistingVariableTest()
     {
         var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors { }";
@@ -102,13 +102,13 @@ public static partial class MyDescriptors { }";
     public void MultipleDescriptorClassesDiagnosticTest()
     {
         var descriptorClass1 = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors1 { }";
 
         var descriptorClass2 = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static partial class MyDescriptors2 { }";
@@ -144,7 +144,7 @@ public static partial class MyDescriptors2 { }";
     public void TargetClassIsNotPartialDiagnosticTest()
     {
         var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public static class MyDescriptors { }";
@@ -178,7 +178,7 @@ public static class MyDescriptors { }";
     public void TargetClassIsNotStaticDiagnosticTest()
     {
         var descriptorClass = @"
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 namespace Test.Assembly;
 [GenerateDataVariableDescriptors]
 public partial class MyDescriptors { }";

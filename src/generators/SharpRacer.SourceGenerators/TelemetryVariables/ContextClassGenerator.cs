@@ -16,7 +16,7 @@ internal static class ContextClassGenerator
 
         var classDecl = CreateClassDeclaration(in model, cancellationToken);
 
-        var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry.Variables")));
+        var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry")));
 
         var namespaceDecl = NamespaceDeclaration(ParseName(model.ClassNamespace))
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))

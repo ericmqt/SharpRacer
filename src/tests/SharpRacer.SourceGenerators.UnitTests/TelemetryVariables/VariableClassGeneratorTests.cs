@@ -86,7 +86,7 @@ public class VariableClassGeneratorTests
 
         var variableModel = new VariableModel(variableInfo, default);
 
-        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "SharpRacer.Telemetry.Variables");
+        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "SharpRacer.Telemetry");
 
         var classModel = new VariableClassModel(
             "TestVariable",
@@ -106,7 +106,7 @@ public class VariableClassGeneratorTests
 
     private static string ScalarVariableClass_WithDescriptorReference_Source() =>
         $@"using MyApp.Variables;
-using SharpRacer.Telemetry.Variables;
+using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestApp.Variables
@@ -128,7 +128,7 @@ namespace TestApp.Variables
         /// <summary>
         /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""DataVariableInfo""/>.
         /// </summary>
-        /// <exception cref = ""SharpRacer.Telemetry.Variables.DataVariableInitializationException"">
+        /// <exception cref = ""SharpRacer.Telemetry.DataVariableInitializationException"">
         /// <paramref name = ""dataVariableInfo""/> is not compatible with the telemetry variable represented by this instance.
         /// </exception>
         /// <remarks>
@@ -149,7 +149,7 @@ namespace TestApp.Variables
 }}";
 
     private static string ScalarVariableClass_WithDescriptorReferenceInSameNamespace_Source() =>
-        $@"using SharpRacer.Telemetry.Variables;
+        $@"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestApp.Variables
@@ -171,7 +171,7 @@ namespace TestApp.Variables
         /// <summary>
         /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""DataVariableInfo""/>.
         /// </summary>
-        /// <exception cref = ""SharpRacer.Telemetry.Variables.DataVariableInitializationException"">
+        /// <exception cref = ""SharpRacer.Telemetry.DataVariableInitializationException"">
         /// <paramref name = ""dataVariableInfo""/> is not compatible with the telemetry variable represented by this instance.
         /// </exception>
         /// <remarks>
@@ -192,14 +192,14 @@ namespace TestApp.Variables
 }}";
 
     private static string ScalarVariableClass_WithDescriptorReferenceInSharpRacerTelemetryVariablesNamespace_Source() =>
-        $@"using SharpRacer.Telemetry.Variables;
+        $@"using SharpRacer.Telemetry;
 
 #nullable enable
 namespace TestApp.Variables
 {{
     public partial class TestVariable : ScalarDataVariable<int>, ICreateDataVariable<TestVariable>
     {{
-        private static readonly DataVariableDescriptor _Descriptor = global::SharpRacer.Telemetry.Variables.VariableDescriptors.TestDescriptor;
+        private static readonly DataVariableDescriptor _Descriptor = global::SharpRacer.Telemetry.VariableDescriptors.TestDescriptor;
         /// <summary>
         /// Creates an instance of <see cref = ""TestVariable""/> configured as a placeholder for the underlying telemetry variable which is unavailable in the current context.
         /// </summary>
@@ -214,7 +214,7 @@ namespace TestApp.Variables
         /// <summary>
         /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""DataVariableInfo""/>.
         /// </summary>
-        /// <exception cref = ""SharpRacer.Telemetry.Variables.DataVariableInitializationException"">
+        /// <exception cref = ""SharpRacer.Telemetry.DataVariableInitializationException"">
         /// <paramref name = ""dataVariableInfo""/> is not compatible with the telemetry variable represented by this instance.
         /// </exception>
         /// <remarks>

@@ -3,11 +3,11 @@
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 internal static class SharpRacerSymbols
 {
-    public static bool IsTelemetryVariablesNamespace(INamespaceSymbol namespaceSymbol)
+    public static bool IsTelemetryNamespace(INamespaceSymbol namespaceSymbol)
     {
         var namespaceSymbolDisplayString = namespaceSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-        return namespaceSymbolDisplayString.Equals(SharpRacerIdentifiers.TelemetryVariablesNamespace.ToGlobalQualifiedName());
+        return namespaceSymbolDisplayString.Equals(SharpRacerIdentifiers.TelemetryNamespace.ToGlobalQualifiedName());
     }
 
     public static bool IsIDataVariablesContextInterface(INamedTypeSymbol symbol)
