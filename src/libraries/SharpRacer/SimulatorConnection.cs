@@ -15,9 +15,10 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
     private ISimulatorInternalConnection _internalConnection;
-    private readonly object _internalConnectionLock = new object();
+    private readonly object _internalConnectionLock = new();
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
+    private readonly List<DataVariableInfo> _variables = [];
 
     public SimulatorConnection()
         : this(ConnectionPool.Default)
@@ -42,6 +43,8 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
     /// <inheritdoc />
     public SimulatorConnectionState State => (SimulatorConnectionState)_connectionStateValue;
+
+    public IEnumerable<DataVariableInfo> Variables => _variables;
 
     /// <inheritdoc />
     public event EventHandler<EventArgs>? Closed;
@@ -104,14 +107,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
             throw new InvalidOperationException("The connection is not open.");
         }
 
-        var header = MemoryMarshal.Read<DataFileHeader>(Data);
-
-        var variableHeaders = new DataVariableHeader[header.VariableCount];
-        var variableHeaderBytes = Data.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
-
-        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
-
-        return variableHeaders.Select(x => new DataVariableInfo(x)).ToArray();
+        return _variables;
     }
 
     /// <inheritdoc />
@@ -282,11 +278,31 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
             Console.WriteLine($"[SetOpenInternalConnection] {State} -> {internalConnection.State}, ConnectionId: {internalConnection.ConnectionId}");
 
             Interlocked.Exchange(ref _internalConnection, internalConnection);
+
+            InitializeVariables();
+
             SetState(SimulatorConnectionState.Open);
         }
         finally
         {
             _connectionTransitionSemaphore.Release();
+        }
+    }
+
+    private void InitializeVariables()
+    {
+        _variables.Clear();
+
+        var header = MemoryMarshal.Read<DataFileHeader>(Data);
+
+        var variableHeaders = new DataVariableHeader[header.VariableCount];
+        var variableHeaderBytes = Data.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
+
+        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
+
+        foreach (var varHeader in variableHeaders)
+        {
+            _variables.Add(new DataVariableInfo(varHeader));
         }
     }
 

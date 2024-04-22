@@ -17,6 +17,8 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// </summary>
     SimulatorConnectionState State { get; }
 
+    IEnumerable<DataVariableInfo> Variables { get; }
+
     /// <summary>
     /// Raised when the connection has closed.
     /// </summary>
