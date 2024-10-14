@@ -1,5 +1,8 @@
-﻿using System.Runtime.Versioning;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using System.Text;
 using Microsoft.Extensions.Logging;
+using SharpRacer.Interop;
 using SharpRacer.SessionInfo;
 using SharpRacer.SessionInfo.Yaml;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
@@ -49,8 +52,7 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
             var sessionInfoModel = SessionInfoDocumentModel.FromYaml(sessionInfo.YamlDocument);
 
             // Import variables
-            var simulatorVariables = connection.GetDataVariables();
-            var variableModels = simulatorVariables.Select(x => new DataVariableModel(x, sessionInfoModel.WeekendInfo.BuildVersion));
+            var variableModels = connection.DataVariables.Select(x => new DataVariableModel(x, sessionInfoModel.WeekendInfo.BuildVersion));
 
             await _variableImporter.ImportVariablesAsync(variableModels, cancellationToken).ConfigureAwait(false);
 
@@ -77,28 +79,6 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
         Console.WriteLine("Import completed");
 
         return 0;
-    }
-
-    private SessionInfoDocument ReadSessionInfo(SimulatorConnection connection)
-    {
-        if (connection.State != SimulatorConnectionState.Open)
-        {
-            throw new InvalidOperationException("The connection is not open.");
-        }
-
-        var reader = new SimulatorDataReader(connection);
-
-        var sessionInfoVersion = reader.ReadSessionInfoVersion();
-        var sessionInfoString = reader.ReadSessionInfo();
-
-        // Check the version hasn't changed
-        if (sessionInfoVersion != reader.ReadSessionInfoVersion())
-        {
-            // Try again
-            return ReadSessionInfo(connection);
-        }
-
-        return new SessionInfoDocument(sessionInfoString, sessionInfoVersion);
     }
 
     private async Task<bool> OpenConnectionAsync(
@@ -135,5 +115,42 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
         }
 
         return false;
+    }
+
+    private static SessionInfoDocument ReadSessionInfo(SimulatorConnection connection)
+    {
+        if (connection.State != SimulatorConnectionState.Open)
+        {
+            throw new InvalidOperationException("The connection is not open.");
+        }
+
+        var sessionInfoVersion = ReadSessionInfoVersion(connection);
+        var sessionInfoString = ReadSessionInfoString(connection);
+
+        // Check the version hasn't changed
+        if (sessionInfoVersion != ReadSessionInfoVersion(connection))
+        {
+            // Try again
+            return ReadSessionInfo(connection);
+        }
+
+        return new SessionInfoDocument(sessionInfoString, sessionInfoVersion);
+    }
+
+    private static string ReadSessionInfoString(ISimulatorConnection connection)
+    {
+        var offset = MemoryMarshal.Read<int>(connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoOffset, sizeof(int)));
+        var length = MemoryMarshal.Read<int>(connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoLength, sizeof(int)));
+        var span = connection.Data.Slice(offset, length);
+
+        // SessionInfo encoding is ISO-8859-1, not UTF8. This only really matters for tracks with non-ASCII characters in their name.
+        return Encoding.Latin1.GetString(span);
+    }
+
+    private static int ReadSessionInfoVersion(ISimulatorConnection connection)
+    {
+        var slice = connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoVersion, sizeof(int));
+
+        return MemoryMarshal.Read<int>(slice);
     }
 }
