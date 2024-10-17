@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// A fixed 32-byte array that represents the iRacing SDK native character arrays of length IRSDK_MAX_STRING.
 /// </summary>
 [InlineArray(Size)]
-public struct IRSDKString
+public struct IRSDKString : IEquatable<IRSDKString>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="IRSDKString"/>.
@@ -38,6 +38,36 @@ public struct IRSDKString
         Encoding.UTF8.GetBytes(value, strBytes);
 
         return MemoryMarshal.Read<IRSDKString>(strBytes);
+    }
+
+    /// <inheritdoc/>
+    public override readonly bool Equals([NotNullWhen(true)] object? obj)
+    {
+        return obj is IRSDKString other && Equals(other);
+    }
+
+    /// <inheritdoc/>
+    public readonly bool Equals(IRSDKString other)
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            if (this[i] != other[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public override readonly int GetHashCode()
+    {
+        var hash = new HashCode();
+
+        hash.AddBytes(this);
+
+        return hash.ToHashCode();
     }
 
     /// <summary>
@@ -71,5 +101,17 @@ public struct IRSDKString
                     chars[i] = (char)source[i];
                 }
             });
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(IRSDKString left, IRSDKString right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public static bool operator !=(IRSDKString left, IRSDKString right)
+    {
+        return !(left == right);
     }
 }

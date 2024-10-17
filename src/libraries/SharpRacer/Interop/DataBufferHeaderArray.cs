@@ -8,7 +8,7 @@ namespace SharpRacer.Interop;
 /// Inline <see cref="DataBufferHeader"/> array of <see cref="DataFileConstants.MaxDataVariableBuffers"/> elements.
 /// </summary>
 [InlineArray(DataFileConstants.MaxDataVariableBuffers)]
-public struct DataBufferHeaderArray
+public struct DataBufferHeaderArray : IEquatable<DataBufferHeaderArray>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DataBufferHeaderArray"/>.
@@ -29,5 +29,50 @@ public struct DataBufferHeaderArray
         var headerBytes = MemoryMarshal.AsBytes<DataBufferHeader>(headerArray);
 
         return MemoryMarshal.Read<DataBufferHeaderArray>(headerBytes);
+    }
+
+    /// <inheritdoc />
+    public override readonly bool Equals([NotNullWhen(true)] object? obj)
+    {
+        return obj is DataBufferHeaderArray other && Equals(other);
+    }
+
+    /// <inheritdoc />
+    public readonly bool Equals(DataBufferHeaderArray other)
+    {
+        for (int i = 0; i < DataFileConstants.MaxDataVariableBuffers; i++)
+        {
+            if (this[i] != other[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <inheritdoc />
+    public override readonly int GetHashCode()
+    {
+        var hc = new HashCode();
+
+        for (int i = 0; i < DataFileConstants.MaxDataVariableBuffers; i++)
+        {
+            hc.Add(this[i]);
+        }
+
+        return hc.ToHashCode();
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(DataBufferHeaderArray left, DataBufferHeaderArray right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public static bool operator !=(DataBufferHeaderArray left, DataBufferHeaderArray right)
+    {
+        return !(left == right);
     }
 }

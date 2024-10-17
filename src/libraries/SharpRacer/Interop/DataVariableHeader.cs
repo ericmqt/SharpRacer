@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// See: irsdk_varHeader
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public readonly struct DataVariableHeader
+public readonly struct DataVariableHeader : IEquatable<DataVariableHeader>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DataVariableHeader"/>.
@@ -93,6 +93,42 @@ public readonly struct DataVariableHeader
     /// </summary>
     [FieldOffset(FieldOffsets.UnitOffset)]
     public readonly IRSDKString Unit;
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        return obj is DataVariableHeader header && Equals(header);
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(DataVariableHeader other)
+    {
+        return Type == other.Type &&
+               Offset == other.Offset &&
+               Count == other.Count &&
+               CountAsTime == other.CountAsTime &&
+               Name.Equals(other.Name) &&
+               Description.Equals(other.Description) &&
+               Unit.Equals(other.Unit);
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Type, Offset, Count, CountAsTime, Name, Description, Unit);
+    }
+
+    /// <inheritdoc/>
+    public static bool operator ==(DataVariableHeader left, DataVariableHeader right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc/>
+    public static bool operator !=(DataVariableHeader left, DataVariableHeader right)
+    {
+        return !(left == right);
+    }
 
     /// <summary>
     /// Provides field offsets for a <see cref="DataVariableHeader"/> structure.

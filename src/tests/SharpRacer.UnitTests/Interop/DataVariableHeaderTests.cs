@@ -1,10 +1,13 @@
 ﻿using System.Runtime.InteropServices;
+using SharpRacer.Extensions.Xunit;
 using SharpRacer.Telemetry;
 
 namespace SharpRacer.Interop;
 
 public class DataVariableHeaderTests
 {
+    public static TheoryData<DataVariableHeader, DataVariableHeader> InequalityData => GetInequalityData();
+
     [Fact]
     public void Ctor_DefaultTest()
     {
@@ -85,5 +88,116 @@ public class DataVariableHeaderTests
         Assert.Equal(offset, header.Offset);
         Assert.Equal(type, header.Type);
         Assert.Equal(unit, header.Unit);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueEqualityTest()
+    {
+        var constructedHeader = new DataVariableHeader();
+
+        EquatableStructAssert.Equal(constructedHeader, default);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueInequalityTest()
+    {
+        var constructedHeader = new DataVariableHeader(
+            IRSDKString.FromString("Foo"),
+            (int)DataVariableValueType.Double,
+            1,
+            false,
+            1024,
+            IRSDKDescString.FromString("Foo variable"),
+            IRSDKString.FromString("km/h"));
+
+        EquatableStructAssert.NotEqual(constructedHeader, default);
+    }
+
+    [Fact]
+    public void Equals_EqualityTest()
+    {
+        var header1 = new DataVariableHeader(
+            IRSDKString.FromString("Foo"),
+            (int)DataVariableValueType.Double,
+            1,
+            false,
+            1024,
+            IRSDKDescString.FromString("Foo variable"),
+            IRSDKString.FromString("km/h"));
+
+        var header2 = new DataVariableHeader(
+            IRSDKString.FromString("Foo"),
+            (int)DataVariableValueType.Double,
+            1,
+            false,
+            1024,
+            IRSDKDescString.FromString("Foo variable"),
+            IRSDKString.FromString("km/h"));
+
+        EquatableStructAssert.Equal(header1, header2);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(DataVariableHeader header1, DataVariableHeader header2)
+    {
+        EquatableStructAssert.NotEqual(header1, header2);
+    }
+
+    private static TheoryData<DataVariableHeader, DataVariableHeader> GetInequalityData()
+    {
+        var name = IRSDKString.FromString("Foo");
+        var description = IRSDKDescString.FromString("Foo variable");
+        var unit = IRSDKString.FromString("kg/m");
+
+        var type = (int)DataVariableValueType.Double;
+        var count = 1;
+        var countAsTime = false;
+        var offset = 1024;
+
+        return new TheoryData<DataVariableHeader, DataVariableHeader>()
+        {
+            // Type
+            {
+                new DataVariableHeader(name, (int)DataVariableValueType.Double, count, countAsTime, offset, description, unit),
+                new DataVariableHeader(name, (int)DataVariableValueType.Float, count, countAsTime, offset, description, unit)
+            },
+
+            // Offset
+            {
+                new DataVariableHeader(name, type, count, countAsTime, 1024, description, unit),
+                new DataVariableHeader(name, type, count, countAsTime, 2048, description, unit)
+            },
+
+            // Count
+            {
+                new DataVariableHeader(name, type, 1, countAsTime, offset, description, unit),
+                new DataVariableHeader(name, type, 4, countAsTime, offset, description, unit)
+            },
+
+            // CountAsTime
+            {
+                new DataVariableHeader(name, type, count, true, offset, description, unit),
+                new DataVariableHeader(name, type, count, false, offset, description, unit)
+            },
+
+            // Name
+            {
+                new DataVariableHeader(IRSDKString.FromString("Foo"), type, count, countAsTime, offset, description, unit),
+                new DataVariableHeader(IRSDKString.FromString("Bar"), type, count, countAsTime, offset, description, unit)
+            },
+
+            // Description
+            {
+                new DataVariableHeader(name, type, count, countAsTime, offset, IRSDKDescString.FromString("Foo variable"), unit),
+                new DataVariableHeader(name, type, count, countAsTime, offset, IRSDKDescString.FromString("Bar variable"), unit)
+            },
+
+            // Unit
+            {
+                new DataVariableHeader(name, type, count, countAsTime, offset, description, IRSDKString.FromString("kg/m")),
+                new DataVariableHeader(name, type, count, countAsTime, offset, description, IRSDKString.FromString("Gm/h"))
+            }
+        };
     }
 }

@@ -1,8 +1,11 @@
 ﻿using System.Runtime.InteropServices;
+using SharpRacer.Extensions.Xunit;
 
 namespace SharpRacer.Interop;
 public class DiskSubHeaderTests
 {
+    public static TheoryData<DiskSubHeader, DiskSubHeader> InequalityData => GetInequalityData();
+
     [Fact]
     public void Ctor_DefaultTest()
     {
@@ -106,5 +109,73 @@ public class DiskSubHeaderTests
             1024);
 
         Assert.Equal(sessionStartDateTimeOffset, header.GetSessionStartDateTimeOffset());
+    }
+
+    [Fact]
+    public void Equals_DefaultValueEqualityTest()
+    {
+        var constructedHeader = new DiskSubHeader();
+
+        EquatableStructAssert.Equal(constructedHeader, default);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueInequalityTest()
+    {
+        var constructedHeader = new DiskSubHeader(1, 2, 3, 4, 5);
+
+        EquatableStructAssert.NotEqual(constructedHeader, default);
+    }
+
+    [Fact]
+    public void Equals_EqualityTest()
+    {
+        var header1 = new DiskSubHeader(1, 2, 3, 4, 5);
+        var header2 = new DiskSubHeader(1, 2, 3, 4, 5);
+
+        EquatableStructAssert.Equal(header1, header2);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(DiskSubHeader header1, DiskSubHeader header2)
+    {
+        EquatableStructAssert.NotEqual(header1, header2);
+    }
+
+    private static TheoryData<DiskSubHeader, DiskSubHeader> GetInequalityData()
+    {
+        return new TheoryData<DiskSubHeader, DiskSubHeader>()
+        {
+            // SessionStartDate
+            {
+                new DiskSubHeader(1, 0, 0, 0, 0),
+                new DiskSubHeader(2, 0, 0, 0, 0)
+            },
+
+            // SessionStartTime
+            {
+                new DiskSubHeader(10, 1, 0, 0, 0),
+                new DiskSubHeader(10, 2, 0, 0, 0)
+            },
+
+            // SessionEndTime
+            {
+                new DiskSubHeader(10, 20, 1, 0, 0),
+                new DiskSubHeader(10, 20, 2, 0, 0)
+            },
+
+            // SessionLapCount
+            {
+                new DiskSubHeader(10, 20, 30, 8, 0),
+                new DiskSubHeader(10, 20, 30, 9, 0)
+            },
+
+            // SessionRecordCount
+            {
+                new DiskSubHeader(10, 20, 30, 40, 128),
+                new DiskSubHeader(10, 20, 30, 40, 256)
+            }
+        };
     }
 }

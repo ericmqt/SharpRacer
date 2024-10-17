@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// See: irsdk_diskSubHeader
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public readonly struct DiskSubHeader
+public readonly struct DiskSubHeader : IEquatable<DiskSubHeader>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DiskSubHeader"/>.
@@ -87,6 +87,40 @@ public readonly struct DiskSubHeader
     public readonly DateTimeOffset GetSessionStartDateTimeOffset()
     {
         return DateTimeOffset.FromUnixTimeSeconds(SessionStartDate).AddSeconds(SessionStartTime);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        return obj is DiskSubHeader header && Equals(header);
+    }
+
+    /// <inheritdoc />
+    public bool Equals(DiskSubHeader other)
+    {
+        return SessionStartDate == other.SessionStartDate &&
+               SessionStartTime == other.SessionStartTime &&
+               SessionEndTime == other.SessionEndTime &&
+               SessionLapCount == other.SessionLapCount &&
+               SessionRecordCount == other.SessionRecordCount;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(SessionStartDate, SessionStartTime, SessionEndTime, SessionLapCount, SessionRecordCount);
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(DiskSubHeader left, DiskSubHeader right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public static bool operator !=(DiskSubHeader left, DiskSubHeader right)
+    {
+        return !(left == right);
     }
 
     /// <summary>

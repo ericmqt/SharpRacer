@@ -1,8 +1,11 @@
 ﻿using System.Runtime.InteropServices;
+using SharpRacer.Extensions.Xunit;
 
 namespace SharpRacer.Interop;
 public class DataBufferHeaderTests
 {
+    public static TheoryData<DataBufferHeader, DataBufferHeader> InequalityData => GetInequalityData();
+
     [Fact]
     public void Ctor_DefaultTest()
     {
@@ -39,5 +42,55 @@ public class DataBufferHeaderTests
 
         Assert.Equal(tickCount, header.TickCount);
         Assert.Equal(bufferOffset, header.BufferOffset);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueEqualityTest()
+    {
+        var constructedHeader = new DataBufferHeader();
+
+        EquatableStructAssert.Equal(constructedHeader, default);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueInequalityTest()
+    {
+        var constructedHeader = new DataBufferHeader(10, 20);
+
+        EquatableStructAssert.NotEqual(constructedHeader, default);
+    }
+
+    [Fact]
+    public void Equals_EqualityTest()
+    {
+        var header1 = new DataBufferHeader(2, 4);
+        var header2 = new DataBufferHeader(2, 4);
+
+        EquatableStructAssert.Equal(header1, header2);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(DataBufferHeader header1, DataBufferHeader header2)
+    {
+        EquatableStructAssert.NotEqual(header1, header2);
+    }
+
+    private static TheoryData<DataBufferHeader, DataBufferHeader> GetInequalityData()
+    {
+        return new TheoryData<DataBufferHeader, DataBufferHeader>()
+        {
+            // Tick count
+            {
+                new DataBufferHeader(1, 0),
+                new DataBufferHeader(2, 0)
+            },
+
+            // BufferOffset
+            {
+                new DataBufferHeader(0, 1),
+                new DataBufferHeader(0, 2)
+            }
+        };
     }
 }

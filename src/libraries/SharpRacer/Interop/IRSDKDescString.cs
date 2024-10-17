@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// A fixed 64-byte array that represents the iRacing SDK native character arrays of length IRSDK_MAX_DESC.
 /// </summary>
 [InlineArray(Size)]
-public struct IRSDKDescString
+public struct IRSDKDescString : IEquatable<IRSDKDescString>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="IRSDKDescString"/>.
@@ -38,6 +38,36 @@ public struct IRSDKDescString
         Encoding.UTF8.GetBytes(value, strBytes);
 
         return MemoryMarshal.Read<IRSDKDescString>(strBytes);
+    }
+
+    /// <inheritdoc/>
+    public override readonly bool Equals([NotNullWhen(true)] object? obj)
+    {
+        return obj is IRSDKDescString other && Equals(other);
+    }
+
+    /// <inheritdoc/>
+    public readonly bool Equals(IRSDKDescString other)
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            if (this[i] != other[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public override readonly int GetHashCode()
+    {
+        var hash = new HashCode();
+
+        hash.AddBytes(this);
+
+        return hash.ToHashCode();
     }
 
     /// <summary>
@@ -71,5 +101,17 @@ public struct IRSDKDescString
                     chars[i] = (char)source[i];
                 }
             });
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(IRSDKDescString left, IRSDKDescString right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public static bool operator !=(IRSDKDescString left, IRSDKDescString right)
+    {
+        return !(left == right);
     }
 }

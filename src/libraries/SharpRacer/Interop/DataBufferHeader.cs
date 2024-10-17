@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// See: irsdk_varBuf
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public readonly struct DataBufferHeader
+public readonly struct DataBufferHeader : IEquatable<DataBufferHeader>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DataBufferHeader"/>.
@@ -46,6 +46,37 @@ public readonly struct DataBufferHeader
     /// </summary>
     [FieldOffset(FieldOffsets.BufferOffset)]
     public readonly int BufferOffset;
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        return obj is DataBufferHeader header && Equals(header);
+    }
+
+    /// <inheritdoc />
+    public bool Equals(DataBufferHeader other)
+    {
+        return TickCount == other.TickCount &&
+               BufferOffset == other.BufferOffset;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(TickCount, BufferOffset);
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(DataBufferHeader left, DataBufferHeader right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public static bool operator !=(DataBufferHeader left, DataBufferHeader right)
+    {
+        return !(left == right);
+    }
 
     /// <summary>
     /// Provides field offsets for a <see cref="DataBufferHeader"/> structure.

@@ -1,9 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using SharpRacer.Extensions.Xunit;
 
 namespace SharpRacer.Interop;
 public class IRSDKDescStringTests
 {
+    public static TheoryData<IRSDKDescString, IRSDKDescString> InequalityData => GetInequalityData();
+
     [Fact]
     public void FromString_Test()
     {
@@ -73,5 +76,69 @@ public class IRSDKDescStringTests
 
         Assert.Equal(testString.Length, sdkString.GetLength());
         Assert.Equal(testString, sdkString.ToString());
+    }
+
+    [Fact]
+    public void Equals_DefaultValueEqualityTest()
+    {
+        var constructedValue = new IRSDKDescString();
+
+        EquatableStructAssert.Equal(constructedValue, default);
+    }
+
+    [Fact]
+    public void Equals_DefaultValueInequalityTest()
+    {
+        var constructedValue = IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyz");
+
+        EquatableStructAssert.NotEqual(constructedValue, default);
+    }
+
+    [Fact]
+    public void Equals_EqualityTest()
+    {
+        const string fullLengthStr = "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789";
+        const string partialStr = "abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJK";
+
+        var str1 = IRSDKDescString.FromString(fullLengthStr);
+        var str2 = IRSDKDescString.FromString(fullLengthStr);
+
+        EquatableStructAssert.Equal(str1, str2);
+
+        str1 = IRSDKDescString.FromString(partialStr);
+        str2 = IRSDKDescString.FromString(partialStr);
+
+        EquatableStructAssert.Equal(str1, str2);
+    }
+
+    [Theory]
+    [MemberData(nameof(InequalityData))]
+    public void Equals_InequalityTest(IRSDKDescString value1, IRSDKDescString value2)
+    {
+        EquatableStructAssert.NotEqual(value1, value2);
+    }
+
+    private static TheoryData<IRSDKDescString, IRSDKDescString> GetInequalityData()
+    {
+        var emptyStrCharBuf = new byte[IRSDKDescString.Size];
+        Array.Fill(emptyStrCharBuf, byte.MinValue);
+
+        var emptyStr = MemoryMarshal.Read<IRSDKDescString>(emptyStrCharBuf);
+
+        return new TheoryData<IRSDKDescString, IRSDKDescString>
+        {
+            {  IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyzABCDEF"), emptyStr },
+
+            // Last char difference
+            {
+                IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789"),
+                IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ_012345678X") },
+
+            // Length difference
+            {
+                IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyz"),
+                IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyzABCDEF")
+            },
+        };
     }
 }

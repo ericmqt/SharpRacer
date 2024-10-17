@@ -9,7 +9,7 @@ namespace SharpRacer.Interop;
 /// See: irsdk_header
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public readonly struct DataFileHeader
+public readonly struct DataFileHeader : IEquatable<DataFileHeader>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DataFileHeader"/>.
@@ -142,6 +142,94 @@ public readonly struct DataFileHeader
     /// </summary>
     [FieldOffset(FieldOffsets.DiskSubHeader)]
     public readonly DiskSubHeader DiskSubHeader;
+
+    /// <summary>
+    /// Reinterprets a read-only span of bytes as a read-only reference to a <see cref="DataFileHeader"/> structure.
+    /// </summary>
+    /// <param name="span">The read-only span of bytes to reinterpret.</param>
+    /// <returns>The read-only reference to the <see cref="DataFileHeader"/> structure.</returns>
+    /// <remarks>
+    /// The length of the span must be at least <see cref="DataFileHeader.Size"/> in length.
+    /// </remarks>
+    /// <example>
+    /// This method must be called with the <c>ref</c> modifier in order to receive a reference to the structure and not a by-value copy.
+    /// <code>
+    ///     ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataSpan);
+    /// </code>
+    /// </example>
+    public static ref readonly DataFileHeader AsRef(ReadOnlySpan<byte> span)
+    {
+        return ref MemoryMarshal.AsRef<DataFileHeader>(span[..Size]);
+    }
+
+    /// <summary>
+    /// Reads a <see cref="DataFileHeader"/> structure from the specified read-only span of bytes.
+    /// </summary>
+    /// <param name="span">
+    /// A read-only span of bytes at least <see cref="DataFileHeader.Size"/> in length that contains a <see cref="DataFileHeader"/> at
+    /// offset zero.
+    /// </param>
+    /// <returns>The <see cref="DataFileHeader"/> structure read from the read-only span of bytes.</returns>
+    public static DataFileHeader Read(ReadOnlySpan<byte> span)
+    {
+        return MemoryMarshal.Read<DataFileHeader>(span);
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        return obj is DataFileHeader header && Equals(header);
+    }
+
+    /// <inheritdoc />
+    public bool Equals(DataFileHeader other)
+    {
+        return HeaderVersion == other.HeaderVersion &&
+               Status == other.Status &&
+               TickRate == other.TickRate &&
+               SessionInfoVersion == other.SessionInfoVersion &&
+               SessionInfoLength == other.SessionInfoLength &&
+               SessionInfoOffset == other.SessionInfoOffset &&
+               VariableCount == other.VariableCount &&
+               VariableHeaderOffset == other.VariableHeaderOffset &&
+               DataBufferCount == other.DataBufferCount &&
+               DataBufferElementLength == other.DataBufferElementLength &&
+               DataBufferHeaders.Equals(other.DataBufferHeaders) &&
+               DiskSubHeader.Equals(other.DiskSubHeader);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        var hash = new HashCode();
+
+        hash.Add(HeaderVersion);
+        hash.Add(Status);
+        hash.Add(TickRate);
+        hash.Add(SessionInfoVersion);
+        hash.Add(SessionInfoLength);
+        hash.Add(SessionInfoOffset);
+        hash.Add(VariableCount);
+        hash.Add(VariableHeaderOffset);
+        hash.Add(DataBufferCount);
+        hash.Add(DataBufferElementLength);
+        hash.Add(DataBufferHeaders);
+        hash.Add(DiskSubHeader);
+
+        return hash.ToHashCode();
+    }
+
+    /// <inheritdoc />
+    public static bool operator ==(DataFileHeader left, DataFileHeader right)
+    {
+        return left.Equals(right);
+    }
+
+    /// <inheritdoc />
+    public static bool operator !=(DataFileHeader left, DataFileHeader right)
+    {
+        return !(left == right);
+    }
 
     /// <summary>
     /// Provides field offsets for a <see cref="DataFileHeader"/> structure.
