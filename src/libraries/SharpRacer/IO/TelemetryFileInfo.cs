@@ -9,6 +9,7 @@ namespace SharpRacer.IO;
 /// </summary>
 public class TelemetryFileInfo : IDataVariableInfoProvider
 {
+    private readonly ImmutableArray<DataVariableInfo> _dataVariables;
     private readonly DataFileHeader _fileHeader;
 
     /// <summary>
@@ -41,17 +42,15 @@ public class TelemetryFileInfo : IDataVariableInfoProvider
             var variableHeaders = fileReader.ReadDataVariableHeaders();
             var variableInfoArray = variableHeaders.Select(x => new DataVariableInfo(x)).ToArray();
 
-            DataVariables = ImmutableArray.Create(variableInfoArray);
+            _dataVariables = ImmutableArray.Create(variableInfoArray);
         }
 
         SessionStart = _fileHeader.DiskSubHeader.GetSessionStartDateTimeOffset().ToLocalTime();
         SessionEnd = _fileHeader.DiskSubHeader.GetSessionEndDateTimeOffset().ToLocalTime();
     }
 
-    /// <summary>
-    /// Gets an immutable array of <see cref="DataVariableInfo"/> objects that describe the data variables in the telemetry file.
-    /// </summary>
-    public ImmutableArray<DataVariableInfo> DataVariables { get; }
+    /// <inheritdoc />
+    public IEnumerable<DataVariableInfo> DataVariables => _dataVariables;
 
     /// <summary>
     /// Gets a <see cref="FileInfo"/> object representing the telemetry file.
@@ -78,8 +77,15 @@ public class TelemetryFileInfo : IDataVariableInfoProvider
     /// </summary>
     public DateTimeOffset SessionStart { get; }
 
-    IEnumerable<DataVariableInfo> IDataVariableInfoProvider.GetDataVariables()
+    /// <inheritdoc />
+    public void NotifyDataVariableActivated(string variableName, Action<DataVariableInfo> callback)
     {
-        return DataVariables;
+        ArgumentException.ThrowIfNullOrEmpty(variableName);
+        ArgumentNullException.ThrowIfNull(callback);
+
+        if (DataVariables.TryFindByName(variableName, out var variableInfo))
+        {
+            callback(variableInfo);
+        }
     }
 }

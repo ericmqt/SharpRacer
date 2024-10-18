@@ -17,7 +17,7 @@ public sealed class DataVariableFactory : IDataVariableFactory
     {
         ArgumentNullException.ThrowIfNull(variableInfoProvider);
 
-        _dataVariables = variableInfoProvider.GetDataVariables().ToList();
+        _dataVariables = variableInfoProvider.DataVariables.ToList();
     }
 
     /// <summary>

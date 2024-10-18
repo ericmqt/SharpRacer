@@ -1,12 +1,13 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
 using SharpRacer.Internal;
-using SharpRacer.Interop;
 using SharpRacer.IO;
 using SharpRacer.Telemetry;
 
 namespace SharpRacer;
 
+/// <summary>
+/// Represents a connection to a simulator session.
+/// </summary>
 [SupportedOSPlatform("windows5.1.2600")]
 public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 {
@@ -18,8 +19,11 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
     private readonly object _internalConnectionLock = new();
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
-    private readonly List<DataVariableInfo> _variables = [];
+    private readonly ConnectionDataVariableInfoProvider _variableInfoProvider;
 
+    /// <summary>
+    /// Initializes an instance of <see cref="SimulatorConnection"/>.
+    /// </summary>
     public SimulatorConnection()
         : this(ConnectionPool.Default)
     {
@@ -36,15 +40,18 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
         _connectionTransitionSemaphore = new SemaphoreSlim(1, 1);
         _openSemaphore = new SemaphoreSlim(1, 1);
+
+        _variableInfoProvider = new ConnectionDataVariableInfoProvider();
     }
 
     /// <inheritdoc />
     public ReadOnlySpan<byte> Data => _internalConnection.Data;
 
     /// <inheritdoc />
-    public SimulatorConnectionState State => (SimulatorConnectionState)_connectionStateValue;
+    public IEnumerable<DataVariableInfo> DataVariables => _variableInfoProvider.DataVariables;
 
-    public IEnumerable<DataVariableInfo> Variables => _variables;
+    /// <inheritdoc />
+    public SimulatorConnectionState State => (SimulatorConnectionState)_connectionStateValue;
 
     /// <inheritdoc />
     public event EventHandler<EventArgs>? Closed;
@@ -95,19 +102,13 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Gets a collection of <see cref="DataVariableInfo"/> objects representing the telemetry variables exposed by the simulator.
-    /// </summary>
-    /// <returns>A collection of <see cref="DataVariableInfo"/> objects from the simulator.</returns>
-    /// <exception cref="InvalidOperationException">The connection is not open.</exception>
-    public IEnumerable<DataVariableInfo> GetDataVariables()
+    /// <inheritdoc />
+    public void NotifyDataVariableActivated(string variableName, Action<DataVariableInfo> callback)
     {
-        if (State != SimulatorConnectionState.Open)
-        {
-            throw new InvalidOperationException("The connection is not open.");
-        }
+        ArgumentException.ThrowIfNullOrEmpty(variableName);
+        ArgumentNullException.ThrowIfNull(callback);
 
-        return _variables;
+        _variableInfoProvider.NotifyDataVariableActivated(variableName, callback);
     }
 
     /// <inheritdoc />
@@ -279,30 +280,13 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
             Interlocked.Exchange(ref _internalConnection, internalConnection);
 
-            InitializeVariables();
+            _variableInfoProvider.InitializeVariables(this);
 
             SetState(SimulatorConnectionState.Open);
         }
         finally
         {
             _connectionTransitionSemaphore.Release();
-        }
-    }
-
-    private void InitializeVariables()
-    {
-        _variables.Clear();
-
-        var header = MemoryMarshal.Read<DataFileHeader>(Data);
-
-        var variableHeaders = new DataVariableHeader[header.VariableCount];
-        var variableHeaderBytes = Data.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
-
-        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
-
-        foreach (var varHeader in variableHeaders)
-        {
-            _variables.Add(new DataVariableInfo(varHeader));
         }
     }
 
