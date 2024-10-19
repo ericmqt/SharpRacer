@@ -128,7 +128,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
             {
                 _requestQueue.Enqueue(request);
 
-                ThreadPool.QueueUserWorkItem<object?>(_ => ProcessRequestQueue(), null, false);
+                ThreadPool.QueueUserWorkItem<object?>(_ => ProcessRequestQueue(abortIfAlreadyProcessing: true), null, false);
             }
 
             await completion.Task;
@@ -325,9 +325,19 @@ internal sealed partial class ConnectionPool : IConnectionPool
         }
     }
 
-    private void ProcessRequestQueue()
+    private void ProcessRequestQueue(bool abortIfAlreadyProcessing)
     {
-        _requestQueueProcessingSemaphore.Wait();
+        if (abortIfAlreadyProcessing)
+        {
+            if (!_requestQueueProcessingSemaphore.Wait(0))
+            {
+                return;
+            }
+        }
+        else
+        {
+            _requestQueueProcessingSemaphore.Wait();
+        }
 
         try
         {
@@ -362,7 +372,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
         _waitHandles.ConnectionAvailableSignal.Set();
 
-        ProcessRequestQueue();
+        ProcessRequestQueue(abortIfAlreadyProcessing: false);
     }
 
     private void SetConnectionException(SimulatorConnectionException exception)
@@ -374,7 +384,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
         _waitHandles.ConnectionExceptionSignal.Set();
 
-        ProcessRequestQueue();
+        ProcessRequestQueue(abortIfAlreadyProcessing: false);
 
         // Wait for pending connections to drop to zero
         var spinner = new SpinWait();
@@ -497,7 +507,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
         }
 
         // We still have pending connections so process the queue
-        ProcessRequestQueue();
+        ProcessRequestQueue(abortIfAlreadyProcessing: true);
     }
 
     private static SimulatorConnectionException GetConnectionException(string message, Exception? innerException = null)
