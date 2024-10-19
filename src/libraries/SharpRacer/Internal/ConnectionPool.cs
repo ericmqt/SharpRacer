@@ -340,8 +340,6 @@ internal sealed partial class ConnectionPool : IConnectionPool
                     // Unable to complete request, so return it for further processing
                     uncompletedRequests.Add(request);
                 }
-
-                uncompletedRequests.Add(request);
             }
 
             for (int i = 0; i < uncompletedRequests.Count; i++)
