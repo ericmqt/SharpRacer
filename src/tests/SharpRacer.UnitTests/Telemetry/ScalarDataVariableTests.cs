@@ -42,7 +42,7 @@ public class ScalarDataVariableTests
         var variableInfo = DataVariableInfoFactory.CreateScalar("Foo", DataVariableValueType.Int);
         var variableDescriptor = new DataVariableDescriptor(variableInfo.Name, variableInfo.ValueType, variableInfo.ValueCount);
 
-        var variable = new ScalarDataVariable<int>(variableDescriptor, null);
+        var variable = new ScalarDataVariable<int>(variableDescriptor, variableInfo: null);
 
         Assert.False(variable.IsAvailable);
         Assert.Null(variable.VariableInfo);

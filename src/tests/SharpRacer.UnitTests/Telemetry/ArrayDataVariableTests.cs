@@ -33,7 +33,7 @@ public class ArrayDataVariableTests
         var variableInfo = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Float, 8);
         var variableDescriptor = new DataVariableDescriptor(variableInfo.Name, variableInfo.ValueType, variableInfo.ValueCount);
 
-        var variable = new ArrayDataVariable<float>(variableDescriptor, null);
+        var variable = new ArrayDataVariable<float>(variableDescriptor, variableInfo: null);
 
         DataVariableAssert.IsUnavailable(variable);
         DataVariableAssert.MatchesVariableDescriptor(variable, variableDescriptor);
