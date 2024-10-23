@@ -12,6 +12,11 @@ namespace SharpRacer.Telemetry;
 public abstract class DataVariableBase<T> : IDataVariable<T>
     where T : unmanaged
 {
+    private int _dataOffset;
+    private bool _isAvailable;
+    private bool _isInitialized;
+    private DataVariableInfo? _variableInfo;
+
     /// <summary>
     /// Initializes an instance of <see cref="DataVariableBase{T}"/> from the specified <see cref="DataVariableInfo"/>.
     /// </summary>
@@ -25,16 +30,14 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
         ArgumentNullException.ThrowIfNull(variableInfo);
         DataVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableInfo.ValueType);
 
+        DataLength = Unsafe.SizeOf<T>() * variableInfo.ValueCount;
         Name = variableInfo.Name;
-
         ValueCount = variableInfo.ValueCount;
         ValueSize = Unsafe.SizeOf<T>();
 
-        DataOffset = variableInfo.Offset;
-        DataLength = Unsafe.SizeOf<T>() * variableInfo.ValueCount;
-
-        VariableInfo = variableInfo;
-        IsAvailable = true;
+        _dataOffset = variableInfo.Offset;
+        _isAvailable = true;
+        _variableInfo = variableInfo;
     }
 
     /// <summary>
@@ -67,21 +70,17 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
 
         if (variableInfo != null)
         {
-            DataVariableInitializationException.ThrowIfDataVariableInfoNameIsNotEqual(GetType(), variableInfo, name);
-            DataVariableInitializationException.ThrowIfDataVariableInfoValueCountIsNotEqual(GetType(), variableInfo, valueCount);
-            DataVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableInfo.ValueType);
+            ValidateVariableInfo(variableInfo, name, valueCount);
         }
 
+        DataLength = Unsafe.SizeOf<T>() * valueCount;
         Name = name;
-
         ValueCount = valueCount;
         ValueSize = Unsafe.SizeOf<T>();
 
-        DataLength = Unsafe.SizeOf<T>() * valueCount;
-        DataOffset = variableInfo?.Offset ?? -1;
-
-        IsAvailable = variableInfo != null;
-        VariableInfo = variableInfo;
+        _dataOffset = variableInfo?.Offset ?? -1;
+        _isAvailable = variableInfo != null;
+        _variableInfo = variableInfo;
     }
 
     /// <summary>
@@ -115,32 +114,49 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
 
         if (variableInfo != null)
         {
-            DataVariableInitializationException.ThrowIfDataVariableInfoNameIsNotEqual(GetType(), variableInfo, variableDescriptor.Name);
-            DataVariableInitializationException.ThrowIfDataVariableInfoValueCountIsNotEqual(GetType(), variableInfo, variableDescriptor.ValueCount);
-            DataVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableInfo.ValueType);
+            ValidateVariableInfo(variableInfo, variableDescriptor.Name, variableDescriptor.ValueCount);
         }
 
+        DataLength = Unsafe.SizeOf<T>() * variableDescriptor.ValueCount;
         Name = variableDescriptor.Name;
-
         ValueCount = variableDescriptor.ValueCount;
         ValueSize = Unsafe.SizeOf<T>();
 
-        DataLength = Unsafe.SizeOf<T>() * variableDescriptor.ValueCount;
-        DataOffset = variableInfo?.Offset ?? -1;
+        _dataOffset = variableInfo?.Offset ?? -1;
+        _isAvailable = variableInfo != null;
+        _variableInfo = variableInfo;
+    }
 
-        IsAvailable = variableInfo != null;
-        VariableInfo = variableInfo;
+    /// <summary>
+    /// Initializes an instance of <see cref="DataVariableBase{T}"/> from the specified variable descriptor and <see cref="IDataVariableInfoProvider"/>.
+    /// </summary>
+    /// <param name="variableDescriptor">The variable descriptor.</param>
+    /// <param name="dataVariableInfoProvider">
+    /// The <see cref="IDataVariableInfoProvider"/> instance used to notify this instance when the telemetry variable becomes available in
+    /// the data source.
+    /// </param>
+    protected DataVariableBase(DataVariableDescriptor variableDescriptor, IDataVariableInfoProvider dataVariableInfoProvider)
+    {
+        ArgumentNullException.ThrowIfNull(variableDescriptor);
+        DataVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableDescriptor.ValueType);
+
+        DataLength = Unsafe.SizeOf<T>() * variableDescriptor.ValueCount;
+        Name = variableDescriptor.Name;
+        ValueCount = variableDescriptor.ValueCount;
+        ValueSize = Unsafe.SizeOf<T>();
+
+        dataVariableInfoProvider.NotifyDataVariableActivated(variableDescriptor.Name, SetVariableInfo);
     }
 
     /// <inheritdoc />
     public int DataLength { get; }
 
     /// <inheritdoc />
-    public int DataOffset { get; }
+    public int DataOffset => _dataOffset;
 
     /// <inheritdoc />
     [MemberNotNullWhen(true, nameof(VariableInfo))]
-    public bool IsAvailable { get; }
+    public bool IsAvailable => _isAvailable;
 
     /// <inheritdoc />
     public string Name { get; }
@@ -155,7 +171,7 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
     public int ValueSize { get; }
 
     /// <inheritdoc />
-    public DataVariableInfo? VariableInfo { get; }
+    public DataVariableInfo? VariableInfo => _variableInfo;
 
     /// <inheritdoc />
     public ReadOnlySpan<byte> GetDataSpan(ReadOnlySpan<byte> source)
@@ -179,5 +195,37 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
         {
             throw new DataVariableUnavailableException(Name);
         }
+    }
+
+    private void SetVariableInfo(DataVariableInfo variableInfo)
+    {
+        Console.WriteLine($"{Name}: {nameof(SetVariableInfo)}");
+
+        if (_isInitialized)
+        {
+            // TODO: Throw?
+            return;
+        }
+
+        if (variableInfo is null)
+        {
+            // Nothing to do here, the instance would have been initialized as unavailable
+            return;
+        }
+
+        ValidateVariableInfo(variableInfo, Name, ValueCount);
+
+        _dataOffset = variableInfo?.Offset ?? -1;
+        _isAvailable = variableInfo != null;
+        _variableInfo = variableInfo;
+
+        _isInitialized = true;
+    }
+
+    private void ValidateVariableInfo(DataVariableInfo variableInfo, string name, int valueCount)
+    {
+        DataVariableInitializationException.ThrowIfDataVariableInfoNameIsNotEqual(GetType(), variableInfo, name);
+        DataVariableInitializationException.ThrowIfDataVariableInfoValueCountIsNotEqual(GetType(), variableInfo, valueCount);
+        DataVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableInfo.ValueType);
     }
 }

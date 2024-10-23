@@ -63,7 +63,7 @@ public class ScalarDataVariableTests
     [Fact]
     public void Ctor_Name_UnavailableTest()
     {
-        var variable = new ScalarDataVariable<int>("Foo");
+        var variable = new ScalarDataVariable<int>("Foo", variableInfo: null);
 
         Assert.Equal("Foo", variable.Name);
         Assert.False(variable.IsAvailable);
@@ -76,8 +76,8 @@ public class ScalarDataVariableTests
     [Fact]
     public void Ctor_Name_NullOrEmptyNameTest()
     {
-        Assert.Throws<ArgumentNullException>(() => new ScalarDataVariable<float>(name: null!));
-        Assert.Throws<ArgumentException>(() => new ScalarDataVariable<float>(string.Empty));
+        Assert.Throws<ArgumentNullException>(() => new ScalarDataVariable<float>(name: null!, variableInfo: null));
+        Assert.Throws<ArgumentException>(() => new ScalarDataVariable<float>(string.Empty, variableInfo: null));
     }
 
     [Fact]
@@ -115,7 +115,7 @@ public class ScalarDataVariableTests
     [Fact]
     public void GetDataSpan_ThrowsOnUnavailableTest()
     {
-        var variable = new ScalarDataVariable<float>("Bar");
+        var variable = new ScalarDataVariable<float>("Bar", variableInfo: null);
 
         var data = new byte[512];
 
@@ -138,7 +138,7 @@ public class ScalarDataVariableTests
     [Fact]
     public void Read_ThrowsOnUnavailableTest()
     {
-        var variable = new ScalarDataVariable<float>("Bar");
+        var variable = new ScalarDataVariable<float>("Bar", variableInfo: null);
 
         var data = new byte[1024];
         Assert.Throws<DataVariableUnavailableException>(() => variable.Read(data));

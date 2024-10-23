@@ -31,19 +31,6 @@ public class ScalarDataVariable<T> : DataVariableBase<T>, IScalarDataVariable<T>
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="ScalarDataVariable{T}"/> from the specified variable name that represents a telemetry variable
-    /// that is not available in the current context.
-    /// </summary>
-    /// <param name="name">The telemetry variable name.</param>
-    /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
-    public ScalarDataVariable(string name)
-        : this(name, variableInfo: null)
-    {
-
-    }
-
-    /// <summary>
     /// Initializes an instance of <see cref="ScalarDataVariable{T}"/> from the specified variable name and optional <see cref="DataVariableInfo"/>.
     /// </summary>
     /// <param name="name">The telemetry variable name.</param>
@@ -64,7 +51,7 @@ public class ScalarDataVariable<T> : DataVariableBase<T>, IScalarDataVariable<T>
     /// 
     /// Type parameter <typeparamref name="T"/> is not compatible with the value type specified by <paramref name="variableInfo"/>.
     /// </exception>
-    protected internal ScalarDataVariable(string name, DataVariableInfo? variableInfo)
+    public ScalarDataVariable(string name, DataVariableInfo? variableInfo)
         : base(name, 1, variableInfo)
     {
     }
@@ -94,8 +81,22 @@ public class ScalarDataVariable<T> : DataVariableBase<T>, IScalarDataVariable<T>
     /// Type parameter <typeparamref name="T"/> is not compatible with the value type specified by either
     /// <paramref name="variableDescriptor"/> or <paramref name="variableInfo"/>.
     /// </exception>
-    protected internal ScalarDataVariable(DataVariableDescriptor variableDescriptor, DataVariableInfo? variableInfo)
+    public ScalarDataVariable(DataVariableDescriptor variableDescriptor, DataVariableInfo? variableInfo)
         : base(variableDescriptor, variableInfo)
+    {
+
+    }
+
+    /// <summary>
+    /// Initializes an instance of <see cref="ScalarDataVariable{T}"/> from the specified variable descriptor.
+    /// </summary>
+    /// <param name="variableDescriptor">The variable descriptor.</param>
+    /// <param name="dataVariableInfoProvider">
+    /// The <see cref="IDataVariableInfoProvider"/> instance used to notify this instance when the telemetry variable becomes available in
+    /// the data source.
+    /// </param>
+    public ScalarDataVariable(DataVariableDescriptor variableDescriptor, IDataVariableInfoProvider dataVariableInfoProvider)
+        : base(variableDescriptor, dataVariableInfoProvider)
     {
 
     }

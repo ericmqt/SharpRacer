@@ -49,10 +49,41 @@ public class ArrayDataVariableTests
     }
 
     [Fact]
-    public void Ctor_PlaceholderThrowsOnInvalidArrayLengthTest()
+    public void Ctor_NameLengthVariableInfo_Test()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayDataVariable<int>("Foo", arrayLength: 0));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayDataVariable<int>("Foo", arrayLength: -1));
+        const string variableName = "Foo";
+        const DataVariableValueType valueType = DataVariableValueType.Float;
+        const int valueCount = 3;
+
+        var variableInfo = DataVariableInfoFactory.CreateArray(variableName, valueType, valueCount, false, 1024);
+
+        var result = new ArrayDataVariable<float>(variableName, valueCount, variableInfo);
+
+        Assert.Equal(variableName, result.Name);
+        Assert.Equal(valueCount, result.ValueCount);
+        Assert.Equal(variableInfo, result.VariableInfo);
+        Assert.True(result.IsAvailable);
+    }
+
+    [Fact]
+    public void Ctor_NameLengthVariableInfo_NullVariableInfoTest()
+    {
+        const string variableName = "Foo";
+        const int valueCount = 3;
+
+        var result = new ArrayDataVariable<float>(variableName, valueCount, variableInfo: null);
+
+        Assert.Equal(variableName, result.Name);
+        Assert.Equal(valueCount, result.ValueCount);
+        Assert.Null(result.VariableInfo);
+        Assert.False(result.IsAvailable);
+    }
+
+    [Fact]
+    public void Ctor_NameLengthVariableInfo_ThrowsOnInvalidArrayLengthTest()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayDataVariable<int>("Foo", arrayLength: 0, variableInfo: null));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new ArrayDataVariable<int>("Foo", arrayLength: -1, variableInfo: null));
     }
 
     [Fact]
@@ -78,7 +109,7 @@ public class ArrayDataVariableTests
     [Fact]
     public void GetDataSpan_ThrowsOnUnavailableTest()
     {
-        var variable = new ArrayDataVariable<float>("Bar", 4);
+        var variable = new ArrayDataVariable<float>("Bar", 4, variableInfo: null);
 
         var data = new byte[512];
 
@@ -105,7 +136,7 @@ public class ArrayDataVariableTests
     [Fact]
     public void Read_ThrowsOnUnavailableTest()
     {
-        var variable = new ArrayDataVariable<float>("Bar", 4);
+        var variable = new ArrayDataVariable<float>("Bar", 4, variableInfo: null);
 
         var data = new byte[1024];
         Assert.Throws<DataVariableUnavailableException>(() => variable.Read(data));

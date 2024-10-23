@@ -24,16 +24,45 @@ public class ArrayDataVariable<T> : DataVariableBase<T>, IArrayDataVariable<T>
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="ArrayDataVariable{T}"/> with the specified name and array length that represents a telemetry
-    /// variable that is unavailable in the current context.
+    /// Initializes an instance of <see cref="ArrayDataVariable{T}"/> from the specified variable descriptor and optional <see cref="DataVariableInfo"/>.
     /// </summary>
-    /// <param name="name">The telemetry variable name.</param>
-    /// <param name="arrayLength">The length of the array represented by the telemetry variable. Value must be greater than or equal to one.</param>
-    /// <exception cref="ArgumentException"><paramref name="name"/> is an empty string.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="arrayLength"/> is less than one.</exception>
-    public ArrayDataVariable(string name, int arrayLength)
-        : this(name, arrayLength, variableInfo: null)
+    /// <param name="variableDescriptor">
+    /// The variable descriptor which provides required values in the event that <paramref name="variableInfo"/> is <see langword="null"/>
+    /// (i.e. the variable is not available in the current context).
+    /// </param>
+    /// <param name="variableInfo">
+    /// The <see cref="DataVariableInfo"/> with which to initialize the instance. If <see langword="null" />, the resulting object
+    /// represents a variable that is unavailable in the current context.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="variableDescriptor"/> is <see langword="null" />.</exception>
+    /// <exception cref="DataVariableInitializationException">
+    /// The variable names specified by <paramref name="variableDescriptor"/> and <paramref name="variableInfo"/> do not match.
+    /// 
+    /// -OR-
+    /// 
+    /// The variable value counts specified by <paramref name="variableDescriptor"/> and <paramref name="variableInfo"/> do not match.
+    /// 
+    /// -OR-
+    /// 
+    /// Type parameter <typeparamref name="T"/> is not compatible with the value type specified by either
+    /// <paramref name="variableDescriptor"/> or <paramref name="variableInfo"/>.
+    /// </exception>
+    public ArrayDataVariable(DataVariableDescriptor variableDescriptor, DataVariableInfo? variableInfo)
+        : base(variableDescriptor, variableInfo)
+    {
+
+    }
+
+    /// <summary>
+    /// Initializes an instance of <see cref="ArrayDataVariable{T}"/> using the specified <see cref="IDataVariableInfoProvider"/>.
+    /// </summary>
+    /// <param name="variableDescriptor">The variable descriptor.</param>
+    /// <param name="dataVariableInfoProvider">
+    /// The <see cref="IDataVariableInfoProvider"/> instance used to notify this instance when the telemetry variable becomes available in
+    /// the data source.
+    /// </param>
+    public ArrayDataVariable(DataVariableDescriptor variableDescriptor, IDataVariableInfoProvider dataVariableInfoProvider)
+        : base(variableDescriptor, dataVariableInfoProvider)
     {
 
     }
@@ -61,40 +90,10 @@ public class ArrayDataVariable<T> : DataVariableBase<T>, IArrayDataVariable<T>
     /// 
     /// Type parameter <typeparamref name="T"/> is not compatible with the value type specified by <paramref name="variableInfo"/>.
     /// </exception>
-    protected internal ArrayDataVariable(string name, int arrayLength, DataVariableInfo? variableInfo)
+    public ArrayDataVariable(string name, int arrayLength, DataVariableInfo? variableInfo)
         : base(name, arrayLength, variableInfo)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(arrayLength, 1);
-    }
-
-    /// <summary>
-    /// Initializes an instance of <see cref="ArrayDataVariable{T}"/> from the specified variable descriptor and optional <see cref="DataVariableInfo"/>.
-    /// </summary>
-    /// <param name="variableDescriptor">
-    /// The variable descriptor which provides required values in the event that <paramref name="variableInfo"/> is <see langword="null"/>
-    /// (i.e. the variable is not available in the current context).
-    /// </param>
-    /// <param name="variableInfo">
-    /// The <see cref="DataVariableInfo"/> with which to initialize the instance. If <see langword="null" />, the resulting object
-    /// represents a variable that is unavailable in the current context.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="variableDescriptor"/> is <see langword="null" />.</exception>
-    /// <exception cref="DataVariableInitializationException">
-    /// The variable names specified by <paramref name="variableDescriptor"/> and <paramref name="variableInfo"/> do not match.
-    /// 
-    /// -OR-
-    /// 
-    /// The variable value counts specified by <paramref name="variableDescriptor"/> and <paramref name="variableInfo"/> do not match.
-    /// 
-    /// -OR-
-    /// 
-    /// Type parameter <typeparamref name="T"/> is not compatible with the value type specified by either
-    /// <paramref name="variableDescriptor"/> or <paramref name="variableInfo"/>.
-    /// </exception>
-    protected internal ArrayDataVariable(DataVariableDescriptor variableDescriptor, DataVariableInfo? variableInfo)
-        : base(variableDescriptor, variableInfo)
-    {
-
     }
 
     /// <inheritdoc />
