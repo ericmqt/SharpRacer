@@ -1,4 +1,8 @@
-﻿namespace SharpRacer.SourceGenerators;
+﻿using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.Syntax;
+
+namespace SharpRacer.SourceGenerators;
 public readonly struct TypeIdentifier : IEquatable<TypeIdentifier>
 {
     private readonly string _globalQualifiedName;
@@ -36,6 +40,19 @@ public readonly struct TypeIdentifier : IEquatable<TypeIdentifier>
         return HashCode.Combine(TypeName, Namespace);
     }
 
+    public readonly TypeSyntax ToGenericTypeSyntax(TypeArgumentListSyntax typeArgumentList, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        var genericName = SyntaxFactory.GenericName(TypeName).WithTypeArgumentList(typeArgumentList);
+
+        return typeNameFormat switch
+        {
+            TypeNameFormat.Qualified => SyntaxFactoryHelpers.CreateQualifiedName(Namespace, genericName),
+            TypeNameFormat.GlobalQualified => SyntaxFactoryHelpers.CreateGlobalQualifiedName(Namespace, genericName),
+
+            _ => genericName
+        };
+    }
+
     public readonly string ToGlobalQualifiedName()
     {
         return _globalQualifiedName ?? string.Empty;
@@ -59,6 +76,17 @@ public readonly struct TypeIdentifier : IEquatable<TypeIdentifier>
             TypeNameFormat.GlobalQualified => _globalQualifiedName ?? string.Empty,
 
             _ => TypeName ?? string.Empty
+        };
+    }
+
+    public readonly TypeSyntax ToTypeSyntax(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        return typeNameFormat switch
+        {
+            TypeNameFormat.Qualified => SyntaxFactoryHelpers.CreateQualifiedName(Namespace, SyntaxFactory.IdentifierName(TypeName)),
+            TypeNameFormat.GlobalQualified => SyntaxFactoryHelpers.CreateGlobalQualifiedName(Namespace, SyntaxFactory.IdentifierName(TypeName)),
+
+            _ => SyntaxFactory.IdentifierName(TypeName)
         };
     }
 

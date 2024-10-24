@@ -95,4 +95,49 @@ internal static class SyntaxFactoryHelpers
                 ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))),
             Block(SingletonList<StatementSyntax>(throwStatement)));
     }
+
+    public static QualifiedNameSyntax CreateQualifiedName(NamespaceIdentifier namespaceIdentifier, SimpleNameSyntax typeName)
+    {
+        var nodes = new List<QualifiedNameSyntax>();
+
+        var namespaceParts = namespaceIdentifier.ToString()
+            .Split('.')
+            .Select(IdentifierName)
+            .ToList();
+
+        if (namespaceParts.Count == 1)
+        {
+            return QualifiedName(namespaceParts[0], typeName);
+        }
+
+        NameSyntax last = QualifiedName(namespaceParts[0], namespaceParts[1]);
+
+        foreach (var nsPart in namespaceParts.Skip(2))
+        {
+            last = QualifiedName(last, nsPart);
+        }
+
+        return QualifiedName(last, typeName);
+    }
+
+    public static QualifiedNameSyntax CreateGlobalQualifiedName(NamespaceIdentifier namespaceIdentifier, SimpleNameSyntax typeName)
+    {
+        var nodes = new List<QualifiedNameSyntax>();
+
+        var namespaceParts = namespaceIdentifier.ToString()
+            .Split('.')
+            .Select(IdentifierName)
+            .ToList();
+
+        NameSyntax last = AliasQualifiedName(
+            IdentifierName(Token(SyntaxKind.GlobalKeyword)),
+            namespaceParts.First());
+
+        foreach (var nsPart in namespaceParts.Skip(1))
+        {
+            last = QualifiedName(last, nsPart);
+        }
+
+        return QualifiedName(last, typeName);
+    }
 }
