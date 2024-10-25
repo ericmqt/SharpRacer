@@ -8,7 +8,6 @@ public static class SharpRacerIdentifiers
 
         ArrayDataVariable = TelemetryNamespace.CreateType("ArrayDataVariable");
         DataVariableDescriptor = TelemetryNamespace.CreateType("DataVariableDescriptor");
-        DataVariableFactory = TelemetryNamespace.CreateType("DataVariableFactory");
         DataVariableInfo = TelemetryNamespace.CreateType("DataVariableInfo");
         DataVariableInitializationException = TelemetryNamespace.CreateType("DataVariableInitializationException");
         DataVariableValueType = TelemetryNamespace.CreateType("DataVariableValueType");
@@ -42,7 +41,6 @@ public static class SharpRacerIdentifiers
     public static TypeIdentifier CameraState { get; }
     public static TypeIdentifier CarLeftRight { get; }
     public static TypeIdentifier DataVariableDescriptor { get; }
-    public static TypeIdentifier DataVariableFactory { get; }
     public static TypeIdentifier DataVariableInfo { get; }
     public static TypeIdentifier DataVariableInitializationException { get; }
     public static TypeIdentifier DataVariableValueType { get; }

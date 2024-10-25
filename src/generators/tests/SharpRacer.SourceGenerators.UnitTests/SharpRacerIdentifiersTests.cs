@@ -30,7 +30,6 @@ public class SharpRacerIdentifiersTests
             { SharpRacerIdentifiers.CameraState, typeof(CameraState) },
             { SharpRacerIdentifiers.CarLeftRight, typeof(CarLeftRight) },
             { SharpRacerIdentifiers.DataVariableDescriptor, typeof(DataVariableDescriptor) },
-            { SharpRacerIdentifiers.DataVariableFactory, typeof(DataVariableFactory) },
             { SharpRacerIdentifiers.DataVariableInfo, typeof(DataVariableInfo) },
             { SharpRacerIdentifiers.DataVariableInitializationException, typeof(DataVariableInitializationException) },
             { SharpRacerIdentifiers.DataVariableValueType, typeof(DataVariableValueType) },

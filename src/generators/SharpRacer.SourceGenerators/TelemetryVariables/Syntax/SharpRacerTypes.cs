@@ -39,11 +39,6 @@ internal static class SharpRacerTypes
         return SharpRacerIdentifiers.DataVariableDescriptor.ToTypeSyntax(typeNameFormat);
     }
 
-    public static TypeSyntax DataVariableFactory(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return SharpRacerIdentifiers.DataVariableFactory.ToTypeSyntax(typeNameFormat);
-    }
-
     public static TypeSyntax DataVariableInfo(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         return SharpRacerIdentifiers.DataVariableInfo.ToTypeSyntax(typeNameFormat);
