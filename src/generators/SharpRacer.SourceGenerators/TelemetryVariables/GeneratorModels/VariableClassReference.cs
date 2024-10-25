@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
@@ -29,24 +28,6 @@ public readonly struct VariableClassReference : IEquatable<VariableClassReferenc
     {
         return ObjectCreationExpression(GlobalQualifiedTypeName())
             .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(dataVariableInfoProviderIdentifier))));
-    }
-
-    public InvocationExpressionSyntax DataVariableFactoryCreateMethodInvocation(
-        IdentifierNameSyntax factoryInstanceIdentifier,
-        MemberAccessExpressionSyntax? descriptorPropertyMemberAccessExpression)
-    {
-        if (descriptorPropertyMemberAccessExpression != null)
-        {
-            return DataVariableFactorySyntaxFactory.CreateTypeFromDescriptorMethodInvocation(
-                factoryInstanceIdentifier,
-                GlobalQualifiedTypeName(),
-                descriptorPropertyMemberAccessExpression);
-        }
-
-        return DataVariableFactorySyntaxFactory.CreateTypeFromVariableNameMethodInvocation(
-            factoryInstanceIdentifier,
-            GlobalQualifiedTypeName(),
-            VariableName);
     }
 
     public NameSyntax GlobalQualifiedTypeName()
