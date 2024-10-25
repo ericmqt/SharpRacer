@@ -77,7 +77,7 @@ public class VariableClassModelTests
             isClassInternal: false,
             isClassPartial: true);
 
-        Assert.Equal("ArrayDataVariable<int>", classModel.BaseClassType().ToFullString());
+        Assert.Equal("global::SharpRacer.Telemetry.ArrayDataVariable<int>", classModel.BaseClassType().ToFullString());
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class VariableClassModelTests
             isClassInternal: false,
             isClassPartial: true);
 
-        Assert.Equal("ScalarDataVariable<int>", classModel.BaseClassType().ToFullString());
+        Assert.Equal("global::SharpRacer.Telemetry.ScalarDataVariable<int>", classModel.BaseClassType().ToFullString());
     }
 
     [Fact]
@@ -183,7 +183,7 @@ public class VariableClassModelTests
             false,
             true);
 
-        var expected = "private static readonly DataVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;";
+        var expected = "private static readonly global::SharpRacer.Telemetry.DataVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;";
         var fieldDecl = classModel.DescriptorFieldDeclaration().NormalizeWhitespace().ToFullString();
 
         Assert.Equal(expected, fieldDecl);
@@ -203,7 +203,7 @@ public class VariableClassModelTests
             false,
             true);
 
-        var expected = "private static readonly DataVariableDescriptor _Descriptor = new DataVariableDescriptor(\"Test\", DataVariableValueType.Int, 3);";
+        var expected = "private static readonly global::SharpRacer.Telemetry.DataVariableDescriptor _Descriptor = new global::SharpRacer.Telemetry.DataVariableDescriptor(\"Test\", global::SharpRacer.Telemetry.DataVariableValueType.Int, 3);";
         var fieldDecl = classModel.DescriptorFieldDeclaration().NormalizeWhitespace().ToFullString();
 
         Assert.Equal(expected, fieldDecl);

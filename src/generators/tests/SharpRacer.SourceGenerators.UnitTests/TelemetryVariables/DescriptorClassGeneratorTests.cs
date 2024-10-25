@@ -23,6 +23,8 @@ public class DescriptorClassGeneratorTests
 
         var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(SingleVariableTest_Source()).GetCompilationUnitRoot();
 
+        var cuStr = compilationUnit.NormalizeWhitespace().ToFullString();
+
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
         SyntaxAssert.CompilationUnitStringEqual(expectedCompilationUnit, compilationUnit);
     }
@@ -69,58 +71,55 @@ public class DescriptorClassGeneratorTests
     }
 
     private static string DeprecatedVariableWithoutDeprecatingModel_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+        $@"#nullable enable
 namespace TestApp.Variables
-{
+{{
     /// <summary>
-    /// Provides <see cref = ""SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""global::SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
-    {
+    {{
         /// <summary>
         /// Test XML summary
         /// </summary>
-        [Obsolete(""Telemetry variable 'Test' is deprecated by variable 'TestEx'."")]
-        public static DataVariableDescriptor TestProperty { get; } = new(""Test"", DataVariableValueType.Int, 1);
-    }
-}";
+        [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated by variable 'TestEx'."")]
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public static global::SharpRacer.Telemetry.DataVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+    }}
+}}";
 
     private static string DeprecatedVariableWithoutDeprecatingVariableName_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+        $@"#nullable enable
 namespace TestApp.Variables
-{
+{{
     /// <summary>
-    /// Provides <see cref = ""SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""global::SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
-    {
+    {{
         /// <summary>
         /// Test XML summary
         /// </summary>
-        [Obsolete(""Telemetry variable 'Test' is deprecated."")]
-        public static DataVariableDescriptor TestProperty { get; } = new(""Test"", DataVariableValueType.Int, 1);
-    }
-}";
+        [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated."")]
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public static global::SharpRacer.Telemetry.DataVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+    }}
+}}";
 
     private static string SingleVariableTest_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+        $@"#nullable enable
 namespace TestApp.Variables
-{
+{{
     /// <summary>
-    /// Provides <see cref = ""SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""global::SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
-    {
+    {{
         /// <summary>
         /// Test XML summary
         /// </summary>
-        public static DataVariableDescriptor TestProperty { get; } = new(""Test"", DataVariableValueType.Int, 1);
-    }
-}";
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public static global::SharpRacer.Telemetry.DataVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+    }}
+}}";
 }

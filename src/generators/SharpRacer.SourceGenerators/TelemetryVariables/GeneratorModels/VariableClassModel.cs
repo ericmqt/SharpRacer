@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -69,13 +70,30 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
     public readonly int VariableValueCount { get; }
     public readonly VariableValueType VariableValueType { get; }
 
-    public readonly BaseTypeSyntax BaseClassType()
+    public readonly BaseTypeSyntax BaseClassType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        var baseType = VariableValueCount > 1
-            ? SharpRacerTypes.ArrayDataVariableType(VariableValueTypeArg())
-            : SharpRacerTypes.ScalarDataVariableType(VariableValueTypeArg());
+        /*var baseType = VariableValueCount > 1
+            ? SharpRacerTypes.ArrayDataVariableType(VariableValueTypeArg(typeNameFormat), TypeNameFormat.Qualified)
+            : SharpRacerTypes.ScalarDataVariableType(VariableValueTypeArg(typeNameFormat), TypeNameFormat.Qualified);
 
-        return SimpleBaseType(baseType);
+        return SimpleBaseType(baseType);*/
+
+        // AliasQualifiedName("global", baseType)
+
+        var baseTypeClassName = VariableValueCount == 1 ? "ScalarDataVariable" : "ArrayDataVariable";
+        var typeArgument = VariableValueTypeArg(typeNameFormat);
+
+        var baseTypeName =
+            QualifiedName(
+                QualifiedName(
+                    AliasQualifiedName(IdentifierName(Token(SyntaxKind.GlobalKeyword)), IdentifierName("SharpRacer")),
+                    IdentifierName("Telemetry")),
+                GenericName(Identifier(baseTypeClassName))
+                    .WithTypeArgumentList(
+                        TypeArgumentList(
+                            SingletonSeparatedList(typeArgument))));
+
+        return SimpleBaseType(baseTypeName);
     }
 
     public readonly Accessibility ClassAccessibility()
@@ -98,15 +116,11 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
         if (DescriptorPropertyReference != null)
         {
             return VariableClassSyntaxFactory.DescriptorStaticFieldFromDescriptorReferenceDeclaration(
-                DescriptorFieldIdentifier(),
+                in this,
                 DescriptorPropertyReference.Value.StaticPropertyMemberAccess());
         }
 
-        return VariableClassSyntaxFactory.DescriptorStaticField(
-            DescriptorFieldIdentifier(),
-            VariableName,
-            VariableValueType,
-            VariableValueCount);
+        return VariableClassSyntaxFactory.DescriptorStaticField(in this);
     }
 
     public readonly SyntaxToken DescriptorFieldIdentifier()
@@ -126,9 +140,9 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
         return SimpleBaseType(SharpRacerTypes.ICreateDataVariableInterfaceType(classTypeArg));
     }
 
-    public readonly TypeSyntax VariableValueTypeArg()
+    public readonly TypeSyntax VariableValueTypeArg(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit, TypeNameFormat.Qualified);
+        return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit, typeNameFormat);
     }
 
     public readonly VariableClassModel WithDiagnostics(Diagnostic diagnostic)

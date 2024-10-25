@@ -29,52 +29,6 @@ public readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
     public readonly VariableClassReference? VariableClassReference { get; }
     public readonly VariableModel VariableModel { get; }
 
-    public InvocationExpressionSyntax DataVariableFactoryCreateMethodInvocation(IdentifierNameSyntax factoryInstanceIdentifier)
-    {
-        if (VariableClassReference != null)
-        {
-            var descriptorMemberAccessExpr = DescriptorReference.HasValue
-                ? DescriptorReference.Value.StaticPropertyMemberAccess()
-                : null;
-
-            return VariableClassReference.Value.DataVariableFactoryCreateMethodInvocation(
-                    factoryInstanceIdentifier,
-                    descriptorMemberAccessExpr);
-        }
-
-        if (DescriptorReference != null)
-        {
-            var descriptorMemberAccessExpr = DescriptorReference.Value.StaticPropertyMemberAccess();
-
-            if (IsArray)
-            {
-                return DataVariableFactorySyntaxFactory.CreateArrayFromDescriptorMethodInvocation(
-                    factoryInstanceIdentifier,
-                    VariableModel.DataVariableTypeArgument(),
-                    descriptorMemberAccessExpr);
-            }
-
-            return DataVariableFactorySyntaxFactory.CreateScalarFromDescriptorMethodInvocation(
-                factoryInstanceIdentifier,
-                VariableModel.DataVariableTypeArgument(),
-                descriptorMemberAccessExpr);
-        }
-
-        if (IsArray)
-        {
-            return DataVariableFactorySyntaxFactory.CreateArrayFromVariableNameAndArrayLengthMethodInvocation(
-                factoryInstanceIdentifier,
-                VariableModel.DataVariableTypeArgument(),
-                VariableModel.VariableName,
-                VariableModel.ValueCount);
-        }
-
-        return DataVariableFactorySyntaxFactory.CreateScalarFromVariableNameMethodInvocation(
-            factoryInstanceIdentifier,
-            VariableModel.DataVariableTypeArgument(),
-            VariableModel.VariableName);
-    }
-
     public SyntaxToken PropertyIdentifier()
     {
         return Identifier(PropertyName);
@@ -85,19 +39,54 @@ public readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
         return IdentifierName(PropertyName);
     }
 
-    public TypeSyntax PropertyType()
+    public ObjectCreationExpressionSyntax PropertyObjectCreationExpression(IdentifierNameSyntax dataVariableInfoProviderIdentifier)
+    {
+        if (VariableClassReference != null)
+        {
+            return VariableClassReference.Value.ConstructorInvocation(dataVariableInfoProviderIdentifier);
+        }
+
+        // Create ArrayDataVariable<T> and ScalarDataVariable<T> instances
+        var typeArg = SharpRacerTypes.DataVariableTypeArgument(
+            VariableModel.ValueType, VariableModel.ValueUnit, TypeNameFormat.GlobalQualified);
+
+        ExpressionSyntax descriptorCtorArgumentExpr;
+
+        if (DescriptorReference != null)
+        {
+            descriptorCtorArgumentExpr = DescriptorReference.Value.StaticPropertyMemberAccess();
+        }
+        else
+        {
+            descriptorCtorArgumentExpr = DataVariableDescriptorSyntaxFactory.StaticFactoryMethodInvocation(
+                VariableModel.VariableName, VariableModel.ValueType, VariableModel.ValueCount, VariableModel.ValueUnit);
+        }
+
+        if (IsArray)
+        {
+            return DataVariableTypeSyntaxFactory.ArrayDataVariableConstructor(
+                typeArg, descriptorCtorArgumentExpr, dataVariableInfoProviderIdentifier);
+        }
+
+        return DataVariableTypeSyntaxFactory.ScalarDataVariableConstructor(
+                typeArg, descriptorCtorArgumentExpr, dataVariableInfoProviderIdentifier);
+    }
+
+    public TypeSyntax PropertyType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         if (VariableClassReference != null)
         {
             return VariableClassReference.Value.GlobalQualifiedTypeName();
         }
 
+        var typeArg = VariableModel.DataVariableTypeArgument(typeNameFormat);
+
         if (IsArray)
         {
-            return SharpRacerTypes.IArrayDataVariableInterfaceType(VariableModel.DataVariableTypeArgument());
+            return SharpRacerTypes.IArrayDataVariableInterfaceType(typeArg, typeNameFormat);
         }
 
-        return SharpRacerTypes.IScalarDataVariableInterfaceType(VariableModel.DataVariableTypeArgument());
+        return SharpRacerTypes.IScalarDataVariableInterfaceType(typeArg, typeNameFormat);
     }
 
     public override bool Equals(object obj)

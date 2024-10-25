@@ -25,6 +25,12 @@ public readonly struct VariableClassReference : IEquatable<VariableClassReferenc
     public readonly string ClassNamespace { get; }
     public readonly string VariableName { get; }
 
+    public ObjectCreationExpressionSyntax ConstructorInvocation(IdentifierNameSyntax dataVariableInfoProviderIdentifier)
+    {
+        return ObjectCreationExpression(GlobalQualifiedTypeName())
+            .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(dataVariableInfoProviderIdentifier))));
+    }
+
     public InvocationExpressionSyntax DataVariableFactoryCreateMethodInvocation(
         IdentifierNameSyntax factoryInstanceIdentifier,
         MemberAccessExpressionSyntax? descriptorPropertyMemberAccessExpression)

@@ -10,6 +10,6 @@ public class DataVariableDescriptorSyntaxFactoryTests
 
         var exprStr = expr.NormalizeWhitespace(eol: "\n").ToFullString();
 
-        Assert.Equal("new DataVariableDescriptor(\"Foo\", DataVariableValueType.Int, 3)", exprStr);
+        Assert.Equal("new global::SharpRacer.Telemetry.DataVariableDescriptor(\"Foo\", global::SharpRacer.Telemetry.DataVariableValueType.Int, 3)", exprStr);
     }
 }

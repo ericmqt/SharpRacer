@@ -9,64 +9,39 @@ using static SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers;
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 internal static class VariableContextSyntaxFactory
 {
-    public static LocalDeclarationStatementSyntax ConstructorDataVariableFactoryLocal(string factoryIdentifier, IdentifierNameSyntax dataVariableProviderIdentifier)
-    {
-        if (string.IsNullOrEmpty(factoryIdentifier))
-        {
-            throw new ArgumentException($"'{nameof(factoryIdentifier)}' cannot be null or empty.", nameof(factoryIdentifier));
-        }
-
-        if (dataVariableProviderIdentifier is null)
-        {
-            throw new ArgumentNullException(nameof(dataVariableProviderIdentifier));
-        }
-
-        var factoryCreationExpr = DataVariableFactorySyntaxFactory.InstanceCreationExpression(dataVariableProviderIdentifier);
-
-        var variableDeclarator = VariableDeclarator(factoryIdentifier)
-            .WithInitializer(EqualsValueClause(factoryCreationExpr));
-
-        var variableDeclaration = VariableDeclaration(
-            IdentifierName(
-                Identifier(TriviaList(), SyntaxKind.VarKeyword, "var", "var", TriviaList())))
-            .WithVariables(SingletonSeparatedList(variableDeclarator));
-
-        return LocalDeclarationStatement(variableDeclaration);
-    }
-
     public static ConstructorDeclarationSyntax Constructor(ref readonly ContextClassModel model)
     {
-        var dataVariableInfoProviderParameter = Parameter(Identifier("dataVariableProvider"))
-            .WithType(SharpRacerTypes.IDataVariableInfoProvider());
+        var dataVariableInfoProviderParameterName = "dataVariableInfoProvider";
 
-        var nullCheck = NullCheck(IdentifierName("dataVariableProvider"));
-
-        var factoryLocal = ConstructorDataVariableFactoryLocal("factory", IdentifierName("dataVariableProvider"));
-        var factoryIdentifierName = IdentifierName("factory");
+        var dataVariableInfoProviderParameter = Parameter(Identifier(dataVariableInfoProviderParameterName))
+            .WithType(SharpRacerTypes.IDataVariableInfoProvider(TypeNameFormat.GlobalQualified));
 
         var bodyStatements = new List<StatementSyntax>()
         {
-            nullCheck,
-            factoryLocal
+            NullCheck(IdentifierName(dataVariableInfoProviderParameterName), TypeNameFormat.Qualified)
         };
 
         foreach (var variable in model.Variables)
         {
-            var statement = InitializeVariablePropertyFromFactory(in variable, factoryIdentifierName);
+            var initStatement = InitializeVariableProperty(in variable, IdentifierName(dataVariableInfoProviderParameterName));
 
-            bodyStatements.Add(statement);
+            bodyStatements.Add(initStatement);
         }
 
         return ConstructorDeclaration(model.ClassIdentifier())
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .WithParameterList(ParameterList(SingletonSeparatedList(dataVariableInfoProviderParameter)))
-            .WithBody(Block(bodyStatements));
+            .WithBody(Block(bodyStatements))
+            .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))));
     }
 
     public static MethodDeclarationSyntax EnumerateVariablesMethod(ref readonly ContextClassModel model)
     {
-        var dataVariableType = IdentifierName(SharpRacerIdentifiers.IDataVariable);
-        var returnType = GenericName(Identifier("IEnumerable"), TypeArgumentList(SingletonSeparatedList<TypeSyntax>(dataVariableType)));
+        var dataVariableType = SharpRacerIdentifiers.IDataVariable.ToTypeSyntax(TypeNameFormat.GlobalQualified);
+
+        var returnType = SystemIdentifiers.IEnumerable_T.ToGenericTypeSyntax(
+            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(dataVariableType)),
+            TypeNameFormat.Qualified);
 
         var yieldReturnStatements = model.Variables
             .Select(x => YieldStatement(SyntaxKind.YieldReturnStatement, x.PropertyIdentifierName()))
@@ -75,24 +50,25 @@ internal static class VariableContextSyntaxFactory
         return MethodDeclaration(returnType, "EnumerateVariables")
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .WithBody(Block(yieldReturnStatements))
+            .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))))
             .WithLeadingTrivia(Trivia(XmlDocumentationFactory.InheritDoc()));
     }
 
-    public static ExpressionStatementSyntax InitializeVariablePropertyFromFactory(
+    public static ExpressionStatementSyntax InitializeVariableProperty(
         ref readonly ContextVariableModel model,
-        IdentifierNameSyntax factoryInstanceIdentifier)
+        IdentifierNameSyntax dataVariableInfoProviderIdentifier)
     {
         var assignmentExpr = AssignmentExpression(
             SyntaxKind.SimpleAssignmentExpression,
             model.PropertyIdentifierName(),
-            model.DataVariableFactoryCreateMethodInvocation(factoryInstanceIdentifier));
+            model.PropertyObjectCreationExpression(dataVariableInfoProviderIdentifier));
 
         return ExpressionStatement(assignmentExpr);
     }
 
     public static PropertyDeclarationSyntax VariablePropertyDeclaration(ref readonly ContextVariableModel model)
     {
-        return PropertyDeclaration(model.PropertyType(), model.PropertyIdentifier())
+        return PropertyDeclaration(model.PropertyType(TypeNameFormat.GlobalQualified), model.PropertyIdentifier())
             .WithModifiers(Accessibility.Public)
             .WithGetOnlyAutoAccessor();
     }

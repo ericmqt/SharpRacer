@@ -1,15 +1,24 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SharpRacer.SourceGenerators.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 internal static class DataVariableValueTypeSyntaxFactory
 {
-    internal static MemberAccessExpressionSyntax EnumMemberAccessExpression(VariableValueType variableValueType)
+    internal static MemberAccessExpressionSyntax EnumMemberAccessExpression(
+        VariableValueType variableValueType, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
+        if (typeNameFormat == TypeNameFormat.GlobalQualified)
+        {
+            return SyntaxFactoryHelpers.StaticMemberAccessGlobalQualified(
+                SharpRacerIdentifiers.DataVariableValueType,
+                MemberIdentifier(variableValueType));
+        }
+
         return MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
-            SharpRacerTypes.DataVariableValueType(),
+            SharpRacerTypes.DataVariableValueType(typeNameFormat),
             MemberIdentifier(variableValueType));
     }
 

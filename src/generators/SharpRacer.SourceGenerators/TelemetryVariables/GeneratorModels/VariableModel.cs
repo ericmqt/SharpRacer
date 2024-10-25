@@ -25,9 +25,9 @@ public readonly struct VariableModel : IEquatable<VariableModel>
     public readonly string? ValueUnit => _variableInfo.ValueUnit;
     public readonly string VariableName => _variableInfo.Name;
 
-    public readonly TypeSyntax DataVariableTypeArgument()
+    public readonly TypeSyntax DataVariableTypeArgument(TypeNameFormat typeNameFormat = TypeNameFormat.Qualified)
     {
-        return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit, TypeNameFormat.Qualified);
+        return SharpRacerTypes.DataVariableTypeArgument(ValueType, ValueUnit, typeNameFormat);
     }
 
     public readonly string DescriptorPropertyName()

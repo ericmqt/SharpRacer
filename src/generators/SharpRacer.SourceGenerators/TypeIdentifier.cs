@@ -46,8 +46,8 @@ public readonly struct TypeIdentifier : IEquatable<TypeIdentifier>
 
         return typeNameFormat switch
         {
-            TypeNameFormat.Qualified => SyntaxFactoryHelpers.CreateQualifiedName(Namespace, genericName),
-            TypeNameFormat.GlobalQualified => SyntaxFactoryHelpers.CreateGlobalQualifiedName(Namespace, genericName),
+            TypeNameFormat.Qualified => TypeIdentifierSyntaxFactory.QualifiedTypeName(Namespace, genericName),
+            TypeNameFormat.GlobalQualified => TypeIdentifierSyntaxFactory.GlobalQualifiedTypeName(Namespace, genericName),
 
             _ => genericName
         };
@@ -83,8 +83,8 @@ public readonly struct TypeIdentifier : IEquatable<TypeIdentifier>
     {
         return typeNameFormat switch
         {
-            TypeNameFormat.Qualified => SyntaxFactoryHelpers.CreateQualifiedName(Namespace, SyntaxFactory.IdentifierName(TypeName)),
-            TypeNameFormat.GlobalQualified => SyntaxFactoryHelpers.CreateGlobalQualifiedName(Namespace, SyntaxFactory.IdentifierName(TypeName)),
+            TypeNameFormat.Qualified => TypeIdentifierSyntaxFactory.QualifiedTypeName(this),
+            TypeNameFormat.GlobalQualified => TypeIdentifierSyntaxFactory.GlobalQualifiedTypeName(this),
 
             _ => SyntaxFactory.IdentifierName(TypeName)
         };

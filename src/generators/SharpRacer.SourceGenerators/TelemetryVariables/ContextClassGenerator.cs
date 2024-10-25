@@ -6,6 +6,7 @@ using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 internal static class ContextClassGenerator
@@ -16,14 +17,11 @@ internal static class ContextClassGenerator
 
         var classDecl = CreateClassDeclaration(in model, cancellationToken);
 
-        var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry")));
-
         var namespaceDecl = NamespaceDeclaration(ParseName(model.ClassNamespace))
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
         return CompilationUnit()
-            .WithUsings(new SyntaxList<UsingDirectiveSyntax>(usingDirectives))
             .AddMembers(namespaceDecl);
     }
 
@@ -95,14 +93,12 @@ internal static class ContextClassGenerator
             }
         }
 
-        // Build the attribute
-        var messageLiteral = Literal(
-            GetObsoleteAttributeMessage(variable.VariableModel.VariableName, deprecatingVariableName, deprecatingContextPropertyName));
+        var message = GetObsoleteAttributeMessage(
+            variable.VariableModel.VariableName,
+            deprecatingVariableName,
+            deprecatingContextPropertyName);
 
-        var messageArgument = AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, messageLiteral));
-
-        return Attribute(IdentifierName("Obsolete"))
-            .WithArgumentList(AttributeArgumentList(SingletonSeparatedList(messageArgument)));
+        return ObsoleteAttribute(message);
     }
 
     private static string GetObsoleteAttributeMessage(string deprecatedVariableName, string? deprecatingVariableName, string? deprecatingPropertyName)

@@ -8,7 +8,92 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables;
 public class ContextClassGeneratorTests
 {
     [Fact]
-    public void Create_Test()
+    public void Create_EnumTypeArg_Test()
+    {
+        // Create context variable model
+        var variableInfo = new VariableInfo("Test", VariableValueType.Bitfield, 1, "Test variable", "irsdk_CameraState", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
+
+        var propertyName = "Test";
+        var contextVariableModel = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, descriptorRef);
+
+        // Create class models
+        var className = "MyContext";
+        var classNamespace = "TestAssembly.Variables";
+
+        var classInfo1 = CreateContextClassInfo(className, classNamespace);
+
+        var model1 = new ContextClassModel(classInfo1, [contextVariableModel]);
+
+        var compilationUnit = ContextClassGenerator.Create(ref model1, default);
+        Assert.NotNull(compilationUnit);
+
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_EnumTypeArg_Test_Source()).GetCompilationUnitRoot();
+
+        SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
+        SyntaxAssert.CompilationUnitStringEqual(expectedCompilationUnit, compilationUnit);
+    }
+
+    [Fact]
+    public void Create_WithDescriptorReference_Test()
+    {
+        // Create context variable model
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var descriptorRef = new DescriptorPropertyReference("Test", "TestDescriptor", "VariableDescriptors", "MyApp.Variables");
+
+        var propertyName = "Test";
+        var contextVariableModel = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, descriptorRef);
+
+        // Create class models
+        var className = "MyContext";
+        var classNamespace = "TestAssembly.Variables";
+
+        var classInfo1 = CreateContextClassInfo(className, classNamespace);
+
+        var model1 = new ContextClassModel(classInfo1, [contextVariableModel]);
+
+        var compilationUnit = ContextClassGenerator.Create(ref model1, default);
+        Assert.NotNull(compilationUnit);
+
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_WithDescriptorReference_Test_Source()).GetCompilationUnitRoot();
+
+        SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
+        SyntaxAssert.CompilationUnitStringEqual(expectedCompilationUnit, compilationUnit);
+    }
+
+    [Fact]
+    public void Create_WithoutDescriptorReference_Test()
+    {
+        // Create context variable model
+        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
+        var variableModel = new VariableModel(variableInfo, default);
+
+        var propertyName = "Test";
+        var contextVariableModel = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, null);
+
+        // Create class models
+        var className = "MyContext";
+        var classNamespace = "TestAssembly.Variables";
+
+        var classInfo1 = CreateContextClassInfo(className, classNamespace);
+
+        var model1 = new ContextClassModel(classInfo1, [contextVariableModel]);
+
+        var compilationUnit = ContextClassGenerator.Create(ref model1, default);
+        Assert.NotNull(compilationUnit);
+
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_WithoutDescriptorReference_Test_Source()).GetCompilationUnitRoot();
+
+        SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
+        SyntaxAssert.CompilationUnitStringEqual(expectedCompilationUnit, compilationUnit);
+    }
+
+    [Fact]
+    public void Create_VariableClasses_Test()
     {
         // Create context variable model
         var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, false, null);
@@ -31,14 +116,14 @@ public class ContextClassGeneratorTests
         var compilationUnit = ContextClassGenerator.Create(ref model1, default);
         Assert.NotNull(compilationUnit);
 
-        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_Test_Source()).GetCompilationUnitRoot();
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_VariableClasses_Test_Source()).GetCompilationUnitRoot();
 
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
         SyntaxAssert.CompilationUnitStringEqual(expectedCompilationUnit, compilationUnit);
     }
 
     [Fact]
-    public void Create_ContainsDeprecatedVariableTest()
+    public void Create_VariableClasses_ContainsDeprecatedVariableTest()
     {
         // Create context variable models
         var testVariableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, true, "TestEx");
@@ -61,8 +146,6 @@ public class ContextClassGeneratorTests
             new VariableClassReference("TestEx", "TestExVariable", "MyApp.Variables"),
             new DescriptorPropertyReference("TestEx", "TestExDescriptor", "VariableDescriptors", "MyApp.Variables"));
 
-
-
         // Create class model
         var model1 = new ContextClassModel(
             CreateContextClassInfo("MyContext", "TestAssembly.Variables"), [testContextVariableModel, testExContextVariableModel]);
@@ -70,14 +153,14 @@ public class ContextClassGeneratorTests
         var compilationUnit = ContextClassGenerator.Create(ref model1, default);
         Assert.NotNull(compilationUnit);
 
-        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_ContainsDeprecatedVariableTest_Source()).GetCompilationUnitRoot();
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_VariableClasses_ContainsDeprecatedVariableTest_Source()).GetCompilationUnitRoot();
 
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
         SyntaxAssert.CompilationUnitStringEqual(expectedCompilationUnit, compilationUnit);
     }
 
     [Fact]
-    public void Create_ContainsDeprecatedVariableWithoutDeprecatingModelTest()
+    public void Create_VariableClasses_ContainsDeprecatedVariableWithoutDeprecatingModelTest()
     {
         // Create context variable model
         var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, true, "TestEx");
@@ -96,7 +179,7 @@ public class ContextClassGeneratorTests
         var compilationUnit = ContextClassGenerator.Create(ref model1, default);
         Assert.NotNull(compilationUnit);
 
-        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_ContainsDeprecatedVariableWithoutDeprecatingModelTest_Source())
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_VariableClasses_ContainsDeprecatedVariableWithoutDeprecatingModelTest_Source())
             .GetCompilationUnitRoot();
 
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
@@ -104,7 +187,7 @@ public class ContextClassGeneratorTests
     }
 
     [Fact]
-    public void Create_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest()
+    public void Create_VariableClasses_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest()
     {
         // Create context variable model
         var variableInfo = new VariableInfo("Test", VariableValueType.Int, 1, "Test variable", "test/s", false, true, null);
@@ -123,7 +206,7 @@ public class ContextClassGeneratorTests
         var compilationUnit = ContextClassGenerator.Create(ref model1, default);
         Assert.NotNull(compilationUnit);
 
-        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest_Source())
+        var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_VariableClasses_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest_Source())
             .GetCompilationUnitRoot();
 
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
@@ -147,125 +230,233 @@ public class ContextClassGeneratorTests
         return new ContextClassInfo(classTypeSymbol.Object, Location.None);
     }
 
-    private static string Create_Test_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+    private static string Create_EnumTypeArg_Test_Source() =>
+        $@"#nullable enable
 namespace TestAssembly.Variables
-{
+{{
     partial class MyContext
-    {
-        public MyContext(IDataVariableInfoProvider dataVariableProvider)
-        {
-            if (dataVariableProvider is null)
-            {
-                throw new ArgumentNullException(""dataVariableProvider"");
-            }
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
 
-            var factory = new DataVariableFactory(dataVariableProvider);
-            Test = factory.CreateType<global::MyApp.Variables.TestVariable>(global::MyApp.Variables.VariableDescriptors.TestDescriptor);
-        }
+            Test = new global::SharpRacer.Telemetry.ScalarDataVariable<global::SharpRacer.CameraState>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
+        }}
 
-        public global::MyApp.Variables.TestVariable Test { get; }
+        public global::SharpRacer.Telemetry.IScalarDataVariable<global::SharpRacer.CameraState> Test {{ get; }}
 
         /// <inheritdoc/>
-        public IEnumerable<IDataVariable> EnumerateVariables()
-        {
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
             yield return Test;
-        }
-    }
-}";
+        }}
+    }}
+}}";
 
-    private static string Create_ContainsDeprecatedVariableTest_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+    private static string Create_WithDescriptorReference_Test_Source() =>
+        $@"#nullable enable
 namespace TestAssembly.Variables
-{
+{{
     partial class MyContext
-    {
-        public MyContext(IDataVariableInfoProvider dataVariableProvider)
-        {
-            if (dataVariableProvider is null)
-            {
-                throw new ArgumentNullException(""dataVariableProvider"");
-            }
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
 
-            var factory = new DataVariableFactory(dataVariableProvider);
-            Test = factory.CreateType<global::MyApp.Variables.TestVariable>(global::MyApp.Variables.VariableDescriptors.TestDescriptor);
-            TestEx = factory.CreateType<global::MyApp.Variables.TestExVariable>(global::MyApp.Variables.VariableDescriptors.TestExDescriptor);
-        }
+            Test = new global::SharpRacer.Telemetry.ScalarDataVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
+        }}
 
-        [Obsolete(""Telemetry variable 'Test' is deprecated by variable 'TestEx'. Use context property 'TestEx' instead."")]
-        public global::MyApp.Variables.TestVariable Test { get; }
-        public global::MyApp.Variables.TestExVariable TestEx { get; }
+        public global::SharpRacer.Telemetry.IScalarDataVariable<int> Test {{ get; }}
 
         /// <inheritdoc/>
-        public IEnumerable<IDataVariable> EnumerateVariables()
-        {
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
+            yield return Test;
+        }}
+    }}
+}}";
+
+    private static string Create_WithoutDescriptorReference_Test_Source() =>
+        $@"#nullable enable
+namespace TestAssembly.Variables
+{{
+    partial class MyContext
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
+
+            Test = new global::SharpRacer.Telemetry.ScalarDataVariable<int>(global::SharpRacer.Telemetry.DataVariableDescriptor.CreateScalar<int>(""Test""), dataVariableInfoProvider);
+        }}
+
+        public global::SharpRacer.Telemetry.IScalarDataVariable<int> Test {{ get; }}
+
+        /// <inheritdoc/>
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
+            yield return Test;
+        }}
+    }}
+}}";
+
+    private static string Create_VariableClasses_Test_Source() =>
+        $@"#nullable enable
+namespace TestAssembly.Variables
+{{
+    partial class MyContext
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
+
+            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+        }}
+
+        public global::MyApp.Variables.TestVariable Test {{ get; }}
+
+        /// <inheritdoc/>
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
+            yield return Test;
+        }}
+    }}
+}}";
+
+    private static string Create_VariableClasses_ContainsDeprecatedVariableTest_Source() =>
+        $@"#nullable enable
+namespace TestAssembly.Variables
+{{
+    partial class MyContext
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
+            
+            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+            TestEx = new global::MyApp.Variables.TestExVariable(dataVariableInfoProvider);
+        }}
+
+        [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated by variable 'TestEx'. Use context property 'TestEx' instead."")]
+        public global::MyApp.Variables.TestVariable Test {{ get; }}
+        public global::MyApp.Variables.TestExVariable TestEx {{ get; }}
+
+        /// <inheritdoc/>
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
             yield return Test;
             yield return TestEx;
-        }
-    }
-}";
+        }}
+    }}
+}}";
 
-    private static string Create_ContainsDeprecatedVariableWithoutDeprecatingModelTest_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+    private static string Create_VariableClasses_ContainsDeprecatedVariableWithoutDeprecatingModelTest_Source() =>
+        $@"#nullable enable
 namespace TestAssembly.Variables
-{
+{{
     partial class MyContext
-    {
-        public MyContext(IDataVariableInfoProvider dataVariableProvider)
-        {
-            if (dataVariableProvider is null)
-            {
-                throw new ArgumentNullException(""dataVariableProvider"");
-            }
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
+            
+            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+        }}
 
-            var factory = new DataVariableFactory(dataVariableProvider);
-            Test = factory.CreateType<global::MyApp.Variables.TestVariable>(global::MyApp.Variables.VariableDescriptors.TestDescriptor);
-        }
-
-        [Obsolete(""Telemetry variable 'Test' is deprecated by variable 'TestEx'."")]
-        public global::MyApp.Variables.TestVariable Test { get; }
+        [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated by variable 'TestEx'."")]
+        public global::MyApp.Variables.TestVariable Test {{ get; }}
 
         /// <inheritdoc/>
-        public IEnumerable<IDataVariable> EnumerateVariables()
-        {
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
             yield return Test;
-        }
-    }
-}";
+        }}
+    }}
+}}";
 
-    private static string Create_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest_Source() =>
-        @"using SharpRacer.Telemetry;
-
-#nullable enable
+    private static string Create_VariableClasses_ContainsDeprecatedVariableWithoutDeprecatingVariableNameTest_Source() =>
+        $@"#nullable enable
 namespace TestAssembly.Variables
-{
+{{
     partial class MyContext
-    {
-        public MyContext(IDataVariableInfoProvider dataVariableProvider)
-        {
-            if (dataVariableProvider is null)
-            {
-                throw new ArgumentNullException(""dataVariableProvider"");
-            }
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
+            
+            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+        }}
 
-            var factory = new DataVariableFactory(dataVariableProvider);
-            Test = factory.CreateType<global::MyApp.Variables.TestVariable>(global::MyApp.Variables.VariableDescriptors.TestDescriptor);
-        }
-
-        [Obsolete(""Telemetry variable 'Test' is deprecated."")]
-        public global::MyApp.Variables.TestVariable Test { get; }
+        [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated."")]
+        public global::MyApp.Variables.TestVariable Test {{ get; }}
 
         /// <inheritdoc/>
-        public IEnumerable<IDataVariable> EnumerateVariables()
-        {
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.IDataVariable> EnumerateVariables()
+        {{
             yield return Test;
-        }
-    }
-}";
+        }}
+    }}
+}}";
+
+    /*private static string Create_Test_Source() =>
+        $@"#nullable enable
+namespace TestAssembly.Variables
+{{
+    partial class MyContext
+    {{
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public MyContext(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider)
+        {{
+            if (dataVariableInfoProvider is null)
+            {{
+                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+            }}
+
+            Test = new global::MyApp.Variables.TestVariable(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
+        }}
+
+        public global::MyApp.Variables.TestVariable Test {{ get; }}
+
+        /// <inheritdoc/>
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        public System.Collections.Generic.IEnumerable<IDataVariable> EnumerateVariables()
+        {{
+            yield return Test;
+        }}
+    }}
+}}";*/
 }

@@ -14,16 +14,12 @@ internal static class VariableClassGenerator
         cancellationToken.ThrowIfCancellationRequested();
 
         var classDecl = CreateClassDeclaration(in model, cancellationToken);
-        var requiredUsings = GetRequiredUsingNamespaces(in model);
 
         var namespaceDecl = NamespaceDeclaration(ParseName(model.ClassNamespace))
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
-        var usingDirectives = requiredUsings.OrderBy(x => x).Select(x => UsingDirective(ParseName(x)));
-
         return CompilationUnit()
-            .WithUsings(new SyntaxList<UsingDirectiveSyntax>(usingDirectives))
             .AddMembers(namespaceDecl);
     }
 
@@ -31,9 +27,7 @@ internal static class VariableClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var baseTypeList = BaseList(SeparatedList([
-            model.BaseClassType(),
-            model.ICreateDataVariableBaseType()]));
+        var baseTypeList = BaseList(SeparatedList([model.BaseClassType(TypeNameFormat.GlobalQualified)]));
 
         var classMembers = CreateClassMembers(in model, cancellationToken);
 
@@ -48,40 +42,13 @@ internal static class VariableClassGenerator
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var parameterlessCtorXmlDocs = VariableClassSyntaxFactory.ConstructorXmlDocumentation(in model);
-        var ctorWithDataVariableInfoXmlDocs = VariableClassSyntaxFactory.ConstructorWithDataVariableInfoParameterXmlDocumentation(in model);
-
         var members = new List<MemberDeclarationSyntax>()
         {
             model.DescriptorFieldDeclaration(),
-            VariableClassSyntaxFactory.Constructor(in model)
-                .WithLeadingTrivia(Trivia(parameterlessCtorXmlDocs)),
-            VariableClassSyntaxFactory.ConstructorWithDataVariableInfoParameter(in model)
-                .WithLeadingTrivia(Trivia(ctorWithDataVariableInfoXmlDocs))
+            VariableClassSyntaxFactory.ConstructorWithDataVariableInfoParameter(in model, appendXmlDocumentation: true),
+            VariableClassSyntaxFactory.ConstructorWithIDataVariableInfoProviderParameter(in model, appendXmlDocumentation: true)
         };
 
-        var createMethodDecl = VariableClassSyntaxFactory.ICreateDataVariableCreateMethodDeclaration(model.ClassName);
-
-        members.Add(createMethodDecl);
-
         return List(members);
-    }
-
-    private static string[] GetRequiredUsingNamespaces(ref readonly VariableClassModel model)
-    {
-        var telemetryVariablesNamespace = "SharpRacer.Telemetry";
-
-        if (model.DescriptorPropertyReference.HasValue)
-        {
-            var descriptorNamespace = model.DescriptorPropertyReference.Value.DescriptorClassNamespace;
-
-            if (!string.Equals(descriptorNamespace, telemetryVariablesNamespace, StringComparison.Ordinal) &&
-                !string.Equals(descriptorNamespace, model.ClassNamespace, StringComparison.Ordinal))
-            {
-                return [telemetryVariablesNamespace, descriptorNamespace];
-            }
-        }
-
-        return [telemetryVariablesNamespace];
     }
 }

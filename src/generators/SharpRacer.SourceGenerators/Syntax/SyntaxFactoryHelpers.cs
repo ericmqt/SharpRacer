@@ -8,7 +8,7 @@ namespace SharpRacer.SourceGenerators.Syntax;
 internal static class SyntaxFactoryHelpers
 {
     public static AttributeSyntax GeneratedCodeAttribute()
-        => GeneratedCodeAttribute("SharpRacer.SourceGenerators", TelemetryVariablesGenerator.ToolVersion);
+        => GeneratedCodeAttribute(TelemetryVariablesGenerator.ToolName, TelemetryVariablesGenerator.ToolVersion);
 
     public static AttributeSyntax GeneratedCodeAttribute(string tool, string version)
     {
@@ -26,7 +26,7 @@ internal static class SyntaxFactoryHelpers
 
         var argumentList = AttributeArgumentList(SeparatedList(attributeArgs));
 
-        return Attribute(ParseName("System.CodeDom.Compiler.GeneratedCodeAttribute"))
+        return Attribute(TypeIdentifierSyntaxFactory.QualifiedTypeName(SystemIdentifiers.GeneratedCodeAttribute))
             .WithArgumentList(argumentList);
     }
 
@@ -59,7 +59,7 @@ internal static class SyntaxFactoryHelpers
         }
     }
 
-    public static IfStatementSyntax NullCheck(string identifier)
+    public static IfStatementSyntax NullCheck(string identifier, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         if (string.IsNullOrEmpty(identifier))
         {
@@ -69,7 +69,7 @@ internal static class SyntaxFactoryHelpers
         var throwParamNameArg = Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(identifier)));
 
         var throwStatement = ThrowStatement(
-            ObjectCreationExpression(IdentifierName("ArgumentNullException"))
+            ObjectCreationExpression(SystemIdentifiers.ArgumentNullException.ToTypeSyntax(typeNameFormat))
                 .WithArgumentList(
                     ArgumentList(SingletonSeparatedList(throwParamNameArg))));
 
@@ -80,12 +80,12 @@ internal static class SyntaxFactoryHelpers
             Block(SingletonList<StatementSyntax>(throwStatement)));
     }
 
-    public static IfStatementSyntax NullCheck(IdentifierNameSyntax identifier)
+    public static IfStatementSyntax NullCheck(IdentifierNameSyntax identifier, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         var throwParamNameArg = Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(identifier.Identifier.ValueText)));
 
         var throwStatement = ThrowStatement(
-            ObjectCreationExpression(IdentifierName("ArgumentNullException"))
+            ObjectCreationExpression(SystemIdentifiers.ArgumentNullException.ToTypeSyntax(typeNameFormat))
                 .WithArgumentList(
                     ArgumentList(SingletonSeparatedList(throwParamNameArg))));
 
@@ -96,48 +96,68 @@ internal static class SyntaxFactoryHelpers
             Block(SingletonList<StatementSyntax>(throwStatement)));
     }
 
-    public static QualifiedNameSyntax CreateQualifiedName(NamespaceIdentifier namespaceIdentifier, SimpleNameSyntax typeName)
+    public static AttributeSyntax ObsoleteAttribute(string message)
     {
-        var nodes = new List<QualifiedNameSyntax>();
+        var obsoleteAttributeType = TypeIdentifierSyntaxFactory.QualifiedTypeName(SystemIdentifiers.ObsoleteAttribute);
 
-        var namespaceParts = namespaceIdentifier.ToString()
-            .Split('.')
-            .Select(IdentifierName)
-            .ToList();
+        var messageArgument = AttributeArgument(
+            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(message)));
 
-        if (namespaceParts.Count == 1)
-        {
-            return QualifiedName(namespaceParts[0], typeName);
-        }
-
-        NameSyntax last = QualifiedName(namespaceParts[0], namespaceParts[1]);
-
-        foreach (var nsPart in namespaceParts.Skip(2))
-        {
-            last = QualifiedName(last, nsPart);
-        }
-
-        return QualifiedName(last, typeName);
+        return Attribute(obsoleteAttributeType)
+            .WithArgumentList(AttributeArgumentList(SingletonSeparatedList(messageArgument)));
     }
 
-    public static QualifiedNameSyntax CreateGlobalQualifiedName(NamespaceIdentifier namespaceIdentifier, SimpleNameSyntax typeName)
+    public static AttributeSyntax ObsoleteAttribute(string message, bool error)
     {
-        var nodes = new List<QualifiedNameSyntax>();
+        var obsoleteAttributeType = TypeIdentifierSyntaxFactory.QualifiedTypeName(SystemIdentifiers.ObsoleteAttribute);
 
-        var namespaceParts = namespaceIdentifier.ToString()
+        var messageArgument = AttributeArgument(
+            LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(message)));
+
+        var errorFlagArgument = AttributeArgument(
+            LiteralExpression(error ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression))
+                .WithNameColon(NameColon(IdentifierName("error")));
+
+        var argumentList = AttributeArgumentList(
+            SeparatedList<AttributeArgumentSyntax>(
+                new SyntaxNodeOrToken[]
+                {
+                    messageArgument,
+                    Token(SyntaxKind.CommaToken),
+                    errorFlagArgument
+                }));
+
+        return Attribute(obsoleteAttributeType)
+            .WithArgumentList(argumentList);
+    }
+
+    public static MemberAccessExpressionSyntax StaticMemberAccessGlobalQualified(
+        TypeIdentifier typeIdentifier,
+        SimpleNameSyntax memberIdentifier)
+    {
+        var identifierParts = typeIdentifier.Namespace.ToString()
             .Split('.')
             .Select(IdentifierName)
+            .Concat([IdentifierName(typeIdentifier.TypeName)])
             .ToList();
 
-        NameSyntax last = AliasQualifiedName(
-            IdentifierName(Token(SyntaxKind.GlobalKeyword)),
-            namespaceParts.First());
+        var last = MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            AliasQualifiedName(
+                IdentifierName(Token(SyntaxKind.GlobalKeyword)), identifierParts[0]),
+            identifierParts[1]);
 
-        foreach (var nsPart in namespaceParts.Skip(1))
+        foreach (var idPart in identifierParts.Skip(2))
         {
-            last = QualifiedName(last, nsPart);
+            last = MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                last,
+                idPart);
         }
 
-        return QualifiedName(last, typeName);
+        return MemberAccessExpression(
+            SyntaxKind.SimpleMemberAccessExpression,
+            last,
+            memberIdentifier);
     }
 }

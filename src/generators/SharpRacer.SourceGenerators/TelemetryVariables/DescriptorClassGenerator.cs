@@ -5,6 +5,7 @@ using SharpRacer.SourceGenerators.Syntax;
 using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
 
@@ -18,7 +19,7 @@ internal static class DescriptorClassGenerator
 
         var xmlDoc = new XmlDocumentationTriviaBuilder()
             .Summary(b =>
-                b.Text("Provides ").See(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.Qualified))
+                b.Text("Provides ").See(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.GlobalQualified))
                 .Text(" values that describe telemetry variables."))
             .ToTrivia();
 
@@ -41,11 +42,7 @@ internal static class DescriptorClassGenerator
             .WithLeadingTrivia(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true)))
             .WithMembers(List(new MemberDeclarationSyntax[] { classDecl }));
 
-        var usingDirectives = new SyntaxList<UsingDirectiveSyntax>(UsingDirective(ParseName("SharpRacer.Telemetry")));
-
-        return CompilationUnit()
-            .WithUsings(usingDirectives)
-            .AddMembers(namespaceDecl);
+        return CompilationUnit().AddMembers(namespaceDecl);
     }
 
     private static SyntaxList<MemberDeclarationSyntax> GetClassMemberDeclarations(
@@ -75,21 +72,30 @@ internal static class DescriptorClassGenerator
             descriptorPropertyModel.VariableModel.ValueType,
             descriptorPropertyModel.VariableModel.ValueCount);
 
-        var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(), descriptorPropertyModel.PropertyIdentifier())
+        var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.GlobalQualified), descriptorPropertyModel.PropertyIdentifier())
             .WithModifiers(accessibility, isStatic: true)
             .WithGetOnlyAutoAccessor()
             .WithInitializer(EqualsValueClause(objectCreationExpr))
             .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-        var obsoleteAttribute = GetObsoleteDescriptorPropertyAttribute(in descriptorPropertyModel);
-
-        if (obsoleteAttribute != null)
+        // Attributes
+        if (descriptorPropertyModel.VariableModel.IsDeprecated)
         {
-            var attributeList = AttributeList(SingletonSeparatedList(obsoleteAttribute));
+            var obsoleteAttribute = ObsoleteAttribute(GetObsoleteAttributeMessage(
+                descriptorPropertyModel.VariableName,
+                descriptorPropertyModel.VariableModel.DeprecatingVariableName));
 
-            decl = decl.WithAttributeLists(SingletonList(attributeList));
+            decl = decl.WithAttributeLists(List([
+                AttributeList(SingletonSeparatedList(obsoleteAttribute)),
+                AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))
+                ]));
+        }
+        else
+        {
+            decl = decl.WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))));
         }
 
+        // XML docs
         if (descriptorPropertyModel.PropertyXmlSummary != null)
         {
             var docTrivia = new XmlDocumentationTriviaBuilder()
@@ -100,25 +106,6 @@ internal static class DescriptorClassGenerator
         }
 
         return decl;
-    }
-
-    private static AttributeSyntax? GetObsoleteDescriptorPropertyAttribute(ref readonly DescriptorPropertyModel descriptorPropertyModel)
-    {
-        if (!descriptorPropertyModel.VariableModel.IsDeprecated)
-        {
-            return null;
-        }
-
-        string? deprecatingVariableName = descriptorPropertyModel.VariableModel.DeprecatingVariableName;
-
-        // Build the attribute
-        var messageLiteral = Literal(
-            GetObsoleteAttributeMessage(descriptorPropertyModel.VariableName, deprecatingVariableName));
-
-        var messageArgument = AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, messageLiteral));
-
-        return Attribute(IdentifierName("Obsolete"))
-            .WithArgumentList(AttributeArgumentList(SingletonSeparatedList(messageArgument)));
     }
 
     private static string GetObsoleteAttributeMessage(string deprecatedVariableName, string? deprecatingVariableName)

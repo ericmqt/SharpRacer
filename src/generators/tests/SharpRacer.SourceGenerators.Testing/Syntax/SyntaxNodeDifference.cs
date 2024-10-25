@@ -20,12 +20,20 @@ public class SyntaxNodeDifference
 
     public XunitException ToXunitException(string leftNodeArgumentName, string rightNodeArgumentName)
     {
+        var leftNodeStr = LeftNode.ToFullString();
+        leftNodeStr = leftNodeStr.Substring(0, Math.Min(60, leftNodeStr.Length));
+
+        var rightNodeStr = RightNode.ToFullString();
+        rightNodeStr = rightNodeStr.Substring(0, Math.Min(60, rightNodeStr.Length));
+
         if (DifferenceType == SyntaxNodeDifferenceType.ChildNodeCount)
         {
             var msg = new StringBuilder()
                 .AppendLine("Syntax nodes have different child node counts:")
                 .AppendLine($"{leftNodeArgumentName} @ {LeftNode.Span}: {LeftNode.Kind()} (children: {LeftNode.ChildNodes().Count()})")
-                .AppendLine($"{rightNodeArgumentName} @ {RightNode.Span}: {RightNode.Kind()} (children: {RightNode.ChildNodes().Count()})");
+                .AppendLine($"{leftNodeArgumentName}: \"{leftNodeStr}\"")
+                .AppendLine($"{rightNodeArgumentName} @ {RightNode.Span}: {RightNode.Kind()} (children: {RightNode.ChildNodes().Count()})")
+                .AppendLine($"{rightNodeArgumentName}: \"{rightNodeStr}\"");
 
             return new XunitException(msg.ToString());
         }
@@ -34,7 +42,9 @@ public class SyntaxNodeDifference
             var msg = new StringBuilder()
                 .AppendLine("Syntax nodes have different SyntaxKind values:")
                 .AppendLine($"{leftNodeArgumentName} @ {LeftNode.Span}: {LeftNode.Kind()}")
-                .AppendLine($"{rightNodeArgumentName} @ {RightNode.Span}: {RightNode.Kind()}");
+                .AppendLine($"{leftNodeArgumentName}: \"{leftNodeStr}\"")
+                .AppendLine($"{rightNodeArgumentName} @ {RightNode.Span}: {RightNode.Kind()}")
+                .AppendLine($"{rightNodeArgumentName}: \"{rightNodeStr}\"");
 
             return new XunitException(msg.ToString());
         }
@@ -42,7 +52,9 @@ public class SyntaxNodeDifference
         var defaultMsg = new StringBuilder()
             .AppendLine($"{nameof(SyntaxNode.IsEquivalentTo)} returned false:")
             .AppendLine($"{leftNodeArgumentName} @ {LeftNode.Span}: {LeftNode.Kind()}")
-            .AppendLine($"{rightNodeArgumentName} @ {RightNode.Span}: {RightNode.Kind()}");
+            .AppendLine($"{leftNodeArgumentName}: \"{leftNodeStr}\"")
+            .AppendLine($"{rightNodeArgumentName} @ {RightNode.Span}: {RightNode.Kind()}")
+            .AppendLine($"{rightNodeArgumentName}: \"{rightNodeStr}\"");
 
         return new XunitException(defaultMsg.ToString());
     }
