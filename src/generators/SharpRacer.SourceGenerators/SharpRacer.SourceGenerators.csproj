@@ -29,6 +29,10 @@
         <DevelopmentDependency>true</DevelopmentDependency>
         <RepositoryUrl>https://github.com/ericmqt/SharpRacer.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
+        <Description>
+            Provides a source generator for use with SharpRacer that transforms telemetry variables exported from the simulator into
+            C# classes.
+        </Description>
     </PropertyGroup>
 
     <ItemGroup>

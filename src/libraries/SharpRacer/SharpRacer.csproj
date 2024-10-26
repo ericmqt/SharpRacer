@@ -4,8 +4,22 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+        <AssemblyVersion>$(SharpRacerAssemblyVersion)</AssemblyVersion>
+        <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
+
+    <!-- Package -->
+    <PropertyGroup>
+        <PackageId>SharpRacer</PackageId>
+        <Version>$(SharpRacerPackageVersion)</Version>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/ericmqt/SharpRacer.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Description>
+            A modern, high-performance .NET library for interacting with the iRacing racing simulator.
+        </Description>
+    </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="DotNext.Threading" Version="5.0.0" PrivateAssets="compile" />
