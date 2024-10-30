@@ -15,7 +15,7 @@
 
   <PropertyGroup>
     <GenerateTelemetryVariableClasses Condition=" '$(GenerateTelemetryVariableClasses)' == '' ">true</GenerateTelemetryVariableClasses>
-    <TelemetryVariableClassesNamespace Condition=" '$(GeneratedTelemetryVariableClassesNamespace)' == '' ">$(RootNamespace)</TelemetryVariableClassesNamespace>
+    <TelemetryVariableClassesNamespace Condition=" '$(TelemetryVariableClassesNamespace)' == '' ">$(RootNamespace)</TelemetryVariableClassesNamespace>
     <TelemetryVariablesFileName Condition=" $(TelemetryVariablesFileName) == '' ">TelemetryVariables.json</TelemetryVariablesFileName>
     <TelemetryVariableOptionsFileName Condition=" $(TelemetryVariableOptionsFileName) == '' ">TelemetryVariables.config.json</TelemetryVariableOptionsFileName>
   </PropertyGroup>

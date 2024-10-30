@@ -215,7 +215,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
             return false;
         }
 
-        // Eensure calls to this method will return in case the connection dies while waiting
+        // Ensure calls to this method will return in case the connection dies while waiting
         return _internalConnection.WaitForDataReady(_cancellationTokenSource.Token);
     }
 
