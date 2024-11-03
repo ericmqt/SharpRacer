@@ -57,6 +57,9 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
     public event EventHandler<EventArgs>? Closed;
 
     /// <inheritdoc />
+    public event EventHandler<EventArgs>? Opened;
+
+    /// <inheritdoc />
     public event EventHandler<SimulatorConnectionStateChangedEventArgs>? StateChanged;
 
     /// <inheritdoc />
@@ -70,12 +73,14 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
             _connectionPool.ReleaseOuterConnection(this);
 
-            // Replace the data file with an empty one, because only consumers should be calling Close(), not the internal connection, so there
-            // should be no need to preserve a copy of the data file to prevent uncoordinated reads from getting garbage data.
+            // Replace the data file with an empty one, because only consumers should be calling Close(), not the internal connection, so
+            // there should be no need to preserve a copy of the data file to prevent uncoordinated reads from getting garbage data.
 
-            Interlocked.Exchange(ref _internalConnection, new InactiveInternalConnection(new FrozenDataFile([]), SimulatorConnectionState.Closed));
+            Interlocked.Exchange(
+                ref _internalConnection,
+                new InactiveInternalConnection(new FrozenDataFile([]), SimulatorConnectionState.Closed));
+
             SetState(SimulatorConnectionState.Closed);
-            Closed?.Invoke(this, EventArgs.Empty);
         }
         finally
         {
@@ -244,12 +249,13 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
     internal void SetClosedInternalConnection(ISimulatorInternalConnection internalConnection)
     {
+        // This should only be called by the pool when either the internal connection has closed or when the last SimulatorConnection
+        // sharing the internal connection closes.
+
         _connectionTransitionSemaphore.Wait();
 
         try
         {
-            Console.WriteLine($"[SetClosedInternalConnection] {State} -> {internalConnection.State}, ConnectionId: {internalConnection.ConnectionId}");
-
             // Cancel pending waiters
             _cancellationTokenSource.Cancel();
 
@@ -276,8 +282,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
                 return;
             }
 
-            Console.WriteLine($"[SetOpenInternalConnection] {State} -> {internalConnection.State}, ConnectionId: {internalConnection.ConnectionId}");
-
             Interlocked.Exchange(ref _internalConnection, internalConnection);
 
             _variableInfoProvider.InitializeVariables(this);
@@ -297,6 +301,15 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
         if (state != oldState)
         {
             StateChanged?.Invoke(this, new SimulatorConnectionStateChangedEventArgs(state, oldState));
+
+            if (state == SimulatorConnectionState.Closed)
+            {
+                Closed?.Invoke(this, EventArgs.Empty);
+            }
+            else if (state == SimulatorConnectionState.Open)
+            {
+                Opened?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 }

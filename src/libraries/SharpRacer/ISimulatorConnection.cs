@@ -23,6 +23,11 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     event EventHandler<EventArgs>? Closed;
 
     /// <summary>
+    /// Raised when the connection has been opened.
+    /// </summary>
+    event EventHandler<EventArgs>? Opened;
+
+    /// <summary>
     /// Raised when the state of the connection has changed.
     /// </summary>
     event EventHandler<SimulatorConnectionStateChangedEventArgs>? StateChanged;
