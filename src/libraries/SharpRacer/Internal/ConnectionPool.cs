@@ -107,7 +107,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
     {
         ArgumentNullException.ThrowIfNull(outerConnection);
 
-        var completion = new TaskCompletionSource();
+        var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
         CancellationTokenRegistration cancellationRegistration = default;
 
@@ -407,7 +407,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
     private bool TryCompleteRequest(AsyncConnectionRequest request)
     {
-        if (request.Completion.Task.IsCompleted)
+        if (request.Completion.Task.IsCompleted || request.Completion.Task.IsCanceled)
         {
             Interlocked.Decrement(ref _pendingConnectionCount);
 
