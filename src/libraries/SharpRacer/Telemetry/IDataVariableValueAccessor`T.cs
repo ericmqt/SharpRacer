@@ -13,4 +13,12 @@ public interface IDataVariableValueAccessor<TValue>
     /// <returns>A value of type <typeparamref name="TValue"/> read from the specified span.</returns>
     /// <exception cref="DataVariableUnavailableException">The telemetry variable is not available in the current context.</exception>
     TValue Read(ReadOnlySpan<byte> source);
+
+    /// <summary>
+    /// Reads the value from the specified read-only memory.
+    /// </summary>
+    /// <param name="memory">A read-only memory object representing a telemetry data frame.</param>
+    /// <returns>A value of type <typeparamref name="TValue"/> read from the specified read-only memory object.</returns>
+    /// <exception cref="DataVariableUnavailableException">The telemetry variable is not available in the current context.</exception>
+    TValue Read(ReadOnlyMemory<byte> memory);
 }

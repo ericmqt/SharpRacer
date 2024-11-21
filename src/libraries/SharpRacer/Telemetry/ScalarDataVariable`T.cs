@@ -106,8 +106,14 @@ public class ScalarDataVariable<T> : DataVariableBase<T>, IScalarDataVariable<T>
     {
         ThrowIfUnavailable();
 
-        var valueBytes = GetDataSpan(source);
+        return MemoryMarshal.Read<T>(GetDataSpan(source));
+    }
 
-        return MemoryMarshal.Read<T>(valueBytes);
+    /// <inheritdoc />
+    public T Read(ReadOnlyMemory<byte> memory)
+    {
+        ThrowIfUnavailable();
+
+        return MemoryMarshal.Read<T>(GetDataSpan(memory));
     }
 }

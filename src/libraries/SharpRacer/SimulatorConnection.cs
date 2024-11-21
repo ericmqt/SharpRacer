@@ -195,7 +195,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
             try
             {
-                await _connectionPool.ConnectAsync(this, timeout, linkedCancellationSource.Token).ConfigureAwait(false);
+                await _connectionPool.ConnectAsync(this, timeout, linkedCancellationSource.Token);
             }
             catch (Exception)
             {

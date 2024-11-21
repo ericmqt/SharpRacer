@@ -43,4 +43,6 @@ public interface IDataVariable
     /// <exception cref="DataVariableUnavailableException">The telemetry variable is not available in the current context.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The telemetry variable is not within the range of <paramref name="source"/>.</exception>
     ReadOnlySpan<byte> GetDataSpan(ReadOnlySpan<byte> source);
+
+    ReadOnlySpan<byte> GetDataSpan(ReadOnlyMemory<byte> memory);
 }
