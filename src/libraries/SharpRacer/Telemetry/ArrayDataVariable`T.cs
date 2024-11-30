@@ -112,21 +112,4 @@ public class ArrayDataVariable<T> : DataVariableBase<T>, IArrayDataVariable<T>
 
         return valueArray;
     }
-
-    /// <inheritdoc />
-    public T[] Read(ReadOnlyMemory<byte> memory)
-    {
-        ThrowIfUnavailable();
-
-        // Slice the source span to our array variable data
-        var arrayBytes = GetDataSpan(memory);
-
-        // Allocate an array of values of length ValueCount
-        var valueArray = new T[ValueCount];
-
-        // Re-interpret the value array as a span of bytes and copy the source span into it
-        arrayBytes.CopyTo(MemoryMarshal.AsBytes<T>(valueArray));
-
-        return valueArray;
-    }
 }

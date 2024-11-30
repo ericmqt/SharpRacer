@@ -184,17 +184,6 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
         return source.Slice(DataOffset, DataLength);
     }
 
-    /// <inheritdoc />
-    public ReadOnlySpan<byte> GetDataSpan(ReadOnlyMemory<byte> memory)
-    {
-        if (!IsAvailable)
-        {
-            throw new DataVariableUnavailableException(Name);
-        }
-
-        return memory.Span.Slice(DataOffset, DataLength);
-    }
-
     /// <summary>
     /// Throws a <see cref="DataVariableUnavailableException"/> when <see cref="IsAvailable"/> is <see langword="false" />.
     /// </summary>

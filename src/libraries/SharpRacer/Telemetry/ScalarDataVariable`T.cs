@@ -108,12 +108,4 @@ public class ScalarDataVariable<T> : DataVariableBase<T>, IScalarDataVariable<T>
 
         return MemoryMarshal.Read<T>(GetDataSpan(source));
     }
-
-    /// <inheritdoc />
-    public T Read(ReadOnlyMemory<byte> memory)
-    {
-        ThrowIfUnavailable();
-
-        return MemoryMarshal.Read<T>(GetDataSpan(memory));
-    }
 }
