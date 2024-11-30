@@ -282,23 +282,6 @@ public class VariableClassModelTests
     }
 
     [Fact]
-    public void ICreateDataVariableBaseType_Test()
-    {
-        var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);
-        var variableModel = new VariableModel(variableInfo, default);
-
-        var classModel = new VariableClassModel(
-            "TestVariable",
-            "TestApp.Variables",
-            variableModel,
-            null,
-            isClassInternal: false,
-            isClassPartial: true);
-
-        Assert.Equal("ICreateDataVariable<TestVariable>", classModel.ICreateDataVariableBaseType().ToFullString());
-    }
-
-    [Fact]
     public void VariableValueTypeArg_Test()
     {
         var variableInfo = new VariableInfo("Test", VariableValueType.Int, 3, "Test variable", "test/s", false, false, null);

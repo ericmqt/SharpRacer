@@ -14,7 +14,6 @@ public static class SharpRacerIdentifiers
         GenerateDataVariableDescriptorsAttribute = TelemetryNamespace.CreateType("GenerateDataVariableDescriptorsAttribute");
         GenerateDataVariablesContextAttribute = TelemetryNamespace.CreateType("GenerateDataVariablesContextAttribute");
         IArrayDataVariable = TelemetryNamespace.CreateType("IArrayDataVariable");
-        ICreateDataVariable = TelemetryNamespace.CreateType("ICreateDataVariable");
         IDataVariable = TelemetryNamespace.CreateType("IDataVariable");
         IDataVariablesContext = TelemetryNamespace.CreateType("IDataVariablesContext");
         IDataVariableInfoProvider = TelemetryNamespace.CreateType("IDataVariableInfoProvider");
@@ -48,7 +47,6 @@ public static class SharpRacerIdentifiers
     public static TypeIdentifier GenerateDataVariableDescriptorsAttribute { get; }
     public static TypeIdentifier GenerateDataVariablesContextAttribute { get; }
     public static TypeIdentifier IArrayDataVariable { get; }
-    public static TypeIdentifier ICreateDataVariable { get; }
     public static TypeIdentifier IDataVariable { get; }
     public static TypeIdentifier IDataVariablesContext { get; }
     public static TypeIdentifier IDataVariableInfoProvider { get; }

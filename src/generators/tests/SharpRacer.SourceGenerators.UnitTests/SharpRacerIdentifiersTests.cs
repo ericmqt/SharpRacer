@@ -37,7 +37,6 @@ public class SharpRacerIdentifiersTests
             { SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute, typeof(GenerateDataVariableDescriptorsAttribute) },
             { SharpRacerIdentifiers.GenerateDataVariablesContextAttribute, typeof(GenerateDataVariablesContextAttribute) },
             { SharpRacerIdentifiers.IArrayDataVariable, typeof(IArrayDataVariable<>) },
-            { SharpRacerIdentifiers.ICreateDataVariable, typeof(ICreateDataVariable<>) },
             { SharpRacerIdentifiers.IDataVariable, typeof(IDataVariable) },
             { SharpRacerIdentifiers.IDataVariablesContext, typeof(IDataVariablesContext) },
             { SharpRacerIdentifiers.IDataVariableInfoProvider, typeof(IDataVariableInfoProvider) },

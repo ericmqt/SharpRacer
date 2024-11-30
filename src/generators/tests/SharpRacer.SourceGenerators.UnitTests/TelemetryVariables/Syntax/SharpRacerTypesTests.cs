@@ -1,6 +1,4 @@
-﻿using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-
-namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 public class SharpRacerTypesTests
 {
     [Theory]
@@ -119,14 +117,6 @@ public class SharpRacerTypesTests
         Assert.Equal("TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.Default).ToFullString());
         Assert.Equal("SharpRacer.TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.Qualified).ToFullString());
         Assert.Equal("global::SharpRacer.TrackSurfaceType", SharpRacerTypes.TrackSurfaceType(TypeNameFormat.GlobalQualified).ToFullString());
-    }
-
-    [Fact]
-    public void ICreateDataVariableInterfaceType_Test()
-    {
-        Assert.Equal(
-            "ICreateDataVariable<MyVariable>",
-            SharpRacerTypes.ICreateDataVariableInterfaceType(ParseTypeName("MyVariable"), TypeNameFormat.Default).ToFullString());
     }
 
     [Fact]

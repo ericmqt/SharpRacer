@@ -62,11 +62,6 @@ internal static class SharpRacerTypes
         return SharpRacerIdentifiers.IArrayDataVariable.ToGenericTypeSyntax(TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
     }
 
-    public static TypeSyntax ICreateDataVariableInterfaceType(TypeSyntax selfTypeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return SharpRacerIdentifiers.ICreateDataVariable.ToGenericTypeSyntax(TypeArgumentList(SingletonSeparatedList(selfTypeArgument)), typeNameFormat);
-    }
-
     public static TypeSyntax IDataVariableInfoProvider(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
         return SharpRacerIdentifiers.IDataVariableInfoProvider.ToTypeSyntax(typeNameFormat);

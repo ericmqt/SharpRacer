@@ -1,6 +1,6 @@
 ﻿namespace SharpRacer.Telemetry.TestVariables;
 
-internal class BarVariable : ArrayDataVariable<float>, ICreateDataVariable<BarVariable>
+internal class BarVariable : ArrayDataVariable<float>
 {
     private static readonly int _ArrayLength = 3;
     private static readonly string _VariableName = "Bar";

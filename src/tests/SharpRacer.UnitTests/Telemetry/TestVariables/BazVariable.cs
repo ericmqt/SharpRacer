@@ -5,7 +5,7 @@ internal static class TestDescriptors
     public static DataVariableDescriptor Baz { get; } = new DataVariableDescriptor("Baz", DataVariableValueType.Float, 3);
 }
 
-internal class BazVariable : ArrayDataVariable<float>, ICreateDataVariable<BazVariable>
+internal class BazVariable : ArrayDataVariable<float>
 {
     private static DataVariableDescriptor _Descriptor = TestDescriptors.Baz;
 
@@ -18,10 +18,5 @@ internal class BazVariable : ArrayDataVariable<float>, ICreateDataVariable<BazVa
     public BazVariable(DataVariableInfo? variableInfo)
         : base(_Descriptor, variableInfo)
     {
-    }
-
-    public static BazVariable Create(DataVariableInfo dataVariableInfo)
-    {
-        return new BazVariable(dataVariableInfo);
     }
 }
