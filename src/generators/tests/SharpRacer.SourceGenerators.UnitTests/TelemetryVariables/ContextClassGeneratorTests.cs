@@ -247,6 +247,9 @@ namespace TestAssembly.Variables
             Test = new global::SharpRacer.Telemetry.ScalarDataVariable<global::SharpRacer.CameraState>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         public global::SharpRacer.Telemetry.IScalarDataVariable<global::SharpRacer.CameraState> Test {{ get; }}
 
         /// <inheritdoc/>
@@ -275,6 +278,9 @@ namespace TestAssembly.Variables
             Test = new global::SharpRacer.Telemetry.ScalarDataVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         public global::SharpRacer.Telemetry.IScalarDataVariable<int> Test {{ get; }}
 
         /// <inheritdoc/>
@@ -303,6 +309,9 @@ namespace TestAssembly.Variables
             Test = new global::SharpRacer.Telemetry.ScalarDataVariable<int>(global::SharpRacer.Telemetry.DataVariableDescriptor.CreateScalar<int>(""Test""), dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         public global::SharpRacer.Telemetry.IScalarDataVariable<int> Test {{ get; }}
 
         /// <inheritdoc/>
@@ -331,6 +340,9 @@ namespace TestAssembly.Variables
             Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         public global::MyApp.Variables.TestVariable Test {{ get; }}
 
         /// <inheritdoc/>
@@ -360,8 +372,14 @@ namespace TestAssembly.Variables
             TestEx = new global::MyApp.Variables.TestExVariable(dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated by variable 'TestEx'. Use context property 'TestEx' instead."")]
         public global::MyApp.Variables.TestVariable Test {{ get; }}
+        /// <summary>
+        /// This is the new and improved test variable.
+        /// </summary>
         public global::MyApp.Variables.TestExVariable TestEx {{ get; }}
 
         /// <inheritdoc/>
@@ -391,6 +409,9 @@ namespace TestAssembly.Variables
             Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated by variable 'TestEx'."")]
         public global::MyApp.Variables.TestVariable Test {{ get; }}
 
@@ -420,6 +441,9 @@ namespace TestAssembly.Variables
             Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
         }}
 
+        /// <summary>
+        /// This is the test variable.
+        /// </summary>
         [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated."")]
         public global::MyApp.Variables.TestVariable Test {{ get; }}
 

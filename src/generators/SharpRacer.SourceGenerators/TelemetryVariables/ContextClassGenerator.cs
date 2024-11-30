@@ -53,6 +53,7 @@ internal static class ContextClassGenerator
         foreach (var variable in model.Variables)
         {
             var propertyDecl = VariableContextSyntaxFactory.VariablePropertyDeclaration(in variable);
+            var propertyXmlDocs = VariableContextSyntaxFactory.VariablePropertyDeclarationXmlDocumentation(in variable);
 
             var obsoleteAttribute = GetObsoletePropertyAttribute(in variable, model.Variables);
 
@@ -62,7 +63,7 @@ internal static class ContextClassGenerator
                 propertyDecl = propertyDecl.WithAttributeLists(SingletonList(attributeList));
             }
 
-            members.Add(propertyDecl);
+            members.Add(propertyDecl.WithLeadingTrivia(Trivia(propertyXmlDocs)));
         }
 
         members.Add(VariableContextSyntaxFactory.EnumerateVariablesMethod(in model));

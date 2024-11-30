@@ -72,4 +72,13 @@ internal static class VariableContextSyntaxFactory
             .WithModifiers(Accessibility.Public)
             .WithGetOnlyAutoAccessor();
     }
+
+    public static DocumentationCommentTriviaSyntax VariablePropertyDeclarationXmlDocumentation(ref readonly ContextVariableModel model)
+    {
+        var summaryText = model.PropertyXmlSummary;
+
+        return new XmlDocumentationTriviaBuilder()
+            .Summary(b => b.Text(summaryText))
+            .ToTrivia();
+    }
 }
