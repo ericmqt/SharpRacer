@@ -28,5 +28,5 @@ public static class DataFileConstants
     /// <summary>
     /// The maximum number of data buffers that may be present in a data file.
     /// </summary>
-    public const int MaxDataVariableBuffers = 4;
+    public const int MaxDataBuffers = 4;
 }

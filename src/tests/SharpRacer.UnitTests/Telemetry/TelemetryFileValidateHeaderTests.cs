@@ -31,7 +31,7 @@ public class TelemetryFileValidateHeaderTests
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, dataBufferCount: DataFileConstants.MaxDataVariableBuffers + 1)));
+                CopyHeader(validHeader, dataBufferCount: DataFileConstants.MaxDataBuffers + 1)));
     }
 
     [Fact]

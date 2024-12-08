@@ -83,7 +83,7 @@ internal static class TelemetryFile
             return false;
         }
 
-        if (fileHeader.DataBufferCount < 1 || fileHeader.DataBufferCount > DataFileConstants.MaxDataVariableBuffers)
+        if (fileHeader.DataBufferCount < 1 || fileHeader.DataBufferCount > DataFileConstants.MaxDataBuffers)
         {
             return false;
         }

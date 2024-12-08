@@ -5,15 +5,15 @@ using System.Runtime.InteropServices;
 namespace SharpRacer.Interop;
 
 /// <summary>
-/// Inline <see cref="DataBufferHeader"/> array of <see cref="DataFileConstants.MaxDataVariableBuffers"/> elements.
+/// Inline <see cref="DataBufferHeader"/> array of <see cref="DataFileConstants.MaxDataBuffers"/> elements.
 /// </summary>
-[InlineArray(DataFileConstants.MaxDataVariableBuffers)]
+[InlineArray(DataFileConstants.MaxDataBuffers)]
 public struct DataBufferHeaderArray : IEquatable<DataBufferHeaderArray>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="DataBufferHeaderArray"/>.
     /// </summary>
-    public const int Size = DataBufferHeader.Size * DataFileConstants.MaxDataVariableBuffers;
+    public const int Size = DataBufferHeader.Size * DataFileConstants.MaxDataBuffers;
 
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Field is required for InlineArray")]
     [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Inline arrays do not allow readonly fields.")]
@@ -40,7 +40,7 @@ public struct DataBufferHeaderArray : IEquatable<DataBufferHeaderArray>
     /// <inheritdoc />
     public readonly bool Equals(DataBufferHeaderArray other)
     {
-        for (int i = 0; i < DataFileConstants.MaxDataVariableBuffers; i++)
+        for (int i = 0; i < DataFileConstants.MaxDataBuffers; i++)
         {
             if (this[i] != other[i])
             {
@@ -56,7 +56,7 @@ public struct DataBufferHeaderArray : IEquatable<DataBufferHeaderArray>
     {
         var hc = new HashCode();
 
-        for (int i = 0; i < DataFileConstants.MaxDataVariableBuffers; i++)
+        for (int i = 0; i < DataFileConstants.MaxDataBuffers; i++)
         {
             hc.Add(this[i]);
         }
