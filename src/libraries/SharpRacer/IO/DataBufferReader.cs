@@ -14,11 +14,18 @@ public readonly ref struct DataBufferReader
     /// Initializes a new instance of the <see cref="DataBufferReader"/> structure.
     /// </summary>
     /// <param name="connection">The <see cref="ISimulatorConnection"/> instance from which data will be read.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="connection"/> has not been opened.
+    /// </exception>
     public DataBufferReader(ISimulatorConnection connection)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
-        // TODO: Validate connection is open or leave it up to callers?
+        // Allow reading from Closed connection since data file will be frozen and readable
+        if (connection.State < SimulatorConnectionState.Open)
+        {
+            throw new ArgumentException("Connection has not been opened.", nameof(connection));
+        }
 
         _data = connection.Data;
         _fileHeader = ref DataFileHeader.AsRef(_data);
@@ -28,7 +35,7 @@ public readonly ref struct DataBufferReader
     /// Initializes a new instance of the <see cref="DataBufferReader"/> structure.
     /// </summary>
     /// <param name="data">A read-only span of bytes representing the connection data.</param>
-    public DataBufferReader(ReadOnlySpan<byte> data)
+    internal DataBufferReader(ReadOnlySpan<byte> data)
     {
         _data = data;
         _fileHeader = ref DataFileHeader.AsRef(_data);
