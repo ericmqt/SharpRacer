@@ -1,9 +1,9 @@
 ﻿namespace SharpRacer;
 
 /// <summary>
-/// Describes spotter callouts for cars alongside the driver.
+/// Defines spotter callouts for cars alongside the driver.
 /// </summary>
-/// <remarks>See: irsdk_CarLeftRight</remarks>
+/// <remarks>See irsdk_CarLeftRight in the iRacing SDK.</remarks>
 public enum CarLeftRight : uint
 {
     /// <summary>
@@ -12,32 +12,32 @@ public enum CarLeftRight : uint
     None = 0,
 
     /// <summary>
-    /// The driver car has transitioned from having one or more cars alongside to none.
+    /// Driver car no longer has any cars alongside.
     /// </summary>
     Clear = 1,
 
     /// <summary>
-    /// There is a car to the driver's left.
+    /// Car to the driver's left.
     /// </summary>
     CarLeft = 2,
 
     /// <summary>
-    /// There is a car to the driver's right.
+    /// Car to the driver's right.
     /// </summary>
     CarRight = 3,
 
     /// <summary>
-    /// There is a car on both sides of the driver.
+    /// Car on both sides of the driver.
     /// </summary>
     CarLeftRight = 4,
 
     /// <summary>
-    /// There are two cars to the left of the driver.
+    /// Two cars to the left of the driver.
     /// </summary>
     TwoCarsLeft = 5,
 
     /// <summary>
-    /// There are two cars to the right of the driver.
+    /// Two cars to the right of the driver.
     /// </summary>
     TwoCarsRight = 6
 }

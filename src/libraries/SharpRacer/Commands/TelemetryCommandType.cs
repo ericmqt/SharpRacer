@@ -1,4 +1,11 @@
 ﻿namespace SharpRacer.Commands;
+
+/// <summary>
+/// Defines telemetry recording command types.
+/// </summary>
+/// <remarks>
+/// See irsdk_TelemCommandMode in the iRacing SDK.
+/// </remarks>
 public enum TelemetryCommandType : ushort
 {
     /// <summary>

@@ -1,8 +1,11 @@
 ﻿namespace SharpRacer.Commands;
 
 /// <summary>
-/// Defines pit service commands.
+/// Defines pit service command types.
 /// </summary>
+/// <remarks>
+/// See irsdk_PitCommandMode in the iRacing SDK.
+/// </remarks>
 public enum PitCommandType : ushort
 {
     /// <summary>
