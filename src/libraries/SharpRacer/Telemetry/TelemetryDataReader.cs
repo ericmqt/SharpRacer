@@ -40,11 +40,7 @@ public class TelemetryDataReader
     /// <summary>
     /// Gets a value indicating whether the underlying connection is in a state that supports reading.
     /// </summary>
-    public bool CanRead
-    {
-        // Allow reading from Closed connection since data file will be frozen and readable
-        get => _connection.State < SimulatorConnectionState.Open;
-    }
+    public bool CanRead => _connection.CanRead;
 
     /// <summary>
     /// Gets the index of the data buffer that contains the most recent telemetry data.
@@ -116,7 +112,7 @@ public class TelemetryDataReader
 
     private int ReadBufferLength()
     {
-        if (_connection.State < SimulatorConnectionState.Open)
+        if (!_connection.CanRead)
         {
             return 0;
         }
@@ -128,7 +124,7 @@ public class TelemetryDataReader
 
     private void VerifyCanRead()
     {
-        if (!CanRead)
+        if (!_connection.CanRead)
         {
             throw new InvalidOperationException("The underlying connection is not in a state that supports reading.");
         }
