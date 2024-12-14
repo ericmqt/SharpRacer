@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text;
 using Microsoft.Win32.SafeHandles;
 using SharpRacer.Interop;
 
@@ -226,8 +225,7 @@ public class TelemetryFileReader : IDisposable
 
         VerifyBytesRead(bytesRead, sessionInfoBlob.Length);
 
-        // Encoding is actually ISO-8859-1 not UTF8. UTF8 works fine except for tracks with diacritics in their name e.g. MotorLand Aragon
-        return Encoding.Latin1.GetString(sessionInfoBlob);
+        return SessionInfoString.Encoding.GetString(sessionInfoBlob);
     }
 
     private static bool CheckFileSize(
