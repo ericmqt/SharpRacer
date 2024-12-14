@@ -8,6 +8,11 @@ namespace SharpRacer;
 public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
 {
     /// <summary>
+    /// Gets a value indicating whether the connection is in a state that supports read operations.
+    /// </summary>
+    bool CanRead { get; }
+
+    /// <summary>
     /// Gets a read-only span of bytes over the simulator data file.
     /// </summary>
     ReadOnlySpan<byte> Data { get; }

@@ -45,6 +45,12 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
     }
 
     /// <inheritdoc />
+    public bool CanRead
+    {
+        get => State < SimulatorConnectionState.Open;
+    }
+
+    /// <inheritdoc />
     public ReadOnlySpan<byte> Data => _internalConnection.Data;
 
     /// <inheritdoc />
