@@ -230,7 +230,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
             {
                 _outerConnections.Add(outerConnection);
 
-                outerConnection.SetOpenInternalConnection(internalConnection);
+                internalConnection.SetOuterConnectionOpenState(outerConnection);
             }
 
             // Return true even if owner already exists
@@ -251,8 +251,8 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     {
         try
         {
-            // Open the data file if it hasn't been opened already
-            _dataFile ??= MemoryMappedDataFile.Open();
+            // Open the data file. If one already existed it'll self-dispose eventually once all referencing connections dispose
+            _dataFile = MemoryMappedDataFile.Open();
 
             var connection = new OpenInternalConnection(
                 _dataFile,

@@ -12,19 +12,22 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IConnectionPool _connectionPool;
     private readonly Thread _connectionThread;
-    private readonly ISimulatorDataFile _dataFile;
+    private readonly MemoryMappedDataFile _dataFile;
+    private readonly IDisposable _dataFileLifetimeHandle;
     private readonly ManualResetEvent _dataReadySignal;
     private int _idleTimeoutMs;
     private bool _isDisposed;
     private int _simulatorStatus;
 
     public OpenInternalConnection(
-        ISimulatorDataFile dataFile,
+        MemoryMappedDataFile dataFile,
         int connectionId,
         IConnectionPool connectionPool)
     {
         _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
         _connectionPool = connectionPool ?? throw new ArgumentNullException(nameof(connectionPool));
+
+        _dataFileLifetimeHandle = _dataFile.AcquireLifetimeHandle();
 
         ConnectionId = connectionId;
         IdleTimeout = TimeSpan.FromSeconds(5);
@@ -41,6 +44,7 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
     public int ConnectionId { get; }
     public ReadOnlySpan<byte> Data => _dataFile.Span;
     public ISimulatorDataFile DataFile => _dataFile;
+
     public TimeSpan IdleTimeout
     {
         get => TimeSpan.FromMilliseconds(_idleTimeoutMs);
@@ -59,6 +63,7 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
             Interlocked.Exchange(ref _idleTimeoutMs, (int)value.TotalMilliseconds);
         }
     }
+
     public SimulatorConnectionState State { get; }
 
     public void Dispose()
@@ -76,7 +81,10 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
             _dataReadySignal.Dispose();
             _cancellationTokenSource.Dispose();
 
-            // Don't dispose the data file as it is managed by the connection pool
+            // Don't dispose the data file as it is managed by the connection pool. Instead, release our lifetime handle to it and the
+            // data file will dispose itself when all of the rented handles are returned.
+
+            _dataFileLifetimeHandle.Dispose();
 
             _isDisposed = true;
         }
@@ -104,6 +112,11 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
         {
             return false;
         }
+    }
+
+    internal void SetOuterConnectionOpenState(SimulatorConnection outerConnection)
+    {
+        outerConnection.SetOpenInternalConnection(this, _dataFile.AcquireLifetimeHandle());
     }
 
     private void ConnectionWorkerThread()

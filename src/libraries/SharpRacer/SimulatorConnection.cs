@@ -15,6 +15,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
     private readonly IConnectionPool _connectionPool;
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
+    private IDisposable? _dataFileLifetimeHandle;
     private ISimulatorInternalConnection _internalConnection;
     private readonly object _internalConnectionLock = new();
     private bool _isDisposed;
@@ -106,6 +107,11 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
 
             _openSemaphore.Dispose();
             _connectionTransitionSemaphore.Dispose();
+
+            if (_dataFileLifetimeHandle != null)
+            {
+                _dataFileLifetimeHandle.Dispose();
+            }
 
             _isDisposed = true;
         }
@@ -275,7 +281,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
         }
     }
 
-    internal void SetOpenInternalConnection(ISimulatorInternalConnection internalConnection)
+    internal void SetOpenInternalConnection(ISimulatorInternalConnection internalConnection, IDisposable dataFileLifetimeHandle)
     {
         // This should only be called when transitioning from Connecting -> Open
 
@@ -288,6 +294,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
                 return;
             }
 
+            _dataFileLifetimeHandle = dataFileLifetimeHandle;
             Interlocked.Exchange(ref _internalConnection, internalConnection);
 
             _variableInfoProvider.InitializeVariables(this);
