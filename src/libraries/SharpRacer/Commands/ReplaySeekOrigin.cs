@@ -1,12 +1,12 @@
 ﻿namespace SharpRacer.Commands;
 
 /// <summary>
-/// Defines seek modes for replay commands.
+/// Specifies the reference position in a replay to use when seeking.
 /// </summary>
 /// <remarks>
 /// See irsdk_RpyPosMode in the iRacing SDK.
 /// </remarks>
-public enum ReplaySeekMode : ushort
+public enum ReplaySeekOrigin : ushort
 {
     /// <summary>
     /// Seek from the beginning of the replay.

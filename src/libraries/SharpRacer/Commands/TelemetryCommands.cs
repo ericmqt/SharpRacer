@@ -7,7 +7,7 @@ namespace SharpRacer.Commands;
 /// Provides methods for controlling telemetry recording in the simulator.
 /// </summary>
 /// <remarks>
-/// These commands may be issued at any time, however telemetry is only recorded when the driver is in the car.
+/// The simulator must be running for these commands to have any effect. Telemetry is only recorded when the driver is in the car.
 /// </remarks>
 [SupportedOSPlatform("windows5.1.2600")]
 public static class TelemetryCommands

@@ -1,28 +1,40 @@
 ﻿namespace SharpRacer;
 
 /// <summary>
-/// Camera state flags.
+/// Defines flags that describe the state of the camera tool.
 /// </summary>
-/// <remarks>See: irsdk_CameraState</remarks>
+/// <remarks>See irsdk_CameraState in the iRacing SDK.</remarks>
 [Flags]
 public enum CameraState : uint
 {
-#pragma warning disable CA1008 // Enums should have zero value
-    Unknown = 0,
-#pragma warning restore CA1008 // Enums should have zero value
     /// <summary>
-    /// The camera tool can only be activated if viewing the session screen (out of car).
+    /// Undefined camera state.
     /// </summary>
-    IsSessionScreen = 0x0001,
+    /// <remarks>
+    /// This value is not defined in the irsdk_CameraState enumeration in the iRacing SDK.
+    /// </remarks>
+    None = 0,
+
+    /// <summary>
+    /// Indicates the session screen is active. The camera tool can only be activated in this state.
+    /// </summary>
+    IsSessionScreenActive = 0x0001,
 
     /// <summary>
     /// The scenic camera is active (no focus car).
     /// </summary>
-    IsScenicActive = 0x0002,
+    IsScenicCameraActive = 0x0002,
 
-    //these can be changed with a broadcast message
-    CamToolActive = 0x0004,
-    UIHidden = 0x0008,
+    /// <summary>
+    /// Indicates the camera tool is active.
+    /// </summary>
+    IsCameraToolActive = 0x0004,
+
+    /// <summary>
+    /// Simulator UI is hidden.
+    /// </summary>
+    IsUIHidden = 0x0008,
+
     UseAutoShotSelection = 0x0010,
     UseTemporaryEdits = 0x0020,
     UseKeyAcceleration = 0x0040,

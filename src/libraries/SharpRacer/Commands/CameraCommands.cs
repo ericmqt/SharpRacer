@@ -1,9 +1,14 @@
 ﻿using System.Runtime.Versioning;
 using SharpRacer.Interop;
-using SharpRacer.Telemetry;
 
 namespace SharpRacer.Commands;
 
+/// <summary>
+/// Provides static methods for invoking camera commands.
+/// </summary>
+/// <remarks>
+/// The simulator must be running for these commands to have any effect.
+/// </remarks>
 [SupportedOSPlatform("windows5.1.2600")]
 public static class CameraCommands
 {

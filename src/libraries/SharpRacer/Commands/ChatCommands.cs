@@ -3,6 +3,12 @@ using SharpRacer.Interop;
 
 namespace SharpRacer.Commands;
 
+/// <summary>
+/// Provides static methods for invoking chat commands.
+/// </summary>
+/// <remarks>
+/// The simulator must be running for these commands to have any effect.
+/// </remarks>
 [SupportedOSPlatform("windows5.1.2600")]
 public static class ChatCommands
 {
