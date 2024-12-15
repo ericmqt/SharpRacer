@@ -21,6 +21,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
     private readonly ConnectionWaitHandles _waitHandles;
 
     private SimulatorConnectionException? _connectionException;
+    private MemoryMappedDataFile? _dataFile;
     private DataReadyCallback? _dataReadyCallback;
     private OpenInternalConnection? _internalConnection;
     private int _nextConnectionId;
@@ -36,6 +37,8 @@ internal sealed partial class ConnectionPool : IConnectionPool
         _destroyConnectionSemaphore = new SemaphoreSlim(1, 1);
         _requestQueueProcessingSemaphore = new SemaphoreSlim(1, 1);
         _waitHandles = new ConnectionWaitHandles();
+
+        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
     }
 
     internal static IConnectionPool Default { get; } = new ConnectionPool();
@@ -148,6 +151,8 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
         lock (_outerConnectionsLock)
         {
+            // Stop tracking the outer connection and destroy the inner connection if no outer connections remain
+
             // If the outer connection is not part of the current set, the internal connection would already have been disposed, so don't
             // do anything here if Remove returns false.
 
@@ -249,10 +254,11 @@ internal sealed partial class ConnectionPool : IConnectionPool
     {
         try
         {
-            var dataFile = MemoryMappedDataFile.Open();
+            // Open the data file if it hasn't been opened already
+            _dataFile ??= MemoryMappedDataFile.Open();
 
             var connection = new OpenInternalConnection(
-                dataFile,
+                _dataFile,
                 Interlocked.Increment(ref _nextConnectionId),
                 this);
 
@@ -508,6 +514,17 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
         // We still have pending connections so process the queue
         ProcessRequestQueue(abortIfAlreadyProcessing: true);
+    }
+
+    private void OnProcessExit(object? sender, EventArgs e)
+    {
+        // Dispose the memory-mapped file
+
+        if (_dataFile != null)
+        {
+            _dataFile.Dispose();
+            _dataFile = null;
+        }
     }
 
     private static SimulatorConnectionException GetConnectionException(string message, Exception? innerException = null)

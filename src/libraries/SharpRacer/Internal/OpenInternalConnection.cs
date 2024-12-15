@@ -75,7 +75,8 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
             _asyncDataReadySignal.Dispose();
             _dataReadySignal.Dispose();
             _cancellationTokenSource.Dispose();
-            _dataFile.Dispose();
+
+            // Don't dispose the data file as it is managed by the connection pool
 
             _isDisposed = true;
         }
