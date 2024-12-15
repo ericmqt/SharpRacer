@@ -337,6 +337,10 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 
         _waitHandles.ConnectionAvailableSignal.Set();
 
+        // Ensure every pending request gets processed. Otherwise, if the queue was already in the middle of being processed, there is a
+        // small chance that some requests would be left uncompleted because the queue is no longer being periodically processed while
+        // DataReadyCallback waits for the event to fire.
+
         _requestQueue.ProcessQueue(force: true);
     }
 
@@ -349,6 +353,9 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 
         _waitHandles.ConnectionExceptionSignal.Set();
 
+        // Ensure every pending request gets processed. Otherwise, if the queue was already in the middle of being processed, there is a
+        // small chance that some requests would be left uncompleted because the queue is no longer being periodically processed while
+        // DataReadyCallback waits for the event to fire.
         _requestQueue.ProcessQueue(force: true);
 
         // Wait for pending connections to drop to zero
