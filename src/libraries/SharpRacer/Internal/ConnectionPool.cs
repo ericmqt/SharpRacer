@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
 using SharpRacer.IO;
@@ -7,7 +6,7 @@ using SharpRacer.IO;
 namespace SharpRacer.Internal;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed partial class ConnectionPool : IConnectionPool
+internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnectionRequestCompletionSource
 {
     // Outer connection tracking
     private bool _canAddOuterConnections;
@@ -17,7 +16,6 @@ internal sealed partial class ConnectionPool : IConnectionPool
     // Synchronization primitives
     private readonly ManualResetEventSlim _allowConnectSignal;
     private readonly SemaphoreSlim _destroyConnectionSemaphore;
-    private readonly SemaphoreSlim _requestQueueProcessingSemaphore;
     private readonly ConnectionWaitHandles _waitHandles;
 
     private SimulatorConnectionException? _connectionException;
@@ -26,16 +24,15 @@ internal sealed partial class ConnectionPool : IConnectionPool
     private OpenInternalConnection? _internalConnection;
     private int _nextConnectionId;
     private int _pendingConnectionCount;
-    private readonly ConcurrentQueue<AsyncConnectionRequest> _requestQueue;
+    private readonly AsyncConnectionRequestQueue _requestQueue;
 
     private ConnectionPool()
     {
-        _requestQueue = new ConcurrentQueue<AsyncConnectionRequest>();
+        _requestQueue = new AsyncConnectionRequestQueue(this);
         _outerConnections = new List<SimulatorConnection>();
 
         _allowConnectSignal = new ManualResetEventSlim(initialState: true);
         _destroyConnectionSemaphore = new SemaphoreSlim(1, 1);
-        _requestQueueProcessingSemaphore = new SemaphoreSlim(1, 1);
         _waitHandles = new ConnectionWaitHandles();
 
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
@@ -131,7 +128,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
             {
                 _requestQueue.Enqueue(request);
 
-                ThreadPool.QueueUserWorkItem<object?>(_ => ProcessRequestQueue(abortIfAlreadyProcessing: true), null, false);
+                ThreadPool.QueueUserWorkItem<object?>(_ => _requestQueue.ProcessQueue(force: false), null, false);
             }
 
             await completion.Task;
@@ -331,44 +328,6 @@ internal sealed partial class ConnectionPool : IConnectionPool
         }
     }
 
-    private void ProcessRequestQueue(bool abortIfAlreadyProcessing)
-    {
-        if (abortIfAlreadyProcessing)
-        {
-            if (!_requestQueueProcessingSemaphore.Wait(0))
-            {
-                return;
-            }
-        }
-        else
-        {
-            _requestQueueProcessingSemaphore.Wait();
-        }
-
-        try
-        {
-            var uncompletedRequests = new List<AsyncConnectionRequest>(_requestQueue.Count);
-
-            while (_requestQueue.TryDequeue(out var request))
-            {
-                if (!TryCompleteRequest(request))
-                {
-                    // Unable to complete request, so return it for further processing
-                    uncompletedRequests.Add(request);
-                }
-            }
-
-            for (int i = 0; i < uncompletedRequests.Count; i++)
-            {
-                _requestQueue.Enqueue(uncompletedRequests[i]);
-            }
-        }
-        finally
-        {
-            _requestQueueProcessingSemaphore.Release();
-        }
-    }
-
     private void SetConnection(OpenInternalConnection connection)
     {
         Debug.Assert(_internalConnection == null, "Internal connection is not null");
@@ -378,7 +337,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
         _waitHandles.ConnectionAvailableSignal.Set();
 
-        ProcessRequestQueue(abortIfAlreadyProcessing: false);
+        _requestQueue.ProcessQueue(force: true);
     }
 
     private void SetConnectionException(SimulatorConnectionException exception)
@@ -390,7 +349,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
 
         _waitHandles.ConnectionExceptionSignal.Set();
 
-        ProcessRequestQueue(abortIfAlreadyProcessing: false);
+        _requestQueue.ProcessQueue(force: true);
 
         // Wait for pending connections to drop to zero
         var spinner = new SpinWait();
@@ -513,7 +472,7 @@ internal sealed partial class ConnectionPool : IConnectionPool
         }
 
         // We still have pending connections so process the queue
-        ProcessRequestQueue(abortIfAlreadyProcessing: true);
+        _requestQueue.ProcessQueue(force: false);
     }
 
     private void OnProcessExit(object? sender, EventArgs e)
@@ -526,6 +485,8 @@ internal sealed partial class ConnectionPool : IConnectionPool
             _dataFile = null;
         }
     }
+
+    bool IAsyncConnectionRequestCompletionSource.TryCompleteRequest(AsyncConnectionRequest request) => TryCompleteRequest(request);
 
     private static SimulatorConnectionException GetConnectionException(string message, Exception? innerException = null)
     {
