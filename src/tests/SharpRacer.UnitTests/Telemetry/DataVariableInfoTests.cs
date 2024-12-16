@@ -107,22 +107,9 @@ public class DataVariableInfoTests
 
         var varHeaderValueSpan = frameMemory.Span.Slice(varHeader.Offset, varHeader.GetDataLength());
 
-        var dataFrame = new TelemetryFileDataFrame(frameBlob, frameIndex: 3);
-
-        var valueSpan = variableInfo.GetValueSpan(dataFrame);
+        var valueSpan = variableInfo.GetValueSpan(frameBlob);
 
         Assert.True(varHeaderValueSpan.SequenceEqual(valueSpan));
-    }
-
-    [Fact]
-    public void GetValueSpan_ThrowOnNullDataFrameTest()
-    {
-        var varHeader = CreateScalarHeader("Foo", DataVariableValueType.Int, offset: 8, description: "Test", unit: "test/s");
-        var variableInfo = new DataVariableInfo(varHeader);
-
-        IDataFrame dataFrame = null!;
-
-        Assert.Throws<ArgumentNullException>(() => variableInfo.GetValueSpan(dataFrame));
     }
 
     private static DataVariableHeader CreateArrayHeader(

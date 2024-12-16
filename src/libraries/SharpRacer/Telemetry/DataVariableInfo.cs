@@ -66,14 +66,12 @@ public sealed class DataVariableInfo
     public string? ValueUnit { get; }
 
     /// <summary>
-    /// Gets a span over the specified <see cref="IDataFrame"/> that contains the value represented by the variable.
+    /// Gets a span containing the variable data from a read-only span of bytes representing the contents of a telemetry data buffer.
     /// </summary>
-    /// <param name="dataFrame"></param>
+    /// <param name="data">A read-only span of bytes representing the contents of a telemetry data buffer.</param>
     /// <returns>A read-only span of bytes over the variable value.</returns>
-    public ReadOnlySpan<byte> GetValueSpan(IDataFrame dataFrame)
+    public ReadOnlySpan<byte> GetValueSpan(ReadOnlySpan<byte> data)
     {
-        ArgumentNullException.ThrowIfNull(dataFrame);
-
-        return dataFrame.Data.Slice(Offset, ValueSize * ValueCount);
+        return data.Slice(Offset, ValueSize * ValueCount);
     }
 }
