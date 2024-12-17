@@ -42,7 +42,7 @@ public static class ChatCommands
     }
 
     /// <summary>
-    /// Reply to the last private chat message received.
+    /// Initiate a reply to the last private chat message received.
     /// </summary>
     public static void ReplyToLastPrivateMessage()
     {

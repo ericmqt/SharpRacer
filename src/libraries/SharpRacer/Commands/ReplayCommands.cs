@@ -36,11 +36,19 @@ public static class ReplayCommands
         SetPlaySpeed(1, false);
     }
 
+    /// <summary>
+    /// Sets the playback position according to the result of a search.
+    /// </summary>
+    /// <param name="searchMode"></param>
     public static void Search(ReplaySearchMode searchMode)
     {
         BroadcastMessage.Send(SimulatorCommandId.ReplaySearch, (ushort)searchMode);
     }
 
+    /// <summary>
+    /// Sets the playback position according to the result of a search for the specified session and session time.
+    /// </summary>
+    /// <param name="sessionNumber">The session number.</param>
     public static void SearchSessionTime(int sessionNumber, int sessionTimeMs)
     {
         BroadcastMessage.Send(SimulatorCommandId.ReplaySearchSessionTime, sessionNumber, sessionTimeMs);

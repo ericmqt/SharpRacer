@@ -16,7 +16,7 @@ public static class CameraCommands
     /// Sets the camera state.
     /// </summary>
     /// <param name="cameraState">The camera state.</param>
-    /// <remarks>See irsdk_BroadcastCamSetState</remarks>
+    /// <remarks>See irsdk_BroadcastCamSetState in the iRacing SDK.</remarks>
     public static void SetState(CameraState cameraState)
     {
         BroadcastMessage.Send(SimulatorCommandId.CameraSetState, (ushort)cameraState);
@@ -28,7 +28,7 @@ public static class CameraCommands
     /// <param name="position">The race position of the car to target.</param>
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
-    /// <remarks>See irsdk_BroadcastCamSwitchPos</remarks>
+    /// <remarks>See irsdk_BroadcastCamSwitchPos in the iRacing SDK.</remarks>
     public static void TargetCarPosition(int position, int cameraGroup, int cameraIndex)
     {
         BroadcastMessage.Send(SimulatorCommandId.CameraSwitchPosition, position, cameraGroup, cameraIndex);
@@ -40,7 +40,7 @@ public static class CameraCommands
     /// <param name="targetMode">The camera target mode.</param>
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
-    /// <remarks>See irsdk_BroadcastCamSwitchPos, irsdk_csMode</remarks>
+    /// <remarks>See irsdk_BroadcastCamSwitchPos and irsdk_csMode in the iRacing SDK.</remarks>
     public static void TargetCarPosition(CameraTargetMode targetMode, int cameraGroup, int cameraIndex)
     {
         BroadcastMessage.Send(SimulatorCommandId.CameraSwitchPosition, (int)targetMode, cameraGroup, cameraIndex);
@@ -52,7 +52,7 @@ public static class CameraCommands
     /// <param name="driverNumber"></param>
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
-    /// <remarks>See irsdk_BroadcastCamSwitchNum</remarks>
+    /// <remarks>See irsdk_BroadcastCamSwitchNum in the iRacing SDK.</remarks>
     public static void TargetDriver(int driverNumber, int cameraGroup, int cameraIndex)
     {
         BroadcastMessage.Send(SimulatorCommandId.CameraSwitchNumber, driverNumber, cameraGroup, cameraIndex);
@@ -64,7 +64,7 @@ public static class CameraCommands
     /// <param name="targetMode">The camera target mode.</param>
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
-    /// <remarks>See irsdk_BroadcastCamSwitchNum, irsdk_csMode</remarks>
+    /// <remarks>See irsdk_BroadcastCamSwitchNum and irsdk_csMode in the iRacing SDK.</remarks>
     public static void TargetDriver(CameraTargetMode targetMode, int cameraGroup, int cameraIndex)
     {
         BroadcastMessage.Send(SimulatorCommandId.CameraSwitchNumber, (int)targetMode, cameraGroup, cameraIndex);
