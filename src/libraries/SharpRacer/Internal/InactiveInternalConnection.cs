@@ -2,7 +2,7 @@
 using SharpRacer.IO;
 
 namespace SharpRacer.Internal;
-internal class InactiveInternalConnection : ISimulatorInternalConnection
+internal class InactiveInternalConnection : ISimulatorInnerConnection
 {
     private readonly ISimulatorDataFile _dataFile;
 
@@ -20,6 +20,7 @@ internal class InactiveInternalConnection : ISimulatorInternalConnection
 
     public int ConnectionId { get; } = -1;
     public ReadOnlySpan<byte> Data => _dataFile.Span;
+    public ISimulatorDataFile DataFile => _dataFile;
     public TimeSpan IdleTimeout { get; set; }
     public SimulatorConnectionState State { get; }
 

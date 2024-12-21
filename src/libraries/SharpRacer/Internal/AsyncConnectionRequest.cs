@@ -3,21 +3,30 @@
 internal sealed class AsyncConnectionRequest
 {
     private readonly long _requestCreationTimestamp;
+    private readonly TimeProvider _timeProvider;
+
+    public AsyncConnectionRequest(ISimulatorOuterConnection outerConnection, TaskCompletionSource completion, TimeSpan timeout)
+        : this(outerConnection, completion, timeout, TimeProvider.System)
+    {
+
+    }
 
     public AsyncConnectionRequest(
-        SimulatorConnection outerConnection,
+        ISimulatorOuterConnection outerConnection,
         TaskCompletionSource completion,
-        TimeSpan timeout)
+        TimeSpan timeout,
+        TimeProvider timeProvider)
     {
         OuterConnection = outerConnection ?? throw new ArgumentNullException(nameof(outerConnection));
         Completion = completion ?? throw new ArgumentNullException(nameof(completion));
         Timeout = timeout;
 
-        _requestCreationTimestamp = TimeProvider.System.GetTimestamp();
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+        _requestCreationTimestamp = _timeProvider.GetTimestamp();
     }
 
     public TaskCompletionSource Completion { get; }
-    public SimulatorConnection OuterConnection { get; }
+    public ISimulatorOuterConnection OuterConnection { get; }
     public TimeSpan Timeout { get; }
 
     public bool IsTimedOut()
@@ -27,6 +36,6 @@ internal sealed class AsyncConnectionRequest
             return false;
         }
 
-        return TimeProvider.System.GetElapsedTime(_requestCreationTimestamp) >= Timeout;
+        return _timeProvider.GetElapsedTime(_requestCreationTimestamp) >= Timeout;
     }
 }

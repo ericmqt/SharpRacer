@@ -9,14 +9,14 @@ namespace SharpRacer;
 /// Represents a connection to a simulator session.
 /// </summary>
 [SupportedOSPlatform("windows5.1.2600")]
-public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
+public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterConnection, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IConnectionPool _connectionPool;
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
     private IDisposable? _dataFileLifetimeHandle;
-    private ISimulatorInternalConnection _internalConnection;
+    private ISimulatorInnerConnection _internalConnection;
     private readonly object _internalConnectionLock = new();
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
@@ -259,7 +259,26 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
         return await _internalConnection.WaitForDataReadyAsync(linkedCancellationSource.Token).ConfigureAwait(false);
     }
 
-    internal void SetClosedInternalConnection(ISimulatorInternalConnection internalConnection)
+    private void SetState(SimulatorConnectionState state)
+    {
+        var oldState = (SimulatorConnectionState)Interlocked.Exchange(ref _connectionStateValue, (int)state);
+
+        if (state != oldState)
+        {
+            StateChanged?.Invoke(this, new SimulatorConnectionStateChangedEventArgs(state, oldState));
+
+            if (state == SimulatorConnectionState.Closed)
+            {
+                Closed?.Invoke(this, EventArgs.Empty);
+            }
+            else if (state == SimulatorConnectionState.Open)
+            {
+                Opened?.Invoke(this, EventArgs.Empty);
+            }
+        }
+    }
+
+    void ISimulatorOuterConnection.SetClosedInnerConnection(ISimulatorInnerConnection internalConnection)
     {
         // This should only be called by the pool when either the internal connection has closed or when the last SimulatorConnection
         // sharing the internal connection closes.
@@ -281,7 +300,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
         }
     }
 
-    internal void SetOpenInternalConnection(ISimulatorInternalConnection internalConnection, IDisposable dataFileLifetimeHandle)
+    void ISimulatorOuterConnection.SetOpenInnerConnection(ISimulatorInnerConnection internalConnection, IDisposable dataFileLifetimeHandle)
     {
         // This should only be called when transitioning from Connecting -> Open
 
@@ -304,25 +323,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IDisposable
         finally
         {
             _connectionTransitionSemaphore.Release();
-        }
-    }
-
-    private void SetState(SimulatorConnectionState state)
-    {
-        var oldState = (SimulatorConnectionState)Interlocked.Exchange(ref _connectionStateValue, (int)state);
-
-        if (state != oldState)
-        {
-            StateChanged?.Invoke(this, new SimulatorConnectionStateChangedEventArgs(state, oldState));
-
-            if (state == SimulatorConnectionState.Closed)
-            {
-                Closed?.Invoke(this, EventArgs.Empty);
-            }
-            else if (state == SimulatorConnectionState.Open)
-            {
-                Opened?.Invoke(this, EventArgs.Empty);
-            }
         }
     }
 }

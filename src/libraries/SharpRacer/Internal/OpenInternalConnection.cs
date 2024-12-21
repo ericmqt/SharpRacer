@@ -6,7 +6,7 @@ using SharpRacer.IO;
 namespace SharpRacer.Internal;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed class OpenInternalConnection : ISimulatorInternalConnection
+internal sealed class OpenInternalConnection : ISimulatorInnerConnection
 {
     private readonly DotNext.Threading.AsyncManualResetEvent _asyncDataReadySignal;
     private readonly CancellationTokenSource _cancellationTokenSource;
@@ -114,9 +114,9 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
         }
     }
 
-    internal void SetOuterConnectionOpenState(SimulatorConnection outerConnection)
+    internal void SetOuterConnectionOpenState(ISimulatorOuterConnection outerConnection)
     {
-        outerConnection.SetOpenInternalConnection(this, _dataFile.AcquireLifetimeHandle());
+        outerConnection.SetOpenInnerConnection(this, _dataFile.AcquireLifetimeHandle());
     }
 
     private void ConnectionWorkerThread()
@@ -135,6 +135,9 @@ internal sealed class OpenInternalConnection : ISimulatorInternalConnection
         {
             // Wait for data-ready signal, cancellation, or timeout
             var waitIndex = WaitHandle.WaitAny(waitHandles, DataReadyWaitTimeout);
+
+            // TODO: See if simulator status is set to zero with a sync event when sim exits, then we could return to the pool without 
+            // needing to wait a full two frames
 
             Interlocked.Exchange(ref _simulatorStatus, MemoryMarshal.Read<int>(Data.Slice(DataFileHeader.FieldOffsets.Status, sizeof(int))));
 

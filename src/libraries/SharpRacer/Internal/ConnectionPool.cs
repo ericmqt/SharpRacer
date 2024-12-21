@@ -10,7 +10,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 {
     // Outer connection tracking
     private bool _canAddOuterConnections;
-    private readonly List<SimulatorConnection> _outerConnections;
+    private readonly List<ISimulatorOuterConnection> _outerConnections;
     private readonly object _outerConnectionsLock = new object();
 
     // Synchronization primitives
@@ -220,7 +220,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         }
     }
 
-    private bool AttachOuterConnection(OpenInternalConnection internalConnection, SimulatorConnection outerConnection)
+    private bool AttachOuterConnection(OpenInternalConnection internalConnection, ISimulatorOuterConnection outerConnection)
     {
         lock (_outerConnectionsLock)
         {
@@ -312,7 +312,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
                     {
                         var outer = _outerConnections.First();
 
-                        try { outer.SetClosedInternalConnection(closedConnection); }
+                        try { outer.SetClosedInnerConnection(closedConnection); }
                         catch
                         {
                             // Swallow exceptions, not that there should ever be any.
