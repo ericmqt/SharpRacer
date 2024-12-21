@@ -17,7 +17,7 @@ internal sealed class OuterConnectionTracker : IOuterConnectionTracker
         set => _canAttach = value;
     }
 
-    public bool Attach(ISimulatorOuterConnection outerConnection, IOpenInnerConnection innerConnection)
+    public bool Attach(ISimulatorOuterConnection outerConnection)
     {
         lock (_lock)
         {

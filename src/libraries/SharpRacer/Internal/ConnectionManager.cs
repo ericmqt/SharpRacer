@@ -207,7 +207,7 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
 
     private bool AttachOuterConnection(IOpenInnerConnection innerConnection, ISimulatorOuterConnection outerConnection)
     {
-        if (_outerConnectionTracker.Attach(outerConnection, innerConnection))
+        if (_outerConnectionTracker.Attach(outerConnection))
         {
             // Set the inner connection and pass a lifetime handle for the memory-mapped data file
             outerConnection.SetOpenInnerConnection(innerConnection, innerConnection.AcquireDataFileLifetimeHandle());
