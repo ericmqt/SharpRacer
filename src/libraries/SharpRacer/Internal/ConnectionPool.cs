@@ -38,12 +38,12 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 
     internal static IConnectionPool Default { get; } = new ConnectionPool();
 
-    public void Connect(SimulatorConnection outerConnection)
+    public void Connect(ISimulatorOuterConnection outerConnection)
     {
         Connect(outerConnection, Timeout.InfiniteTimeSpan);
     }
 
-    public void Connect(SimulatorConnection outerConnection, TimeSpan timeout)
+    public void Connect(ISimulatorOuterConnection outerConnection, TimeSpan timeout)
     {
         ArgumentNullException.ThrowIfNull(outerConnection);
 
@@ -95,12 +95,12 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         throw new SimulatorConnectionException("Failed to establish a connection to the simulator.");
     }
 
-    public Task ConnectAsync(SimulatorConnection outerConnection, CancellationToken cancellationToken = default)
+    public Task ConnectAsync(ISimulatorOuterConnection outerConnection, CancellationToken cancellationToken = default)
     {
         return ConnectAsync(outerConnection, Timeout.InfiniteTimeSpan, cancellationToken);
     }
 
-    public async Task ConnectAsync(SimulatorConnection outerConnection, TimeSpan timeout, CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(ISimulatorOuterConnection outerConnection, TimeSpan timeout, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(outerConnection);
 
@@ -140,7 +140,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         }
     }
 
-    public void ReleaseOuterConnection(SimulatorConnection outerConnection)
+    public void ReleaseOuterConnection(ISimulatorOuterConnection outerConnection)
     {
         var destroyInnerConnection = false;
 
@@ -172,7 +172,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     /// outer connections before resetting the pool connection state.
     /// </summary>
     /// <param name="innerConnection"></param>
-    public void Return(OpenInnerConnection innerConnection)
+    public void Return(IOpenInnerConnection innerConnection)
     {
         // If the connection isn't the current one, just clean it up and move on. I have no idea how this could occur, but better to be
         // safe than wreck the current connection for no reason.
