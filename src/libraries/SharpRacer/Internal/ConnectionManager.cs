@@ -6,7 +6,7 @@ using SharpRacer.IO;
 namespace SharpRacer.Internal;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnectionRequestCompletionSource
+internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnectionRequestCompletionSource
 {
     // Outer connection tracking
     private bool _canAddOuterConnections;
@@ -26,7 +26,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     private int _pendingConnectionCount;
     private readonly AsyncConnectionRequestQueue _requestQueue;
 
-    private ConnectionPool()
+    private ConnectionManager()
     {
         _requestQueue = new AsyncConnectionRequestQueue(this);
         _outerConnections = [];
@@ -36,7 +36,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         _waitHandles = new ConnectionWaitHandles();
     }
 
-    internal static IConnectionPool Default { get; } = new ConnectionPool();
+    internal static IConnectionPool Default { get; } = new ConnectionManager();
 
     public void Connect(ISimulatorOuterConnection outerConnection)
     {

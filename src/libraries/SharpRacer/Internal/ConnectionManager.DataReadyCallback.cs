@@ -2,7 +2,7 @@
 using SharpRacer.Interop;
 
 namespace SharpRacer.Internal;
-partial class ConnectionPool
+partial class ConnectionManager
 {
     private sealed class DataReadyCallback : IDisposable
     {
