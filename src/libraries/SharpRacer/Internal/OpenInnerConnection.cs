@@ -6,7 +6,7 @@ using SharpRacer.IO;
 namespace SharpRacer.Internal;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed class OpenInnerConnection : ISimulatorInnerConnection
+internal sealed class OpenInnerConnection : IOpenInnerConnection
 {
     private readonly DotNext.Threading.AsyncManualResetEvent _asyncDataReadySignal;
     private readonly CancellationTokenSource _cancellationTokenSource;
@@ -114,11 +114,6 @@ internal sealed class OpenInnerConnection : ISimulatorInnerConnection
         }
     }
 
-    internal void SetOuterConnectionOpenState(ISimulatorOuterConnection outerConnection)
-    {
-        outerConnection.SetOpenInnerConnection(this, _dataFile.AcquireLifetimeHandle());
-    }
-
     private void ConnectionWorkerThread()
     {
         // Wait at most two frames before checking if sim has closed and evaluating idle timeout. Even with the latency of waking the
@@ -176,5 +171,10 @@ internal sealed class OpenInnerConnection : ISimulatorInnerConnection
                 break;
             }
         }
+    }
+
+    IDisposable IOpenInnerConnection.AcquireDataFileLifetimeHandle()
+    {
+        return _dataFile.AcquireLifetimeHandle();
     }
 }

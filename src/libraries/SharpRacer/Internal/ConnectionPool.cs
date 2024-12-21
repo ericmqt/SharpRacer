@@ -21,7 +21,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     private SimulatorConnectionException? _connectionException;
     private MemoryMappedDataFile? _dataFile;
     private DataReadyCallback? _dataReadyCallback;
-    private OpenInnerConnection? _innerConnection;
+    private IOpenInnerConnection? _innerConnection;
     private int _nextConnectionId;
     private int _pendingConnectionCount;
     private readonly AsyncConnectionRequestQueue _requestQueue;
@@ -168,7 +168,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     }
 
     /// <summary>
-    /// Allows <see cref="OpenInnerConnection"/> to tell the pool it has disconnected and that the pool should clean up associated
+    /// Allows <see cref="IOpenInnerConnection"/> to tell the pool it has disconnected and that the pool should clean up associated
     /// outer connections before resetting the pool connection state.
     /// </summary>
     /// <param name="innerConnection"></param>
@@ -186,7 +186,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         DestroyConnection();
     }
 
-    private bool TryGetConnection(TimeSpan waitTimeout, bool allowCreateConnection, [NotNullWhen(true)] out OpenInnerConnection? innerConnection)
+    private bool TryGetConnection(TimeSpan waitTimeout, bool allowCreateConnection, [NotNullWhen(true)] out IOpenInnerConnection? innerConnection)
     {
         var waitResult = _waitHandles.WaitAny(allowCreateConnection, waitTimeout);
 
@@ -219,7 +219,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         }
     }
 
-    private bool AttachOuterConnection(OpenInnerConnection innerConnection, ISimulatorOuterConnection outerConnection)
+    private bool AttachOuterConnection(IOpenInnerConnection innerConnection, ISimulatorOuterConnection outerConnection)
     {
         lock (_outerConnectionsLock)
         {
@@ -233,9 +233,8 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
                 // Begin tracking the outer connection
                 _outerConnections.Add(outerConnection);
 
-                // Let the inner connection object call SetOpenConnectionState on the outer connection, which also passes the data file
-                // lifetime handle.
-                innerConnection.SetOuterConnectionOpenState(outerConnection);
+                // Set the inner connection and pass a lifetime handle for the memory-mapped data file
+                outerConnection.SetOpenInnerConnection(innerConnection, innerConnection.AcquireDataFileLifetimeHandle());
             }
 
             // Return true even if owner already exists
@@ -338,7 +337,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         }
     }
 
-    private void SetConnection(OpenInnerConnection connection)
+    private void SetConnection(IOpenInnerConnection connection)
     {
         Debug.Assert(_innerConnection == null, "Inner connection is not null");
 
