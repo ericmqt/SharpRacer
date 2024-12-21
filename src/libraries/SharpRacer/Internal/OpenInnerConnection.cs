@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using SharpRacer.Internal.Connections;
 using SharpRacer.Interop;
 using SharpRacer.IO;
 
@@ -10,7 +11,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection
 {
     private readonly DotNext.Threading.AsyncManualResetEvent _asyncDataReadySignal;
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly IConnectionPool _connectionPool;
+    private readonly IConnectionManager _connectionManager;
     private readonly Thread _connectionThread;
     private readonly MemoryMappedDataFile _dataFile;
     private readonly IDisposable _dataFileLifetimeHandle;
@@ -22,10 +23,10 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection
     public OpenInnerConnection(
         MemoryMappedDataFile dataFile,
         int connectionId,
-        IConnectionPool connectionPool)
+        IConnectionManager connectionManager)
     {
         _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
-        _connectionPool = connectionPool ?? throw new ArgumentNullException(nameof(connectionPool));
+        _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
 
         _dataFileLifetimeHandle = _dataFile.AcquireLifetimeHandle();
 
@@ -156,7 +157,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection
                     // Return ourselves because we are disconnecting. Run it on the thread pool so Dispose() won't block when invoked by
                     // the pool.
 
-                    ThreadPool.QueueUserWorkItem(_connectionPool.Return, this, false);
+                    ThreadPool.QueueUserWorkItem(_connectionManager.Return, this, false);
 
                     break;
                 }

@@ -7,7 +7,7 @@ using SharpRacer.IO;
 namespace SharpRacer.Internal;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnectionRequestCompletionSource
+internal sealed partial class ConnectionManager : IConnectionManager, IAsyncConnectionRequestCompletionSource
 {
     // Synchronization primitives
     private readonly ManualResetEventSlim _allowConnectSignal;
@@ -33,7 +33,7 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
         _waitHandles = new ConnectionWaitHandles();
     }
 
-    internal static IConnectionPool Default { get; } = new ConnectionManager();
+    internal static IConnectionManager Default { get; } = new ConnectionManager();
 
     public void Connect(ISimulatorOuterConnection outerConnection)
     {
@@ -137,7 +137,7 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
         }
     }
 
-    public void ReleaseOuterConnection(ISimulatorOuterConnection outerConnection)
+    public void Disconnect(ISimulatorOuterConnection outerConnection)
     {
         if (!_outerConnectionTracker.Detach(outerConnection, out var destroyInnerConnection))
         {

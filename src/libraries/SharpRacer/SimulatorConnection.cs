@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using SharpRacer.Internal;
+using SharpRacer.Internal.Connections;
 using SharpRacer.IO;
 using SharpRacer.Telemetry;
 
@@ -12,7 +13,7 @@ namespace SharpRacer;
 public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterConnection, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
-    private readonly IConnectionPool _connectionPool;
+    private readonly IConnectionManager _connectionManager;
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
     private IDisposable? _dataFileLifetimeHandle;
@@ -31,9 +32,9 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
     }
 
-    internal SimulatorConnection(IConnectionPool connectionPool)
+    internal SimulatorConnection(IConnectionManager connectionManager)
     {
-        _connectionPool = connectionPool ?? throw new ArgumentNullException(nameof(connectionPool));
+        _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
 
         _cancellationTokenSource = new CancellationTokenSource();
         _connectionStateValue = (int)SimulatorConnectionState.None;
@@ -78,7 +79,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
         {
             _cancellationTokenSource.Cancel();
 
-            _connectionPool.ReleaseOuterConnection(this);
+            _connectionManager.Disconnect(this);
 
             // Replace the data file with an empty one, because only consumers should be calling Close(), not the internal connection, so
             // there should be no need to preserve a copy of the data file to prevent uncoordinated reads from getting garbage data.
@@ -102,7 +103,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
 
-            _connectionPool.ReleaseOuterConnection(this);
+            _connectionManager.Disconnect(this);
             // Internal connection is disposed by the pool so there is no need to dispose of it here
 
             _openSemaphore.Dispose();
@@ -158,7 +159,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
             {
                 SetState(SimulatorConnectionState.Connecting);
 
-                _connectionPool.Connect(this, timeout);
+                _connectionManager.Connect(this, timeout);
             }
             catch (Exception)
             {
@@ -207,7 +208,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
             try
             {
-                await _connectionPool.ConnectAsync(this, timeout, linkedCancellationSource.Token);
+                await _connectionManager.ConnectAsync(this, timeout, linkedCancellationSource.Token);
             }
             catch (Exception)
             {
