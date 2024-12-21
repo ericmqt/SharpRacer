@@ -7,5 +7,5 @@ internal interface IConnectionPool
     Task ConnectAsync(SimulatorConnection outerConnection, TimeSpan timeout, CancellationToken cancellationToken = default);
 
     void ReleaseOuterConnection(SimulatorConnection outerConnection);
-    void Return(OpenInternalConnection connection);
+    void Return(OpenInnerConnection connection);
 }

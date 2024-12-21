@@ -6,7 +6,7 @@ using SharpRacer.IO;
 namespace SharpRacer.Internal;
 
 [SupportedOSPlatform("windows5.1.2600")]
-internal sealed class OpenInternalConnection : ISimulatorInnerConnection
+internal sealed class OpenInnerConnection : ISimulatorInnerConnection
 {
     private readonly DotNext.Threading.AsyncManualResetEvent _asyncDataReadySignal;
     private readonly CancellationTokenSource _cancellationTokenSource;
@@ -19,7 +19,7 @@ internal sealed class OpenInternalConnection : ISimulatorInnerConnection
     private bool _isDisposed;
     private int _simulatorStatus;
 
-    public OpenInternalConnection(
+    public OpenInnerConnection(
         MemoryMappedDataFile dataFile,
         int connectionId,
         IConnectionPool connectionPool)

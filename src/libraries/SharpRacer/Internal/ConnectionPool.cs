@@ -21,7 +21,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     private SimulatorConnectionException? _connectionException;
     private MemoryMappedDataFile? _dataFile;
     private DataReadyCallback? _dataReadyCallback;
-    private OpenInternalConnection? _internalConnection;
+    private OpenInnerConnection? _innerConnection;
     private int _nextConnectionId;
     private int _pendingConnectionCount;
     private readonly AsyncConnectionRequestQueue _requestQueue;
@@ -51,9 +51,8 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         var throwTimeoutException = timeout > TimeSpan.Zero;
         var connectStart = TimeProvider.System.GetTimestamp();
 
-        // Loop until a connection is successful or timeout expires. The do/while exists solely for handling the case where an
-        // internal connection object was received, but AttachOuterConnection returned false due to the internal connection starting to
-        // close after acquisition.
+        // Loop until a connection is successful or timeout expires. The do/while exists to handle the case where an inner connection
+        // object was received, but AttachOuterConnection returned false due to the inner connection starting to close after acquisition.
         do
         {
             _allowConnectSignal.Wait();
@@ -62,19 +61,19 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 
             try
             {
-                if (!TryGetConnection(timeout, timeout > TimeSpan.Zero, out var internalConnection))
+                if (!TryGetConnection(timeout, timeout > TimeSpan.Zero, out var innerConnection))
                 {
                     // Timeout elapsed
                     break;
                 }
 
-                if (AttachOuterConnection(internalConnection, outerConnection))
+                if (AttachOuterConnection(innerConnection, outerConnection))
                 {
                     // Outer connection attached, operation complete.
                     return;
                 }
 
-                // Internal connection began closing after being returned from TryGetConnection, so update the timeout period and try again
+                // Inner connection began closing after being returned from TryGetConnection, so update the timeout period and try again
                 if (!isTimeoutInfinite)
                 {
                     timeout -= TimeProvider.System.GetElapsedTime(connectStart);
@@ -149,7 +148,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         {
             // Stop tracking the outer connection and destroy the inner connection if no outer connections remain
 
-            // If the outer connection is not part of the current set, the internal connection would already have been disposed, so don't
+            // If the outer connection is not part of the current set, the inner connection would already have been disposed, so don't
             // do anything here if Remove returns false.
 
             if (_outerConnections.Remove(outerConnection)
@@ -169,17 +168,17 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
     }
 
     /// <summary>
-    /// Allows <see cref="OpenInternalConnection"/> to tell the pool it has disconnected and that the pool should clean up associated
+    /// Allows <see cref="OpenInnerConnection"/> to tell the pool it has disconnected and that the pool should clean up associated
     /// outer connections before resetting the pool connection state.
     /// </summary>
-    /// <param name="connection"></param>
-    public void Return(OpenInternalConnection connection)
+    /// <param name="innerConnection"></param>
+    public void Return(OpenInnerConnection innerConnection)
     {
         // If the connection isn't the current one, just clean it up and move on. I have no idea how this could occur, but better to be
         // safe than wreck the current connection for no reason.
-        if (connection != _internalConnection)
+        if (innerConnection != _innerConnection)
         {
-            connection.Dispose();
+            innerConnection.Dispose();
 
             return;
         }
@@ -187,15 +186,15 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         DestroyConnection();
     }
 
-    private bool TryGetConnection(TimeSpan waitTimeout, bool allowCreateConnection, [NotNullWhen(true)] out OpenInternalConnection? internalConnection)
+    private bool TryGetConnection(TimeSpan waitTimeout, bool allowCreateConnection, [NotNullWhen(true)] out OpenInnerConnection? innerConnection)
     {
         var waitResult = _waitHandles.WaitAny(allowCreateConnection, waitTimeout);
 
         switch (waitResult)
         {
             case ConnectionWaitHandles.ConnectionAvailableWaitIndex:
-                Debug.Assert(_internalConnection != null, "Connected signal received but connection object was null");
-                internalConnection = _internalConnection;
+                Debug.Assert(_innerConnection != null, "Connected signal received but connection object was null");
+                innerConnection = _innerConnection;
                 return true;
 
             case ConnectionWaitHandles.ConnectionExceptionWaitIndex:
@@ -209,10 +208,10 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
                 // Start a connection attempt, will will run until success, error, or no pending connection requests remain
                 BeginConnection();
 
-                return TryGetConnection(waitTimeout, false, out internalConnection);
+                return TryGetConnection(waitTimeout, false, out innerConnection);
 
             case WaitHandle.WaitTimeout:
-                internalConnection = null;
+                innerConnection = null;
                 return false;
 
             default:
@@ -220,7 +219,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         }
     }
 
-    private bool AttachOuterConnection(OpenInternalConnection internalConnection, ISimulatorOuterConnection outerConnection)
+    private bool AttachOuterConnection(OpenInnerConnection innerConnection, ISimulatorOuterConnection outerConnection)
     {
         lock (_outerConnectionsLock)
         {
@@ -234,9 +233,9 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
                 // Begin tracking the outer connection
                 _outerConnections.Add(outerConnection);
 
-                // Let the internal connection object call SetOpenConnectionState on the outer connection, which also passes the data file
+                // Let the inner connection object call SetOpenConnectionState on the outer connection, which also passes the data file
                 // lifetime handle.
-                internalConnection.SetOuterConnectionOpenState(outerConnection);
+                innerConnection.SetOuterConnectionOpenState(outerConnection);
             }
 
             // Return true even if owner already exists
@@ -260,7 +259,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
             // Open the data file. If one already existed it'll self-dispose eventually once all referencing connections are disposed
             _dataFile = MemoryMappedDataFile.Open();
 
-            var connection = new OpenInternalConnection(
+            var connection = new OpenInnerConnection(
                 _dataFile,
                 Interlocked.Increment(ref _nextConnectionId),
                 this);
@@ -281,14 +280,14 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 
         try
         {
-            if (_internalConnection is null)
+            if (_innerConnection is null)
             {
                 return;
             }
 
             _canAddOuterConnections = false;
 
-            // Disable the connection available signal, which was presumably set because we had an active internal connection, and put the
+            // Disable the connection available signal, which was presumably set because we had an active inner connection, and put the
             // pool into a state where none of the connection wait handles are set. Any non-zero-timeout synchronous waiters will block
             // for the brief moment we need to reset.
             _waitHandles.ConnectionAvailableSignal.Reset();
@@ -301,12 +300,12 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
             {
                 if (_outerConnections.Count > 0)
                 {
-                    // Create a new internal connection object to pass to our tracked SimulatorConnection instances. We "freeze" the
+                    // Create a new inner connection object to pass to our tracked SimulatorConnection instances. We "freeze" the
                     // memory-mapped data file (copy it to memory) and provide this as the new data source, allowing read operations to 
                     // continue to see valid data until they're able to respond to or detect the change in connection state.
 
                     var closedConnection = new InactiveInternalConnection(
-                        _internalConnection.DataFile.Freeze(), SimulatorConnectionState.Closed);
+                        _innerConnection.DataFile.Freeze(), SimulatorConnectionState.Closed);
 
                     while (_outerConnections.Count > 0)
                     {
@@ -324,8 +323,8 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
                 }
             }
 
-            // Set the internal connection to null and retain the old value to dispose
-            Interlocked.Exchange(ref _internalConnection, null)?.Dispose();
+            // Set the inner connection to null and retain the old value to dispose
+            Interlocked.Exchange(ref _innerConnection, null)?.Dispose();
 
             // Allow a new connection to be established.
             _waitHandles.CreateConnectionSignal.Set();
@@ -339,12 +338,12 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
         }
     }
 
-    private void SetConnection(OpenInternalConnection connection)
+    private void SetConnection(OpenInnerConnection connection)
     {
-        Debug.Assert(_internalConnection == null, "Internal connection is not null");
+        Debug.Assert(_innerConnection == null, "Inner connection is not null");
 
-        // Set internal connection object before signaling the connection available signal.
-        _internalConnection = connection;
+        // Set inner connection object before signaling the connection available signal.
+        _innerConnection = connection;
         _canAddOuterConnections = true;
 
         // Notify waiting threads that a connection is available
@@ -430,14 +429,14 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
 
             var canCreateConnection = request.Timeout > TimeSpan.Zero || request.Timeout == Timeout.InfiniteTimeSpan;
 
-            if (TryGetConnection(TimeSpan.Zero, canCreateConnection, out var internalConnection))
+            if (TryGetConnection(TimeSpan.Zero, canCreateConnection, out var innerConnection))
             {
-                if (!AttachOuterConnection(internalConnection, request.OuterConnection))
+                if (!AttachOuterConnection(innerConnection, request.OuterConnection))
                 {
                     return false;
                 }
 
-                // We have retreived the internal connection object and attached it to the outer connection. The request is completed,
+                // We have retreived the inner connection object and attached it to the outer connection. The request is completed,
                 // so decrement our request counter, set the result, and get out of here.
 
                 Interlocked.Decrement(ref _pendingConnectionCount);
