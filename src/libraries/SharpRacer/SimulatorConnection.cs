@@ -26,7 +26,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
     /// Initializes an instance of <see cref="SimulatorConnection"/>.
     /// </summary>
     public SimulatorConnection()
-        : this(ConnectionPool.Default)
+        : this(ConnectionManager.Default)
     {
 
     }

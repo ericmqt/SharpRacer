@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
+using SharpRacer.Internal.Connections;
 using SharpRacer.IO;
 
 namespace SharpRacer.Internal;
@@ -8,11 +9,6 @@ namespace SharpRacer.Internal;
 [SupportedOSPlatform("windows5.1.2600")]
 internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnectionRequestCompletionSource
 {
-    // Outer connection tracking
-    private bool _canAddOuterConnections;
-    private readonly List<ISimulatorOuterConnection> _outerConnections;
-    private readonly object _outerConnectionsLock = new object();
-
     // Synchronization primitives
     private readonly ManualResetEventSlim _allowConnectSignal;
     private readonly SemaphoreSlim _destroyConnectionSemaphore;
@@ -23,13 +19,14 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
     private DataReadyCallback? _dataReadyCallback;
     private IOpenInnerConnection? _innerConnection;
     private int _nextConnectionId;
+    private readonly IOuterConnectionTracker _outerConnectionTracker;
     private int _pendingConnectionCount;
     private readonly AsyncConnectionRequestQueue _requestQueue;
 
     private ConnectionManager()
     {
         _requestQueue = new AsyncConnectionRequestQueue(this);
-        _outerConnections = [];
+        _outerConnectionTracker = new OuterConnectionTracker();
 
         _allowConnectSignal = new ManualResetEventSlim(initialState: true);
         _destroyConnectionSemaphore = new SemaphoreSlim(1, 1);
@@ -142,23 +139,12 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
 
     public void ReleaseOuterConnection(ISimulatorOuterConnection outerConnection)
     {
-        var destroyInnerConnection = false;
-
-        lock (_outerConnectionsLock)
+        if (!_outerConnectionTracker.Detach(outerConnection, out var destroyInnerConnection))
         {
-            // Stop tracking the outer connection and destroy the inner connection if no outer connections remain
+            // Don't do anything if the outer connection wasn't being tracked in the first place, otherwise the inner connection could be
+            // prematurely destroyed!
 
-            // If the outer connection is not part of the current set, the inner connection would already have been disposed, so don't
-            // do anything here if Remove returns false.
-
-            if (_outerConnections.Remove(outerConnection)
-                && _outerConnections.Count == 0
-                && _canAddOuterConnections)
-            {
-                _canAddOuterConnections = false;
-
-                destroyInnerConnection = true;
-            }
+            return;
         }
 
         if (destroyInnerConnection)
@@ -221,25 +207,15 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
 
     private bool AttachOuterConnection(IOpenInnerConnection innerConnection, ISimulatorOuterConnection outerConnection)
     {
-        lock (_outerConnectionsLock)
+        if (_outerConnectionTracker.Attach(outerConnection, innerConnection))
         {
-            if (!_canAddOuterConnections)
-            {
-                return false;
-            }
+            // Set the inner connection and pass a lifetime handle for the memory-mapped data file
+            outerConnection.SetOpenInnerConnection(innerConnection, innerConnection.AcquireDataFileLifetimeHandle());
 
-            if (!_outerConnections.Contains(outerConnection))
-            {
-                // Begin tracking the outer connection
-                _outerConnections.Add(outerConnection);
-
-                // Set the inner connection and pass a lifetime handle for the memory-mapped data file
-                outerConnection.SetOpenInnerConnection(innerConnection, innerConnection.AcquireDataFileLifetimeHandle());
-            }
-
-            // Return true even if owner already exists
             return true;
         }
+
+        return false;
     }
 
     private void BeginConnection()
@@ -284,7 +260,7 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
                 return;
             }
 
-            _canAddOuterConnections = false;
+            _outerConnectionTracker.CanAttach = false;
 
             // Disable the connection available signal, which was presumably set because we had an active inner connection, and put the
             // pool into a state where none of the connection wait handles are set. Any non-zero-timeout synchronous waiters will block
@@ -294,31 +270,20 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
             // Pause new connection requests while we destroy the current connection
             _allowConnectSignal.Reset();
 
+            // Create a new inner connection object to pass to our tracked SimulatorConnection instances. We "freeze" the
+            // memory-mapped data file (copy it to memory) and provide this as the new data source, allowing read operations to 
+            // continue to see valid data until they're able to respond to or detect the change in connection state.
+
+            var closedConnection = new InactiveInnerConnection(
+                _innerConnection.DataFile.Freeze(), SimulatorConnectionState.Closed);
+
             // Close the outer connections
-            lock (_outerConnectionsLock)
+            foreach (var detachedOuterConnection in _outerConnectionTracker.DetachAll())
             {
-                if (_outerConnections.Count > 0)
+                try { detachedOuterConnection.SetClosedInnerConnection(closedConnection); }
+                catch
                 {
-                    // Create a new inner connection object to pass to our tracked SimulatorConnection instances. We "freeze" the
-                    // memory-mapped data file (copy it to memory) and provide this as the new data source, allowing read operations to 
-                    // continue to see valid data until they're able to respond to or detect the change in connection state.
-
-                    var closedConnection = new InactiveInnerConnection(
-                        _innerConnection.DataFile.Freeze(), SimulatorConnectionState.Closed);
-
-                    while (_outerConnections.Count > 0)
-                    {
-                        var outer = _outerConnections.First();
-
-                        try { outer.SetClosedInnerConnection(closedConnection); }
-                        catch
-                        {
-                            // Swallow exceptions, not that there should ever be any.
-                        }
-
-                        // Stop tracking the outer connection, it is no longer our concern.
-                        _outerConnections.Remove(outer);
-                    }
+                    // Swallow exceptions, not that there should ever be any.
                 }
             }
 
@@ -343,7 +308,7 @@ internal sealed partial class ConnectionManager : IConnectionPool, IAsyncConnect
 
         // Set inner connection object before signaling the connection available signal.
         _innerConnection = connection;
-        _canAddOuterConnections = true;
+        _outerConnectionTracker.CanAttach = true;
 
         // Notify waiting threads that a connection is available
         _waitHandles.ConnectionAvailableSignal.Set();
