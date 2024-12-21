@@ -2,17 +2,17 @@
 using SharpRacer.IO;
 
 namespace SharpRacer.Internal;
-internal class InactiveInternalConnection : ISimulatorInnerConnection
+internal class InactiveInnerConnection : ISimulatorInnerConnection
 {
     private readonly ISimulatorDataFile _dataFile;
 
-    public InactiveInternalConnection(SimulatorConnectionState state)
+    public InactiveInnerConnection(SimulatorConnectionState state)
         : this(new FrozenDataFile([]), state)
     {
 
     }
 
-    public InactiveInternalConnection(ISimulatorDataFile dataFile, SimulatorConnectionState state)
+    public InactiveInnerConnection(ISimulatorDataFile dataFile, SimulatorConnectionState state)
     {
         _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
         State = state;

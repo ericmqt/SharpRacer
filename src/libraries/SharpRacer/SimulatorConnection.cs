@@ -37,7 +37,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
         _cancellationTokenSource = new CancellationTokenSource();
         _connectionStateValue = (int)SimulatorConnectionState.None;
-        _internalConnection = new InactiveInternalConnection(SimulatorConnectionState.None);
+        _internalConnection = new InactiveInnerConnection(SimulatorConnectionState.None);
 
         _connectionTransitionSemaphore = new SemaphoreSlim(1, 1);
         _openSemaphore = new SemaphoreSlim(1, 1);
@@ -85,7 +85,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
             Interlocked.Exchange(
                 ref _internalConnection,
-                new InactiveInternalConnection(new FrozenDataFile([]), SimulatorConnectionState.Closed));
+                new InactiveInnerConnection(new FrozenDataFile([]), SimulatorConnectionState.Closed));
 
             SetState(SimulatorConnectionState.Closed);
         }

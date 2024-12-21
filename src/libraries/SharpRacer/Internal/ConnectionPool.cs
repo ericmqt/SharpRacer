@@ -303,7 +303,7 @@ internal sealed partial class ConnectionPool : IConnectionPool, IAsyncConnection
                     // memory-mapped data file (copy it to memory) and provide this as the new data source, allowing read operations to 
                     // continue to see valid data until they're able to respond to or detect the change in connection state.
 
-                    var closedConnection = new InactiveInternalConnection(
+                    var closedConnection = new InactiveInnerConnection(
                         _innerConnection.DataFile.Freeze(), SimulatorConnectionState.Closed);
 
                     while (_outerConnections.Count > 0)
