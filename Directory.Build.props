@@ -16,14 +16,14 @@
 
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<WarningsAsErrors>CA2016,CS8613</WarningsAsErrors>
+		<WarningsAsErrors>nullable,CA2016</WarningsAsErrors>
 	</PropertyGroup>
 
 	<!-- Assembly information -->
 	<PropertyGroup>
 		<Authors>Eric Smith (@ericmqt)</Authors>
 		<Company>Eric Smith (@ericmqt)</Company>
-		<Copyright>Copyright © 2023-2024 Eric Smith (@ericmqt).</Copyright>
+		<Copyright>Copyright © 2023-2025 Eric Smith (@ericmqt).</Copyright>
 	</PropertyGroup>
 
 	<!-- NuGet packaging -->
