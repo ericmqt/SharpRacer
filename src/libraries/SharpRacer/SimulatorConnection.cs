@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using SharpRacer.Internal;
 using SharpRacer.Internal.Connections;
-using SharpRacer.IO;
 using SharpRacer.Telemetry;
 
 namespace SharpRacer;
@@ -10,15 +9,14 @@ namespace SharpRacer;
 /// Represents a connection to a simulator session.
 /// </summary>
 [SupportedOSPlatform("windows5.1.2600")]
-public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterConnection, IDisposable
+public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection, IDisposable
 {
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly IConnectionManager _connectionManager;
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
     private IDisposable? _dataFileLifetimeHandle;
-    private ISimulatorInnerConnection _internalConnection;
-    private readonly object _internalConnectionLock = new();
+    private IInnerConnection _innerConnection;
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
     private readonly ConnectionDataVariableInfoProvider _variableInfoProvider;
@@ -38,7 +36,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
         _cancellationTokenSource = new CancellationTokenSource();
         _connectionStateValue = (int)SimulatorConnectionState.None;
-        _internalConnection = new InactiveInnerConnection(SimulatorConnectionState.None);
+        _innerConnection = new InactiveInnerConnection(SimulatorConnectionState.None);
 
         _connectionTransitionSemaphore = new SemaphoreSlim(1, 1);
         _openSemaphore = new SemaphoreSlim(1, 1);
@@ -49,11 +47,11 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
     /// <inheritdoc />
     public bool CanRead
     {
-        get => State < SimulatorConnectionState.Open;
+        get => State >= SimulatorConnectionState.Open;
     }
 
     /// <inheritdoc />
-    public ReadOnlySpan<byte> Data => _internalConnection.Data;
+    public ReadOnlySpan<byte> Data => _innerConnection.Data;
 
     /// <inheritdoc />
     public IEnumerable<DataVariableInfo> DataVariables => _variableInfoProvider.DataVariables;
@@ -73,27 +71,19 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
     /// <inheritdoc />
     public void Close()
     {
-        _connectionTransitionSemaphore.Wait();
-
-        try
+        if (State == SimulatorConnectionState.None || State == SimulatorConnectionState.Connecting)
         {
-            _cancellationTokenSource.Cancel();
-
-            _connectionManager.Disconnect(this);
-
-            // Replace the data file with an empty one, because only consumers should be calling Close(), not the internal connection, so
-            // there should be no need to preserve a copy of the data file to prevent uncoordinated reads from getting garbage data.
-
-            Interlocked.Exchange(
-                ref _internalConnection,
-                new InactiveInnerConnection(new FrozenDataFile([]), SimulatorConnectionState.Closed));
-
-            SetState(SimulatorConnectionState.Closed);
+            throw new InvalidOperationException(
+                $"{nameof(Close)} cannot be called when {nameof(State)} is {SimulatorConnectionState.None} or {SimulatorConnectionState.Connecting}.");
         }
-        finally
+
+        if (State == SimulatorConnectionState.Closed)
         {
-            _connectionTransitionSemaphore.Release();
+            return;
         }
+
+        // The inner connection will call SetClosedInnerConnection for us
+        _innerConnection.CloseOuterConnection(this);
     }
 
     public void Dispose()
@@ -103,8 +93,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
             _cancellationTokenSource.Cancel();
             _cancellationTokenSource.Dispose();
 
-            _connectionManager.Disconnect(this);
-            // Internal connection is disposed by the pool so there is no need to dispose of it here
+            _innerConnection.Detach(this);
 
             _openSemaphore.Dispose();
             _connectionTransitionSemaphore.Dispose();
@@ -234,7 +223,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
         }
 
         // Ensure calls to this method will return in case the connection dies while waiting
-        return _internalConnection.WaitForDataReady(_cancellationTokenSource.Token);
+        return _innerConnection.WaitForDataReady(_cancellationTokenSource.Token);
     }
 
     /// <inheritdoc />
@@ -249,7 +238,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
         if (cancellationToken == default)
         {
-            return await _internalConnection.WaitForDataReadyAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
+            return await _innerConnection.WaitForDataReadyAsync(_cancellationTokenSource.Token).ConfigureAwait(false);
         }
 
         // Combine our cancellation token with the provided one to ensure waiters are returned false as soon as either this instance or the
@@ -257,7 +246,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
 
         using var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);
 
-        return await _internalConnection.WaitForDataReadyAsync(linkedCancellationSource.Token).ConfigureAwait(false);
+        return await _innerConnection.WaitForDataReadyAsync(linkedCancellationSource.Token).ConfigureAwait(false);
     }
 
     private void SetState(SimulatorConnectionState state)
@@ -279,7 +268,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
         }
     }
 
-    void ISimulatorOuterConnection.SetClosedInnerConnection(ISimulatorInnerConnection internalConnection)
+    void IOuterConnection.SetClosedInnerConnection(IInnerConnection internalConnection)
     {
         // This should only be called by the pool when either the internal connection has closed or when the last SimulatorConnection
         // sharing the internal connection closes.
@@ -291,7 +280,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
             // Cancel pending waiters
             _cancellationTokenSource.Cancel();
 
-            Interlocked.Exchange(ref _internalConnection, internalConnection);
+            Interlocked.Exchange(ref _innerConnection, internalConnection);
 
             SetState(SimulatorConnectionState.Closed);
         }
@@ -301,7 +290,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
         }
     }
 
-    void ISimulatorOuterConnection.SetOpenInnerConnection(ISimulatorInnerConnection internalConnection, IDisposable dataFileLifetimeHandle)
+    void IOuterConnection.SetOpenInnerConnection(IOpenInnerConnection openInnerConnection, IDisposable dataFileLifetimeHandle)
     {
         // This should only be called when transitioning from Connecting -> Open
 
@@ -315,7 +304,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, ISimulatorOuterC
             }
 
             _dataFileLifetimeHandle = dataFileLifetimeHandle;
-            Interlocked.Exchange(ref _internalConnection, internalConnection);
+            Interlocked.Exchange(ref _innerConnection, openInnerConnection);
 
             _variableInfoProvider.InitializeVariables(this);
 

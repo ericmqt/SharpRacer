@@ -3,21 +3,19 @@
 internal sealed class OuterConnectionTracker : IOuterConnectionTracker
 {
     private bool _canAttach;
-    private readonly List<ISimulatorOuterConnection> _outerConnections;
+    private readonly List<IOuterConnection> _outerConnections;
     private readonly object _lock = new object();
 
     public OuterConnectionTracker()
     {
         _outerConnections = [];
+
+        _canAttach = true;
     }
 
-    public bool CanAttach
-    {
-        get => _canAttach;
-        set => _canAttach = value;
-    }
+    public bool CanAttach => _canAttach;
 
-    public bool Attach(ISimulatorOuterConnection outerConnection)
+    public bool Attach(IOuterConnection outerConnection)
     {
         lock (_lock)
         {
@@ -37,29 +35,34 @@ internal sealed class OuterConnectionTracker : IOuterConnectionTracker
         }
     }
 
-    public bool Detach(ISimulatorOuterConnection connection, out bool isInnerConnectionOrphaned)
+    public bool Detach(IOuterConnection connection, out bool isInnerConnectionOrphaned)
     {
         lock (_lock)
         {
-            isInnerConnectionOrphaned = false;
-
             // We only care about inner connection becoming an orphan when we successfully stop tracking an outer connection, if it's not
             // in the collection then we can't really say anything about whether the inner connection is orphaned or not.
             if (_outerConnections.Remove(connection))
             {
                 isInnerConnectionOrphaned = _outerConnections.Count == 0;
 
+                // Disable attaching only on success, otherwise a failed detach for a non-tracked connection could disable us when we
+                // haven't attached to a single outer connection yet
+                _canAttach = _outerConnections.Count > 0;
+
                 return true;
             }
 
+            isInnerConnectionOrphaned = false;
             return false;
         }
     }
 
-    public IEnumerable<ISimulatorOuterConnection> DetachAll()
+    public IEnumerable<IOuterConnection> DetachAll()
     {
-        lock (_outerConnections)
+        lock (_lock)
         {
+            _canAttach = false;
+
             while (_outerConnections.Count > 0)
             {
                 var outer = _outerConnections.First();
@@ -68,6 +71,14 @@ internal sealed class OuterConnectionTracker : IOuterConnectionTracker
 
                 yield return outer;
             }
+        }
+    }
+
+    public void DisableAttach()
+    {
+        lock (_lock)
+        {
+            _canAttach = false;
         }
     }
 }

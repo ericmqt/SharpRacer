@@ -4,7 +4,6 @@ using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer.IO;
 
-[SupportedOSPlatform("windows5.1.2600")]
 internal sealed class MemoryMappedDataFile : ISimulatorDataFile
 {
     public const string MemoryMappedFileName = "Local\\IRSDKMemMapFileName";
@@ -18,7 +17,7 @@ internal sealed class MemoryMappedDataFile : ISimulatorDataFile
     {
         _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
         _dataAccessor = dataFile.CreateDirectAccessor(offset: 0, size: 0, access: MemoryMappedFileAccess.Read);
-        _owners = new List<LifetimeHandle>();
+        _owners = [];
     }
 
     ~MemoryMappedDataFile()
@@ -26,6 +25,7 @@ internal sealed class MemoryMappedDataFile : ISimulatorDataFile
         Dispose();
     }
 
+    [SupportedOSPlatform("windows")]
     public static MemoryMappedDataFile Open()
     {
         return new MemoryMappedDataFile(MemoryMappedFile.OpenExisting(MemoryMappedFileName, MemoryMappedFileRights.Read));

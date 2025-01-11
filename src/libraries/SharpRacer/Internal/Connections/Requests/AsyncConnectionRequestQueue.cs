@@ -1,37 +1,33 @@
 ﻿using System.Collections.Concurrent;
 
-namespace SharpRacer.Internal;
-internal sealed class AsyncConnectionRequestQueue
+namespace SharpRacer.Internal.Connections.Requests;
+internal class AsyncConnectionRequestQueue : IAsyncConnectionRequestQueue
 {
-    private readonly IAsyncConnectionRequestCompletionSource _completionSource;
     private readonly SemaphoreSlim _processQueueSemaphore;
-    private readonly ConcurrentQueue<AsyncConnectionRequest> _queue;
+    private readonly ConcurrentQueue<IAsyncConnectionRequest> _queue;
 
-    public AsyncConnectionRequestQueue(IAsyncConnectionRequestCompletionSource requestCompletionSource)
+    public AsyncConnectionRequestQueue()
     {
-        _completionSource = requestCompletionSource ?? throw new ArgumentNullException(nameof(requestCompletionSource));
-
-        _queue = new ConcurrentQueue<AsyncConnectionRequest>();
+        _queue = new ConcurrentQueue<IAsyncConnectionRequest>();
 
         // Note: SemaphoreSlim has no thread affinity, so ProcessQueue can be called from any thread without causing issues
         _processQueueSemaphore = new SemaphoreSlim(1, 1);
     }
 
-    public void Enqueue(AsyncConnectionRequest request)
+    public void Enqueue(IAsyncConnectionRequest request)
     {
         _queue.Enqueue(request);
     }
 
-    /// <summary>
-    /// Examines each pending request and attempts to complete it. If the request was unable to be completed, it is returned to the queue.
-    /// </summary>
-    /// <param name="force">
-    /// When <see langword="true"/>, this method will block while another call to <see cref="ProcessQueue(bool)"/> is in progress before
-    /// executing, ensuring every request is processed at least once. Otherwise, the method returns immediately if the queue is already
-    /// being processed.
-    /// </param>
-    public void ProcessQueue(bool force = false)
+    public bool ProcessQueue(IConnectionProvider connectionProvider, bool force = false)
     {
+        return ProcessQueue(connectionProvider, force, out _);
+    }
+
+    public bool ProcessQueue(IConnectionProvider connectionProvider, bool force, out bool queueEmptied)
+    {
+        queueEmptied = false;
+
         if (force)
         {
             // Block until we are able to enter the semaphore
@@ -43,17 +39,17 @@ internal sealed class AsyncConnectionRequestQueue
             if (!_processQueueSemaphore.Wait(0))
             {
                 // Failed to enter the semaphore, so another call to this method is already in progress.
-                return;
+                return false;
             }
         }
 
         try
         {
-            var uncompletedRequests = new List<AsyncConnectionRequest>(_queue.Count);
+            var uncompletedRequests = new List<IAsyncConnectionRequest>(_queue.Count);
 
             while (_queue.TryDequeue(out var request))
             {
-                if (!_completionSource.TryCompleteRequest(request))
+                if (!request.TryComplete(connectionProvider))
                 {
                     // Unable to complete request, so return it for further processing
                     uncompletedRequests.Add(request);
@@ -64,6 +60,10 @@ internal sealed class AsyncConnectionRequestQueue
             {
                 _queue.Enqueue(uncompletedRequests[i]);
             }
+
+            queueEmptied = _queue.IsEmpty;
+
+            return true;
         }
         finally
         {

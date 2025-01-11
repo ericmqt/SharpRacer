@@ -1,8 +1,7 @@
-﻿
-using SharpRacer.IO;
+﻿using SharpRacer.IO;
 
-namespace SharpRacer.Internal;
-internal class InactiveInnerConnection : ISimulatorInnerConnection
+namespace SharpRacer.Internal.Connections;
+internal sealed class InactiveInnerConnection : IInnerConnection
 {
     private readonly ISimulatorDataFile _dataFile;
 
@@ -14,7 +13,7 @@ internal class InactiveInnerConnection : ISimulatorInnerConnection
 
     public InactiveInnerConnection(ISimulatorDataFile dataFile, SimulatorConnectionState state)
     {
-        _dataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
+        _dataFile = dataFile;
         State = state;
     }
 
@@ -23,6 +22,16 @@ internal class InactiveInnerConnection : ISimulatorInnerConnection
     public ISimulatorDataFile DataFile => _dataFile;
     public TimeSpan IdleTimeout { get; set; }
     public SimulatorConnectionState State { get; }
+
+    public void CloseOuterConnection(IOuterConnection outerConnection)
+    {
+
+    }
+
+    public void Detach(IOuterConnection outerConnection)
+    {
+
+    }
 
     public void Dispose()
     {
