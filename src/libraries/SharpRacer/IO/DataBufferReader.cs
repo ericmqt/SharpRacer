@@ -76,18 +76,17 @@ public readonly ref struct DataBufferReader
     /// <returns>The index of the active data buffer.</returns>
     public readonly int GetActiveBufferIndex()
     {
-        int activeBufferIndex = -1;
-        int activeBufferTickCount = -1;
+        int activeBufferIndex = 0;
+        int activeBufferTickCount = _fileHeader.DataBufferHeaders[0].TickCount;
 
-        // Check each header and return the index with the highest tick count
-        for (int i = 0; i < _fileHeader.DataBufferCount; i++)
+        for (int i = 1; i < _fileHeader.DataBufferCount; i++)
         {
-            ref readonly var bufferHeader = ref _fileHeader.DataBufferHeaders[i];
+            int tickCount = _fileHeader.DataBufferHeaders[i].TickCount;
 
-            if (bufferHeader.TickCount > activeBufferTickCount)
+            if (Math.Max(tickCount, activeBufferTickCount) != activeBufferTickCount)
             {
                 activeBufferIndex = i;
-                activeBufferTickCount = bufferHeader.TickCount;
+                activeBufferTickCount = tickCount;
             }
         }
 
