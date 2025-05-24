@@ -1,10 +1,13 @@
 ﻿namespace SharpRacer.Internal.Connections;
 internal interface IOuterConnectionTracker
 {
-    bool CanAttach { get; }
+    bool CloseOnEmpty { get; }
+    bool HasTrackedConnections { get; }
+    bool IsClosed { get; }
+    bool IsEmpty { get; }
 
     bool Attach(IOuterConnection outerConnection);
-    bool Detach(IOuterConnection connection, out bool isInnerConnectionOrphaned);
+    void Close();
+    bool Detach(IOuterConnection connection);
     IEnumerable<IOuterConnection> DetachAll();
-    void DisableAttach();
 }

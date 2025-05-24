@@ -2,24 +2,29 @@
 
 internal sealed class OuterConnectionTracker : IOuterConnectionTracker
 {
-    private bool _canAttach;
+    private readonly bool _closeOnEmpty;
+    private bool _isClosed;
     private readonly List<IOuterConnection> _outerConnections;
     private readonly object _lock = new object();
+    private int _trackedConnectionCount;
 
-    public OuterConnectionTracker()
+    public OuterConnectionTracker(bool closeOnEmpty)
     {
-        _outerConnections = [];
+        _closeOnEmpty = closeOnEmpty;
 
-        _canAttach = true;
+        _outerConnections = [];
     }
 
-    public bool CanAttach => _canAttach;
+    public bool CloseOnEmpty => _closeOnEmpty;
+    public bool HasTrackedConnections => Interlocked.CompareExchange(ref _trackedConnectionCount, 0, 0) != 0;
+    public bool IsClosed => _isClosed;
+    public bool IsEmpty => Interlocked.CompareExchange(ref _trackedConnectionCount, 0, 0) == 0;
 
     public bool Attach(IOuterConnection outerConnection)
     {
         lock (_lock)
         {
-            if (!_canAttach)
+            if (_isClosed)
             {
                 return false;
             }
@@ -28,32 +33,40 @@ internal sealed class OuterConnectionTracker : IOuterConnectionTracker
             {
                 // Begin tracking the outer connection
                 _outerConnections.Add(outerConnection);
+
+                Interlocked.Increment(ref _trackedConnectionCount);
             }
 
-            // Return true even if owner already exists
+            // Return true even if the outer connection is already tracked
             return true;
         }
     }
 
-    public bool Detach(IOuterConnection connection, out bool isInnerConnectionOrphaned)
+    public void Close()
     {
         lock (_lock)
         {
-            // We only care about inner connection becoming an orphan when we successfully stop tracking an outer connection, if it's not
-            // in the collection then we can't really say anything about whether the inner connection is orphaned or not.
-            if (_outerConnections.Remove(connection))
+            _isClosed = true;
+        }
+    }
+
+    public bool Detach(IOuterConnection connection)
+    {
+        lock (_lock)
+        {
+            if (!_outerConnections.Remove(connection))
             {
-                isInnerConnectionOrphaned = _outerConnections.Count == 0;
-
-                // Disable attaching only on success, otherwise a failed detach for a non-tracked connection could disable us when we
-                // haven't attached to a single outer connection yet
-                _canAttach = _outerConnections.Count > 0;
-
-                return true;
+                return false;
             }
 
-            isInnerConnectionOrphaned = false;
-            return false;
+            Interlocked.Decrement(ref _trackedConnectionCount);
+
+            if (_closeOnEmpty && !_isClosed && _outerConnections.Count == 0)
+            {
+                _isClosed = true;
+            }
+
+            return true;
         }
     }
 
@@ -61,24 +74,20 @@ internal sealed class OuterConnectionTracker : IOuterConnectionTracker
     {
         lock (_lock)
         {
-            _canAttach = false;
+            if (_closeOnEmpty)
+            {
+                _isClosed = true;
+            }
 
             while (_outerConnections.Count > 0)
             {
                 var outer = _outerConnections.First();
 
                 _outerConnections.Remove(outer);
+                Interlocked.Decrement(ref _trackedConnectionCount);
 
                 yield return outer;
             }
-        }
-    }
-
-    public void DisableAttach()
-    {
-        lock (_lock)
-        {
-            _canAttach = false;
         }
     }
 }

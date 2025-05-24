@@ -65,7 +65,7 @@ internal sealed class DataFileSpanPool : IDataFileSpanPool
 
             var token = CreateToken();
 
-            return new DataFileSpanOwner(_spanFactory.CreateReadOnlySpan(), token);
+            return new DataFileSpanOwner(this, token, _spanFactory.CreateReadOnlySpan());
         }
         finally
         {

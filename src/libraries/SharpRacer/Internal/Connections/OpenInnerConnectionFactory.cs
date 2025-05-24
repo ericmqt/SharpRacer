@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Versioning;
 using SharpRacer.Interop;
-using SharpRacer.IO;
 
 namespace SharpRacer.Internal.Connections;
 
@@ -18,7 +17,8 @@ internal sealed class OpenInnerConnectionFactory : IOpenInnerConnectionFactory
 
     public IOpenInnerConnection Create(IOpenInnerConnectionOwner owner)
     {
-        var dataFile = MemoryMappedDataFile.Open();
+        throw new NotImplementedException();
+        /*var dataFile = MemoryMappedDataFile.Open();
 
         try { return new OpenInnerConnection(owner, dataFile, new OuterConnectionTracker(), _dataReadyEventFactory, _timeProvider); }
         catch
@@ -26,6 +26,6 @@ internal sealed class OpenInnerConnectionFactory : IOpenInnerConnectionFactory
             dataFile.Dispose();
 
             throw;
-        }
+        }*/
     }
 }

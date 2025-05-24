@@ -6,9 +6,19 @@ public class OuterConnectionTrackerTests
     [Fact]
     public void Ctor_Test()
     {
-        var connectionTracker = new OuterConnectionTracker();
+        var tracker = new OuterConnectionTracker(closeOnEmpty: false);
 
-        Assert.True(connectionTracker.CanAttach);
+        Assert.False(tracker.CloseOnEmpty);
+        Assert.False(tracker.HasTrackedConnections);
+        Assert.False(tracker.IsClosed);
+        Assert.True(tracker.IsEmpty);
+
+        tracker = new OuterConnectionTracker(closeOnEmpty: true);
+
+        Assert.True(tracker.CloseOnEmpty);
+        Assert.False(tracker.HasTrackedConnections);
+        Assert.False(tracker.IsClosed);
+        Assert.True(tracker.IsEmpty);
     }
 
     [Fact]
@@ -18,8 +28,11 @@ public class OuterConnectionTrackerTests
 
         var outerConnectionMock = mocks.Create<IOuterConnection>();
 
-        var connectionTracker = new OuterConnectionTracker();
-        Assert.True(connectionTracker.Attach(outerConnectionMock.Object));
+        var tracker = new OuterConnectionTracker(closeOnEmpty: false);
+
+        Assert.True(tracker.Attach(outerConnectionMock.Object));
+        Assert.False(tracker.IsClosed);
+        Assert.False(tracker.IsEmpty);
     }
 
     [Fact]
@@ -27,12 +40,24 @@ public class OuterConnectionTrackerTests
     {
         var outerConnectionMock = new Mock<IOuterConnection>();
 
-        var connectionTracker = new OuterConnectionTracker();
+        var tracker = new OuterConnectionTracker(closeOnEmpty: false);
 
-        Assert.True(connectionTracker.Attach(outerConnectionMock.Object));
-        Assert.True(connectionTracker.Attach(outerConnectionMock.Object));
+        Assert.True(tracker.Attach(outerConnectionMock.Object));
+        Assert.True(tracker.Attach(outerConnectionMock.Object));
 
-        Assert.Single(connectionTracker.DetachAll());
+        Assert.Single(tracker.DetachAll());
+    }
+
+    [Fact]
+    public void Close_Test()
+    {
+        var obj = new OuterConnectionTracker(closeOnEmpty: false);
+
+        Assert.False(obj.IsClosed);
+
+        obj.Close();
+
+        Assert.True(obj.IsClosed);
     }
 
     [Fact]
@@ -43,63 +68,100 @@ public class OuterConnectionTrackerTests
         var outerConnectionMock1 = mocks.Create<IOuterConnection>();
         var outerConnectionMock2 = mocks.Create<IOuterConnection>();
 
-        var connectionTracker = new OuterConnectionTracker();
+        var connectionTracker = new OuterConnectionTracker(closeOnEmpty: false);
 
         Assert.True(connectionTracker.Attach(outerConnectionMock1.Object));
         Assert.True(connectionTracker.Attach(outerConnectionMock2.Object));
 
-        var detachResult = connectionTracker.Detach(outerConnectionMock1.Object, out var isInnerConnectionOrphaned);
+        var detach1Result = connectionTracker.Detach(outerConnectionMock1.Object);
 
-        Assert.True(detachResult);
-        Assert.False(isInnerConnectionOrphaned);
-        Assert.True(connectionTracker.CanAttach);
+        Assert.True(detach1Result);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
+
+        var detach2Result = connectionTracker.Detach(outerConnectionMock2.Object);
+
+        Assert.True(detach2Result);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.True(connectionTracker.IsEmpty);
     }
 
     [Fact]
-    public void Detach_DoesNotOrphanIfConnectionNotTrackedTest()
+    public void Detach_CloseWhenEmptiedTest()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
 
         var outerConnectionMock1 = mocks.Create<IOuterConnection>();
         var outerConnectionMock2 = mocks.Create<IOuterConnection>();
 
-        var connectionTracker = new OuterConnectionTracker();
+        var connectionTracker = new OuterConnectionTracker(closeOnEmpty: true);
 
         Assert.True(connectionTracker.Attach(outerConnectionMock1.Object));
+        Assert.True(connectionTracker.Attach(outerConnectionMock2.Object));
 
-        var detachResult = connectionTracker.Detach(outerConnectionMock2.Object, out var isInnerConnectionOrphaned);
+        var detach1Result = connectionTracker.Detach(outerConnectionMock1.Object);
 
-        Assert.False(detachResult);
-        Assert.False(isInnerConnectionOrphaned);
-        Assert.True(connectionTracker.CanAttach);
+        Assert.True(detach1Result);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
+
+        var detach2Result = connectionTracker.Detach(outerConnectionMock2.Object);
+
+        Assert.True(detach2Result);
+        Assert.True(connectionTracker.IsClosed);
+        Assert.True(connectionTracker.IsEmpty);
     }
 
     [Fact]
-    public void Detach_OrphanTest()
+    public void Detach_CloseWhenEmptied_DoesNotOrphanIfNotTrackedTest()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
 
         var outerConnectionMock1 = mocks.Create<IOuterConnection>();
         var outerConnectionMock2 = mocks.Create<IOuterConnection>();
 
-        var connectionTracker = new OuterConnectionTracker();
+        var connectionTracker = new OuterConnectionTracker(closeOnEmpty: true);
+
+        // Attach only one
+        Assert.True(connectionTracker.Attach(outerConnectionMock1.Object));
+
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
+        Assert.True(connectionTracker.HasTrackedConnections);
+
+        // Detach untracked connection
+        Assert.False(connectionTracker.Detach(outerConnectionMock2.Object));
+
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
+        Assert.True(connectionTracker.HasTrackedConnections);
+    }
+
+    [Fact]
+    public void Detach_ReturnFalseIfNotTrackedTest()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var outerConnectionMock1 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock2 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock3 = mocks.Create<IOuterConnection>();
+
+        var connectionTracker = new OuterConnectionTracker(closeOnEmpty: false);
 
         Assert.True(connectionTracker.Attach(outerConnectionMock1.Object));
         Assert.True(connectionTracker.Attach(outerConnectionMock2.Object));
 
-        var detachResult = connectionTracker.Detach(outerConnectionMock1.Object, out var isInnerConnectionOrphaned);
+        var detachResult1 = connectionTracker.Detach(outerConnectionMock1.Object);
 
-        Assert.True(detachResult);
-        Assert.False(isInnerConnectionOrphaned);
-        Assert.True(connectionTracker.CanAttach);
+        Assert.True(detachResult1);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
 
-        detachResult = connectionTracker.Detach(outerConnectionMock2.Object, out isInnerConnectionOrphaned);
+        var detachResult2 = connectionTracker.Detach(outerConnectionMock3.Object);
 
-        Assert.True(detachResult);
-        Assert.True(isInnerConnectionOrphaned);
-        Assert.False(connectionTracker.CanAttach);
-
-        Assert.False(connectionTracker.Attach(outerConnectionMock1.Object));
+        Assert.False(detachResult2);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
     }
 
     [Fact]
@@ -107,35 +169,69 @@ public class OuterConnectionTrackerTests
     {
         var mocks = new MockRepository(MockBehavior.Strict);
 
+        var connectionTracker = new OuterConnectionTracker(closeOnEmpty: false);
+
         var outerConnectionMock1 = mocks.Create<IOuterConnection>();
         var outerConnectionMock2 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock3 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock4 = mocks.Create<IOuterConnection>();
 
-        var connectionTracker = new OuterConnectionTracker();
-
+        // Attach 3
         Assert.True(connectionTracker.Attach(outerConnectionMock1.Object));
         Assert.True(connectionTracker.Attach(outerConnectionMock2.Object));
+        Assert.True(connectionTracker.Attach(outerConnectionMock3.Object));
 
-        var detachedObjects = connectionTracker.DetachAll().ToArray();
+        var detachedConnections = connectionTracker.DetachAll().ToList();
 
-        Assert.Equal(2, detachedObjects.Length);
-        Assert.Contains(outerConnectionMock1.Object, detachedObjects);
-        Assert.Contains(outerConnectionMock2.Object, detachedObjects);
+        Assert.Equal(3, detachedConnections.Count);
 
-        Assert.False(connectionTracker.CanAttach);
-        Assert.False(connectionTracker.Attach(outerConnectionMock1.Object));
+        Assert.Contains(outerConnectionMock1.Object, detachedConnections);
+        Assert.Contains(outerConnectionMock2.Object, detachedConnections);
+        Assert.Contains(outerConnectionMock3.Object, detachedConnections);
+
+        Assert.False(connectionTracker.HasTrackedConnections);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.True(connectionTracker.IsEmpty);
+
+        Assert.True(connectionTracker.Attach(outerConnectionMock4.Object));
+
+        Assert.True(connectionTracker.HasTrackedConnections);
+        Assert.False(connectionTracker.IsClosed);
+        Assert.False(connectionTracker.IsEmpty);
     }
 
     [Fact]
-    public void DisableAttach_Test()
+    public void DetachAll_CloseWhenEmptiedTest()
     {
-        var outerConnectionMock = new Mock<IOuterConnection>();
+        var mocks = new MockRepository(MockBehavior.Strict);
 
-        var connectionTracker = new OuterConnectionTracker();
+        var connectionTracker = new OuterConnectionTracker(closeOnEmpty: true);
 
-        connectionTracker.DisableAttach();
+        var outerConnectionMock1 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock2 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock3 = mocks.Create<IOuterConnection>();
+        var outerConnectionMock4 = mocks.Create<IOuterConnection>();
 
-        Assert.False(connectionTracker.CanAttach);
-        Assert.False(connectionTracker.Attach(outerConnectionMock.Object));
-        Assert.Empty(connectionTracker.DetachAll());
+        // Attach 3
+        Assert.True(connectionTracker.Attach(outerConnectionMock1.Object));
+        Assert.True(connectionTracker.Attach(outerConnectionMock2.Object));
+        Assert.True(connectionTracker.Attach(outerConnectionMock3.Object));
+
+        var detachedConnections = connectionTracker.DetachAll().ToList();
+
+        Assert.Equal(3, detachedConnections.Count);
+
+        Assert.Contains(outerConnectionMock1.Object, detachedConnections);
+        Assert.Contains(outerConnectionMock2.Object, detachedConnections);
+        Assert.Contains(outerConnectionMock3.Object, detachedConnections);
+
+        Assert.False(connectionTracker.HasTrackedConnections);
+        Assert.True(connectionTracker.IsClosed);
+        Assert.True(connectionTracker.IsEmpty);
+
+        Assert.False(connectionTracker.Attach(outerConnectionMock4.Object));
+        Assert.False(connectionTracker.HasTrackedConnections);
+        Assert.True(connectionTracker.IsClosed);
+        Assert.True(connectionTracker.IsEmpty);
     }
 }

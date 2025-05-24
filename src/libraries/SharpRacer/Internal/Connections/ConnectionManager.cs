@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
 using SharpRacer.Internal.Connections.Requests;
 using SharpRacer.Interop;
+using SharpRacer.IO.Internal;
 
 namespace SharpRacer.Internal.Connections;
 
@@ -161,8 +162,9 @@ internal sealed class ConnectionManager : IConnectionManager, IConnectionProvide
 
     private void StartConnectionAcquisitionWorker()
     {
+        var dataFileFactory = new ConnectionDataFileFactory();
         var dataReadyEventFactory = DataReadyEventFactory.Default;
-        var connectionFactory = new OpenInnerConnectionFactory(dataReadyEventFactory, _timeProvider);
+        var connectionFactory = new InnerConnectionFactory(dataFileFactory, DataReadyEventFactory.Default, _timeProvider);
 
         var worker = _connectionAcquisitionHandler.CreateWorker(this, connectionFactory, this, dataReadyEventFactory);
 

@@ -2,5 +2,5 @@
 internal interface IOuterConnection
 {
     void SetClosedInnerConnection(IInnerConnection closedInnerConnection);
-    void SetOpenInnerConnection(IOpenInnerConnection openInnerConnection, IDisposable dataFileLifetimeHandle);
+    void SetOpenInnerConnection(IOpenInnerConnection openInnerConnection);
 }

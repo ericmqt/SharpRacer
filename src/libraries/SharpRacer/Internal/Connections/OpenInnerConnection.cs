@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
 using SharpRacer.Interop;
-using SharpRacer.IO;
+using SharpRacer.IO.Internal;
 
 namespace SharpRacer.Internal.Connections;
 
@@ -10,8 +10,8 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 {
     private readonly DotNext.Threading.AsyncManualResetEvent _asyncDataReadySignal;
     private readonly object _closeLock = new();
-    private readonly MemoryMappedDataFile _dataFile;
-    private readonly IDisposable _dataFileLifetimeHandle;
+    private readonly ClosedInnerConnection _closedInnerConnection;
+    private readonly IConnectionDataFile _dataFile;
     private readonly ManualResetEvent _dataReadySignal;
     private int _idleTimeoutMs;
     private bool _isClosed;
@@ -21,23 +21,26 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
     private readonly TimeProvider _timeProvider;
     private readonly ConnectionWorkerThread _workerThread;
 
-    public OpenInnerConnection(IOpenInnerConnectionOwner owner, MemoryMappedDataFile dataFile)
-        : this(owner, dataFile, new OuterConnectionTracker(), DataReadyEventFactory.Default, TimeProvider.System)
+    public OpenInnerConnection(IOpenInnerConnectionOwner owner, IConnectionDataFile dataFile)
+        : this(owner, dataFile, new OuterConnectionTracker(closeOnEmpty: true), DataReadyEventFactory.Default, TimeProvider.System)
     {
 
     }
 
     public OpenInnerConnection(
         IOpenInnerConnectionOwner owner,
-        MemoryMappedDataFile dataFile,
+        IConnectionDataFile dataFile,
         IOuterConnectionTracker outerConnectionTracker,
         IDataReadyEventFactory dataReadyEventFactory,
         TimeProvider timeProvider)
     {
         _owner = owner;
         _dataFile = dataFile;
+
         _outerConnectionTracker = outerConnectionTracker;
         _timeProvider = timeProvider;
+
+        _closedInnerConnection = new ClosedInnerConnection(_dataFile, new OuterConnectionTracker(closeOnEmpty: false));
 
         ConnectionId = owner.NewConnectionId();
         IdleTimeout = TimeSpan.FromSeconds(5);
@@ -45,13 +48,12 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
         _dataReadySignal = new ManualResetEvent(false);
         _asyncDataReadySignal = new DotNext.Threading.AsyncManualResetEvent(false);
 
-        _dataFileLifetimeHandle = _dataFile.AcquireLifetimeHandle();
         _workerThread = new ConnectionWorkerThread(this, dataReadyEventFactory, timeProvider);
     }
 
     public int ConnectionId { get; }
-    public ReadOnlySpan<byte> Data => _dataFile.Span;
-    public ISimulatorDataFile DataFile => _dataFile;
+    public ReadOnlySpan<byte> Data => _dataFile.Memory.Span;
+    public IConnectionDataFile DataFile => _dataFile;
 
     public TimeSpan IdleTimeout
     {
@@ -74,13 +76,6 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     public SimulatorConnectionState State { get; } = SimulatorConnectionState.Open;
 
-    public IDisposable AcquireDataFileLifetimeHandle()
-    {
-        ThrowIfDisposed();
-
-        return _dataFile.AcquireLifetimeHandle();
-    }
-
     public bool Attach(IOuterConnection outerConnection)
     {
         if (_isDisposed)
@@ -88,11 +83,12 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
             return false;
         }
 
-        // This will automatically return false when we have become orphaned
+        // This will automatically return false when we have become orphaned, preventing connection requests from completing successfully
+        // while we are in the middle of closing prior to the connection manager being notified we are closing.
         if (_outerConnectionTracker.Attach(outerConnection))
         {
-            // Set the inner connection and pass a lifetime handle for the memory-mapped data file
-            outerConnection.SetOpenInnerConnection(this, AcquireDataFileLifetimeHandle());
+            // Set the inner connection
+            outerConnection.SetOpenInnerConnection(this);
 
             return true;
         }
@@ -115,24 +111,28 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     public void CloseOuterConnection(IOuterConnection outerConnection)
     {
-        if (!_outerConnectionTracker.Detach(outerConnection, out var isOrphaned))
+        if (!_outerConnectionTracker.Detach(outerConnection))
         {
             return;
         }
 
-        // Set the outer connection closed
-        outerConnection.SetClosedInnerConnection(CreateClosedInnerConnection());
+        // NOTE: If we are orphaned, we don't have to worry about a new connection attaching in the tiny window of time between detecting
+        // that we're orphaned and notifying the connection manager that we're closing, because Attach() returns false, which will prevent
+        // the connection request from completing.
 
-        if (isOrphaned)
+        // Set the outer connection closed
+        outerConnection.SetClosedInnerConnection(_closedInnerConnection);
+
+        if (_outerConnectionTracker.IsClosed)
         {
-            // Shut ourselves down. CanAttach is false here
+            // Shut ourselves down. No more outer connections can be attached.
             Close();
         }
     }
 
     public void Detach(IOuterConnection outerConnection)
     {
-        if (!_outerConnectionTracker.Detach(outerConnection, out var destroyInnerConnection))
+        if (!_outerConnectionTracker.Detach(outerConnection))
         {
             // Don't destroy our connection if the outer connection wasn't one of ours. That really shouldn't be possible but it's better
             // to be safe than sorry.
@@ -140,7 +140,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
             return;
         }
 
-        if (destroyInnerConnection)
+        if (_outerConnectionTracker.IsClosed)
         {
             Close();
         }
@@ -194,11 +194,6 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
         }
     }
 
-    private InactiveInnerConnection CreateClosedInnerConnection()
-    {
-        return new InactiveInnerConnection(DataFile.Freeze(), SimulatorConnectionState.Closed);
-    }
-
     private void Dispose(bool disposing)
     {
         if (!_isDisposed)
@@ -214,9 +209,8 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
                 SetTrackedConnectionsClosed();
 
-                // Don't dispose the data file as it is managed by the connection pool. Instead, release our lifetime handle to it and the
-                // data file will dispose itself when all of the rented handles are returned.
-                _dataFileLifetimeHandle.Dispose();
+                _dataFile.Close();
+                _closedInnerConnection.Close();
 
                 _isDisposed = true;
             }
@@ -225,16 +219,10 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     private void SetTrackedConnectionsClosed()
     {
-        // Create a new inner connection object to pass to our tracked SimulatorConnection instances. We "freeze" the
-        // memory-mapped data file (copy it to memory) and provide this as the new data source, allowing read operations to 
-        // continue to see valid data until they're able to respond to or detect the change in connection state.
-
-        var closedConnection = CreateClosedInnerConnection();
-
         // Transition tracked outer connections to closed state
         foreach (var detachedOuterConnection in _outerConnectionTracker.DetachAll())
         {
-            try { detachedOuterConnection.SetClosedInnerConnection(closedConnection); }
+            try { detachedOuterConnection.SetClosedInnerConnection(_closedInnerConnection); }
             catch
             {
                 // Swallow exceptions, not that there should ever be any.
@@ -275,7 +263,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
         }
 
         // Prevent new connections from attaching because we are about to shut down.
-        _outerConnectionTracker.DisableAttach();
+        _outerConnectionTracker.Close();
 
         ThreadPool.QueueUserWorkItem(_ => Close(), null);
     }

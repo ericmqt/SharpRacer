@@ -68,7 +68,7 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
 
             var token = CreateToken();
 
-            return new DataFileSpanOwner(_memory.Span, token);
+            return new DataFileSpanOwner(this, token, _memory.Span);
         }
         finally
         {

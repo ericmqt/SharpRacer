@@ -15,7 +15,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     private readonly IConnectionManager _connectionManager;
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
-    private IDisposable? _dataFileLifetimeHandle;
     private IInnerConnection _innerConnection;
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
@@ -36,7 +35,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
         _cancellationTokenSource = new CancellationTokenSource();
         _connectionStateValue = (int)SimulatorConnectionState.None;
-        _innerConnection = new InactiveInnerConnection(SimulatorConnectionState.None);
+        _innerConnection = new IdleInnerConnection();
 
         _connectionTransitionSemaphore = new SemaphoreSlim(1, 1);
         _openSemaphore = new SemaphoreSlim(1, 1);
@@ -47,7 +46,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <inheritdoc />
     public bool CanRead
     {
-        get => State >= SimulatorConnectionState.Open;
+        get => State == SimulatorConnectionState.Open;
     }
 
     /// <inheritdoc />
@@ -97,11 +96,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
             _openSemaphore.Dispose();
             _connectionTransitionSemaphore.Dispose();
-
-            if (_dataFileLifetimeHandle != null)
-            {
-                _dataFileLifetimeHandle.Dispose();
-            }
 
             _isDisposed = true;
         }
@@ -290,7 +284,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         }
     }
 
-    void IOuterConnection.SetOpenInnerConnection(IOpenInnerConnection openInnerConnection, IDisposable dataFileLifetimeHandle)
+    void IOuterConnection.SetOpenInnerConnection(IOpenInnerConnection openInnerConnection)
     {
         // This should only be called when transitioning from Connecting -> Open
 
@@ -303,7 +297,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
                 return;
             }
 
-            _dataFileLifetimeHandle = dataFileLifetimeHandle;
             Interlocked.Exchange(ref _innerConnection, openInnerConnection);
 
             _variableInfoProvider.InitializeVariables(this);
