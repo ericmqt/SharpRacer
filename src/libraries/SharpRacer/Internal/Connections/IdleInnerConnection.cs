@@ -1,4 +1,5 @@
-﻿using SharpRacer.IO.Internal;
+﻿using SharpRacer.IO;
+using SharpRacer.IO.Internal;
 
 namespace SharpRacer.Internal.Connections;
 internal sealed class IdleInnerConnection : IInnerConnection
@@ -33,6 +34,16 @@ internal sealed class IdleInnerConnection : IInnerConnection
     public void Dispose()
     {
         DataFile.Dispose();
+    }
+
+    public IDataFileMemoryOwner RentDataFileMemory()
+    {
+        throw new InvalidOperationException("The connection is not open.");
+    }
+
+    public DataFileSpanOwner RentDataFileSpan()
+    {
+        throw new InvalidOperationException("The connection is not open.");
     }
 
     public bool WaitForDataReady(CancellationToken cancellationToken)

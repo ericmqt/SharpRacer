@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Versioning;
 using SharpRacer.Interop;
+using SharpRacer.IO;
 using SharpRacer.IO.Internal;
 
 namespace SharpRacer.Internal.Connections;
@@ -150,6 +151,16 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    public IDataFileMemoryOwner RentDataFileMemory()
+    {
+        return _dataFile.RentMemory();
+    }
+
+    public DataFileSpanOwner RentDataFileSpan()
+    {
+        return _dataFile.RentSpan();
     }
 
     public void StartWorkerThread()

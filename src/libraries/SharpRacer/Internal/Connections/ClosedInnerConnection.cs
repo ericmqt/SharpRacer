@@ -1,4 +1,5 @@
-﻿using SharpRacer.IO.Internal;
+﻿using SharpRacer.IO;
+using SharpRacer.IO.Internal;
 
 namespace SharpRacer.Internal.Connections;
 
@@ -70,6 +71,16 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
             // No connections remain and it is not possible to attach more. We can now dispose.
             Dispose();
         }
+    }
+
+    public IDataFileMemoryOwner RentDataFileMemory()
+    {
+        throw new InvalidOperationException("The connection is closed.");
+    }
+
+    public DataFileSpanOwner RentDataFileSpan()
+    {
+        throw new InvalidOperationException("The connection is closed.");
     }
 
     public bool WaitForDataReady(CancellationToken cancellationToken)
