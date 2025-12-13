@@ -144,6 +144,21 @@ public class DataVariableHeaderTests
         EquatableStructAssert.NotEqual(header1, header2);
     }
 
+    [Fact]
+    public void Equals_NullObjectTest()
+    {
+        var constructedHeader = new DataVariableHeader(
+            IRSDKString.FromString("Foo"),
+            (int)DataVariableValueType.Double,
+            1,
+            false,
+            1024,
+            IRSDKDescString.FromString("Foo variable"),
+            IRSDKString.FromString("km/h"));
+
+        Assert.False(constructedHeader.Equals(obj: null));
+    }
+
     private static TheoryData<DataVariableHeader, DataVariableHeader> GetInequalityData()
     {
         var name = IRSDKString.FromString("Foo");

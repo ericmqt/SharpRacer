@@ -78,6 +78,20 @@ public class DataBufferHeaderArrayTests
         EquatableStructAssert.NotEqual(array1, array2);
     }
 
+    [Fact]
+    public void Equals_NullObjectTest()
+    {
+        var header1 = DataBufferHeaderArray.FromArray(
+            [
+                new DataBufferHeader(1, 8),
+                new DataBufferHeader(2, 16),
+                new DataBufferHeader(3, 32),
+                new DataBufferHeader(4, 64)
+            ]);
+
+        Assert.False(header1.Equals(obj: null));
+    }
+
     private static TheoryData<DataBufferHeaderArray, DataBufferHeaderArray> GetInequalityData()
     {
         return new TheoryData<DataBufferHeaderArray, DataBufferHeaderArray>()

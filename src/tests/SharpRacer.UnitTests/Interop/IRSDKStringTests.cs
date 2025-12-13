@@ -119,6 +119,14 @@ public class IRSDKStringTests
         EquatableStructAssert.NotEqual(value1, value2);
     }
 
+    [Fact]
+    public void Equals_NullObjectTest()
+    {
+        var constructedValue = IRSDKString.FromString("abcdefghijklmnopqrstuvwxyz");
+
+        Assert.False(constructedValue.Equals(obj: null));
+    }
+
     private static TheoryData<IRSDKString, IRSDKString> GetInequalityData()
     {
         var emptyStrCharBuf = new byte[IRSDKString.Size];

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Moq;
 using SharpRacer.Telemetry.TestUtilities;
 
 namespace SharpRacer.Telemetry;
@@ -46,6 +47,33 @@ public class ArrayDataVariableTests
         DataVariableDescriptor variableDescriptor = null!;
 
         Assert.Throws<ArgumentNullException>(() => new ArrayDataVariable<float>(variableDescriptor, variableInfo));
+    }
+
+    [Fact]
+    public void Ctor_Descriptor_WithProviderTest()
+    {
+        int valueCount = 3;
+        var variableInfo = DataVariableInfoFactory.CreateArray("Foo", DataVariableValueType.Int, valueCount);
+        var variableDescriptor = new DataVariableDescriptor(variableInfo.Name, variableInfo.ValueType, variableInfo.ValueCount);
+
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var variableInfoProviderMock = mocks.Create<IDataVariableInfoProvider>();
+
+        variableInfoProviderMock.Setup(x => x.NotifyDataVariableActivated(It.IsAny<string>(), It.IsAny<Action<DataVariableInfo>>()));
+
+        var variable = new ArrayDataVariable<int>(variableDescriptor, variableInfoProviderMock.Object);
+
+        Assert.False(variable.IsAvailable);
+        Assert.Null(variable.VariableInfo);
+        Assert.Equal(variableInfo.Name, variable.Name);
+        Assert.Equal(-1, variable.DataOffset);
+        Assert.Equal(variableInfo.ValueCount, variable.ValueCount);
+        Assert.Equal(variableInfo.ValueSize, variable.ValueSize);
+        Assert.Equal(variableInfo.ValueSize * variableInfo.ValueCount, variable.DataLength);
+
+        variableInfoProviderMock.Verify(
+            x => x.NotifyDataVariableActivated(variableInfo.Name, It.IsAny<Action<DataVariableInfo>>()), Times.Once());
     }
 
     [Fact]

@@ -118,6 +118,14 @@ public class IRSDKDescStringTests
         EquatableStructAssert.NotEqual(value1, value2);
     }
 
+    [Fact]
+    public void Equals_NullObjectTest()
+    {
+        var constructedValue = IRSDKDescString.FromString("abcdefghijklmnopqrstuvwxyz");
+
+        Assert.False(constructedValue.Equals(obj: null));
+    }
+
     private static TheoryData<IRSDKDescString, IRSDKDescString> GetInequalityData()
     {
         var emptyStrCharBuf = new byte[IRSDKDescString.Size];

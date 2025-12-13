@@ -76,6 +76,14 @@ public class DataBufferHeaderTests
         EquatableStructAssert.NotEqual(header1, header2);
     }
 
+    [Fact]
+    public void Equals_NullObjectTest()
+    {
+        var header1 = new DataBufferHeader(2, 4);
+
+        Assert.False(header1.Equals(obj: null));
+    }
+
     private static TheoryData<DataBufferHeader, DataBufferHeader> GetInequalityData()
     {
         return new TheoryData<DataBufferHeader, DataBufferHeader>()

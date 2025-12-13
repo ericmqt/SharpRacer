@@ -143,6 +143,14 @@ public class DiskSubHeaderTests
         EquatableStructAssert.NotEqual(header1, header2);
     }
 
+    [Fact]
+    public void Equals_NullObjectTest()
+    {
+        var header1 = new DiskSubHeader(1, 2, 3, 4, 5);
+
+        Assert.False(header1.Equals(obj: null));
+    }
+
     private static TheoryData<DiskSubHeader, DiskSubHeader> GetInequalityData()
     {
         return new TheoryData<DiskSubHeader, DiskSubHeader>()
