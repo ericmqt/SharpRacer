@@ -145,6 +145,8 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
         ValueCount = variableDescriptor.ValueCount;
         ValueSize = Unsafe.SizeOf<T>();
 
+        _dataOffset = -1;
+
         dataVariableInfoProvider.NotifyDataVariableActivated(variableDescriptor.Name, SetVariableInfo);
     }
 
@@ -199,8 +201,6 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
 
     private void SetVariableInfo(DataVariableInfo variableInfo)
     {
-        Console.WriteLine($"{Name}: {nameof(SetVariableInfo)}");
-
         if (_isInitialized)
         {
             // TODO: Throw?
