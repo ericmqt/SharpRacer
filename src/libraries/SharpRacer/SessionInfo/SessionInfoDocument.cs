@@ -12,7 +12,7 @@ public class SessionInfoDocument
     /// <param name="version">The session information version.</param>
     public SessionInfoDocument(string yamlDocument, int version)
     {
-        YamlDocument = yamlDocument ?? string.Empty;
+        YamlDocument = yamlDocument ?? throw new ArgumentNullException(nameof(yamlDocument));
         Version = version;
     }
 
