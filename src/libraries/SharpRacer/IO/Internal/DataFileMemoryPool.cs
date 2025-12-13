@@ -24,6 +24,9 @@ internal sealed class DataFileMemoryPool : IDataFileMemoryPool
         _owners = [];
     }
 
+    internal bool IsClosed => _isClosed;
+    internal int OwnerCount => _owners.Count;
+
     public void Close()
     {
         lock (_rentalLock)

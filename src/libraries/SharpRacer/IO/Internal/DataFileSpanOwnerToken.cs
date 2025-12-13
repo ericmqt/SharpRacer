@@ -10,6 +10,10 @@ internal readonly struct DataFileSpanOwnerToken : IEquatable<DataFileSpanOwnerTo
         _id = id;
     }
 
+    internal readonly ulong Id => _id;
+
+    internal static DataFileSpanOwnerToken Empty { get; } = new DataFileSpanOwnerToken(0);
+
     public override readonly bool Equals([NotNullWhen(true)] object? obj)
     {
         return obj is DataFileSpanOwnerToken other && Equals(other);

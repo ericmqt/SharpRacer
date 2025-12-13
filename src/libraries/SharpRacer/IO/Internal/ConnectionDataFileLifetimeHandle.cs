@@ -10,6 +10,8 @@ internal sealed class ConnectionDataFileLifetimeHandle : IConnectionDataFileLife
         _lifetime = lifetime;
     }
 
+    public bool IsDisposed => _isDisposed;
+
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

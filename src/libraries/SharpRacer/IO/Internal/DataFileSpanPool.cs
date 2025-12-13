@@ -77,7 +77,7 @@ internal sealed class DataFileSpanPool : IDataFileSpanPool
     {
         var ownerRemoved = _tokens.Remove(owner.Token);
 
-        if (_isClosed && ownerRemoved && _tokens.Count == 0)
+        if (_isClosed && _tokens.Count == 0)
         {
             Dispose();
         }

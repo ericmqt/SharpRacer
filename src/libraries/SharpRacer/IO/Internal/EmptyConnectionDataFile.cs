@@ -1,4 +1,5 @@
-﻿namespace SharpRacer.IO.Internal;
+﻿
+namespace SharpRacer.IO.Internal;
 internal sealed class EmptyConnectionDataFile : IConnectionDataFile
 {
     private bool _isDisposed;
@@ -8,6 +9,7 @@ internal sealed class EmptyConnectionDataFile : IConnectionDataFile
         IsOpen = false;
     }
 
+    public IEnumerable<IConnectionDataFileLifetimeHandle> Handles => Enumerable.Empty<IConnectionDataFileLifetimeHandle>();
     public bool IsDisposed => _isDisposed;
     public bool IsOpen { get; }
     public ReadOnlyMemory<byte> Memory { get; } = ReadOnlyMemory<byte>.Empty;
@@ -19,16 +21,16 @@ internal sealed class EmptyConnectionDataFile : IConnectionDataFile
 
     public void Dispose()
     {
-
+        _isDisposed = true;
     }
 
     public IDataFileMemoryOwner RentMemory()
     {
-        throw new NotImplementedException();
+        throw new InvalidOperationException("The connection is not open.");
     }
 
     public DataFileSpanOwner RentSpan()
     {
-        throw new NotImplementedException();
+        throw new InvalidOperationException("The connection is not open.");
     }
 }

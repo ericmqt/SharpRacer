@@ -23,12 +23,29 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
         _spanPool = new DataFileMemorySpanPool(_memoryMappedDataFile, this);
     }
 
+    internal ConnectionDataFile(
+        IMemoryMappedDataFile memoryMappedDataFile,
+        IMappedMemory mappedMemory,
+        IDataFileMemoryPool memoryPool,
+        IDataFileSpanPool spanPool)
+    {
+        _memoryMappedDataFile = memoryMappedDataFile ?? throw new ArgumentNullException(nameof(memoryMappedDataFile));
+        _mappedMemory = mappedMemory ?? throw new ArgumentNullException(nameof(mappedMemory));
+        _memoryPool = memoryPool ?? throw new ArgumentNullException(nameof(memoryPool));
+        _spanPool = spanPool ?? throw new ArgumentNullException(nameof(spanPool));
+
+        _handles = [];
+    }
+
+    public IEnumerable<IConnectionDataFileLifetimeHandle> Handles => _handles;
     public bool IsDisposed => _isDisposed;
     public bool IsOpen => !_isClosed;
     public ReadOnlyMemory<byte> Memory => _mappedMemory.Memory;
 
     public IConnectionDataFileLifetimeHandle AcquireLifetimeHandle()
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         lock (_handleLock)
         {
             if (_isClosed)
@@ -80,11 +97,15 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
 
     public IDataFileMemoryOwner RentMemory()
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         return _memoryPool.Rent();
     }
 
     public DataFileSpanOwner RentSpan()
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         return _spanPool.Rent();
     }
 

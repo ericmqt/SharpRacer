@@ -23,7 +23,11 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
 
         _tokens = [];
         _tokensLock = new ReaderWriterLockSlim();
+        _nextTokenId = 1;
     }
+
+    internal bool IsClosed => _isClosed;
+    internal int OwnerCount => _tokens.Count;
 
     public void Close()
     {
@@ -78,9 +82,9 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
 
     public void Return(ref readonly DataFileSpanOwner owner)
     {
-        var ownerRemoved = _tokens.Remove(owner.Token);
+        _tokens.Remove(owner.Token);
 
-        if (_isClosed && ownerRemoved && _tokens.Count == 0)
+        if (_isClosed && _tokens.Count == 0)
         {
             Dispose();
         }
@@ -94,7 +98,7 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
         {
             token = new DataFileSpanOwnerToken(Interlocked.Increment(ref _nextTokenId));
         }
-        while (!_tokens.Add(token));
+        while (token != DataFileSpanOwnerToken.Empty && !_tokens.Add(token));
 
         return token;
     }

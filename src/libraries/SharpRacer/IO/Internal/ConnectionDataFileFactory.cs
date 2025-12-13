@@ -14,6 +14,8 @@ internal sealed class ConnectionDataFileFactory : IConnectionDataFileFactory
         _memoryMappedDataFileFactory = memoryMappedDataFileFactory;
     }
 
+    internal IMemoryMappedDataFileFactory MemoryMappedDataFileFactory => _memoryMappedDataFileFactory;
+
     public IConnectionDataFile Create()
     {
         var mmf = _memoryMappedDataFileFactory.OpenNew();

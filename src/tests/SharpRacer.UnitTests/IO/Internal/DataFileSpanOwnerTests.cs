@@ -1,0 +1,98 @@
+﻿using Moq;
+
+namespace SharpRacer.IO.Internal;
+public class DataFileSpanOwnerTests
+{
+    [Fact]
+    public void Ctor_Test()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var poolMock = mocks.Create<IDataFileSpanPool>();
+
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var ownerToken = new DataFileSpanOwnerToken(123);
+
+        var owner = new DataFileSpanOwner(poolMock.Object, ownerToken, memoryObj.Span);
+
+        Assert.True(owner.IsOwned);
+        Assert.Equal(poolMock.Object, owner.Pool);
+        Assert.Equal(ownerToken, owner.Token);
+        Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
+    }
+
+    [Fact]
+    public void Ownerless_Test()
+    {
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var owner = DataFileSpanOwner.Ownerless(memoryObj.Span);
+
+        Assert.False(owner.IsOwned);
+        Assert.Null(owner.Pool);
+        Assert.Equal(DataFileSpanOwnerToken.Empty, owner.Token);
+        Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
+    }
+
+    [Fact]
+    public void Dispose_Test()
+    {
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var ownerToken = new DataFileSpanOwnerToken(123);
+
+        int ownerReturnCount = 0;
+        ulong expectedTokenId = 2;
+        var fakePool = new FakeDataFileSpanPool(expectedTokenId, memoryObj, onOwnerReturned);
+
+        var owner = fakePool.Rent();
+
+        Assert.True(owner.IsOwned);
+        Assert.Equal(fakePool, owner.Pool);
+        Assert.Equal(0, ownerReturnCount);
+
+        // Return the owner to the pool
+        owner.Dispose();
+
+        Assert.Equal(1, ownerReturnCount);
+
+        void onOwnerReturned(DataFileSpanOwnerToken ownerToken)
+        {
+            Assert.Equal(expectedTokenId, ownerToken.Id);
+            ownerReturnCount++;
+        }
+    }
+
+    private class FakeDataFileSpanPool : IDataFileSpanPool
+    {
+        private ulong _tokenId;
+        private readonly Memory<byte> _memory;
+        private readonly Action<DataFileSpanOwnerToken> _onReturn;
+
+        public FakeDataFileSpanPool(ulong tokenId, Memory<byte> memory, Action<DataFileSpanOwnerToken> onReturn)
+        {
+            _tokenId = tokenId;
+            _memory = memory;
+            _onReturn = onReturn ?? throw new ArgumentNullException(nameof(onReturn));
+        }
+
+        public void Close()
+        {
+
+        }
+
+        public void Dispose()
+        {
+
+        }
+
+        public DataFileSpanOwner Rent()
+        {
+            return new DataFileSpanOwner(this, new DataFileSpanOwnerToken(_tokenId), _memory.Span);
+        }
+
+        public void Return(ref readonly DataFileSpanOwner owner)
+        {
+            _onReturn(owner.Token);
+        }
+    }
+}

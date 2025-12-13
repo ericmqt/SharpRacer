@@ -23,10 +23,12 @@ internal sealed class InnerConnectionFactory : IClosedInnerConnectionFactory, IO
     [SupportedOSPlatform("windows")]
     public IOpenInnerConnection Create(IOpenInnerConnectionOwner owner)
     {
-        var dataFile = _dataFileFactory.Create();
+        IConnectionDataFile? dataFile = null;
 
         try
         {
+            dataFile = _dataFileFactory.Create();
+
             return new OpenInnerConnection(
                 owner,
                 dataFile,
@@ -36,7 +38,7 @@ internal sealed class InnerConnectionFactory : IClosedInnerConnectionFactory, IO
         }
         catch
         {
-            dataFile.Dispose();
+            dataFile?.Dispose();
 
             throw;
         }

@@ -2,6 +2,7 @@
 
 internal interface IConnectionDataFile : IDisposable
 {
+    IEnumerable<IConnectionDataFileLifetimeHandle> Handles { get; }
     bool IsDisposed { get; }
     bool IsOpen { get; }
     ReadOnlyMemory<byte> Memory { get; }
