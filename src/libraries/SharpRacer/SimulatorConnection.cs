@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Versioning;
 using SharpRacer.Internal;
 using SharpRacer.Internal.Connections;
+using SharpRacer.IO;
 using SharpRacer.Telemetry;
 
 namespace SharpRacer;
@@ -11,36 +12,38 @@ namespace SharpRacer;
 [SupportedOSPlatform("windows5.1.2600")]
 public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection, IDisposable
 {
-    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly IConnectionCancellationTokenSource _cancellationTokenSource;
     private readonly IConnectionManager _connectionManager;
     private int _connectionStateValue;
     private readonly SemaphoreSlim _connectionTransitionSemaphore;
     private IInnerConnection _innerConnection;
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
-    private readonly ConnectionDataVariableInfoProvider _variableInfoProvider;
+    private readonly IConnectionDataVariableInfoProvider _variableInfoProvider;
 
     /// <summary>
     /// Initializes an instance of <see cref="SimulatorConnection"/>.
     /// </summary>
     public SimulatorConnection()
-        : this(ConnectionManager.Default)
+        : this(ConnectionManager.Default, new ConnectionDataVariableInfoProvider(), new ConnectionCancellationTokenSource())
     {
 
     }
 
-    internal SimulatorConnection(IConnectionManager connectionManager)
+    internal SimulatorConnection(
+        IConnectionManager connectionManager,
+        IConnectionDataVariableInfoProvider variableInfoProvider,
+        IConnectionCancellationTokenSource cancellationTokenSource)
     {
         _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
+        _variableInfoProvider = variableInfoProvider ?? throw new ArgumentNullException(nameof(variableInfoProvider));
+        _cancellationTokenSource = cancellationTokenSource ?? throw new ArgumentNullException(nameof(cancellationTokenSource));
 
-        _cancellationTokenSource = new CancellationTokenSource();
         _connectionStateValue = (int)SimulatorConnectionState.None;
         _innerConnection = new IdleInnerConnection();
 
         _connectionTransitionSemaphore = new SemaphoreSlim(1, 1);
         _openSemaphore = new SemaphoreSlim(1, 1);
-
-        _variableInfoProvider = new ConnectionDataVariableInfoProvider();
     }
 
     /// <inheritdoc />
@@ -83,6 +86,17 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
         // The inner connection will call SetClosedInnerConnection for us
         _innerConnection.CloseOuterConnection(this);
+    }
+
+    ///<inheritdoc />
+    public ISimulatorConnectionDataReader CreateDataReader()
+    {
+        if (State != SimulatorConnectionState.Open)
+        {
+            throw new InvalidOperationException("The connection is not open.");
+        }
+
+        return new SimulatorConnectionDataReader(this);
     }
 
     public void Dispose()
@@ -185,9 +199,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         {
             SetState(SimulatorConnectionState.Connecting);
 
-            using var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(
-                _cancellationTokenSource.Token,
-                cancellationToken);
+            using var linkedCancellationSource = _cancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             try
             {
@@ -204,6 +216,20 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         {
             _openSemaphore.Release();
         }
+    }
+
+    public IDataFileMemoryOwner RentDataFileMemory()
+    {
+        // TODO: Include exceptions in docs!
+
+        return _innerConnection.RentDataFileMemory();
+    }
+
+    public DataFileSpanOwner RentDataFileSpan()
+    {
+        // TODO: Include exceptions in docs!
+
+        return _innerConnection.RentDataFileSpan();
     }
 
     /// <inheritdoc />
@@ -238,7 +264,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         // Combine our cancellation token with the provided one to ensure waiters are returned false as soon as either this instance or the
         // underlying connection is closed or disposed.
 
-        using var linkedCancellationSource = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, cancellationToken);
+        using var linkedCancellationSource = _cancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
         return await _innerConnection.WaitForDataReadyAsync(linkedCancellationSource.Token).ConfigureAwait(false);
     }
@@ -299,7 +325,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
             Interlocked.Exchange(ref _innerConnection, openInnerConnection);
 
-            _variableInfoProvider.InitializeVariables(this);
+            _variableInfoProvider.OnDataVariablesActivated(this);
 
             SetState(SimulatorConnectionState.Open);
         }

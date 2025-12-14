@@ -4,7 +4,7 @@ using SharpRacer.Interop;
 using SharpRacer.Telemetry;
 
 namespace SharpRacer.Internal;
-internal class ConnectionDataVariableInfoProvider : IDataVariableInfoProvider
+internal class ConnectionDataVariableInfoProvider : IConnectionDataVariableInfoProvider
 {
     private readonly Dictionary<string, ConcurrentQueue<Action<DataVariableInfo>>> _callbacks = [];
     private readonly ReaderWriterLockSlim _callbacksLock = new();
@@ -52,7 +52,7 @@ internal class ConnectionDataVariableInfoProvider : IDataVariableInfoProvider
         }
     }
 
-    internal void InitializeVariables(ISimulatorConnection connection)
+    public void OnDataVariablesActivated(ISimulatorConnection connection)
     {
         if (_isInitialized)
         {
@@ -74,11 +74,13 @@ internal class ConnectionDataVariableInfoProvider : IDataVariableInfoProvider
 
         try
         {
+            using var dataFileSpan = connection.RentDataFileSpan();
+
             // Read variable headers from connection
-            ref readonly var header = ref MemoryMarshal.AsRef<DataFileHeader>(connection.Data[..DataFileHeader.Size]);
+            ref readonly var header = ref MemoryMarshal.AsRef<DataFileHeader>(dataFileSpan.Span[..DataFileHeader.Size]);
 
             var variableHeaders = new DataVariableHeader[header.VariableCount];
-            var variableHeaderBytes = connection.Data.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
+            var variableHeaderBytes = dataFileSpan.Span.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
 
             variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
 

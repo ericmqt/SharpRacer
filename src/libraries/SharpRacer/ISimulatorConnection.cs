@@ -1,4 +1,5 @@
-﻿using SharpRacer.Telemetry;
+﻿using SharpRacer.IO;
+using SharpRacer.Telemetry;
 
 namespace SharpRacer;
 
@@ -41,6 +42,15 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// Closes the connection to the simulator. Once closed, the connection may not be reused.
     /// </summary>
     void Close();
+
+    /// <summary>
+    /// Creates an <see cref="ISimulatorConnectionDataReader"/> object that can be used to read data from the connection.
+    /// </summary>
+    /// <returns>
+    /// An implementation of <see cref="ISimulatorConnectionDataReader"/> associated with the current connection.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">The connection is not open.</exception>
+    ISimulatorConnectionDataReader CreateDataReader();
 
     /// <summary>
     /// Opens a connection to the simulator.
@@ -125,6 +135,9 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// </exception>
     /// <exception cref="TimeoutException">The timeout period elapsed before a connection was established.</exception>
     Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default);
+
+    IDataFileMemoryOwner RentDataFileMemory();
+    DataFileSpanOwner RentDataFileSpan();
 
     /// <summary>
     /// Waits for the simulator to raise the data-ready event. Returns <see langword="true"/> if the data-ready event was raised,
