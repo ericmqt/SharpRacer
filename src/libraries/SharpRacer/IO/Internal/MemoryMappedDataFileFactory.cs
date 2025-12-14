@@ -19,6 +19,6 @@ internal sealed class MemoryMappedDataFileFactory : IMemoryMappedDataFileFactory
     [SupportedOSPlatform("windows")]
     public IMemoryMappedDataFile OpenNew()
     {
-        return new MappedDataFile(MemoryMappedFile.OpenExisting(_MemoryMappedFileName, MemoryMappedFileRights.Read));
+        return new MemoryMappedDataFile(MemoryMappedFile.OpenExisting(_MemoryMappedFileName, MemoryMappedFileRights.Read));
     }
 }

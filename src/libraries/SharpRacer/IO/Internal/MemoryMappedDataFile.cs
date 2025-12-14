@@ -2,14 +2,14 @@
 using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer.IO.Internal;
-internal sealed class MappedDataFile : IMemoryMappedDataFile
+internal sealed class MemoryMappedDataFile : IMemoryMappedDataFile
 {
     private readonly IMappedMemory _mappedMemory;
     private readonly ReadOnlyMemory<byte> _memory;
     private readonly MemoryMappedFile _memoryMappedFile;
     private bool _isDisposed;
 
-    public MappedDataFile(MemoryMappedFile memoryMappedFile)
+    public MemoryMappedDataFile(MemoryMappedFile memoryMappedFile)
     {
         _memoryMappedFile = memoryMappedFile;
 
