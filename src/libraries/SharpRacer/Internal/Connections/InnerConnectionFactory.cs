@@ -8,6 +8,7 @@ internal sealed class InnerConnectionFactory : IClosedInnerConnectionFactory, IO
 {
     private readonly IConnectionDataFileFactory _dataFileFactory;
     private readonly IDataReadyEventFactory _dataReadyEventFactory;
+    private readonly IConnectionWorkerThreadFactory _openConnectionWorkerThreadFactory;
     private readonly TimeProvider _timeProvider;
 
     public InnerConnectionFactory(
@@ -15,25 +16,26 @@ internal sealed class InnerConnectionFactory : IClosedInnerConnectionFactory, IO
         IDataReadyEventFactory dataReadyEventFactory,
         TimeProvider timeProvider)
     {
-        _dataFileFactory = dataFileFactory;
-        _dataReadyEventFactory = dataReadyEventFactory;
-        _timeProvider = timeProvider;
+        _dataFileFactory = dataFileFactory ?? throw new ArgumentNullException(nameof(dataFileFactory));
+        _dataReadyEventFactory = dataReadyEventFactory ?? throw new ArgumentNullException(nameof(dataReadyEventFactory));
+        _timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
+
+        _openConnectionWorkerThreadFactory = new ConnectionWorkerThreadFactory(_dataReadyEventFactory);
     }
 
     [SupportedOSPlatform("windows")]
     public IOpenInnerConnection Create(IOpenInnerConnectionOwner owner)
     {
-        IConnectionDataFile? dataFile = null;
+        var dataFile = _dataFileFactory.Create();
 
         try
         {
-            dataFile = _dataFileFactory.Create();
-
             return new OpenInnerConnection(
                 owner,
                 dataFile,
                 new OuterConnectionTracker(closeOnEmpty: true),
-                _dataReadyEventFactory,
+                this,
+                _openConnectionWorkerThreadFactory,
                 _timeProvider);
         }
         catch
@@ -46,6 +48,11 @@ internal sealed class InnerConnectionFactory : IClosedInnerConnectionFactory, IO
 
     public IClosedInnerConnection CreateClosedInnerConnection(IConnectionDataFile dataFile)
     {
-        return new ClosedInnerConnection(dataFile, new OuterConnectionTracker(closeOnEmpty: false));
+        return new ClosedInnerConnection(dataFile, new OuterConnectionTracker(closeOnEmpty: true));
+    }
+
+    public IClosedInnerConnection CreateClosedInnerConnection(IOpenInnerConnection openConnection)
+    {
+        return new ClosedInnerConnection(openConnection, new OuterConnectionTracker(closeOnEmpty: true));
     }
 }

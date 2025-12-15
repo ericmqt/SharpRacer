@@ -194,6 +194,81 @@ public class ConnectionAcquisitionHandlerTests
     }
 
     [Fact]
+    public void SetConnectionException_WaitUntilPendingRequestsClearedTest()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var connectionProviderMock = mocks.Create<IConnectionProvider>();
+        var objectManagerMock = mocks.Create<IConnectionObjectManager>();
+        var requestCounterMock = mocks.Create<IPendingRequestCounter>();
+        var requestSignalsMock = mocks.Create<IConnectionRequestSignals>();
+        var signalsMock = mocks.Create<IConnectionSignals>();
+
+        var allowAsyncRequestCreation = true;
+        var allowRequestExecution = true;
+        var hasPendingRequests = true;
+        int pendingRequestMaxChecks = 2;
+        int pendingRequestCheckCount = 0;
+        var exceptionObj = new SimulatorConnectionException("Test");
+
+        objectManagerMock.Setup(x => x.ClearConnectionException());
+
+        objectManagerMock.Setup(x => x.SetConnectionException(It.IsAny<SimulatorConnectionException>()));
+
+        requestSignalsMock.Setup(x => x.AllowAsyncRequestCreation())
+            .Callback(() => allowAsyncRequestCreation = true)
+            .Verifiable(Times.Once());
+
+        requestSignalsMock.Setup(x => x.AllowRequestExecution())
+            .Callback(() => allowRequestExecution = true)
+            .Verifiable(Times.Once());
+
+        requestSignalsMock.Setup(x => x.BlockAsyncRequestCreation())
+            .Callback(() => allowAsyncRequestCreation = false)
+            .Verifiable(Times.Once());
+
+        requestSignalsMock.Setup(x => x.BlockRequestExecution())
+            .Callback(() => allowRequestExecution = false)
+            .Verifiable(Times.Once());
+
+        requestCounterMock.Setup(x => x.HasPendingRequests())
+            .Returns(getHasPendingRequests);
+
+        signalsMock.Setup(x => x.SetCreateConnectionSignal())
+            .Callback(() =>
+            {
+                Assert.False(allowAsyncRequestCreation);
+                Assert.False(allowRequestExecution);
+            })
+            .Verifiable(Times.Once());
+
+        var requestManager = new ConnectionRequestManager(
+            requestSignals: requestSignalsMock.Object,
+            requestCounter: requestCounterMock.Object);
+
+        var handler = new ConnectionAcquisitionHandler(objectManagerMock.Object, requestManager, signalsMock.Object);
+
+        handler.SetConnectionException(connectionProviderMock.Object, exceptionObj);
+
+        requestCounterMock.Verify(x => x.HasPendingRequests(), Times.Exactly(pendingRequestMaxChecks));
+
+        bool getHasPendingRequests()
+        {
+            if (hasPendingRequests)
+            {
+                pendingRequestCheckCount++;
+            }
+
+            if (pendingRequestCheckCount >= pendingRequestMaxChecks)
+            {
+                hasPendingRequests = false;
+            }
+
+            return hasPendingRequests;
+        }
+    }
+
+    [Fact]
     public void TryAbort_UsesRequestBlockingScopeTest()
     {
         var allowAsyncRequestCreation = true;

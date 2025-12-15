@@ -10,7 +10,19 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
     private bool _isDisposed;
     private readonly IOuterConnectionTracker _outerConnectionTracker;
 
+    public ClosedInnerConnection(IOpenInnerConnection openInnerConnection, IOuterConnectionTracker outerConnectionTracker)
+        : this(openInnerConnection.DataFile, outerConnectionTracker, openInnerConnection.ConnectionId)
+    {
+
+    }
+
     public ClosedInnerConnection(IConnectionDataFile dataFile, IOuterConnectionTracker outerConnectionTracker)
+        : this(dataFile, outerConnectionTracker, connectionId: 0)
+    {
+
+    }
+
+    public ClosedInnerConnection(IConnectionDataFile dataFile, IOuterConnectionTracker outerConnectionTracker, int connectionId)
     {
         DataFile = dataFile ?? throw new ArgumentNullException(nameof(dataFile));
         _outerConnectionTracker = outerConnectionTracker ?? throw new ArgumentNullException(nameof(outerConnectionTracker));
@@ -18,8 +30,10 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
         if (!_outerConnectionTracker.CloseOnEmpty)
         {
             throw new ArgumentException(
-                $"'{nameof(outerConnectionTracker)}' must have CloseWhenOrphaned set to true.", nameof(outerConnectionTracker));
+                $"'{nameof(outerConnectionTracker)}' property '{nameof(IOuterConnectionTracker.CloseOnEmpty)}' must be true.", nameof(outerConnectionTracker));
         }
+
+        ConnectionId = connectionId;
     }
 
     public int ConnectionId { get; }

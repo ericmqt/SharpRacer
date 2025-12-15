@@ -2,7 +2,7 @@
 using SharpRacer.Interop;
 
 namespace SharpRacer.Internal.Connections;
-internal sealed class ConnectionWorkerThread : IDisposable
+internal sealed class ConnectionWorkerThread : IConnectionWorkerThread
 {
     public static string ThreadName = "SharpRacer_ConnectionWorkerThread";
 

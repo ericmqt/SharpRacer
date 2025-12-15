@@ -8,6 +8,7 @@ public class ClosedInnerConnectionTests
     public void Ctor_Test()
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        int connectionId = 34;
 
         var mocks = new MockRepository(MockBehavior.Strict);
 
@@ -17,9 +18,9 @@ public class ClosedInnerConnectionTests
         var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
         connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
 
-        var connection = new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object);
+        var connection = new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object, connectionId);
 
-        Assert.Equal(0, connection.ConnectionId);
+        Assert.Equal(connectionId, connection.ConnectionId);
         Assert.Equal(SimulatorConnectionState.Closed, connection.State);
         Assert.Equal(Timeout.InfiniteTimeSpan, connection.IdleTimeout);
 
@@ -31,6 +32,7 @@ public class ClosedInnerConnectionTests
     public void Ctor_ThrowsArgumentNullExceptionTest()
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        int connectionId = 34;
 
         var mocks = new MockRepository(MockBehavior.Strict);
 
@@ -40,8 +42,8 @@ public class ClosedInnerConnectionTests
         var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
         connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
 
-        Assert.Throws<ArgumentNullException>(() => new ClosedInnerConnection(null!, connectionTrackerMock.Object));
-        Assert.Throws<ArgumentNullException>(() => new ClosedInnerConnection(dataFileMock.Object, null!));
+        Assert.Throws<ArgumentNullException>(() => new ClosedInnerConnection(null!, connectionTrackerMock.Object, connectionId));
+        Assert.Throws<ArgumentNullException>(() => new ClosedInnerConnection(dataFileMock.Object, null!, connectionId));
     }
 
     [Fact]
@@ -55,6 +57,57 @@ public class ClosedInnerConnectionTests
         connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(false);
 
         Assert.Throws<ArgumentException>(() => new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object));
+    }
+
+    [Fact]
+    public void CtorOpenInnerConnection_Test()
+    {
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        int connectionId = 34;
+
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var dataFileMock = mocks.Create<IConnectionDataFile>();
+        dataFileMock.SetupGet(x => x.Memory).Returns(memoryObj);
+
+        var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
+        connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
+
+        var openInnerConnectionMock = mocks.Create<IOpenInnerConnection>();
+        openInnerConnectionMock.SetupGet(x => x.ConnectionId).Returns(connectionId);
+        openInnerConnectionMock.SetupGet(x => x.DataFile).Returns(dataFileMock.Object);
+
+        var connection = new ClosedInnerConnection(openInnerConnectionMock.Object, connectionTrackerMock.Object);
+
+        Assert.Equal(connectionId, connection.ConnectionId);
+        Assert.Equal(SimulatorConnectionState.Closed, connection.State);
+        Assert.Equal(Timeout.InfiniteTimeSpan, connection.IdleTimeout);
+
+        Assert.True(connection.Data.SequenceEqual(dataFileMock.Object.Memory.Span));
+        Assert.Equal(dataFileMock.Object, connection.DataFile);
+
+        openInnerConnectionMock.VerifyGet(x => x.ConnectionId);
+    }
+
+    [Fact]
+    public void CtorOpenInnerConnection_ThrowsIfConnectionTrackerCloseOnEmptyEqualsFalseTest()
+    {
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        int connectionId = 34;
+
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var dataFileMock = mocks.Create<IConnectionDataFile>();
+        dataFileMock.SetupGet(x => x.Memory).Returns(memoryObj);
+
+        var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
+        connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(false);
+
+        var openInnerConnectionMock = mocks.Create<IOpenInnerConnection>();
+        openInnerConnectionMock.SetupGet(x => x.ConnectionId).Returns(connectionId);
+        openInnerConnectionMock.SetupGet(x => x.DataFile).Returns(dataFileMock.Object);
+
+        Assert.Throws<ArgumentException>(() => new ClosedInnerConnection(openInnerConnectionMock.Object, connectionTrackerMock.Object));
     }
 
     [Fact]

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.Versioning;
-using SharpRacer.Interop;
+﻿using System.Runtime.Versioning;
 using SharpRacer.IO;
 using SharpRacer.IO.Internal;
 
@@ -11,7 +9,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 {
     private readonly DotNext.Threading.AsyncManualResetEvent _asyncDataReadySignal;
     private readonly object _closeLock = new();
-    private readonly ClosedInnerConnection _closedInnerConnection;
+    private readonly IClosedInnerConnection _closedInnerConnection;
     private readonly IConnectionDataFile _dataFile;
     private readonly ManualResetEvent _dataReadySignal;
     private int _idleTimeoutMs;
@@ -20,36 +18,29 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
     private readonly IOpenInnerConnectionOwner _owner;
     private readonly IOuterConnectionTracker _outerConnectionTracker;
     private readonly TimeProvider _timeProvider;
-    private readonly ConnectionWorkerThread _workerThread;
-
-    public OpenInnerConnection(IOpenInnerConnectionOwner owner, IConnectionDataFile dataFile)
-        : this(owner, dataFile, new OuterConnectionTracker(closeOnEmpty: true), DataReadyEventFactory.Default, TimeProvider.System)
-    {
-
-    }
+    private readonly IConnectionWorkerThread _workerThread;
 
     public OpenInnerConnection(
         IOpenInnerConnectionOwner owner,
         IConnectionDataFile dataFile,
         IOuterConnectionTracker outerConnectionTracker,
-        IDataReadyEventFactory dataReadyEventFactory,
+        IClosedInnerConnectionFactory closedInnerConnectionFactory,
+        IConnectionWorkerThreadFactory workerThreadFactory,
         TimeProvider timeProvider)
     {
         _owner = owner;
         _dataFile = dataFile;
-
         _outerConnectionTracker = outerConnectionTracker;
         _timeProvider = timeProvider;
-
-        _closedInnerConnection = new ClosedInnerConnection(_dataFile, new OuterConnectionTracker(closeOnEmpty: false));
 
         ConnectionId = owner.NewConnectionId();
         IdleTimeout = TimeSpan.FromSeconds(5);
 
+        _closedInnerConnection = closedInnerConnectionFactory.CreateClosedInnerConnection(this);
+        _workerThread = workerThreadFactory.Create(this, _timeProvider);
+
         _dataReadySignal = new ManualResetEvent(false);
         _asyncDataReadySignal = new DotNext.Threading.AsyncManualResetEvent(false);
-
-        _workerThread = new ConnectionWorkerThread(this, dataReadyEventFactory, timeProvider);
     }
 
     public int ConnectionId { get; }
@@ -170,7 +161,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     public bool WaitForDataReady(CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         try
         {
@@ -187,7 +178,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     public async ValueTask<bool> WaitForDataReadyAsync(CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         try
         {
@@ -239,12 +230,6 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
                 // Swallow exceptions, not that there should ever be any.
             }
         }
-    }
-
-    [StackTraceHidden]
-    private void ThrowIfDisposed()
-    {
-        ObjectDisposedException.ThrowIf(_isDisposed, this);
     }
 
     #region IConnectionWorkerThreadOwner Implementation

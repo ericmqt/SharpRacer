@@ -15,9 +15,9 @@ internal sealed class ConnectionAcquisitionHandler : IConnectionAcquisitionHandl
         IConnectionRequestManager requestManager,
         IConnectionSignals connectionSignals)
     {
-        _objectManager = connectionObjectManager;
-        _requestManager = requestManager;
-        _connectionSignals = connectionSignals;
+        _objectManager = connectionObjectManager ?? throw new ArgumentNullException(nameof(connectionObjectManager));
+        _requestManager = requestManager ?? throw new ArgumentNullException(nameof(requestManager));
+        _connectionSignals = connectionSignals ?? throw new ArgumentNullException(nameof(connectionSignals));
     }
 
     [SupportedOSPlatform("windows")]
