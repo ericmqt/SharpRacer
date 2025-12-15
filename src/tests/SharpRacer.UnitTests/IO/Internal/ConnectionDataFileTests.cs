@@ -29,8 +29,6 @@ public class ConnectionDataFileTests
     [Fact]
     public void Ctor_ThrowsArgumentNullExceptionTest()
     {
-        Assert.Throws<ArgumentNullException>(() => new ConnectionDataFile(null!));
-
         Memory<byte> mappedMemoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
         var mocks = new MockRepository(MockBehavior.Strict);
@@ -41,6 +39,10 @@ public class ConnectionDataFileTests
         var spanPoolMock = mocks.Create<IDataFileSpanPool>();
 
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(() => mappedMemoryObj);
+
+        Assert.Throws<ArgumentNullException>(() => new ConnectionDataFile(null!, mappedMemoryMock.Object));
+
+        Assert.Throws<ArgumentNullException>(() => new ConnectionDataFile(mmfMock.Object, null!));
 
         Assert.Throws<ArgumentNullException>(
             () => new ConnectionDataFile(null!, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object));
