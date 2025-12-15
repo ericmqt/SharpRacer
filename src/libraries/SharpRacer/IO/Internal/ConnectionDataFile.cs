@@ -13,10 +13,11 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     private readonly IDataFileMemoryPool _memoryPool;
     private readonly IDataFileSpanPool _spanPool;
 
-    public ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile)
+    internal ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile, IMappedMemory mappedMemory)
     {
         _memoryMappedDataFile = memoryMappedDataFile ?? throw new ArgumentNullException(nameof(memoryMappedDataFile));
-        _mappedMemory = _memoryMappedDataFile.CreateMemoryAccessor();
+        _mappedMemory = mappedMemory ?? throw new ArgumentNullException(nameof(mappedMemory));
+
         _handles = [];
 
         _memoryPool = new DataFileMemoryPool(_memoryMappedDataFile, this);
