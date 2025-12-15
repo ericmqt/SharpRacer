@@ -201,21 +201,11 @@ public abstract class DataVariableBase<T> : IDataVariable<T>
 
     private void SetVariableInfo(DataVariableInfo variableInfo)
     {
-        if (_isInitialized)
-        {
-            // TODO: Throw?
-            return;
-        }
-
-        if (variableInfo is null)
-        {
-            // Nothing to do here, the instance would have been initialized as unavailable
-            return;
-        }
+        // This method is called only when using delayed variable initialization.
 
         ValidateVariableInfo(variableInfo, Name, ValueCount);
 
-        _dataOffset = variableInfo?.Offset ?? -1;
+        _dataOffset = variableInfo.Offset;
         _isAvailable = variableInfo != null;
         _variableInfo = variableInfo;
 
