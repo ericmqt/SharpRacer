@@ -62,6 +62,28 @@ public class DataFileSpanOwnerTests
         }
     }
 
+    [Fact]
+    public void Dispose_OwnerlessTest()
+    {
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var owner = DataFileSpanOwner.Ownerless(memoryObj.Span);
+
+        owner.Dispose();
+    }
+
+    [Fact]
+    public void SpanImplicitConversionTest()
+    {
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var owner = DataFileSpanOwner.Ownerless(memoryObj.Span);
+
+        ReadOnlySpan<byte> converted = owner;
+
+        Assert.True(converted.SequenceEqual(memoryObj.Span));
+    }
+
     private class FakeDataFileSpanPool : IDataFileSpanPool
     {
         private ulong _tokenId;
