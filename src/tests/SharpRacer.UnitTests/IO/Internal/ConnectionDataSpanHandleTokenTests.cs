@@ -10,20 +10,20 @@ public class ConnectionDataSpanHandleTokenTests
 
         var token = new ConnectionDataSpanHandleToken(tokenId);
         Assert.Equal(tokenId, token.Id);
-        Assert.NotEqual(ConnectionDataSpanHandleToken.Empty, token);
+        Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, token);
     }
 
     [Fact]
-    public void Empty_Test()
+    public void Zero_Test()
     {
-        var emptyToken = ConnectionDataSpanHandleToken.Empty;
+        var emptyToken = ConnectionDataSpanHandleToken.Zero;
         var ownedToken = new ConnectionDataSpanHandleToken(123);
 
-        Assert.Equal(ConnectionDataSpanHandleToken.Empty, emptyToken);
+        Assert.Equal(ConnectionDataSpanHandleToken.Zero, emptyToken);
         Assert.Equal(default, emptyToken);
 
         Assert.NotEqual(ownedToken, emptyToken);
-        Assert.NotEqual(ownedToken, ConnectionDataSpanHandleToken.Empty);
+        Assert.NotEqual(ownedToken, ConnectionDataSpanHandleToken.Zero);
         Assert.NotEqual(ownedToken, default);
     }
 

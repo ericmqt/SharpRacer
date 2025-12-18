@@ -98,7 +98,7 @@ internal sealed class DataFileMemorySpanPool : IConnectionDataSpanOwner
         {
             token = new ConnectionDataSpanHandleToken(Interlocked.Increment(ref _nextTokenId));
         }
-        while (token != ConnectionDataSpanHandleToken.Empty && !_tokens.Add(token));
+        while (token != ConnectionDataSpanHandleToken.Zero && !_tokens.Add(token));
 
         return token;
     }

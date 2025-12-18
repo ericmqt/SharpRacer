@@ -12,7 +12,7 @@ internal readonly struct ConnectionDataSpanHandleToken : IEquatable<ConnectionDa
 
     internal readonly ulong Id => _id;
 
-    internal static ConnectionDataSpanHandleToken Empty { get; } = new ConnectionDataSpanHandleToken(0);
+    internal static ConnectionDataSpanHandleToken Zero { get; } = new ConnectionDataSpanHandleToken(0);
 
     public override readonly bool Equals([NotNullWhen(true)] object? obj)
     {

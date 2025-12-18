@@ -30,7 +30,7 @@ public class ConnectionDataSpanHandleTests
 
         Assert.False(owner.IsOwned);
         Assert.Null(owner.Pool);
-        Assert.Equal(ConnectionDataSpanHandleToken.Empty, owner.Token);
+        Assert.Equal(ConnectionDataSpanHandleToken.Zero, owner.Token);
         Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
     }
 

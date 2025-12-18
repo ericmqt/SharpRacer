@@ -38,7 +38,7 @@ public readonly ref struct ConnectionDataSpanHandle : IDisposable
 
     internal static ConnectionDataSpanHandle Ownerless(ReadOnlySpan<byte> span)
     {
-        return new ConnectionDataSpanHandle(null, ConnectionDataSpanHandleToken.Empty, span);
+        return new ConnectionDataSpanHandle(null, ConnectionDataSpanHandleToken.Zero, span);
     }
 
     /// <summary>
