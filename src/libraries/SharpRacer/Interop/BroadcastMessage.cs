@@ -66,12 +66,6 @@ internal static class BroadcastMessage
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static WPARAM CreateWParam(ushort messageId, int arg1)
-    {
-        return messageId | (uint)arg1 << 16;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static WPARAM CreateWParam(SimulatorCommandId commandId, int arg1)
     {
         return (ushort)commandId | (uint)arg1 << 16;
