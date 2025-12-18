@@ -9,7 +9,7 @@ public readonly ref struct DataBufferReader : IDisposable
 {
     private readonly ref readonly DataFileHeader _fileHeader;
     private readonly ReadOnlySpan<byte> _data;
-    private readonly ConnectionDataSpanHandle _dataSpanOwner;
+    private readonly ConnectionDataSpanHandle _spanHandle;
     private readonly bool _disposeDataSpanOwner = true;
 
     /// <summary>
@@ -32,8 +32,8 @@ public readonly ref struct DataBufferReader : IDisposable
             throw new ArgumentException("Connection has not been opened.", nameof(connection));
         }
 
-        _dataSpanOwner = connection.RentDataFileSpan();
-        _data = _dataSpanOwner;
+        _spanHandle = connection.RentDataSpan();
+        _data = _spanHandle.Span;
 
         _fileHeader = ref DataFileHeader.AsRef(_data);
     }
@@ -44,8 +44,8 @@ public readonly ref struct DataBufferReader : IDisposable
     /// <param name="data">A read-only span of bytes representing the connection data.</param>
     internal DataBufferReader(ReadOnlySpan<byte> data)
     {
-        _dataSpanOwner = ConnectionDataSpanHandle.Ownerless(data);
-        _data = data;
+        _spanHandle = ConnectionDataSpanHandle.Ownerless(data);
+        _data = _spanHandle.Span;
 
         _fileHeader = ref DataFileHeader.AsRef(_data);
         _disposeDataSpanOwner = false;
@@ -78,7 +78,7 @@ public readonly ref struct DataBufferReader : IDisposable
     {
         if (_disposeDataSpanOwner)
         {
-            _dataSpanOwner.Dispose();
+            _spanHandle.Dispose();
         }
     }
 

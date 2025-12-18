@@ -218,17 +218,15 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         }
     }
 
-    public IConnectionDataHandle RentDataFileMemory()
+    /// <inheritdoc />
+    public IConnectionDataHandle RentData()
     {
-        // TODO: Include exceptions in docs!
-
         return _innerConnection.RentDataFileMemory();
     }
 
-    public ConnectionDataSpanHandle RentDataFileSpan()
+    /// <inheritdoc />
+    public ConnectionDataSpanHandle RentDataSpan()
     {
-        // TODO: Include exceptions in docs!
-
         return _innerConnection.RentDataFileSpan();
     }
 

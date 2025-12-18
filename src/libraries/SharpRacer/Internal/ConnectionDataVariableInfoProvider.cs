@@ -74,13 +74,13 @@ internal class ConnectionDataVariableInfoProvider : IConnectionDataVariableInfoP
 
         try
         {
-            using var dataFileSpan = connection.RentDataFileSpan();
+            using var dataHandle = connection.RentDataSpan();
 
             // Read variable headers from connection
-            ref readonly var header = ref MemoryMarshal.AsRef<DataFileHeader>(dataFileSpan.Span[..DataFileHeader.Size]);
+            ref readonly var header = ref MemoryMarshal.AsRef<DataFileHeader>(dataHandle.Span[..DataFileHeader.Size]);
 
             var variableHeaders = new DataVariableHeader[header.VariableCount];
-            var variableHeaderBytes = dataFileSpan.Span.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
+            var variableHeaderBytes = dataHandle.Span.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
 
             variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
 

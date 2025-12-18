@@ -6,7 +6,7 @@ namespace SharpRacer;
 internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
 {
     private readonly ISimulatorConnection _connection;
-    private readonly IConnectionDataHandle _memoryOwner;
+    private readonly IConnectionDataHandle _memoryHandle;
     private bool _isDisposed;
 
     public SimulatorConnectionDataReader(ISimulatorConnection connection)
@@ -17,11 +17,11 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
         }
 
         _connection = connection;
-        _memoryOwner = _connection.RentDataFileMemory();
+        _memoryHandle = _connection.RentData();
     }
 
-    protected ReadOnlyMemory<byte> Memory => _memoryOwner.Memory;
-    protected ReadOnlySpan<byte> Span => _memoryOwner.Memory.Span;
+    protected ReadOnlyMemory<byte> Memory => _memoryHandle.Memory;
+    protected ReadOnlySpan<byte> Span => _memoryHandle.Memory.Span;
 
     /// <inheritdoc />
     public int GetDataBufferLength()
@@ -172,7 +172,7 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
         {
             if (disposing)
             {
-                _memoryOwner.Dispose();
+                _memoryHandle.Dispose();
             }
 
             _isDisposed = true;

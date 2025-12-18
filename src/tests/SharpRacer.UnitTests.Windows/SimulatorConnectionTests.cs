@@ -150,7 +150,7 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void RentDataFileMemory_Test()
+    public void RentData_Test()
     {
         var mocks = new SimulatorConnectionMock();
 
@@ -174,9 +174,9 @@ public partial class SimulatorConnectionTests
         outerConnection.SetOpenInnerConnection(openInnerConnectionMock.Object);
 
         // Get the IDataFileMemoryOwner
-        var dataFileMemory = connection.RentDataFileMemory();
+        var memoryHandle = connection.RentData();
 
-        Assert.Equal(dataFileMemoryOwnerMock.Object, dataFileMemory);
+        Assert.Equal(dataFileMemoryOwnerMock.Object, memoryHandle);
 
         openInnerConnectionMock.Verify(x => x.RentDataFileMemory(), Times.Once);
     }

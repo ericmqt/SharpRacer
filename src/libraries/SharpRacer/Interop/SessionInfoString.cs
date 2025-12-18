@@ -30,11 +30,11 @@ public static class SessionInfoString
             throw new InvalidOperationException($"'{nameof(connection)}' is not in a state that supports reading.");
         }
 
-        using var dataFile = connection.RentDataFileSpan();
+        using var dataHandle = connection.RentDataSpan();
 
-        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataFile);
+        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataHandle);
 
-        return dataFile.Span.Slice(dataFileHeader.SessionInfoOffset, dataFileHeader.SessionInfoLength);
+        return dataHandle.Span.Slice(dataFileHeader.SessionInfoOffset, dataFileHeader.SessionInfoLength);
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public static class SessionInfoString
             throw new InvalidOperationException($"'{nameof(connection)}' is not in a state that supports reading.");
         }
 
-        using var dataFile = connection.RentDataFileSpan();
+        using var dataFile = connection.RentDataSpan();
 
         ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataFile);
 
@@ -104,7 +104,7 @@ public static class SessionInfoString
             throw new InvalidOperationException($"'{nameof(connection)}' is not in a state that supports reading.");
         }
 
-        using var dataFile = connection.RentDataFileSpan();
+        using var dataFile = connection.RentDataSpan();
 
         ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataFile);
 
