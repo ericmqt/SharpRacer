@@ -5,7 +5,7 @@
 /// </summary>
 /// <remarks>See irsdk_CameraState in the iRacing SDK.</remarks>
 [Flags]
-public enum CameraState : uint
+public enum CameraState : ushort
 {
     /// <summary>
     /// Undefined camera state.
@@ -18,21 +18,33 @@ public enum CameraState : uint
     /// <summary>
     /// Indicates the session screen is active. The camera tool can only be activated in this state.
     /// </summary>
+    /// <remarks>
+    /// Represents the irsdk_IsSessionScreen value in the iRacing SDK.
+    /// </remarks>
     IsSessionScreenActive = 0x0001,
 
     /// <summary>
     /// The scenic camera is active (no focus car).
     /// </summary>
+    /// <remarks>
+    /// Represents the irsdk_IsScenicActive value in the iRacing SDK.
+    /// </remarks>
     IsScenicCameraActive = 0x0002,
 
     /// <summary>
     /// Indicates the camera tool is active.
     /// </summary>
+    /// <remarks>
+    /// Represents the irsdk_CamToolActive value in the iRacing SDK.
+    /// </remarks>
     IsCameraToolActive = 0x0004,
 
     /// <summary>
     /// Simulator UI is hidden.
     /// </summary>
+    /// <remarks>
+    /// Represents the irsdk_UIHidden value in the iRacing SDK.
+    /// </remarks>
     IsUIHidden = 0x0008,
 
     UseAutoShotSelection = 0x0010,
