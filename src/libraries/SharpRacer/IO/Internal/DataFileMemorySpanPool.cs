@@ -1,7 +1,7 @@
 ﻿using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer.IO.Internal;
-internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
+internal sealed class DataFileMemorySpanPool : IConnectionDataSpanOwner
 {
     private readonly IConnectionDataFileLifetimeHandle _dataFileHandle;
     private bool _isClosed;
@@ -9,7 +9,7 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
     private readonly IMappedMemory _mappedMemory;
     private readonly ReadOnlyMemory<byte> _memory;
     private ulong _nextTokenId;
-    private readonly HashSet<DataFileSpanOwnerToken> _tokens;
+    private readonly HashSet<ConnectionDataSpanHandleToken> _tokens;
     private readonly ReaderWriterLockSlim _tokensLock;
 
     public DataFileMemorySpanPool(IMemoryMappedDataFile memoryMappedFile, IConnectionDataFileLifetime dataFileLifetime)
@@ -57,7 +57,7 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
         GC.SuppressFinalize(this);
     }
 
-    public DataFileSpanOwner Rent()
+    public ConnectionDataSpanHandle Rent()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
@@ -72,7 +72,7 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
 
             var token = CreateToken();
 
-            return new DataFileSpanOwner(this, token, _memory.Span);
+            return new ConnectionDataSpanHandle(this, token, _memory.Span);
         }
         finally
         {
@@ -80,7 +80,7 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
         }
     }
 
-    public void Return(ref readonly DataFileSpanOwner owner)
+    public void Return(ref readonly ConnectionDataSpanHandle owner)
     {
         _tokens.Remove(owner.Token);
 
@@ -90,15 +90,15 @@ internal sealed class DataFileMemorySpanPool : IDataFileSpanPool
         }
     }
 
-    private DataFileSpanOwnerToken CreateToken()
+    private ConnectionDataSpanHandleToken CreateToken()
     {
-        DataFileSpanOwnerToken token;
+        ConnectionDataSpanHandleToken token;
 
         do
         {
-            token = new DataFileSpanOwnerToken(Interlocked.Increment(ref _nextTokenId));
+            token = new ConnectionDataSpanHandleToken(Interlocked.Increment(ref _nextTokenId));
         }
-        while (token != DataFileSpanOwnerToken.Empty && !_tokens.Add(token));
+        while (token != ConnectionDataSpanHandleToken.Empty && !_tokens.Add(token));
 
         return token;
     }

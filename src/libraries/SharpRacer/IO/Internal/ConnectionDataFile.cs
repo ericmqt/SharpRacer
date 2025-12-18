@@ -11,7 +11,7 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     private readonly IMappedMemory _mappedMemory;
     private readonly IMemoryMappedDataFile _memoryMappedDataFile;
     private readonly IConnectionDataMemoryOwner _memoryPool;
-    private readonly IDataFileSpanPool _spanPool;
+    private readonly IConnectionDataSpanOwner _spanPool;
 
     internal ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile, IMappedMemory mappedMemory)
     {
@@ -28,7 +28,7 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
         IMemoryMappedDataFile memoryMappedDataFile,
         IMappedMemory mappedMemory,
         IConnectionDataMemoryOwner memoryPool,
-        IDataFileSpanPool spanPool)
+        IConnectionDataSpanOwner spanPool)
     {
         _memoryMappedDataFile = memoryMappedDataFile ?? throw new ArgumentNullException(nameof(memoryMappedDataFile));
         _mappedMemory = mappedMemory ?? throw new ArgumentNullException(nameof(mappedMemory));
@@ -103,7 +103,7 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
         return _memoryPool.Rent();
     }
 
-    public DataFileSpanOwner RentSpan()
+    public ConnectionDataSpanHandle RentSpan()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 

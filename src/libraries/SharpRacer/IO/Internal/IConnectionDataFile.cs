@@ -9,5 +9,5 @@ internal interface IConnectionDataFile : IDisposable
 
     void Close();
     IConnectionDataHandle RentMemory();
-    DataFileSpanOwner RentSpan();
+    ConnectionDataSpanHandle RentSpan();
 }

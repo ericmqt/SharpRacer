@@ -225,7 +225,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         return _innerConnection.RentDataFileMemory();
     }
 
-    public DataFileSpanOwner RentDataFileSpan()
+    public ConnectionDataSpanHandle RentDataFileSpan()
     {
         // TODO: Include exceptions in docs!
 

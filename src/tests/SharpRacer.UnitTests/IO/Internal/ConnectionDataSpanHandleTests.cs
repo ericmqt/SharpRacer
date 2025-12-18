@@ -1,19 +1,19 @@
 ﻿using Moq;
 
 namespace SharpRacer.IO.Internal;
-public class DataFileSpanOwnerTests
+public class ConnectionDataSpanHandleTests
 {
     [Fact]
     public void Ctor_Test()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
 
-        var poolMock = mocks.Create<IDataFileSpanPool>();
+        var poolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
-        var ownerToken = new DataFileSpanOwnerToken(123);
+        var ownerToken = new ConnectionDataSpanHandleToken(123);
 
-        var owner = new DataFileSpanOwner(poolMock.Object, ownerToken, memoryObj.Span);
+        var owner = new ConnectionDataSpanHandle(poolMock.Object, ownerToken, memoryObj.Span);
 
         Assert.True(owner.IsOwned);
         Assert.Equal(poolMock.Object, owner.Pool);
@@ -26,11 +26,11 @@ public class DataFileSpanOwnerTests
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var owner = DataFileSpanOwner.Ownerless(memoryObj.Span);
+        var owner = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
 
         Assert.False(owner.IsOwned);
         Assert.Null(owner.Pool);
-        Assert.Equal(DataFileSpanOwnerToken.Empty, owner.Token);
+        Assert.Equal(ConnectionDataSpanHandleToken.Empty, owner.Token);
         Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
     }
 
@@ -38,7 +38,7 @@ public class DataFileSpanOwnerTests
     public void Dispose_Test()
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
-        var ownerToken = new DataFileSpanOwnerToken(123);
+        var ownerToken = new ConnectionDataSpanHandleToken(123);
 
         int ownerReturnCount = 0;
         ulong expectedTokenId = 2;
@@ -55,7 +55,7 @@ public class DataFileSpanOwnerTests
 
         Assert.Equal(1, ownerReturnCount);
 
-        void onOwnerReturned(DataFileSpanOwnerToken ownerToken)
+        void onOwnerReturned(ConnectionDataSpanHandleToken ownerToken)
         {
             Assert.Equal(expectedTokenId, ownerToken.Id);
             ownerReturnCount++;
@@ -67,7 +67,7 @@ public class DataFileSpanOwnerTests
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var owner = DataFileSpanOwner.Ownerless(memoryObj.Span);
+        var owner = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
 
         owner.Dispose();
     }
@@ -77,20 +77,20 @@ public class DataFileSpanOwnerTests
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var owner = DataFileSpanOwner.Ownerless(memoryObj.Span);
+        var owner = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
 
         ReadOnlySpan<byte> converted = owner;
 
         Assert.True(converted.SequenceEqual(memoryObj.Span));
     }
 
-    private class FakeDataFileSpanPool : IDataFileSpanPool
+    private class FakeDataFileSpanPool : IConnectionDataSpanOwner
     {
         private ulong _tokenId;
         private readonly Memory<byte> _memory;
-        private readonly Action<DataFileSpanOwnerToken> _onReturn;
+        private readonly Action<ConnectionDataSpanHandleToken> _onReturn;
 
-        public FakeDataFileSpanPool(ulong tokenId, Memory<byte> memory, Action<DataFileSpanOwnerToken> onReturn)
+        public FakeDataFileSpanPool(ulong tokenId, Memory<byte> memory, Action<ConnectionDataSpanHandleToken> onReturn)
         {
             _tokenId = tokenId;
             _memory = memory;
@@ -107,12 +107,12 @@ public class DataFileSpanOwnerTests
 
         }
 
-        public DataFileSpanOwner Rent()
+        public ConnectionDataSpanHandle Rent()
         {
-            return new DataFileSpanOwner(this, new DataFileSpanOwnerToken(_tokenId), _memory.Span);
+            return new ConnectionDataSpanHandle(this, new ConnectionDataSpanHandleToken(_tokenId), _memory.Span);
         }
 
-        public void Return(ref readonly DataFileSpanOwner owner)
+        public void Return(ref readonly ConnectionDataSpanHandle owner)
         {
             _onReturn(owner.Token);
         }

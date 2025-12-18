@@ -18,7 +18,7 @@ internal interface IInnerConnection : IDisposable
     /// <param name="outerConnection"></param>
     void Detach(IOuterConnection outerConnection);
     IConnectionDataHandle RentDataFileMemory();
-    DataFileSpanOwner RentDataFileSpan();
+    ConnectionDataSpanHandle RentDataFileSpan();
     bool WaitForDataReady(CancellationToken cancellationToken);
     ValueTask<bool> WaitForDataReadyAsync(CancellationToken cancellationToken);
 }

@@ -137,7 +137,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default);
 
     IConnectionDataHandle RentDataFileMemory();
-    DataFileSpanOwner RentDataFileSpan();
+    ConnectionDataSpanHandle RentDataFileSpan();
 
     /// <summary>
     /// Waits for the simulator to raise the data-ready event. Returns <see langword="true"/> if the data-ready event was raised,

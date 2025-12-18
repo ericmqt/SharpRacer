@@ -149,7 +149,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
         return _dataFile.RentMemory();
     }
 
-    public DataFileSpanOwner RentDataFileSpan()
+    public ConnectionDataSpanHandle RentDataFileSpan()
     {
         return _dataFile.RentSpan();
     }

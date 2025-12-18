@@ -29,7 +29,7 @@ internal sealed class EmptyConnectionDataFile : IConnectionDataFile
         throw new InvalidOperationException("The connection is not open.");
     }
 
-    public DataFileSpanOwner RentSpan()
+    public ConnectionDataSpanHandle RentSpan()
     {
         throw new InvalidOperationException("The connection is not open.");
     }

@@ -92,7 +92,7 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
         throw new InvalidOperationException("The connection is closed.");
     }
 
-    public DataFileSpanOwner RentDataFileSpan()
+    public ConnectionDataSpanHandle RentDataFileSpan()
     {
         throw new InvalidOperationException("The connection is closed.");
     }

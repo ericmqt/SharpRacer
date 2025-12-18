@@ -41,7 +41,7 @@ internal sealed class IdleInnerConnection : IInnerConnection
         throw new InvalidOperationException("The connection is not open.");
     }
 
-    public DataFileSpanOwner RentDataFileSpan()
+    public ConnectionDataSpanHandle RentDataFileSpan()
     {
         throw new InvalidOperationException("The connection is not open.");
     }

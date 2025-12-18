@@ -14,7 +14,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(() => mappedMemoryObj);
 
@@ -36,7 +36,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(() => mappedMemoryObj);
 
@@ -65,7 +65,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
 
@@ -86,7 +86,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         memoryPoolMock.Setup(x => x.Close());
         spanPoolMock.Setup(x => x.Close());
@@ -107,7 +107,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         mmfMock.Setup(x => x.Dispose());
         mappedMemoryMock.Setup(x => x.Dispose());
@@ -135,7 +135,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         memoryPoolMock.Setup(x => x.Close());
         spanPoolMock.Setup(x => x.Close());
@@ -161,7 +161,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         memoryPoolMock.Setup(x => x.Close());
         spanPoolMock.Setup(x => x.Close());
@@ -190,7 +190,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         mmfMock.Setup(x => x.Dispose());
         mappedMemoryMock.Setup(x => x.Dispose());
@@ -221,7 +221,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
 
@@ -261,7 +261,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         var handleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
 
@@ -300,7 +300,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         memoryPoolMock.Setup(x => x.Close());
         spanPoolMock.Setup(x => x.Close());
@@ -344,7 +344,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         memoryPoolMock.Setup(x => x.Close());
         spanPoolMock.Setup(x => x.Close());
@@ -380,7 +380,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         var memoryOwnerMock = mocks.Create<IConnectionDataHandle>();
 
@@ -403,7 +403,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         mmfMock.Setup(x => x.Dispose());
         mappedMemoryMock.Setup(x => x.Dispose());
@@ -426,7 +426,7 @@ public class ConnectionDataFileTests
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
 
         byte[] spanBytes = [0xDE, 0xAD, 0xBE, 0xEF];
-        var spanOwnerToken = new DataFileSpanOwnerToken(123);
+        var spanOwnerToken = new ConnectionDataSpanHandleToken(123);
 
         var spanPool = new FakeSpanPool(() => spanOwnerToken, spanBytes);
 
@@ -448,7 +448,7 @@ public class ConnectionDataFileTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
         var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IDataFileSpanPool>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
 
         mmfMock.Setup(x => x.Dispose());
         mappedMemoryMock.Setup(x => x.Dispose());
@@ -461,12 +461,12 @@ public class ConnectionDataFileTests
         Assert.Throws<ObjectDisposedException>(() => dataFile.RentSpan());
     }
 
-    private class FakeSpanPool : IDataFileSpanPool
+    private class FakeSpanPool : IConnectionDataSpanOwner
     {
-        private readonly Func<DataFileSpanOwnerToken> _ownerTokenFactory;
+        private readonly Func<ConnectionDataSpanHandleToken> _ownerTokenFactory;
         private readonly byte[] _spanBytes;
 
-        public FakeSpanPool(Func<DataFileSpanOwnerToken> ownerTokenFactory, byte[] spanBytes)
+        public FakeSpanPool(Func<ConnectionDataSpanHandleToken> ownerTokenFactory, byte[] spanBytes)
         {
             _ownerTokenFactory = ownerTokenFactory ?? throw new ArgumentNullException(nameof(ownerTokenFactory));
             _spanBytes = spanBytes ?? throw new ArgumentNullException(nameof(spanBytes));
@@ -482,12 +482,12 @@ public class ConnectionDataFileTests
             throw new NotImplementedException();
         }
 
-        public DataFileSpanOwner Rent()
+        public ConnectionDataSpanHandle Rent()
         {
-            return new DataFileSpanOwner(this, _ownerTokenFactory(), _spanBytes);
+            return new ConnectionDataSpanHandle(this, _ownerTokenFactory(), _spanBytes);
         }
 
-        public void Return(ref readonly DataFileSpanOwner owner)
+        public void Return(ref readonly ConnectionDataSpanHandle owner)
         {
             throw new NotImplementedException();
         }
