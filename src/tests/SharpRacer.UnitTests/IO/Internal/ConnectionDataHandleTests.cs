@@ -1,7 +1,7 @@
 ﻿using Moq;
 
 namespace SharpRacer.IO.Internal;
-public class DataFileMemoryOwnerTests
+public class ConnectionDataHandleTests
 {
     [Fact]
     public void Ctor_Test()
@@ -11,7 +11,7 @@ public class DataFileMemoryOwnerTests
         var mocks = new MockRepository(MockBehavior.Strict);
         var poolMock = mocks.Create<IDataFileMemoryPool>();
 
-        var owner = new DataFileMemoryOwner(memoryObj, poolMock.Object);
+        var owner = new ConnectionDataHandle(memoryObj, poolMock.Object);
 
         Assert.True(owner.Memory.Span.SequenceEqual(memoryObj.Span));
     }
@@ -24,7 +24,7 @@ public class DataFileMemoryOwnerTests
         var mocks = new MockRepository(MockBehavior.Strict);
         var poolMock = mocks.Create<IDataFileMemoryPool>();
 
-        var owner = new DataFileMemoryOwner(memoryObj, poolMock.Object);
+        var owner = new ConnectionDataHandle(memoryObj, poolMock.Object);
 
         poolMock.Setup(x => x.Return(owner));
 

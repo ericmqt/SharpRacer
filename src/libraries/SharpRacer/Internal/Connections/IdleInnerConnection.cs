@@ -36,7 +36,7 @@ internal sealed class IdleInnerConnection : IInnerConnection
         DataFile.Dispose();
     }
 
-    public IDataFileMemoryOwner RentDataFileMemory()
+    public IConnectionDataHandle RentDataFileMemory()
     {
         throw new InvalidOperationException("The connection is not open.");
     }

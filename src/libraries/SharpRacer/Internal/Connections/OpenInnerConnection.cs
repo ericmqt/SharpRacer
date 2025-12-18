@@ -144,7 +144,7 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
         GC.SuppressFinalize(this);
     }
 
-    public IDataFileMemoryOwner RentDataFileMemory()
+    public IConnectionDataHandle RentDataFileMemory()
     {
         return _dataFile.RentMemory();
     }

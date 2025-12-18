@@ -9,7 +9,7 @@ internal sealed class DataFileMemoryPool : IDataFileMemoryPool
     private bool _isDisposed;
     private readonly IMappedMemory _mappedMemory;
     private readonly ReadOnlyMemory<byte> _memory;
-    private readonly List<IDataFileMemoryOwner> _owners;
+    private readonly List<IConnectionDataHandle> _owners;
     private readonly object _rentalLock = new();
 
     public DataFileMemoryPool(IMemoryMappedDataFile memoryMappedFile, IConnectionDataFileLifetime dataFileLifetime)
@@ -48,7 +48,7 @@ internal sealed class DataFileMemoryPool : IDataFileMemoryPool
         GC.SuppressFinalize(this);
     }
 
-    public IDataFileMemoryOwner Rent()
+    public IConnectionDataHandle Rent()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
@@ -59,7 +59,7 @@ internal sealed class DataFileMemoryPool : IDataFileMemoryPool
                 throw new InvalidOperationException("The pool is closed.");
             }
 
-            var owner = new DataFileMemoryOwner(_memory, this);
+            var owner = new ConnectionDataHandle(_memory, this);
 
             _owners.Add(owner);
 
@@ -67,7 +67,7 @@ internal sealed class DataFileMemoryPool : IDataFileMemoryPool
         }
     }
 
-    public void Return(IDataFileMemoryOwner memoryOwner)
+    public void Return(IConnectionDataHandle memoryOwner)
     {
         _owners.Remove(memoryOwner);
 

@@ -410,7 +410,7 @@ public class OpenInnerConnectionTests
         var dataFileMemoryPoolMock = mocks.Create<IDataFileMemoryPool>();
 
         mocks.DataFile.Setup(x => x.RentMemory())
-            .Returns(new DataFileMemoryOwner(DataFileMemory, dataFileMemoryPoolMock.Object))
+            .Returns(new ConnectionDataHandle(DataFileMemory, dataFileMemoryPoolMock.Object))
             .Verifiable(Times.Once);
 
         mocks.OuterConnectionTracker.SetupGet(x => x.CloseOnEmpty).Returns(true);

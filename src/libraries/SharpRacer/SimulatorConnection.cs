@@ -218,7 +218,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         }
     }
 
-    public IDataFileMemoryOwner RentDataFileMemory()
+    public IConnectionDataHandle RentDataFileMemory()
     {
         // TODO: Include exceptions in docs!
 

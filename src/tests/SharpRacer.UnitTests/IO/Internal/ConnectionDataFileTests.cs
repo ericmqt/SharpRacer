@@ -382,7 +382,7 @@ public class ConnectionDataFileTests
         var memoryPoolMock = mocks.Create<IDataFileMemoryPool>();
         var spanPoolMock = mocks.Create<IDataFileSpanPool>();
 
-        var memoryOwnerMock = mocks.Create<IDataFileMemoryOwner>();
+        var memoryOwnerMock = mocks.Create<IConnectionDataHandle>();
 
         memoryPoolMock.Setup(x => x.Rent()).Returns(memoryOwnerMock.Object);
 

@@ -6,7 +6,7 @@ namespace SharpRacer;
 internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
 {
     private readonly ISimulatorConnection _connection;
-    private readonly IDataFileMemoryOwner _memoryOwner;
+    private readonly IConnectionDataHandle _memoryOwner;
     private bool _isDisposed;
 
     public SimulatorConnectionDataReader(ISimulatorConnection connection)

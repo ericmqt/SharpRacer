@@ -136,7 +136,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// <exception cref="TimeoutException">The timeout period elapsed before a connection was established.</exception>
     Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default);
 
-    IDataFileMemoryOwner RentDataFileMemory();
+    IConnectionDataHandle RentDataFileMemory();
     DataFileSpanOwner RentDataFileSpan();
 
     /// <summary>

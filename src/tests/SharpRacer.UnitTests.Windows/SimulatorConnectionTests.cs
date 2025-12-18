@@ -154,7 +154,7 @@ public partial class SimulatorConnectionTests
     {
         var mocks = new SimulatorConnectionMock();
 
-        var dataFileMemoryOwnerMock = mocks.MockRepository.Create<IDataFileMemoryOwner>();
+        var dataFileMemoryOwnerMock = mocks.MockRepository.Create<IConnectionDataHandle>();
         var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
 
         openInnerConnectionMock.Setup(x => x.RentDataFileMemory()).Returns(dataFileMemoryOwnerMock.Object);

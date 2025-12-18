@@ -24,7 +24,7 @@ internal sealed class EmptyConnectionDataFile : IConnectionDataFile
         _isDisposed = true;
     }
 
-    public IDataFileMemoryOwner RentMemory()
+    public IConnectionDataHandle RentMemory()
     {
         throw new InvalidOperationException("The connection is not open.");
     }

@@ -87,7 +87,7 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
         }
     }
 
-    public IDataFileMemoryOwner RentDataFileMemory()
+    public IConnectionDataHandle RentDataFileMemory()
     {
         throw new InvalidOperationException("The connection is closed.");
     }

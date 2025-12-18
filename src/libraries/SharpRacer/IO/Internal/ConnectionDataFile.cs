@@ -96,7 +96,7 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
         }
     }
 
-    public IDataFileMemoryOwner RentMemory()
+    public IConnectionDataHandle RentMemory()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 

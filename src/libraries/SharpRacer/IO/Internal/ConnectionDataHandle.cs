@@ -1,12 +1,12 @@
 ﻿namespace SharpRacer.IO.Internal;
 
-internal sealed class DataFileMemoryOwner : IDataFileMemoryOwner
+internal sealed class ConnectionDataHandle : IConnectionDataHandle
 {
     private bool _isDisposed;
     private readonly ReadOnlyMemory<byte> _memory;
     private readonly IDataFileMemoryPool _pool;
 
-    public DataFileMemoryOwner(ReadOnlyMemory<byte> memory, IDataFileMemoryPool pool)
+    public ConnectionDataHandle(ReadOnlyMemory<byte> memory, IDataFileMemoryPool pool)
     {
         _memory = memory;
         _pool = pool;

@@ -3,6 +3,6 @@
 internal interface IDataFileMemoryPool : IDisposable
 {
     void Close();
-    IDataFileMemoryOwner Rent();
-    void Return(IDataFileMemoryOwner memoryOwner);
+    IConnectionDataHandle Rent();
+    void Return(IConnectionDataHandle memoryOwner);
 }
