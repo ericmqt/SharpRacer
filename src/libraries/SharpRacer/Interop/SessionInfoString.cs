@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Text;
 
 namespace SharpRacer.Interop;
 
@@ -31,9 +30,11 @@ public static class SessionInfoString
             throw new InvalidOperationException($"'{nameof(connection)}' is not in a state that supports reading.");
         }
 
-        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(connection.Data);
+        using var dataFile = connection.RentDataFileSpan();
 
-        return connection.Data.Slice(dataFileHeader.SessionInfoOffset, dataFileHeader.SessionInfoLength);
+        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataFile);
+
+        return dataFile.Span.Slice(dataFileHeader.SessionInfoOffset, dataFileHeader.SessionInfoLength);
     }
 
     /// <summary>
@@ -65,7 +66,9 @@ public static class SessionInfoString
             throw new InvalidOperationException($"'{nameof(connection)}' is not in a state that supports reading.");
         }
 
-        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(connection.Data);
+        using var dataFile = connection.RentDataFileSpan();
+
+        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataFile);
 
         string sessionInfoStr;
 
@@ -74,7 +77,7 @@ public static class SessionInfoString
         {
             version = dataFileHeader.SessionInfoVersion;
 
-            var span = connection.Data.Slice(dataFileHeader.SessionInfoOffset, dataFileHeader.SessionInfoLength);
+            var span = dataFile.Span.Slice(dataFileHeader.SessionInfoOffset, dataFileHeader.SessionInfoLength);
 
             sessionInfoStr = Encoding.GetString(span);
         }
@@ -101,6 +104,10 @@ public static class SessionInfoString
             throw new InvalidOperationException($"'{nameof(connection)}' is not in a state that supports reading.");
         }
 
-        return MemoryMarshal.Read<int>(connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoVersion, sizeof(int)));
+        using var dataFile = connection.RentDataFileSpan();
+
+        ref readonly var dataFileHeader = ref DataFileHeader.AsRef(dataFile);
+
+        return dataFileHeader.SessionInfoVersion;
     }
 }
