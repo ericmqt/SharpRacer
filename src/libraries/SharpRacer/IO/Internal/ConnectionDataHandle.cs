@@ -4,9 +4,9 @@ internal sealed class ConnectionDataHandle : IConnectionDataHandle
 {
     private bool _isDisposed;
     private readonly ReadOnlyMemory<byte> _memory;
-    private readonly IDataFileMemoryPool _pool;
+    private readonly IConnectionDataMemoryOwner _pool;
 
-    public ConnectionDataHandle(ReadOnlyMemory<byte> memory, IDataFileMemoryPool pool)
+    public ConnectionDataHandle(ReadOnlyMemory<byte> memory, IConnectionDataMemoryOwner pool)
     {
         _memory = memory;
         _pool = pool;

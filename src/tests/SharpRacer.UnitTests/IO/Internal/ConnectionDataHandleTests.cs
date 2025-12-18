@@ -9,7 +9,7 @@ public class ConnectionDataHandleTests
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
         var mocks = new MockRepository(MockBehavior.Strict);
-        var poolMock = mocks.Create<IDataFileMemoryPool>();
+        var poolMock = mocks.Create<IConnectionDataMemoryOwner>();
 
         var owner = new ConnectionDataHandle(memoryObj, poolMock.Object);
 
@@ -22,7 +22,7 @@ public class ConnectionDataHandleTests
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
         var mocks = new MockRepository(MockBehavior.Strict);
-        var poolMock = mocks.Create<IDataFileMemoryPool>();
+        var poolMock = mocks.Create<IConnectionDataMemoryOwner>();
 
         var owner = new ConnectionDataHandle(memoryObj, poolMock.Object);
 

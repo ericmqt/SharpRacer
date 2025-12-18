@@ -2,7 +2,7 @@
 using Moq;
 
 namespace SharpRacer.IO.Internal;
-public class DataFileMemoryPoolTests
+public class ConnectionDataMemoryOwnerTests
 {
     [Fact]
     public void Ctor_Test()
@@ -21,7 +21,7 @@ public class DataFileMemoryPoolTests
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         lifetimeMock.Verify(x => x.AcquireLifetimeHandle(), Times.Once());
         mmfMock.Verify(x => x.CreateMemoryAccessor(), Times.Once());
@@ -47,7 +47,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         Assert.False(memoryPool.IsClosed);
 
@@ -84,7 +84,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         Assert.False(memoryPool.IsClosed);
 
@@ -119,7 +119,7 @@ public class DataFileMemoryPoolTests
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         // Dispose
         memoryPool.Dispose();
@@ -148,7 +148,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner
         var owner1 = memoryPool.Rent();
@@ -176,7 +176,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner before closing so the pool isn't auto-disposed
         var owner1 = memoryPool.Rent();
@@ -205,7 +205,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner before closing so the pool isn't auto-disposed
         var owner1 = memoryPool.Rent();
@@ -234,7 +234,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner
         var owner1 = memoryPool.Rent();
@@ -277,7 +277,7 @@ public class DataFileMemoryPoolTests
         var mmfMock = mocks.Create<IMemoryMappedDataFile>();
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
 
-        var memoryPool = new DataFileMemoryPool(mmfMock.Object, lifetimeMock.Object);
+        var memoryPool = new ConnectionDataMemoryOwner(mmfMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner
         var owner1 = memoryPool.Rent();

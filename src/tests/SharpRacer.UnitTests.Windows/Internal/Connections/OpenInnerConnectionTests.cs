@@ -407,7 +407,7 @@ public class OpenInnerConnectionTests
         mocks.ConnectionOwner.Setup(x => x.OnConnectionClosing(It.IsAny<IOpenInnerConnection>()));
         mocks.DataFile.SetupGet(x => x.Memory).Returns(DataFileMemory);
 
-        var dataFileMemoryPoolMock = mocks.Create<IDataFileMemoryPool>();
+        var dataFileMemoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
 
         mocks.DataFile.Setup(x => x.RentMemory())
             .Returns(new ConnectionDataHandle(DataFileMemory, dataFileMemoryPoolMock.Object))

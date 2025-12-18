@@ -10,7 +10,7 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     private bool _isDisposed;
     private readonly IMappedMemory _mappedMemory;
     private readonly IMemoryMappedDataFile _memoryMappedDataFile;
-    private readonly IDataFileMemoryPool _memoryPool;
+    private readonly IConnectionDataMemoryOwner _memoryPool;
     private readonly IDataFileSpanPool _spanPool;
 
     internal ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile, IMappedMemory mappedMemory)
@@ -20,14 +20,14 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
 
         _handles = [];
 
-        _memoryPool = new DataFileMemoryPool(_memoryMappedDataFile, this);
+        _memoryPool = new ConnectionDataMemoryOwner(_memoryMappedDataFile, this);
         _spanPool = new DataFileMemorySpanPool(_memoryMappedDataFile, this);
     }
 
     internal ConnectionDataFile(
         IMemoryMappedDataFile memoryMappedDataFile,
         IMappedMemory mappedMemory,
-        IDataFileMemoryPool memoryPool,
+        IConnectionDataMemoryOwner memoryPool,
         IDataFileSpanPool spanPool)
     {
         _memoryMappedDataFile = memoryMappedDataFile ?? throw new ArgumentNullException(nameof(memoryMappedDataFile));
