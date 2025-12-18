@@ -8,9 +8,9 @@ namespace SharpRacer;
 public interface ISimulatorConnectionDataReader : IDisposable
 {
     /// <summary>
-    /// Gets the length, in bytes, of the buffer used for storing telemetry data.
+    /// Gets the length, in bytes, of the telemetry data buffers.
     /// </summary>
-    /// <returns>The length, in bytes, of the buffer used for storing telemetry data.</returns>
+    /// <returns>The length, in bytes, of the telemetry data buffers.</returns>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
     int GetDataBufferLength();
 
