@@ -5,29 +5,36 @@ namespace SharpRacer.IO;
 /// <summary>
 /// Provides a high-performance API for reading telemetry data buffers from a simulator connection.
 /// </summary>
-public readonly ref struct DataBufferReader
+public readonly ref struct DataBufferReader : IDisposable
 {
     private readonly ref readonly DataFileHeader _fileHeader;
     private readonly ReadOnlySpan<byte> _data;
+    private readonly DataFileSpanOwner _dataSpanOwner;
+    private readonly bool _disposeDataSpanOwner = true;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DataBufferReader"/> structure.
+    /// Initializes an instance of the <see cref="DataBufferReader"/> structure using the specified connection as its data source.
     /// </summary>
     /// <param name="connection">The <see cref="ISimulatorConnection"/> instance from which data will be read.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="connection"/> has not been opened.
     /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="connection"/> is <see langword="null"/>.
+    /// </exception>
     public DataBufferReader(ISimulatorConnection connection)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
-        // Allow reading from Closed connection since data file will be frozen and readable
+        // Allow reading from Closed connection since data file will be frozen and readable until all of the outer connections have closed.
         if (connection.State < SimulatorConnectionState.Open)
         {
             throw new ArgumentException("Connection has not been opened.", nameof(connection));
         }
 
-        _data = connection.Data;
+        _dataSpanOwner = connection.RentDataFileSpan();
+        _data = _dataSpanOwner;
+
         _fileHeader = ref DataFileHeader.AsRef(_data);
     }
 
@@ -37,8 +44,11 @@ public readonly ref struct DataBufferReader
     /// <param name="data">A read-only span of bytes representing the connection data.</param>
     internal DataBufferReader(ReadOnlySpan<byte> data)
     {
+        _dataSpanOwner = DataFileSpanOwner.Ownerless(data);
         _data = data;
+
         _fileHeader = ref DataFileHeader.AsRef(_data);
+        _disposeDataSpanOwner = false;
     }
 
     /// <summary>
@@ -58,6 +68,17 @@ public readonly ref struct DataBufferReader
         while (!TryCopyBuffer(in bufferHeader, destination, out tickCount))
         {
             bufferHeader = ref GetActiveBufferHeaderRef();
+        }
+    }
+
+    /// <summary>
+    /// Releases the underlying data file span handle.
+    /// </summary>
+    public void Dispose()
+    {
+        if (_disposeDataSpanOwner)
+        {
+            _dataSpanOwner.Dispose();
         }
     }
 
