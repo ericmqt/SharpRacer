@@ -49,6 +49,10 @@ public static class ReplayCommands
     /// Sets the playback position according to the result of a search for the specified session and session time.
     /// </summary>
     /// <param name="sessionNumber">The session number.</param>
+    /// <param name="sessionTimeMs">The elapsed time within the specified session.</param>
+    /// <remarks>
+    /// Per the iRacing SDK, this command performs a search instead of a direct jump so the operation "may take a while".
+    /// </remarks>
     public static void SearchSessionTime(int sessionNumber, int sessionTimeMs)
     {
         BroadcastMessage.Send(SimulatorCommandId.ReplaySearchSessionTime, sessionNumber, sessionTimeMs);
