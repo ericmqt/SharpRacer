@@ -36,6 +36,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// <summary>
     /// Closes the connection to the simulator. Once closed, the connection may not be reused.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     void Close();
 
     /// <summary>
@@ -45,6 +46,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// An implementation of <see cref="ISimulatorConnectionDataReader"/> associated with the current connection.
     /// </returns>
     /// <exception cref="InvalidOperationException">The connection is not open.</exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     ISimulatorConnectionDataReader CreateDataReader();
 
     /// <summary>
@@ -57,6 +59,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// 
     /// A call to Open or OpenAsync is already in progress.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     /// <exception cref="SimulatorConnectionException">An exception was thrown while connecting to the simulator.</exception>
     void Open();
 
@@ -76,6 +79,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// 
     /// A call to Open or OpenAsync is already in progress.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     /// <exception cref="SimulatorConnectionException">
     /// An exception was thrown while connecting to the simulator.
     /// 
@@ -98,6 +102,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// 
     /// A call to Open or OpenAsync is already in progress.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     /// <exception cref="OperationCanceledException">The operation was canceled.</exception>
     /// <exception cref="SimulatorConnectionException">An exception was thrown while connecting to the simulator.</exception>
     Task OpenAsync(CancellationToken cancellationToken = default);
@@ -120,6 +125,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// 
     /// A call to Open or OpenAsync is already in progress.
     /// </exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     /// <exception cref="OperationCanceledException">The operation was canceled.</exception>
     /// <exception cref="SimulatorConnectionException">
     /// An exception was thrown while connecting to the simulator.
@@ -150,7 +156,7 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// otherwise <see langword="false"/>.
     /// </summary>
     /// <returns><see langword="true"/> if the data-ready event was raised, otherwise <see langword="false"/>.</returns>
-    /// /// <exception cref="ObjectDisposedException">The <see cref="ISimulatorConnection"/> instance has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     bool WaitForDataReady();
 
     /// <summary>
@@ -159,6 +165,6 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     /// </summary>
     /// <param name="cancellationToken">The <see cref="CancellationToken"/> to monitor for canceling the wait operation.</param>
     /// <returns><see langword="true"/> if the data-ready event was raised, otherwise <see langword="false"/>.</returns>
-    /// <exception cref="ObjectDisposedException">The <see cref="ISimulatorConnection"/> instance has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     ValueTask<bool> WaitForDataReadyAsync(CancellationToken cancellationToken = default);
 }

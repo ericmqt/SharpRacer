@@ -49,7 +49,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <inheritdoc />
     public bool CanRead
     {
-        get => State == SimulatorConnectionState.Open;
+        get => !_isDisposed && State == SimulatorConnectionState.Open;
     }
 
     /// <inheritdoc />
@@ -82,6 +82,8 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <inheritdoc />
     public void Close()
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         if (State == SimulatorConnectionState.None || State == SimulatorConnectionState.Connecting)
         {
             throw new InvalidOperationException(
@@ -100,6 +102,8 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     ///<inheritdoc />
     public ISimulatorConnectionDataReader CreateDataReader()
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         if (State != SimulatorConnectionState.Open)
         {
             throw new InvalidOperationException("The connection is not open.");
@@ -108,27 +112,21 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         return new SimulatorConnectionDataReader(this);
     }
 
+    /// <summary>
+    /// Releases resources owned by this instance.
+    /// </summary>
     public void Dispose()
     {
-        if (!_isDisposed)
-        {
-            _cancellationTokenSource.Cancel();
-            _cancellationTokenSource.Dispose();
-
-            _innerConnection.Detach(this);
-
-            _openSemaphore.Dispose();
-            _connectionTransitionSemaphore.Dispose();
-
-            _isDisposed = true;
-        }
-
+        Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc />
+    /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
     public void NotifyDataVariableActivated(string variableName, Action<DataVariableInfo> callback)
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         ArgumentException.ThrowIfNullOrEmpty(variableName);
         ArgumentNullException.ThrowIfNull(callback);
 
@@ -144,6 +142,8 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <inheritdoc />
     public void Open(TimeSpan timeout)
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         if (State == SimulatorConnectionState.Open)
         {
             return;
@@ -189,6 +189,8 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <inheritdoc />
     public async Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
         if (State == SimulatorConnectionState.Open)
         {
             return;
@@ -264,6 +266,25 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         return await _innerConnection.WaitForDataReadyAsync(linkedCancellationSource.Token).ConfigureAwait(false);
     }
 
+    private void Dispose(bool disposing)
+    {
+        if (!_isDisposed)
+        {
+            _isDisposed = true;
+
+            if (disposing)
+            {
+                _cancellationTokenSource.Cancel();
+                _cancellationTokenSource.Dispose();
+
+                _innerConnection.Detach(this);
+
+                _openSemaphore.Dispose();
+                _connectionTransitionSemaphore.Dispose();
+            }
+        }
+    }
+
     private void SetState(SimulatorConnectionState state)
     {
         var oldState = (SimulatorConnectionState)Interlocked.Exchange(ref _connectionStateValue, (int)state);
@@ -288,6 +309,11 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         // This should only be called by the pool when either the internal connection has closed or when the last SimulatorConnection
         // sharing the internal connection closes.
 
+        if (_isDisposed)
+        {
+            return;
+        }
+
         _connectionTransitionSemaphore.Wait();
 
         try
@@ -308,6 +334,11 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     void IOuterConnection.SetOpenInnerConnection(IOpenInnerConnection openInnerConnection)
     {
         // This should only be called when transitioning from Connecting -> Open
+
+        if (_isDisposed)
+        {
+            return;
+        }
 
         _connectionTransitionSemaphore.Wait();
 

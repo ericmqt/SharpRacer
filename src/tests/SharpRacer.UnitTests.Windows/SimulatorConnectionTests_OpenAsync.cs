@@ -5,6 +5,49 @@ namespace SharpRacer;
 partial class SimulatorConnectionTests
 {
     [Fact]
+    public async Task OpenAsync_Test()
+    {
+        var timeout = Timeout.InfiniteTimeSpan;
+
+        var mocks = new SimulatorConnectionMock();
+        var connection = mocks.CreateInstance();
+
+        mocks.ConnectionManager.Setup(x => x.ConnectAsync(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
+            .Callback<IOuterConnection, TimeSpan, CancellationToken>(connectionManagerConnect)
+            .Returns(Task.CompletedTask);
+
+        using var testCancellationSource = new CancellationTokenSource();
+        CancellationToken linkedToken = default;
+
+        mocks.CancellationTokenSource.SetupGet(x => x.Token).Returns(testCancellationSource.Token);
+
+        mocks.CancellationTokenSource.Setup(x => x.CreateLinkedTokenSource(It.IsAny<CancellationToken>()))
+            .Returns<CancellationToken>(ct =>
+            {
+                var lts = CancellationTokenSource.CreateLinkedTokenSource(testCancellationSource.Token, ct);
+                linkedToken = lts.Token;
+                return lts;
+            });
+
+        Assert.Equal(SimulatorConnectionState.None, connection.State);
+
+        // Open
+        await connection.OpenAsync();
+
+        Assert.Equal(SimulatorConnectionState.Connecting, connection.State);
+
+        // Verify parameterless OpenAsync() used infinite timeout and the default CancellationToken
+        mocks.CancellationTokenSource.Verify(x => x.CreateLinkedTokenSource(default));
+        mocks.ConnectionManager.Verify(x => x.ConnectAsync(connection, timeout, linkedToken), Times.Once());
+
+        void connectionManagerConnect(IOuterConnection outerConnection, TimeSpan connectTimeout, CancellationToken cancellationToken)
+        {
+            Assert.Equal(timeout, connectTimeout);
+            Assert.Equal(connection, outerConnection);
+        }
+    }
+
+    [Fact]
     public async Task OpenAsync_CancellationTokenTest()
     {
         using var externalCancellationTokenSource = new CancellationTokenSource();
@@ -153,7 +196,7 @@ partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public async Task OpenAsync_ThrowsIfClosedTest()
+    public async Task OpenAsync_ThrowIfClosedTest()
     {
         var mocks = new SimulatorConnectionMock();
         var closedInnerConnectionMock = mocks.MockRepository.Create<IClosedInnerConnection>();
@@ -169,5 +212,15 @@ partial class SimulatorConnectionTests
 
         Assert.Equal(SimulatorConnectionState.Closed, connection.State);
         await Assert.ThrowsAsync<InvalidOperationException>(() => connection.OpenAsync());
+    }
+
+    [Fact]
+    public async Task OpenAsync_ThrowIfDisposedTest()
+    {
+        var connection = new SimulatorConnection();
+        connection.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await connection.OpenAsync(cancellationToken: default));
+        await Assert.ThrowsAsync<ObjectDisposedException>(async () => await connection.OpenAsync(TimeSpan.FromSeconds(5), default));
     }
 }

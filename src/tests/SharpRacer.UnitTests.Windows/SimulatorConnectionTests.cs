@@ -130,7 +130,17 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void Close_ThrowsIfStateEqualsNoneTest()
+    public void Close_ThrowIfDisposedTest()
+    {
+        var connection = new SimulatorConnection();
+
+        connection.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => connection.Close());
+    }
+
+    [Fact]
+    public void Close_ThrowIfStateEqualsNoneTest()
     {
         var connection = new SimulatorConnection();
 
@@ -138,11 +148,20 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void CreateDataReader_ThrowsIfNotOpenTest()
+    public void CreateDataReader_ThrowIfNotOpenTest()
     {
         var connection = new SimulatorConnection();
 
         Assert.Throws<InvalidOperationException>(() => connection.CreateDataReader());
+    }
+
+    [Fact]
+    public void CreateDataReader_ThrowIfDisposedTest()
+    {
+        var connection = new SimulatorConnection();
+        connection.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => connection.CreateDataReader());
     }
 
     [Fact]
@@ -162,7 +181,7 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void NotifyDataVariableActivated_ThrowsOnInvalidArgsTest()
+    public void NotifyDataVariableActivated_ThrowOnInvalidArgsTest()
     {
         string variableName = "Foo";
         Action<DataVariableInfo> callback = (dataVariableInfo) => { };
@@ -175,6 +194,16 @@ public partial class SimulatorConnectionTests
         Assert.Throws<ArgumentException>(() => connection.NotifyDataVariableActivated(string.Empty, callback));
         Assert.Throws<ArgumentNullException>(() => connection.NotifyDataVariableActivated(null!, callback));
         Assert.Throws<ArgumentNullException>(() => connection.NotifyDataVariableActivated(variableName, null!));
+    }
+
+    [Fact]
+    public void NotifyDataVariableActivated_ThrowIfDisposedTest()
+    {
+        string variableName = "Foo";
+        Action<DataVariableInfo> callback = (dataVariableInfo) => { };
+
+        var connection = new SimulatorConnection();
+        Assert.Throws<ObjectDisposedException>(() => connection.NotifyDataVariableActivated(variableName, callback));
     }
 
     [Fact]
@@ -249,14 +278,51 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
+    public void SetClosedInnerConnection_ReturnIfDisposedTest()
+    {
+        var mocks = new SimulatorConnectionMock();
+
+        var closedInnerConnectionMock = mocks.MockRepository.Create<IClosedInnerConnection>();
+
+        mocks.CancellationTokenSource.Setup(x => x.Cancel());
+        mocks.CancellationTokenSource.Setup(x => x.Dispose());
+
+        // Create SimulatorConnection object and get the IOuterConnection implementation
+        var connection = mocks.CreateInstance();
+        var outerConnection = (IOuterConnection)connection;
+
+        var preDisposalState = connection.State;
+        bool stateChangedEventRaised = false;
+
+        connection.StateChanged += onConnectionStateChangedEventHandler;
+        connection.Dispose();
+
+        // Invoke SetClosedInnerConnection
+        outerConnection.SetClosedInnerConnection(closedInnerConnectionMock.Object);
+
+        Assert.NotEqual(SimulatorConnectionState.Closed, connection.State);
+        Assert.Equal(preDisposalState, connection.State);
+
+        // CancellationTokenSource.Cancel() is called once from the Dispose() method instead of being called from our method
+        mocks.CancellationTokenSource.Verify(x => x.Cancel(), Times.Once);
+
+        Assert.False(stateChangedEventRaised);
+
+        void onConnectionStateChangedEventHandler(object? sender, SimulatorConnectionStateChangedEventArgs e)
+        {
+            stateChangedEventRaised = true;
+        }
+    }
+
+    [Fact]
     public void SetOpenInnerConnection_Test()
     {
         var mocks = new SimulatorConnectionMock();
-        var connection = mocks.CreateInstance();
 
         var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
 
         // Create SimulatorConnection object and get the IOuterConnection implementation
+        var connection = mocks.CreateInstance();
         var outerConnection = (IOuterConnection)connection;
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
@@ -336,6 +402,43 @@ public partial class SimulatorConnectionTests
 
             stateChangedEventRaised = true;
             connection.StateChanged -= onConnectionStateChangedEventHandler;
+        }
+    }
+
+    [Fact]
+    public void SetOpenInnerConnection_ReturnIfDisposedTest()
+    {
+        var mocks = new SimulatorConnectionMock();
+
+        mocks.CancellationTokenSource.Setup(x => x.Cancel());
+        mocks.CancellationTokenSource.Setup(x => x.Dispose());
+
+        var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
+
+        // Create SimulatorConnection object and get the IOuterConnection implementation
+        var connection = mocks.CreateInstance();
+        var outerConnection = (IOuterConnection)connection;
+
+        var preDisposalState = connection.State;
+        bool stateChangedEventRaised = false;
+
+        connection.StateChanged += onConnectionStateChangedEventHandler;
+
+        connection.Dispose();
+
+        // Invoke SetOpenInnerConnection
+        outerConnection.SetOpenInnerConnection(openInnerConnectionMock.Object);
+
+        // CancellationTokenSource.Cancel() is called once from the Dispose() method instead of being called from our method
+        mocks.CancellationTokenSource.Verify(x => x.Cancel(), Times.Once);
+
+        Assert.False(stateChangedEventRaised);
+        Assert.NotEqual(SimulatorConnectionState.Open, connection.State);
+        Assert.Equal(preDisposalState, connection.State);
+
+        void onConnectionStateChangedEventHandler(object? sender, SimulatorConnectionStateChangedEventArgs e)
+        {
+            stateChangedEventRaised = true;
         }
     }
 
@@ -421,7 +524,7 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void WaitForDataReady_ThrowsIfDisposedTest()
+    public void WaitForDataReady_ThrowIfDisposedTest()
     {
         var connection = new SimulatorConnection();
         connection.Dispose();
@@ -563,7 +666,7 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public async Task WaitForDataReadyAsync_ThrowsIfDisposedTest()
+    public async Task WaitForDataReadyAsync_ThrowIfDisposedTest()
     {
         var connection = new SimulatorConnection();
         connection.Dispose();
