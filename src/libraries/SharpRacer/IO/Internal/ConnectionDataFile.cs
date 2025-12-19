@@ -13,10 +13,10 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     private readonly IConnectionDataMemoryOwner _memoryOwner;
     private readonly IConnectionDataSpanOwner _spanOwner;
 
-    internal ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile, IMappedMemory mappedMemory)
+    internal ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile)
     {
         _memoryMappedDataFile = memoryMappedDataFile ?? throw new ArgumentNullException(nameof(memoryMappedDataFile));
-        _mappedMemory = mappedMemory ?? throw new ArgumentNullException(nameof(mappedMemory));
+        _mappedMemory = _memoryMappedDataFile.CreateMemoryAccessor();
 
         _handles = [];
 

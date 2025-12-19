@@ -40,9 +40,7 @@ public class ConnectionDataFileTests
 
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(() => mappedMemoryObj);
 
-        Assert.Throws<ArgumentNullException>(() => new ConnectionDataFile(null!, mappedMemoryMock.Object));
-
-        Assert.Throws<ArgumentNullException>(() => new ConnectionDataFile(mmfMock.Object, null!));
+        Assert.Throws<ArgumentNullException>(() => new ConnectionDataFile(null!));
 
         Assert.Throws<ArgumentNullException>(
             () => new ConnectionDataFile(null!, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object));

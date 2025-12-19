@@ -20,6 +20,6 @@ internal sealed class ConnectionDataFileFactory : IConnectionDataFileFactory
     {
         var mmf = _memoryMappedDataFileFactory.OpenNew();
 
-        return new ConnectionDataFile(mmf, mmf.CreateMemoryAccessor());
+        return new ConnectionDataFile(mmf);
     }
 }

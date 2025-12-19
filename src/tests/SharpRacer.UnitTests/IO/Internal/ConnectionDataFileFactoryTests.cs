@@ -23,12 +23,17 @@ public class ConnectionDataFileFactoryTests
 
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
         var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
-        var mmfFactoryMock = mocks.Create<IMemoryMappedDataFileFactory>();
+        var spanFactoryMock = mocks.Create<IConnectionDataSpanFactory>();
 
-        mmfFactoryMock.Setup(x => x.OpenNew()).Returns(mmfMock.Object);
+        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
+
         mmfMock.Setup(x => x.CreateMemoryAccessor()).Returns(mappedMemoryMock.Object);
+        mmfMock.Setup(x => x.CreateSpanFactory()).Returns(spanFactoryMock.Object);
+
         mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
+
+        var mmfFactoryMock = mocks.Create<IMemoryMappedDataFileFactory>();
+        mmfFactoryMock.Setup(x => x.OpenNew()).Returns(mmfMock.Object);
 
         var factory = new ConnectionDataFileFactory(mmfFactoryMock.Object);
         var dataFile = factory.Create();
@@ -40,7 +45,8 @@ public class ConnectionDataFileFactoryTests
         Assert.Equal(2, dataFile.Handles.Count());
 
         mmfFactoryMock.Verify(x => x.OpenNew(), Times.Once());
-        mmfMock.Verify(x => x.CreateMemoryAccessor(), Times.Exactly(3)); // 3 times, one for both pools and the data file itself
+        mmfMock.Verify(x => x.CreateMemoryAccessor(), Times.Exactly(2)); // one for the memory owner and one for the data file itself
+        mmfMock.Verify(x => x.CreateSpanFactory(), Times.Once);
     }
 
 }
