@@ -96,14 +96,14 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
         }
     }
 
-    public IConnectionDataHandle RentMemory()
+    public IConnectionDataHandle GetMemoryHandle()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         return _memoryOwner.AcquireMemoryHandle();
     }
 
-    public ConnectionDataSpanHandle RentSpan()
+    public ConnectionDataSpanHandle GetSpanHandle()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 

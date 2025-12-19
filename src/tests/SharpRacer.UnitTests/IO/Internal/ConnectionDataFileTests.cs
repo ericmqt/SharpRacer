@@ -214,6 +214,95 @@ public class ConnectionDataFileTests
     }
 
     [Fact]
+    public void GetMemoryHandle_Test()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
+
+        var memoryOwnerMock = mocks.Create<IConnectionDataHandle>();
+
+        memoryPoolMock.Setup(x => x.AcquireMemoryHandle()).Returns(memoryOwnerMock.Object);
+
+        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
+
+        var memoryOwner = dataFile.GetMemoryHandle();
+
+        Assert.Equal(memoryOwnerMock.Object, memoryOwner);
+
+        memoryPoolMock.Verify(x => x.AcquireMemoryHandle(), Times.Once);
+    }
+
+    [Fact]
+    public void GetMemoryHandle_ThrowsIfDisposedTest()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
+
+        mmfMock.Setup(x => x.Dispose());
+        mappedMemoryMock.Setup(x => x.Dispose());
+        memoryPoolMock.Setup(x => x.Dispose());
+        spanPoolMock.Setup(x => x.Dispose());
+
+        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
+        dataFile.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => dataFile.GetMemoryHandle());
+    }
+
+    [Fact]
+    public void GetSpanHandle_Test()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
+
+        byte[] spanBytes = [0xDE, 0xAD, 0xBE, 0xEF];
+        var spanOwnerToken = new ConnectionDataSpanHandleToken(123);
+
+        var spanPool = new FakeSpanPool(() => spanOwnerToken, spanBytes);
+
+        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPool);
+
+        var rentedSpan = dataFile.GetSpanHandle();
+
+        Assert.True(rentedSpan.IsOwned);
+        Assert.Equal(rentedSpan.Owner, spanPool);
+        Assert.Equal(spanOwnerToken, rentedSpan.Token);
+        Assert.Equal(rentedSpan.Span, spanBytes);
+    }
+
+    [Fact]
+    public void GetSpanHandle_ThrowsIfDisposedTest()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
+        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
+
+        mmfMock.Setup(x => x.Dispose());
+        mappedMemoryMock.Setup(x => x.Dispose());
+        memoryPoolMock.Setup(x => x.Dispose());
+        spanPoolMock.Setup(x => x.Dispose());
+
+        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
+        dataFile.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => dataFile.GetSpanHandle());
+    }
+
+    [Fact]
     public void ReleaseLifetimeHandle_Test()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
@@ -370,95 +459,6 @@ public class ConnectionDataFileTests
 
         Assert.False(dataFile.IsOpen);
         Assert.False(dataFile.IsDisposed);
-    }
-
-    [Fact]
-    public void RentMemory_Test()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
-
-        var memoryOwnerMock = mocks.Create<IConnectionDataHandle>();
-
-        memoryPoolMock.Setup(x => x.AcquireMemoryHandle()).Returns(memoryOwnerMock.Object);
-
-        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
-
-        var memoryOwner = dataFile.RentMemory();
-
-        Assert.Equal(memoryOwnerMock.Object, memoryOwner);
-
-        memoryPoolMock.Verify(x => x.AcquireMemoryHandle(), Times.Once);
-    }
-
-    [Fact]
-    public void RentMemory_ThrowsIfDisposedTest()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
-
-        mmfMock.Setup(x => x.Dispose());
-        mappedMemoryMock.Setup(x => x.Dispose());
-        memoryPoolMock.Setup(x => x.Dispose());
-        spanPoolMock.Setup(x => x.Dispose());
-
-        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
-        dataFile.Dispose();
-
-        Assert.Throws<ObjectDisposedException>(() => dataFile.RentMemory());
-    }
-
-    [Fact]
-    public void RentSpan_Test()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-
-        byte[] spanBytes = [0xDE, 0xAD, 0xBE, 0xEF];
-        var spanOwnerToken = new ConnectionDataSpanHandleToken(123);
-
-        var spanPool = new FakeSpanPool(() => spanOwnerToken, spanBytes);
-
-        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPool);
-
-        var rentedSpan = dataFile.RentSpan();
-
-        Assert.True(rentedSpan.IsOwned);
-        Assert.Equal(rentedSpan.Owner, spanPool);
-        Assert.Equal(spanOwnerToken, rentedSpan.Token);
-        Assert.Equal(rentedSpan.Span, spanBytes);
-    }
-
-    [Fact]
-    public void RentSpan_ThrowsIfDisposedTest()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        var memoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-        var spanPoolMock = mocks.Create<IConnectionDataSpanOwner>();
-
-        mmfMock.Setup(x => x.Dispose());
-        mappedMemoryMock.Setup(x => x.Dispose());
-        memoryPoolMock.Setup(x => x.Dispose());
-        spanPoolMock.Setup(x => x.Dispose());
-
-        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
-        dataFile.Dispose();
-
-        Assert.Throws<ObjectDisposedException>(() => dataFile.RentSpan());
     }
 
     private class FakeSpanPool : IConnectionDataSpanOwner

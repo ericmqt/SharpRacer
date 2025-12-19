@@ -24,12 +24,12 @@ internal sealed class EmptyConnectionDataFile : IConnectionDataFile
         _isDisposed = true;
     }
 
-    public IConnectionDataHandle RentMemory()
+    public IConnectionDataHandle GetMemoryHandle()
     {
         throw new InvalidOperationException("The connection is not open.");
     }
 
-    public ConnectionDataSpanHandle RentSpan()
+    public ConnectionDataSpanHandle GetSpanHandle()
     {
         throw new InvalidOperationException("The connection is not open.");
     }

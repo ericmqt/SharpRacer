@@ -8,6 +8,6 @@ internal interface IConnectionDataFile : IDisposable
     ReadOnlyMemory<byte> Memory { get; }
 
     void Close();
-    IConnectionDataHandle RentMemory();
-    ConnectionDataSpanHandle RentSpan();
+    IConnectionDataHandle GetMemoryHandle();
+    ConnectionDataSpanHandle GetSpanHandle();
 }

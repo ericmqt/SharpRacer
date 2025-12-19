@@ -70,12 +70,12 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     public IConnectionDataHandle AcquireDataHandle()
     {
-        return _dataFile.RentMemory();
+        return _dataFile.GetMemoryHandle();
     }
 
     public ConnectionDataSpanHandle AcquireDataSpanHandle()
     {
-        return _dataFile.RentSpan();
+        return _dataFile.GetSpanHandle();
     }
 
     public bool Attach(IOuterConnection outerConnection)

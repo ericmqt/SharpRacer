@@ -37,7 +37,7 @@ public class EmptyConnectionDataFileTests
     {
         var dataFile = new EmptyConnectionDataFile();
 
-        Assert.Throws<InvalidOperationException>(dataFile.RentMemory);
+        Assert.Throws<InvalidOperationException>(dataFile.GetMemoryHandle);
     }
 
     [Fact]
@@ -45,6 +45,6 @@ public class EmptyConnectionDataFileTests
     {
         var dataFile = new EmptyConnectionDataFile();
 
-        Assert.Throws<InvalidOperationException>(() => dataFile.RentSpan());
+        Assert.Throws<InvalidOperationException>(() => dataFile.GetSpanHandle());
     }
 }
