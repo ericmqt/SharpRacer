@@ -203,6 +203,8 @@ public partial class SimulatorConnectionTests
         Action<DataVariableInfo> callback = (dataVariableInfo) => { };
 
         var connection = new SimulatorConnection();
+        connection.Dispose();
+
         Assert.Throws<ObjectDisposedException>(() => connection.NotifyDataVariableActivated(variableName, callback));
     }
 
