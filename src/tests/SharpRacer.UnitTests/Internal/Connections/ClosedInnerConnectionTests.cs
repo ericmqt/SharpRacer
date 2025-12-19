@@ -24,7 +24,7 @@ public class ClosedInnerConnectionTests
         Assert.Equal(SimulatorConnectionState.Closed, connection.State);
         Assert.Equal(Timeout.InfiniteTimeSpan, connection.IdleTimeout);
 
-        Assert.True(connection.Data.SequenceEqual(dataFileMock.Object.Memory.Span));
+        Assert.True(connection.DataFile.Memory.Span.SequenceEqual(dataFileMock.Object.Memory.Span));
         Assert.Equal(dataFileMock.Object, connection.DataFile);
     }
 
@@ -83,7 +83,7 @@ public class ClosedInnerConnectionTests
         Assert.Equal(SimulatorConnectionState.Closed, connection.State);
         Assert.Equal(Timeout.InfiniteTimeSpan, connection.IdleTimeout);
 
-        Assert.True(connection.Data.SequenceEqual(dataFileMock.Object.Memory.Span));
+        Assert.True(connection.DataFile.Memory.Span.SequenceEqual(dataFileMock.Object.Memory.Span));
         Assert.Equal(dataFileMock.Object, connection.DataFile);
 
         openInnerConnectionMock.VerifyGet(x => x.ConnectionId);

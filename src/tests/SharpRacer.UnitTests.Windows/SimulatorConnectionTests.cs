@@ -13,8 +13,6 @@ public partial class SimulatorConnectionTests
 
         Assert.Equal(SimulatorConnectionState.None, connection.State);
         Assert.False(connection.CanRead);
-        Assert.Equal(0, connection.Data.Length);
-        Assert.True(connection.Data.SequenceEqual([]));
         Assert.Empty(connection.DataVariables);
     }
 
@@ -28,8 +26,6 @@ public partial class SimulatorConnectionTests
 
         Assert.Equal(SimulatorConnectionState.None, connection.State);
         Assert.False(connection.CanRead);
-        Assert.Equal(0, connection.Data.Length);
-        Assert.True(connection.Data.SequenceEqual([]));
         Assert.Empty(connection.DataVariables);
     }
 

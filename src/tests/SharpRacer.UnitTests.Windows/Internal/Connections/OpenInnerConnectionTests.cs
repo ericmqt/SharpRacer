@@ -26,7 +26,7 @@ public class OpenInnerConnectionTests
         Assert.NotNull(openInnerConnection);
         Assert.Equal(ConnectionId, openInnerConnection.ConnectionId);
         Assert.Equal(mocks.DataFile.Object, openInnerConnection.DataFile);
-        Assert.True(DataFileMemory.Span.SequenceEqual(openInnerConnection.Data));
+        Assert.True(openInnerConnection.DataFile.Memory.Span.SequenceEqual(DataFileMemory.Span));
         Assert.Equal(SimulatorConnectionState.Open, openInnerConnection.State);
 
         mocks.ConnectionOwner.Verify(x => x.NewConnectionId(), Times.Once);

@@ -44,7 +44,6 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
     }
 
     public int ConnectionId { get; }
-    public ReadOnlySpan<byte> Data => _dataFile.Memory.Span;
     public IConnectionDataFile DataFile => _dataFile;
 
     public TimeSpan IdleTimeout

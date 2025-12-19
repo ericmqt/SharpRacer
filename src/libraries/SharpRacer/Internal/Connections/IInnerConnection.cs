@@ -5,7 +5,6 @@ namespace SharpRacer.Internal.Connections;
 internal interface IInnerConnection : IDisposable
 {
     int ConnectionId { get; }
-    ReadOnlySpan<byte> Data { get; }
     IConnectionDataFile DataFile { get; }
     TimeSpan IdleTimeout { get; set; }
     SimulatorConnectionState State { get; }

@@ -105,11 +105,14 @@ internal sealed class ConnectionWorkerThread : IConnectionWorkerThread
         waitHandles[WaitIndex_Cancellation] = cancellationToken.WaitHandle;
         waitHandles[WaitIndex_DataReady] = dataReadyEvent;
 
+        // Get a handle to the data file span
+        using var spanHandle = owner.AcquireDataSpanHandle();
+
         while (true)
         {
             waitIndex = WaitHandle.WaitAny(waitHandles, DataReadyWaitTimeout);
 
-            simulatorStatus = MemoryMarshal.Read<int>(owner.Data.Slice(DataFileHeader.FieldOffsets.Status, sizeof(int)));
+            simulatorStatus = MemoryMarshal.Read<int>(spanHandle.Span.Slice(DataFileHeader.FieldOffsets.Status, sizeof(int)));
 
             if (waitIndex == WaitIndex_DataReady)
             {

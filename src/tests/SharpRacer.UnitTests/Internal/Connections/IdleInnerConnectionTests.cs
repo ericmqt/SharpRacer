@@ -10,8 +10,8 @@ public class IdleInnerConnectionTests
         var idleConnection = new IdleInnerConnection();
 
         Assert.Equal(-1, idleConnection.ConnectionId);
-        Assert.Equal(0, idleConnection.Data.Length);
         Assert.NotNull(idleConnection.DataFile);
+        Assert.Equal(0, idleConnection.DataFile.Memory.Length);
         Assert.Equal(default, idleConnection.IdleTimeout);
         Assert.Equal(SimulatorConnectionState.None, idleConnection.State);
     }

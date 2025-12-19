@@ -1,9 +1,11 @@
-﻿namespace SharpRacer.Internal.Connections;
+﻿using SharpRacer.IO;
+
+namespace SharpRacer.Internal.Connections;
 internal interface IConnectionWorkerThreadOwner
 {
-    ReadOnlySpan<byte> Data { get; }
     TimeSpan IdleTimeout { get; }
 
+    ConnectionDataSpanHandle AcquireDataSpanHandle();
     void OnDataReady();
     void OnWorkerThreadExit(bool canceled);
 }

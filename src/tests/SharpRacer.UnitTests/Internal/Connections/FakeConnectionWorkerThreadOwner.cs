@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Moq;
 using SharpRacer.Interop;
+using SharpRacer.IO;
 
 namespace SharpRacer.Internal.Connections;
 
@@ -17,9 +18,12 @@ internal class FakeConnectionWorkerThreadOwner : IConnectionWorkerThreadOwner
         _mock = mock;
     }
 
-    public ReadOnlySpan<byte> Data => _data.Span;
-
     public TimeSpan IdleTimeout => _mock.Object.IdleTimeout;
+
+    public ConnectionDataSpanHandle AcquireDataSpanHandle()
+    {
+        return ConnectionDataSpanHandle.Ownerless(_data.Span);
+    }
 
     public void OnDataReady()
         => _mock.Object.OnDataReady();

@@ -37,7 +37,6 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
     }
 
     public int ConnectionId { get; }
-    public ReadOnlySpan<byte> Data => DataFile.Memory.Span;
     public IConnectionDataFile DataFile { get; }
     public TimeSpan IdleTimeout { get; set; } = Timeout.InfiniteTimeSpan;
     public SimulatorConnectionState State { get; } = SimulatorConnectionState.Closed;

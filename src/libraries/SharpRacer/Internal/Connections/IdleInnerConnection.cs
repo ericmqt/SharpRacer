@@ -16,7 +16,6 @@ internal sealed class IdleInnerConnection : IInnerConnection
     }
 
     public int ConnectionId { get; } = -1;
-    public ReadOnlySpan<byte> Data => DataFile.Memory.Span;
     public IConnectionDataFile DataFile { get; }
     public TimeSpan IdleTimeout { get; set; }
     public SimulatorConnectionState State { get; } = SimulatorConnectionState.None;
