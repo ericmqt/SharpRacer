@@ -91,6 +91,29 @@ public class ConnectionSignalsTests
     }
 
     [Fact]
+    public void Wait_Test()
+    {
+        using var signals = new ConnectionSignals(createConnectionSignalInitialState: false);
+
+        // Signal something so we can wait on it
+        signals.ConnectionAvailableSignal.Set();
+
+        var waitResult = signals.Wait(false, TimeSpan.FromSeconds(1));
+
+        Assert.Equal(ConnectionSignalWaitResult.ConnectionAvailable, waitResult);
+    }
+
+    [Fact]
+    public void Wait_AllowCreateConnectionTest()
+    {
+        using var signals = new ConnectionSignals(createConnectionSignalInitialState: true);
+
+        var waitResult = signals.Wait(true, TimeSpan.FromSeconds(1));
+
+        Assert.Equal(ConnectionSignalWaitResult.CreateConnection, waitResult);
+    }
+
+    [Fact]
     public void WaitHandleArrayLengthTest()
     {
         using var signals = new ConnectionSignals(createConnectionSignalInitialState: false);

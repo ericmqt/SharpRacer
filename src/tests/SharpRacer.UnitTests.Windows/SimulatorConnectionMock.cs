@@ -19,6 +19,12 @@ internal class SimulatorConnectionMock
     public Mock<IConnectionDataVariableInfoProvider> DataVariableInfoProvider { get; }
     public MockRepository MockRepository { get; }
 
+    public Mock<T> Create<T>()
+            where T : class
+    {
+        return MockRepository.Create<T>();
+    }
+
     public SimulatorConnection CreateInstance()
     {
         return new SimulatorConnection(ConnectionManager.Object, DataVariableInfoProvider.Object, CancellationTokenSource.Object);

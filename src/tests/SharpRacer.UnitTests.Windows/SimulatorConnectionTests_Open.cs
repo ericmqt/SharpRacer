@@ -134,6 +134,42 @@ partial class SimulatorConnectionTests
     }
 
     [Fact]
+    public void Open_ThrowIfConnectionInProgressTest()
+    {
+        var mocks = new SimulatorConnectionMock();
+        var connection = mocks.CreateInstance();
+
+        var connectReturnSignal = new AutoResetEvent(false);
+        var threadInvokedOpenMethodSignal = new AutoResetEvent(false);
+
+        mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()))
+            .Callback(() =>
+            {
+                threadInvokedOpenMethodSignal.Set();
+                Assert.True(connectReturnSignal.WaitOne(TimeSpan.FromSeconds(5)), "ummmm");
+            });
+
+        Assert.Equal(SimulatorConnectionState.None, connection.State);
+
+        // Invoke Open on a different thread first
+        var openThread = new Thread(onOpenThreadStart) { IsBackground = true };
+        openThread.Start();
+
+        Assert.True(threadInvokedOpenMethodSignal.WaitOne(TimeSpan.FromSeconds(5)),
+            "Thread for Open() did not complete within timeout period");
+
+        // Call Open() again, expecting we fail due to the Open() call already made
+        Assert.Throws<InvalidOperationException>(connection.Open);
+        connectReturnSignal.Set();
+        openThread.Join(TimeSpan.FromSeconds(5));
+
+        void onOpenThreadStart()
+        {
+            connection.Open();
+        }
+    }
+    
+    [Fact]
     public void Open_ThrowIfDisposedTest()
     {
         var connection = new SimulatorConnection();

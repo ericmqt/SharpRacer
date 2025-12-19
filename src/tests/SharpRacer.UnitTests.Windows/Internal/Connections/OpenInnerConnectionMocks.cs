@@ -5,15 +5,16 @@ using SharpRacer.IO.Internal;
 namespace SharpRacer.Internal.Connections;
 internal class OpenInnerConnectionMocks
 {
-    public OpenInnerConnectionMocks(MockBehavior mockBehavior = MockBehavior.Strict)
-        : this(mockBehavior, new FakeTimeProvider())
+    public OpenInnerConnectionMocks(MockRepository mockRepository)
+        : this(mockRepository, new FakeTimeProvider())
     {
 
     }
 
-    public OpenInnerConnectionMocks(MockBehavior mockBehavior, TimeProvider timeProvider)
+    public OpenInnerConnectionMocks(MockRepository mockRepository, TimeProvider timeProvider)
     {
-        MockRepository = new MockRepository(mockBehavior);
+        MockRepository = mockRepository ?? throw new ArgumentNullException(nameof(mockRepository));
+
         TimeProvider = timeProvider;
 
         ClosedConnectionFactory = MockRepository.Create<IClosedInnerConnectionFactory>();
@@ -32,6 +33,18 @@ internal class OpenInnerConnectionMocks
 
         WorkerThreadFactory.Setup(x => x.Create(It.IsAny<IConnectionWorkerThreadOwner>(), It.IsAny<TimeProvider>()))
             .Returns(WorkerThread.Object);
+    }
+
+    public OpenInnerConnectionMocks(MockBehavior mockBehavior = MockBehavior.Strict)
+        : this(mockBehavior, new FakeTimeProvider())
+    {
+
+    }
+
+    public OpenInnerConnectionMocks(MockBehavior mockBehavior, TimeProvider timeProvider)
+        : this(new MockRepository(mockBehavior), timeProvider)
+    {
+        
     }
 
     public Mock<IClosedInnerConnection> ClosedInnerConnection { get; }

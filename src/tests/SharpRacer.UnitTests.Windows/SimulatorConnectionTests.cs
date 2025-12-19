@@ -1,7 +1,9 @@
 ﻿using Moq;
 using SharpRacer.Internal.Connections;
 using SharpRacer.IO;
+using SharpRacer.IO.Internal;
 using SharpRacer.Telemetry;
+using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer;
 public partial class SimulatorConnectionTests
@@ -77,6 +79,60 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
+    public void AcquireDataSpanHandle_Test()
+    {
+        var mocks = new SimulatorConnectionMock();
+
+        // Configure an instance of ConnectionDataSpanOwner
+        byte[] spanData = [0xDE, 0xAD, 0xBE, 0xEF];
+        var spanFactory = new FakeConnectionDataSpanFactory(spanData);
+
+        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+
+        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
+
+        var spanOwner = new ConnectionDataSpanOwner(spanFactory, dataFileLifetimeMock.Object);
+        var memoryOwnerMock = mocks.Create<IConnectionDataMemoryOwner>();
+        var mmfMock = mocks.Create<IMemoryMappedDataFile>();
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+
+        var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryOwnerMock.Object, spanOwner);
+
+        // Configure an instance of OpenInnerConnection
+        var openConnectionMocks = new OpenInnerConnectionMocks(mocks.MockRepository);
+        openConnectionMocks.ConnectionOwner.Setup(x => x.NewConnectionId()).Returns(123);
+
+        var openInnerConnection = new OpenInnerConnection(
+            openConnectionMocks.ConnectionOwner.Object,
+            dataFile,
+            new OuterConnectionTracker(closeOnEmpty: true),
+            openConnectionMocks.ClosedConnectionFactory.Object,
+            openConnectionMocks.WorkerThreadFactory.Object,
+            openConnectionMocks.TimeProvider);
+
+        // Create SimulatorConnection object and get the IOuterConnection implementation
+        var connection = mocks.CreateInstance();
+        var outerConnection = (IOuterConnection)connection;
+
+        mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
+        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
+
+        Assert.Equal(SimulatorConnectionState.None, connection.State);
+
+        // Open the connection and set the inner connection
+        connection.Open();
+        outerConnection.SetOpenInnerConnection(openInnerConnection);
+
+        // Acquire a span handle
+        var spanHandle = connection.AcquireDataSpanHandle();
+
+        Assert.True(spanHandle.IsOwned);
+        Assert.True(spanHandle.Span.SequenceEqual(spanData));
+        Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, spanHandle.Token);
+    }
+
+    [Fact]
     public void Close_Test()
     {
         var mocks = new SimulatorConnectionMock();
@@ -92,10 +148,8 @@ public partial class SimulatorConnectionTests
 
         mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
-        // Call Open() to put connection into Connecting state
+        // Open the connection
         connection.Open();
-
-        // Invoke SetOpenInnerConnection
         outerConnection.SetOpenInnerConnection(openInnerConnectionMock.Object);
 
         // Close the connection
@@ -120,7 +174,6 @@ public partial class SimulatorConnectionTests
         var connection = mocks.CreateInstance();
         var outerConnection = (IOuterConnection)connection;
 
-        // Invoke SetClosedInnerConnection
         outerConnection.SetClosedInnerConnection(closedInnerConnectionMock.Object);
 
         // Close the connection when it's already closed
@@ -145,6 +198,37 @@ public partial class SimulatorConnectionTests
         var connection = new SimulatorConnection();
 
         Assert.Throws<InvalidOperationException>(() => connection.Close());
+    }
+
+    [Fact]
+    public void CreateDataReader_Test()
+    {
+        var mocks = new SimulatorConnectionMock();
+
+        var dataHandleMock = mocks.MockRepository.Create<IConnectionDataHandle>();
+        
+        var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
+
+        openInnerConnectionMock.Setup(x => x.AcquireDataHandle()).Returns(dataHandleMock.Object);
+
+        // Create SimulatorConnection object and get the IOuterConnection implementation
+        var connection = mocks.CreateInstance();
+        var outerConnection = (IOuterConnection)connection;
+
+        mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
+
+        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
+
+        // Open the connection
+        connection.Open();
+        outerConnection.SetOpenInnerConnection(openInnerConnectionMock.Object);
+
+        // Create the reader
+        var reader = connection.CreateDataReader();
+
+        Assert.NotNull(reader);
+
+        openInnerConnectionMock.Verify(x => x.AcquireDataHandle(), Times.Once);
     }
 
     [Fact]
