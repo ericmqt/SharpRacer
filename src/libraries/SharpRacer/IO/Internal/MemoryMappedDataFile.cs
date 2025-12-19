@@ -32,6 +32,11 @@ internal sealed class MemoryMappedDataFile : IMemoryMappedDataFile
         return _memoryMappedFile.CreateMemoryAccessor(access: MemoryMappedFileAccess.Read);
     }
 
+    public IConnectionDataSpanFactory CreateSpanFactory()
+    {
+        return new ConnectionDataSpanFactory(_memoryMappedFile.CreateViewAccessor());
+    }
+
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

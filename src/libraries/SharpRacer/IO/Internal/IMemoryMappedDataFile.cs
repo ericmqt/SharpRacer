@@ -7,4 +7,5 @@ internal interface IMemoryMappedDataFile : IDisposable
     ReadOnlyMemory<byte> Data { get; }
 
     IMappedMemory CreateMemoryAccessor();
+    IConnectionDataSpanFactory CreateSpanFactory();
 }
