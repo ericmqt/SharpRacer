@@ -11,17 +11,6 @@ internal sealed class ConnectionDataMemoryOwner : IConnectionDataMemoryOwner
     private readonly List<IConnectionDataHandle> _owners = [];
     private readonly object _rentalLock = new();
 
-    public ConnectionDataMemoryOwner(IMemoryMappedDataFile memoryMappedFile, IConnectionDataFileLifetime dataFileLifetime)
-    {
-        ArgumentNullException.ThrowIfNull(memoryMappedFile);
-        ArgumentNullException.ThrowIfNull(dataFileLifetime);
-
-        _dataFileLifetimeHandle = dataFileLifetime.AcquireLifetimeHandle();
-        _memoryAccessor = memoryMappedFile.CreateMemoryAccessor();
-
-        Memory = _memoryAccessor.Memory;
-    }
-
     public ConnectionDataMemoryOwner(IMappedMemory memoryAccessor, IConnectionDataFileLifetime dataFileLifetime)
     {
         ArgumentNullException.ThrowIfNull(memoryAccessor);
@@ -33,17 +22,10 @@ internal sealed class ConnectionDataMemoryOwner : IConnectionDataMemoryOwner
         Memory = _memoryAccessor.Memory;
     }
 
-    public ConnectionDataMemoryOwner(IMappedMemory memoryAccessor, IConnectionDataFileLifetimeHandle dataFileLifetimeHandle)
-    {
-        _memoryAccessor = memoryAccessor ?? throw new ArgumentNullException(nameof(memoryAccessor));
-        _dataFileLifetimeHandle = dataFileLifetimeHandle ?? throw new ArgumentNullException(nameof(dataFileLifetimeHandle));
-
-        Memory = _memoryAccessor.Memory;
-    }
-
-    internal bool IsClosed => _isClosed;
+    public int HandleCount => _owners.Count;
+    public bool IsClosed => _isClosed;
+    public bool IsDisposed => _isDisposed;
     public ReadOnlyMemory<byte> Memory { get; }
-    internal int OwnerCount => _owners.Count;
 
     public void Close()
     {
