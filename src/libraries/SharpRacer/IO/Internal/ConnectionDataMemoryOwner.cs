@@ -27,6 +27,25 @@ internal sealed class ConnectionDataMemoryOwner : IConnectionDataMemoryOwner
     public bool IsDisposed => _isDisposed;
     public ReadOnlyMemory<byte> Memory { get; }
 
+    public IConnectionDataHandle AcquireMemoryHandle()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
+        lock (_rentalLock)
+        {
+            if (_isClosed)
+            {
+                throw new InvalidOperationException("The pool is closed.");
+            }
+
+            var owner = new ConnectionDataHandle(Memory, this);
+
+            _owners.Add(owner);
+
+            return owner;
+        }
+    }
+
     public void Close()
     {
         lock (_rentalLock)
@@ -48,26 +67,7 @@ internal sealed class ConnectionDataMemoryOwner : IConnectionDataMemoryOwner
         GC.SuppressFinalize(this);
     }
 
-    public IConnectionDataHandle Rent()
-    {
-        ObjectDisposedException.ThrowIf(_isDisposed, this);
-
-        lock (_rentalLock)
-        {
-            if (_isClosed)
-            {
-                throw new InvalidOperationException("The pool is closed.");
-            }
-
-            var owner = new ConnectionDataHandle(Memory, this);
-
-            _owners.Add(owner);
-
-            return owner;
-        }
-    }
-
-    public void Return(IConnectionDataHandle memoryOwner)
+    public void ReleaseMemoryHandle(IConnectionDataHandle memoryOwner)
     {
         _owners.Remove(memoryOwner);
 

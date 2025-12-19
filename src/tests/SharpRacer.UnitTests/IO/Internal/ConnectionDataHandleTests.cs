@@ -26,12 +26,12 @@ public class ConnectionDataHandleTests
 
         var owner = new ConnectionDataHandle(memoryObj, poolMock.Object);
 
-        poolMock.Setup(x => x.Return(owner));
+        poolMock.Setup(x => x.ReleaseMemoryHandle(owner));
 
         // Dispose and return to pool
         owner.Dispose();
 
-        poolMock.Verify(x => x.Return(owner), Times.Once);
+        poolMock.Verify(x => x.ReleaseMemoryHandle(owner), Times.Once);
         Assert.Throws<ObjectDisposedException>(() => owner.Memory);
     }
 }

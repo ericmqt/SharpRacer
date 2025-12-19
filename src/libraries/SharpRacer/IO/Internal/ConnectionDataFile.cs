@@ -100,14 +100,14 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        return _memoryOwner.Rent();
+        return _memoryOwner.AcquireMemoryHandle();
     }
 
     public ConnectionDataSpanHandle RentSpan()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        return _spanOwner.Rent();
+        return _spanOwner.AcquireSpanHandle();
     }
 
     private void Dispose(bool disposing)

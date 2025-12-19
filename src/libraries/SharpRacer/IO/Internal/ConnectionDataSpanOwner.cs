@@ -22,6 +22,29 @@ internal sealed class ConnectionDataSpanOwner : IConnectionDataSpanOwner
     public bool IsClosed => _isClosed;
     public bool IsDisposed => _isDisposed;
 
+    public ConnectionDataSpanHandle AcquireSpanHandle()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
+        _tokensLock.EnterReadLock();
+
+        try
+        {
+            if (_isClosed)
+            {
+                throw new InvalidOperationException("The span owner is closed.");
+            }
+
+            var token = CreateToken();
+
+            return new ConnectionDataSpanHandle(this, token, _spanFactory.Create());
+        }
+        finally
+        {
+            _tokensLock.ExitReadLock();
+        }
+    }
+
     public void Close()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
@@ -50,30 +73,7 @@ internal sealed class ConnectionDataSpanOwner : IConnectionDataSpanOwner
         GC.SuppressFinalize(this);
     }
 
-    public ConnectionDataSpanHandle Rent()
-    {
-        ObjectDisposedException.ThrowIf(_isDisposed, this);
-
-        _tokensLock.EnterReadLock();
-
-        try
-        {
-            if (_isClosed)
-            {
-                throw new InvalidOperationException("The span owner is closed.");
-            }
-
-            var token = CreateToken();
-
-            return new ConnectionDataSpanHandle(this, token, _spanFactory.Create());
-        }
-        finally
-        {
-            _tokensLock.ExitReadLock();
-        }
-    }
-
-    public void Return(ref readonly ConnectionDataSpanHandle owner)
+    public void ReleaseSpanHandle(ref readonly ConnectionDataSpanHandle owner)
     {
         _tokens.Remove(owner.Token);
 

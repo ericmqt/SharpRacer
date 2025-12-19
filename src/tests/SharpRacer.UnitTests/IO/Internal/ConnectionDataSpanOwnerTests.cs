@@ -37,6 +37,77 @@ public class ConnectionDataSpanOwnerTests
     }
 
     [Fact]
+    public void AcquireSpanHandle_Test()
+    {
+        byte[] spanArray = [0xDE, 0xAD, 0xBE, 0xEF];
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(spanArray);
+
+        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+
+        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
+
+        var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
+
+        // Acquire a handle
+        var spanHandle = spanOwner.AcquireSpanHandle();
+
+        Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, spanHandle.Token);
+        Assert.True(spanHandle.Span.SequenceEqual(spanArray));
+        Assert.True(spanHandle.IsOwned);
+        Assert.Equal(spanOwner, spanHandle.Owner);
+    }
+
+    [Fact]
+    public void AcquireSpanHandle_ThrowsIfClosedTest()
+    {
+        byte[] spanArray = [0xDE, 0xAD, 0xBE, 0xEF];
+
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(spanArray);
+        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+
+        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
+
+        var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
+
+        // Acquire an owner first to prevent auto-disposal, ensuring we're only testing the closed condition
+        var handle = spanOwner.AcquireSpanHandle();
+
+        spanOwner.Close();
+
+        Assert.True(spanOwner.IsClosed);
+        Assert.False(spanOwner.IsDisposed);
+
+        Assert.Throws<InvalidOperationException>(() => spanOwner.AcquireSpanHandle());
+    }
+
+    [Fact]
+    public void AcquireSpanHandle_ThrowsIfDisposedTest()
+    {
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+
+        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
+
+        dataFileLifetimeHandleMock.Setup(x => x.Dispose());
+
+        var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
+
+        spanOwner.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => spanOwner.AcquireSpanHandle());
+    }
+
+    [Fact]
     public void Close_Test()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
@@ -51,7 +122,7 @@ public class ConnectionDataSpanOwnerTests
         var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
 
         // Acquire a handle first to prevent auto-disposal
-        var spanHandle = spanOwner.Rent();
+        var spanHandle = spanOwner.AcquireSpanHandle();
 
         Assert.False(spanOwner.IsClosed);
 
@@ -145,78 +216,7 @@ public class ConnectionDataSpanOwnerTests
     }
 
     [Fact]
-    public void Rent_Test()
-    {
-        byte[] spanArray = [0xDE, 0xAD, 0xBE, 0xEF];
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory(spanArray);
-
-        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
-        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
-
-        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
-
-        var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
-
-        // Acquire a handle
-        var spanHandle = spanOwner.Rent();
-
-        Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, spanHandle.Token);
-        Assert.True(spanHandle.Span.SequenceEqual(spanArray));
-        Assert.True(spanHandle.IsOwned);
-        Assert.Equal(spanOwner, spanHandle.Owner);
-    }
-
-    [Fact]
-    public void Rent_ThrowsIfClosedTest()
-    {
-        byte[] spanArray = [0xDE, 0xAD, 0xBE, 0xEF];
-
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory(spanArray);
-        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
-        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
-
-        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
-
-        var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
-
-        // Acquire an owner first to prevent auto-disposal, ensuring we're only testing the closed condition
-        var handle = spanOwner.Rent();
-
-        spanOwner.Close();
-
-        Assert.True(spanOwner.IsClosed);
-        Assert.False(spanOwner.IsDisposed);
-
-        Assert.Throws<InvalidOperationException>(() => spanOwner.Rent());
-    }
-
-    [Fact]
-    public void Rent_ThrowsIfDisposedTest()
-    {
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
-
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
-        var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
-
-        dataFileLifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(dataFileLifetimeHandleMock.Object);
-
-        dataFileLifetimeHandleMock.Setup(x => x.Dispose());
-
-        var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
-
-        spanOwner.Dispose();
-
-        Assert.Throws<ObjectDisposedException>(() => spanOwner.Rent());
-    }
-
-    [Fact]
-    public void Return_Test()
+    public void ReleaseSpanHandle_Test()
     {
         var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
 
@@ -230,28 +230,28 @@ public class ConnectionDataSpanOwnerTests
         var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
 
         // Acquire a handle
-        var handle1 = spanOwner.Rent();
+        var handle1 = spanOwner.AcquireSpanHandle();
         Assert.Equal(1, spanOwner.HandleCount);
 
         // Acquire a second handle so we don't trigger auto-disposal when returning the first handle
-        var handle2 = spanOwner.Rent();
+        var handle2 = spanOwner.AcquireSpanHandle();
         Assert.Equal(2, spanOwner.HandleCount);
 
         // Return the first handle and verify we still have one handle remaining
-        spanOwner.Return(in handle1);
+        spanOwner.ReleaseSpanHandle(in handle1);
 
         Assert.Equal(1, spanOwner.HandleCount);
         Assert.False(spanOwner.IsClosed);
 
         // Return the first handle again and ensure it had no effect
-        spanOwner.Return(in handle1);
+        spanOwner.ReleaseSpanHandle(in handle1);
 
         Assert.Equal(1, spanOwner.HandleCount);
         Assert.False(spanOwner.IsClosed);
     }
 
     [Fact]
-    public void Return_DisposeOnClosedAndLastHandleReturnedTest()
+    public void ReleaseSpanHandle_DisposeOnClosedAndLastHandleReturnedTest()
     {
         var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
 
@@ -267,7 +267,7 @@ public class ConnectionDataSpanOwnerTests
         var spanOwner = new ConnectionDataSpanOwner(fakeSpanFactory, dataFileLifetimeMock.Object);
 
         // Acquire a handle to prevent auto-disposal when we call Close()
-        var handle1 = spanOwner.Rent();
+        var handle1 = spanOwner.AcquireSpanHandle();
 
         spanOwner.Close();
 
@@ -277,7 +277,7 @@ public class ConnectionDataSpanOwnerTests
         dataFileLifetimeHandleMock.Verify(x => x.Dispose(), Times.Never);
 
         // Return our handle and verify the owner is disposed automatically
-        spanOwner.Return(in handle1);
+        spanOwner.ReleaseSpanHandle(in handle1);
 
         Assert.True(spanOwner.IsClosed);
         Assert.True(spanOwner.IsDisposed);

@@ -6,6 +6,6 @@ internal interface IConnectionDataSpanOwner : IDisposable
     bool IsDisposed { get; }
 
     void Close();
-    ConnectionDataSpanHandle Rent();
-    void Return(ref readonly ConnectionDataSpanHandle owner);
+    ConnectionDataSpanHandle AcquireSpanHandle();
+    void ReleaseSpanHandle(ref readonly ConnectionDataSpanHandle owner);
 }

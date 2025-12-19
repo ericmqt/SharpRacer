@@ -50,7 +50,7 @@ public readonly ref struct ConnectionDataSpanHandle : IDisposable
     /// </remarks>
     public void Dispose()
     {
-        Owner?.Return(in this);
+        Owner?.ReleaseSpanHandle(in this);
     }
 
     public static implicit operator ReadOnlySpan<byte>(ConnectionDataSpanHandle spanOwner)

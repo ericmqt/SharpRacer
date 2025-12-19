@@ -45,6 +45,83 @@ public class ConnectionDataMemoryOwnerTests
     }
 
     [Fact]
+    public void AcquireMemoryHandle_Test()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var lifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
+        mappedMemoryMock.Setup(x => x.Dispose());
+
+        var lifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+        lifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(lifetimeHandleMock.Object);
+        lifetimeHandleMock.Setup(x => x.Dispose());
+
+        var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
+
+        // Acquire a memory owner
+        var owner1 = memoryPool.AcquireMemoryHandle();
+
+        Assert.NotNull(owner1);
+        Assert.Equal(1, memoryPool.HandleCount);
+    }
+
+    [Fact]
+    public void AcquireMemoryHandle_ThrowsIfClosedTest()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var lifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
+        mappedMemoryMock.Setup(x => x.Dispose());
+
+        var lifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+        lifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(lifetimeHandleMock.Object);
+        lifetimeHandleMock.Setup(x => x.Dispose());
+
+        var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
+
+        // Acquire a memory owner before closing so the pool isn't auto-disposed
+        var owner1 = memoryPool.AcquireMemoryHandle();
+
+        // Close the pool
+        memoryPool.Close();
+        Assert.Throws<InvalidOperationException>(memoryPool.AcquireMemoryHandle);
+    }
+
+    [Fact]
+    public void AcquireMemoryHandle_ThrowsIfDisposedTest()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+
+        var lifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
+
+        var mappedMemoryMock = mocks.Create<IMappedMemory>();
+        mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
+        mappedMemoryMock.Setup(x => x.Dispose());
+
+        var lifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
+        lifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(lifetimeHandleMock.Object);
+        lifetimeHandleMock.Setup(x => x.Dispose());
+
+        var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
+
+        // Acquire a memory owner before closing so the pool isn't auto-disposed
+        var owner1 = memoryPool.AcquireMemoryHandle();
+
+        // Close the pool
+        memoryPool.Dispose();
+        Assert.Throws<ObjectDisposedException>(memoryPool.AcquireMemoryHandle);
+    }
+
+    [Fact]
     public void Close_Test()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
@@ -65,7 +142,7 @@ public class ConnectionDataMemoryOwnerTests
         Assert.False(memoryPool.IsClosed);
 
         // Acquire a memory owner but don't return so we don't trigger auto-disposal
-        var owner1 = memoryPool.Rent();
+        var owner1 = memoryPool.AcquireMemoryHandle();
 
         // Close the pool
         memoryPool.Close();
@@ -138,7 +215,7 @@ public class ConnectionDataMemoryOwnerTests
     }
 
     [Fact]
-    public void Rent_Test()
+    public void ReleaseMemoryHandle_Test()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
@@ -156,96 +233,19 @@ public class ConnectionDataMemoryOwnerTests
         var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner
-        var owner1 = memoryPool.Rent();
-
-        Assert.NotNull(owner1);
-        Assert.Equal(1, memoryPool.HandleCount);
-    }
-
-    [Fact]
-    public void Rent_ThrowsIfClosedTest()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
-
-        var lifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
-
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
-        mappedMemoryMock.Setup(x => x.Dispose());
-
-        var lifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
-        lifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(lifetimeHandleMock.Object);
-        lifetimeHandleMock.Setup(x => x.Dispose());
-
-        var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
-
-        // Acquire a memory owner before closing so the pool isn't auto-disposed
-        var owner1 = memoryPool.Rent();
-
-        // Close the pool
-        memoryPool.Close();
-        Assert.Throws<InvalidOperationException>(memoryPool.Rent);
-    }
-
-    [Fact]
-    public void Rent_ThrowsIfDisposedTest()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
-
-        var lifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
-
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
-        mappedMemoryMock.Setup(x => x.Dispose());
-
-        var lifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
-        lifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(lifetimeHandleMock.Object);
-        lifetimeHandleMock.Setup(x => x.Dispose());
-
-        var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
-
-        // Acquire a memory owner before closing so the pool isn't auto-disposed
-        var owner1 = memoryPool.Rent();
-
-        // Close the pool
-        memoryPool.Dispose();
-        Assert.Throws<ObjectDisposedException>(memoryPool.Rent);
-    }
-
-    [Fact]
-    public void Return_Test()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-        var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
-
-        var lifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
-
-        var mappedMemoryMock = mocks.Create<IMappedMemory>();
-        mappedMemoryMock.SetupGet(x => x.Memory).Returns(memoryObj);
-        mappedMemoryMock.Setup(x => x.Dispose());
-
-        var lifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
-        lifetimeMock.Setup(x => x.AcquireLifetimeHandle()).Returns(lifetimeHandleMock.Object);
-        lifetimeHandleMock.Setup(x => x.Dispose());
-
-        var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
-
-        // Acquire a memory owner
-        var owner1 = memoryPool.Rent();
+        var owner1 = memoryPool.AcquireMemoryHandle();
 
         Assert.NotNull(owner1);
         Assert.Equal(1, memoryPool.HandleCount);
 
         // Acquire a second memory owner so we don't trigger auto-disposal
-        var owner2 = memoryPool.Rent();
+        var owner2 = memoryPool.AcquireMemoryHandle();
 
         Assert.NotNull(owner2);
         Assert.Equal(2, memoryPool.HandleCount);
 
         // Return our first owner
-        memoryPool.Return(owner1);
+        memoryPool.ReleaseMemoryHandle(owner1);
         Assert.Equal(1, memoryPool.HandleCount);
         Assert.False(memoryPool.IsClosed);
 
@@ -255,7 +255,7 @@ public class ConnectionDataMemoryOwnerTests
     }
 
     [Fact]
-    public void Return_DisposeOnClosedAndLastOwnerReturnedTest()
+    public void ReleaseMemoryHandle_DisposeOnClosedAndLastOwnerReturnedTest()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
@@ -273,7 +273,7 @@ public class ConnectionDataMemoryOwnerTests
         var memoryPool = new ConnectionDataMemoryOwner(mappedMemoryMock.Object, lifetimeMock.Object);
 
         // Acquire a memory owner
-        var owner1 = memoryPool.Rent();
+        var owner1 = memoryPool.AcquireMemoryHandle();
 
         // Close the pool
         memoryPool.Close();
@@ -285,7 +285,7 @@ public class ConnectionDataMemoryOwnerTests
         lifetimeHandleMock.Verify(x => x.Dispose(), Times.Never);
 
         // Return our rented memory
-        memoryPool.Return(owner1);
+        memoryPool.ReleaseMemoryHandle(owner1);
 
         Assert.True(memoryPool.IsClosed);
         Assert.Equal(0, memoryPool.HandleCount);

@@ -44,7 +44,7 @@ public class ConnectionDataSpanHandleTests
         ulong expectedTokenId = 2;
         var fakeOwner = new FakeConnectionDataSpanOwner(expectedTokenId, memoryObj, onOwnerReturned);
 
-        var handle = fakeOwner.Rent();
+        var handle = fakeOwner.AcquireSpanHandle();
 
         Assert.True(handle.IsOwned);
         Assert.Equal(fakeOwner, handle.Owner);
@@ -110,12 +110,12 @@ public class ConnectionDataSpanHandleTests
 
         }
 
-        public ConnectionDataSpanHandle Rent()
+        public ConnectionDataSpanHandle AcquireSpanHandle()
         {
             return new ConnectionDataSpanHandle(this, new ConnectionDataSpanHandleToken(_tokenId), _memory.Span);
         }
 
-        public void Return(ref readonly ConnectionDataSpanHandle owner)
+        public void ReleaseSpanHandle(ref readonly ConnectionDataSpanHandle owner)
         {
             _onReturn(owner.Token);
         }

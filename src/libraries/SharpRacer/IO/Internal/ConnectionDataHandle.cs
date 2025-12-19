@@ -35,7 +35,7 @@ internal sealed class ConnectionDataHandle : IConnectionDataHandle
         {
             if (disposing)
             {
-                _pool.Return(this);
+                _pool.ReleaseMemoryHandle(this);
             }
 
             _isDisposed = true;

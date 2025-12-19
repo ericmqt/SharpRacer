@@ -384,7 +384,7 @@ public class ConnectionDataFileTests
 
         var memoryOwnerMock = mocks.Create<IConnectionDataHandle>();
 
-        memoryPoolMock.Setup(x => x.Rent()).Returns(memoryOwnerMock.Object);
+        memoryPoolMock.Setup(x => x.AcquireMemoryHandle()).Returns(memoryOwnerMock.Object);
 
         var dataFile = new ConnectionDataFile(mmfMock.Object, mappedMemoryMock.Object, memoryPoolMock.Object, spanPoolMock.Object);
 
@@ -392,7 +392,7 @@ public class ConnectionDataFileTests
 
         Assert.Equal(memoryOwnerMock.Object, memoryOwner);
 
-        memoryPoolMock.Verify(x => x.Rent(), Times.Once);
+        memoryPoolMock.Verify(x => x.AcquireMemoryHandle(), Times.Once);
     }
 
     [Fact]
@@ -485,12 +485,12 @@ public class ConnectionDataFileTests
             throw new NotImplementedException();
         }
 
-        public ConnectionDataSpanHandle Rent()
+        public ConnectionDataSpanHandle AcquireSpanHandle()
         {
             return new ConnectionDataSpanHandle(this, _ownerTokenFactory(), _spanBytes);
         }
 
-        public void Return(ref readonly ConnectionDataSpanHandle owner)
+        public void ReleaseSpanHandle(ref readonly ConnectionDataSpanHandle owner)
         {
             throw new NotImplementedException();
         }
