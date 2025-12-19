@@ -49,7 +49,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <inheritdoc />
     public bool CanRead
     {
-        get => !_isDisposed && State == SimulatorConnectionState.Open;
+        get => State == SimulatorConnectionState.Open;
     }
 
     /// <inheritdoc />
