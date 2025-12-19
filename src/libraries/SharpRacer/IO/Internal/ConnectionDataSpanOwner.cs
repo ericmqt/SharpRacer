@@ -91,7 +91,7 @@ internal sealed class ConnectionDataSpanOwner : IConnectionDataSpanOwner
         {
             token = new ConnectionDataSpanHandleToken(Interlocked.Increment(ref _nextTokenId));
         }
-        while (token != ConnectionDataSpanHandleToken.Zero && !_tokens.Add(token));
+        while (token == ConnectionDataSpanHandleToken.Zero || !_tokens.Add(token));
 
         return token;
     }
