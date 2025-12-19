@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-using System.Text;
+﻿using System.Runtime.Versioning;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Interop;
 using SharpRacer.SessionInfo;
@@ -139,18 +137,11 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
 
     private static string ReadSessionInfoString(ISimulatorConnection connection)
     {
-        var offset = MemoryMarshal.Read<int>(connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoOffset, sizeof(int)));
-        var length = MemoryMarshal.Read<int>(connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoLength, sizeof(int)));
-        var span = connection.Data.Slice(offset, length);
-
-        // SessionInfo encoding is ISO-8859-1, not UTF8. This only really matters for tracks with non-ASCII characters in their name.
-        return Encoding.Latin1.GetString(span);
+        return SessionInfoString.Read(connection);
     }
 
     private static int ReadSessionInfoVersion(ISimulatorConnection connection)
     {
-        var slice = connection.Data.Slice(DataFileHeader.FieldOffsets.SessionInfoVersion, sizeof(int));
-
-        return MemoryMarshal.Read<int>(slice);
+        return SessionInfoString.ReadVersion(connection);
     }
 }

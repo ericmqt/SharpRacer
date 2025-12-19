@@ -14,11 +14,6 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     bool CanRead { get; }
 
     /// <summary>
-    /// Gets a read-only span of bytes over the simulator data file.
-    /// </summary>
-    ReadOnlySpan<byte> Data { get; }
-
-    /// <summary>
     /// Gets a value indicating the current state of the connection.
     /// </summary>
     SimulatorConnectionState State { get; }

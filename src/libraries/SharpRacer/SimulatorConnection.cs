@@ -53,9 +53,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     }
 
     /// <inheritdoc />
-    public ReadOnlySpan<byte> Data => throw new NotImplementedException();
-
-    /// <inheritdoc />
     public IEnumerable<DataVariableInfo> DataVariables => _variableInfoProvider.DataVariables;
 
     /// <inheritdoc />
