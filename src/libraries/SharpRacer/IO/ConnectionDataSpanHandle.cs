@@ -15,19 +15,19 @@ namespace SharpRacer.IO;
 public readonly ref struct ConnectionDataSpanHandle : IDisposable
 {
     internal ConnectionDataSpanHandle(
-        IConnectionDataSpanOwner? pool,
+        IConnectionDataSpanOwner? owner,
         ConnectionDataSpanHandleToken ownerToken,
         ReadOnlySpan<byte> span)
     {
-        Pool = pool;
+        Owner = owner;
         Span = span;
         Token = ownerToken;
     }
 
-    [MemberNotNullWhen(true, nameof(Pool))]
-    internal readonly bool IsOwned => Pool != null;
+    [MemberNotNullWhen(true, nameof(Owner))]
+    internal readonly bool IsOwned => Owner != null;
 
-    internal readonly IConnectionDataSpanOwner? Pool { get; }
+    internal readonly IConnectionDataSpanOwner? Owner { get; }
 
     /// <summary>
     /// Gets the read-only span of bytes owned by the handle.
@@ -50,7 +50,7 @@ public readonly ref struct ConnectionDataSpanHandle : IDisposable
     /// </remarks>
     public void Dispose()
     {
-        Pool?.Return(in this);
+        Owner?.Return(in this);
     }
 
     public static implicit operator ReadOnlySpan<byte>(ConnectionDataSpanHandle spanOwner)

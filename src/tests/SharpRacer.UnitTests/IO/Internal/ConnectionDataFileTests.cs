@@ -435,7 +435,7 @@ public class ConnectionDataFileTests
         var rentedSpan = dataFile.RentSpan();
 
         Assert.True(rentedSpan.IsOwned);
-        Assert.Equal(rentedSpan.Pool, spanPool);
+        Assert.Equal(rentedSpan.Owner, spanPool);
         Assert.Equal(spanOwnerToken, rentedSpan.Token);
         Assert.Equal(rentedSpan.Span, spanBytes);
     }
@@ -471,6 +471,9 @@ public class ConnectionDataFileTests
             _ownerTokenFactory = ownerTokenFactory ?? throw new ArgumentNullException(nameof(ownerTokenFactory));
             _spanBytes = spanBytes ?? throw new ArgumentNullException(nameof(spanBytes));
         }
+
+        public bool IsClosed { get; }
+        public bool IsDisposed { get; }
 
         public void Close()
         {

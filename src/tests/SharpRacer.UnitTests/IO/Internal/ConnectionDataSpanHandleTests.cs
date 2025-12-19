@@ -8,17 +8,17 @@ public class ConnectionDataSpanHandleTests
     {
         var mocks = new MockRepository(MockBehavior.Strict);
 
-        var poolMock = mocks.Create<IConnectionDataSpanOwner>();
+        var ownerMock = mocks.Create<IConnectionDataSpanOwner>();
 
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
         var ownerToken = new ConnectionDataSpanHandleToken(123);
 
-        var owner = new ConnectionDataSpanHandle(poolMock.Object, ownerToken, memoryObj.Span);
+        var handle = new ConnectionDataSpanHandle(ownerMock.Object, ownerToken, memoryObj.Span);
 
-        Assert.True(owner.IsOwned);
-        Assert.Equal(poolMock.Object, owner.Pool);
-        Assert.Equal(ownerToken, owner.Token);
-        Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
+        Assert.True(handle.IsOwned);
+        Assert.Equal(ownerMock.Object, handle.Owner);
+        Assert.Equal(ownerToken, handle.Token);
+        Assert.True(handle.Span.SequenceEqual(memoryObj.Span));
     }
 
     [Fact]
@@ -26,32 +26,32 @@ public class ConnectionDataSpanHandleTests
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var owner = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
+        var handle = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
 
-        Assert.False(owner.IsOwned);
-        Assert.Null(owner.Pool);
-        Assert.Equal(ConnectionDataSpanHandleToken.Zero, owner.Token);
-        Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
+        Assert.False(handle.IsOwned);
+        Assert.Null(handle.Owner);
+        Assert.Equal(ConnectionDataSpanHandleToken.Zero, handle.Token);
+        Assert.True(handle.Span.SequenceEqual(memoryObj.Span));
     }
 
     [Fact]
     public void Dispose_Test()
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
-        var ownerToken = new ConnectionDataSpanHandleToken(123);
+        var handleToken = new ConnectionDataSpanHandleToken(123);
 
         int ownerReturnCount = 0;
         ulong expectedTokenId = 2;
-        var fakePool = new FakeDataFileSpanPool(expectedTokenId, memoryObj, onOwnerReturned);
+        var fakeOwner = new FakeConnectionDataSpanOwner(expectedTokenId, memoryObj, onOwnerReturned);
 
-        var owner = fakePool.Rent();
+        var handle = fakeOwner.Rent();
 
-        Assert.True(owner.IsOwned);
-        Assert.Equal(fakePool, owner.Pool);
+        Assert.True(handle.IsOwned);
+        Assert.Equal(fakeOwner, handle.Owner);
         Assert.Equal(0, ownerReturnCount);
 
         // Return the owner to the pool
-        owner.Dispose();
+        handle.Dispose();
 
         Assert.Equal(1, ownerReturnCount);
 
@@ -67,9 +67,9 @@ public class ConnectionDataSpanHandleTests
     {
         var memoryObj = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
 
-        var owner = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
+        var handle = ConnectionDataSpanHandle.Ownerless(memoryObj.Span);
 
-        owner.Dispose();
+        handle.Dispose();
     }
 
     [Fact]
@@ -84,18 +84,21 @@ public class ConnectionDataSpanHandleTests
         Assert.True(converted.SequenceEqual(memoryObj.Span));
     }
 
-    private class FakeDataFileSpanPool : IConnectionDataSpanOwner
+    private class FakeConnectionDataSpanOwner : IConnectionDataSpanOwner
     {
         private ulong _tokenId;
         private readonly Memory<byte> _memory;
         private readonly Action<ConnectionDataSpanHandleToken> _onReturn;
 
-        public FakeDataFileSpanPool(ulong tokenId, Memory<byte> memory, Action<ConnectionDataSpanHandleToken> onReturn)
+        public FakeConnectionDataSpanOwner(ulong tokenId, Memory<byte> memory, Action<ConnectionDataSpanHandleToken> onReturn)
         {
             _tokenId = tokenId;
             _memory = memory;
             _onReturn = onReturn ?? throw new ArgumentNullException(nameof(onReturn));
         }
+
+        public bool IsClosed { get; }
+        public bool IsDisposed { get; }
 
         public void Close()
         {

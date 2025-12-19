@@ -16,15 +16,17 @@ public class ConnectionDataSpanHandleTokenTests
     [Fact]
     public void Zero_Test()
     {
-        var emptyToken = ConnectionDataSpanHandleToken.Zero;
+        var zeroToken = ConnectionDataSpanHandleToken.Zero;
+        var token = new ConnectionDataSpanHandleToken(id: 0);
         var ownedToken = new ConnectionDataSpanHandleToken(123);
 
-        Assert.Equal(ConnectionDataSpanHandleToken.Zero, emptyToken);
-        Assert.Equal(default, emptyToken);
+        Assert.Equal(ConnectionDataSpanHandleToken.Zero, zeroToken);
+        Assert.Equal(ConnectionDataSpanHandleToken.Zero, token);
+        Assert.Equal(default, zeroToken);
 
-        Assert.NotEqual(ownedToken, emptyToken);
-        Assert.NotEqual(ownedToken, ConnectionDataSpanHandleToken.Zero);
-        Assert.NotEqual(ownedToken, default);
+        Assert.NotEqual(zeroToken, ownedToken);
+        Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, ownedToken);
+        Assert.NotEqual(default, ownedToken);
     }
 
     [Fact]
