@@ -113,7 +113,7 @@ public class DataFileMemorySpanPoolTests
         Assert.Equal(1, spanPool.OwnerCount);
 
         Assert.True(owner.IsOwned);
-        Assert.Equal(owner.Pool, spanPool);
+        Assert.Equal(owner.Owner, spanPool);
         Assert.NotEqual(default, owner.Token);
         Assert.True(owner.Span.SequenceEqual(memoryObj.Span));
     }

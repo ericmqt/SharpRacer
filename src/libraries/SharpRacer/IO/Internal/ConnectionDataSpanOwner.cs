@@ -9,11 +9,18 @@ internal sealed class ConnectionDataSpanOwner : IConnectionDataSpanOwner
     private readonly HashSet<ConnectionDataSpanHandleToken> _tokens = [];
     private readonly ReaderWriterLockSlim _tokensLock = new();
 
-    public ConnectionDataSpanOwner(IConnectionDataSpanFactory spanFactory, IConnectionDataFileLifetimeHandle dataFileLifetimeHandle)
+    public ConnectionDataSpanOwner(IConnectionDataSpanFactory spanFactory, IConnectionDataFileLifetime dataFileLifetime)
     {
-        _spanFactory = spanFactory ?? throw new ArgumentNullException(nameof(spanFactory));
-        _dataFileLifetimeHandle = dataFileLifetimeHandle ?? throw new ArgumentNullException(nameof(dataFileLifetimeHandle));
+        ArgumentNullException.ThrowIfNull(spanFactory);
+        ArgumentNullException.ThrowIfNull(dataFileLifetime);
+
+        _spanFactory = spanFactory;
+        _dataFileLifetimeHandle = dataFileLifetime.AcquireLifetimeHandle();
     }
+
+    public int HandleCount => _tokens.Count;
+    public bool IsClosed => _isClosed;
+    public bool IsDisposed => _isDisposed;
 
     public void Close()
     {
@@ -95,6 +102,8 @@ internal sealed class ConnectionDataSpanOwner : IConnectionDataSpanOwner
         {
             if (disposing)
             {
+                _isClosed = true;
+
                 // TODO: Dispose remaining owners?
 
                 _spanFactory.Dispose();

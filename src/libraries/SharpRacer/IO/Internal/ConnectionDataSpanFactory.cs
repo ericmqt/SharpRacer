@@ -36,13 +36,14 @@ internal sealed unsafe class ConnectionDataSpanFactory : IConnectionDataSpanFact
     {
         if (!_isDisposed)
         {
+            // Set this first, just in case...
+            _isDisposed = true;
+
             if (disposing)
             {
                 _accessor.SafeMemoryMappedViewHandle.ReleasePointer();
                 _accessor.Dispose();
             }
-
-            _isDisposed = true;
         }
     }
 }

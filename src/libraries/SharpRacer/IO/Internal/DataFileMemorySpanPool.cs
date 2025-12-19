@@ -26,8 +26,10 @@ internal sealed class DataFileMemorySpanPool : IConnectionDataSpanOwner
         _nextTokenId = 1;
     }
 
-    internal bool IsClosed => _isClosed;
+    public bool IsClosed => _isClosed;
     internal int OwnerCount => _tokens.Count;
+
+    public bool IsDisposed => _isDisposed;
 
     public void Close()
     {
