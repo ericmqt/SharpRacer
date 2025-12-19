@@ -10,8 +10,8 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     private bool _isDisposed;
     private readonly IMappedMemory _mappedMemory;
     private readonly IMemoryMappedDataFile _memoryMappedDataFile;
-    private readonly IConnectionDataMemoryOwner _memoryPool;
-    private readonly IConnectionDataSpanOwner _spanPool;
+    private readonly IConnectionDataMemoryOwner _memoryOwner;
+    private readonly IConnectionDataSpanOwner _spanOwner;
 
     internal ConnectionDataFile(IMemoryMappedDataFile memoryMappedDataFile, IMappedMemory mappedMemory)
     {
@@ -20,8 +20,8 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
 
         _handles = [];
 
-        _memoryPool = new ConnectionDataMemoryOwner(_memoryMappedDataFile, this);
-        _spanPool = new DataFileMemorySpanPool(_memoryMappedDataFile, this);
+        _memoryOwner = new ConnectionDataMemoryOwner(_memoryMappedDataFile.CreateMemoryAccessor(), this);
+        _spanOwner = new ConnectionDataSpanOwner(_memoryMappedDataFile.CreateSpanFactory(), this);
     }
 
     internal ConnectionDataFile(
@@ -32,8 +32,8 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     {
         _memoryMappedDataFile = memoryMappedDataFile ?? throw new ArgumentNullException(nameof(memoryMappedDataFile));
         _mappedMemory = mappedMemory ?? throw new ArgumentNullException(nameof(mappedMemory));
-        _memoryPool = memoryPool ?? throw new ArgumentNullException(nameof(memoryPool));
-        _spanPool = spanPool ?? throw new ArgumentNullException(nameof(spanPool));
+        _memoryOwner = memoryPool ?? throw new ArgumentNullException(nameof(memoryPool));
+        _spanOwner = spanPool ?? throw new ArgumentNullException(nameof(spanPool));
 
         _handles = [];
     }
@@ -68,8 +68,8 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
         {
             _isClosed = true;
 
-            _memoryPool.Close();
-            _spanPool.Close();
+            _memoryOwner.Close();
+            _spanOwner.Close();
         }
     }
 
@@ -100,14 +100,14 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        return _memoryPool.Rent();
+        return _memoryOwner.Rent();
     }
 
     public ConnectionDataSpanHandle RentSpan()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        return _spanPool.Rent();
+        return _spanOwner.Rent();
     }
 
     private void Dispose(bool disposing)
@@ -118,8 +118,8 @@ internal sealed class ConnectionDataFile : IConnectionDataFile, IConnectionDataF
             {
                 _isClosed = true;
 
-                _memoryPool.Dispose();
-                _spanPool.Dispose();
+                _memoryOwner.Dispose();
+                _spanOwner.Dispose();
 
                 _mappedMemory.Dispose();
                 _memoryMappedDataFile.Dispose();
