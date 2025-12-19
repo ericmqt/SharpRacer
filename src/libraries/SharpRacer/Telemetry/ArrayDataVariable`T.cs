@@ -108,7 +108,7 @@ public class ArrayDataVariable<T> : DataVariableBase<T>, IArrayDataVariable<T>
         var valueArray = new T[ValueCount];
 
         // Re-interpret the value array as a span of bytes and copy the source span into it
-        arrayBytes.CopyTo(MemoryMarshal.AsBytes<T>(valueArray));
+        arrayBytes.CopyTo(MemoryMarshal.AsBytes((Span<T>)valueArray));
 
         return valueArray;
     }

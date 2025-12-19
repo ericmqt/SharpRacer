@@ -82,7 +82,7 @@ internal class ConnectionDataVariableInfoProvider : IConnectionDataVariableInfoP
             var variableHeaders = new DataVariableHeader[header.VariableCount];
             var variableHeaderBytes = dataHandle.Span.Slice(header.VariableHeaderOffset, DataVariableHeader.Size * header.VariableCount);
 
-            variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
+            variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<DataVariableHeader>)variableHeaders));
 
             // Add variables to collection
             foreach (var varHeader in variableHeaders)

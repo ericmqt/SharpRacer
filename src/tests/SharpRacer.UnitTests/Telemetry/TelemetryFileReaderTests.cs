@@ -165,7 +165,7 @@ public class TelemetryFileReaderTests
         // Read 'Bar' value
         var barFileValue = new float[3];
         dataFrameBlob.Slice(float3ArrayVarHeader.Offset, float3ArrayVarHeader.GetDataLength())
-            .CopyTo(MemoryMarshal.AsBytes<float>(barFileValue));
+            .CopyTo(MemoryMarshal.AsBytes((Span<float>)barFileValue));
 
         Assert.True(barVarValue.SequenceEqual(barFileValue));
 
@@ -219,7 +219,7 @@ public class TelemetryFileReaderTests
         // Read 'Bar' value
         var barFileValue = new float[3];
         dataFrameBlob.Slice(float3ArrayVarHeader.Offset, float3ArrayVarHeader.GetDataLength())
-            .CopyTo(MemoryMarshal.AsBytes<float>(barFileValue));
+            .CopyTo(MemoryMarshal.AsBytes((Span<float>)barFileValue));
 
         Assert.True(barVarValue.SequenceEqual(barFileValue));
 

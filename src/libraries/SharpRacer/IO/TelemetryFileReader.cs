@@ -200,7 +200,7 @@ public class TelemetryFileReader : IDisposable
 
         var bytesRead = RandomAccess.Read(
             _fileHandle,
-            MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders),
+            MemoryMarshal.AsBytes((Span<DataVariableHeader>)variableHeaders),
             _fileHeader.VariableHeaderOffset);
 
         VerifyBytesRead(bytesRead, DataVariableHeader.Size * _fileHeader.VariableCount);

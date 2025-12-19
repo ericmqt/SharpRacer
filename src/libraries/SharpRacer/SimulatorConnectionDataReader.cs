@@ -113,7 +113,7 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
             header.VariableHeaderOffset,
             header.VariableCount * DataVariableHeader.Size);
 
-        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders));
+        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<DataVariableHeader>)variableHeaders));
 
         return variableHeaders;
     }

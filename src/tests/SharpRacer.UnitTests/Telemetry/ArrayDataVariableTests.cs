@@ -124,7 +124,7 @@ public class ArrayDataVariableTests
         Span<byte> dataFrame = new byte[128];
 
         var variableValues = new int[] { 2, 3, 4 };
-        Span<byte> variableValueBytes = MemoryMarshal.AsBytes<int>(variableValues);
+        Span<byte> variableValueBytes = MemoryMarshal.AsBytes((Span<int>)variableValues);
 
         variableValueBytes.CopyTo(dataFrame.Slice(variableInfo.Offset));
 
