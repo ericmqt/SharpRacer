@@ -21,6 +21,16 @@ internal sealed class IdleInnerConnection : IInnerConnection
     public TimeSpan IdleTimeout { get; set; }
     public SimulatorConnectionState State { get; } = SimulatorConnectionState.None;
 
+    public IConnectionDataHandle AcquireDataHandle()
+    {
+        throw new InvalidOperationException("The connection is not open.");
+    }
+
+    public ConnectionDataSpanHandle AcquireDataSpanHandle()
+    {
+        throw new InvalidOperationException("The connection is not open.");
+    }
+
     public void CloseOuterConnection(IOuterConnection outerConnection)
     {
 
@@ -34,16 +44,6 @@ internal sealed class IdleInnerConnection : IInnerConnection
     public void Dispose()
     {
         DataFile.Dispose();
-    }
-
-    public IConnectionDataHandle RentDataFileMemory()
-    {
-        throw new InvalidOperationException("The connection is not open.");
-    }
-
-    public ConnectionDataSpanHandle RentDataFileSpan()
-    {
-        throw new InvalidOperationException("The connection is not open.");
     }
 
     public bool WaitForDataReady(CancellationToken cancellationToken)

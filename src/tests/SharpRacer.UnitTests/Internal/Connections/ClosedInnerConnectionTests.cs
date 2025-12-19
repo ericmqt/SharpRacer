@@ -111,6 +111,36 @@ public class ClosedInnerConnectionTests
     }
 
     [Fact]
+    public void AcquireDataHandle_Test()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var dataFileMock = mocks.Create<IConnectionDataFile>();
+        var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
+
+        connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
+
+        var connection = new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object);
+
+        Assert.Throws<InvalidOperationException>(() => connection.AcquireDataHandle());
+    }
+
+    [Fact]
+    public void AcquireDataSpanHandle_Test()
+    {
+        var mocks = new MockRepository(MockBehavior.Strict);
+
+        var dataFileMock = mocks.Create<IConnectionDataFile>();
+        var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
+
+        connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
+
+        var connection = new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object);
+
+        Assert.Throws<InvalidOperationException>(() => connection.AcquireDataSpanHandle());
+    }
+
+    [Fact]
     public void Close_Test()
     {
         var mocks = new MockRepository(MockBehavior.Strict);
@@ -461,36 +491,6 @@ public class ClosedInnerConnectionTests
 
         connectionTrackerMock.Verify(x => x.Detach(outerConnectionMock.Object));
         dataFileMock.Verify(x => x.Dispose(), Times.Never());
-    }
-
-    [Fact]
-    public void RentDataFileMemory_Test()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var dataFileMock = mocks.Create<IConnectionDataFile>();
-        var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
-
-        connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
-
-        var connection = new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object);
-
-        Assert.Throws<InvalidOperationException>(() => connection.RentDataFileMemory());
-    }
-
-    [Fact]
-    public void RentDataFileSpan_Test()
-    {
-        var mocks = new MockRepository(MockBehavior.Strict);
-
-        var dataFileMock = mocks.Create<IConnectionDataFile>();
-        var connectionTrackerMock = mocks.Create<IOuterConnectionTracker>();
-
-        connectionTrackerMock.SetupGet(x => x.CloseOnEmpty).Returns(true);
-
-        var connection = new ClosedInnerConnection(dataFileMock.Object, connectionTrackerMock.Object);
-
-        Assert.Throws<InvalidOperationException>(() => connection.RentDataFileSpan());
     }
 
     [Fact]

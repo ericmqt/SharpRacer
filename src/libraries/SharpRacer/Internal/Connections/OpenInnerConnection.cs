@@ -68,6 +68,16 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
 
     public SimulatorConnectionState State { get; } = SimulatorConnectionState.Open;
 
+    public IConnectionDataHandle AcquireDataHandle()
+    {
+        return _dataFile.RentMemory();
+    }
+
+    public ConnectionDataSpanHandle AcquireDataSpanHandle()
+    {
+        return _dataFile.RentSpan();
+    }
+
     public bool Attach(IOuterConnection outerConnection)
     {
         if (_isDisposed)
@@ -142,16 +152,6 @@ internal sealed class OpenInnerConnection : IOpenInnerConnection, IConnectionWor
     {
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
-    }
-
-    public IConnectionDataHandle RentDataFileMemory()
-    {
-        return _dataFile.RentMemory();
-    }
-
-    public ConnectionDataSpanHandle RentDataFileSpan()
-    {
-        return _dataFile.RentSpan();
     }
 
     public void StartWorkerThread()

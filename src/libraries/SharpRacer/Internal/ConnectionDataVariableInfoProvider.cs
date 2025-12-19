@@ -74,7 +74,7 @@ internal class ConnectionDataVariableInfoProvider : IConnectionDataVariableInfoP
 
         try
         {
-            using var dataHandle = connection.RentDataSpan();
+            using var dataHandle = connection.AcquireDataSpanHandle();
 
             // Read variable headers from connection
             ref readonly var header = ref MemoryMarshal.AsRef<DataFileHeader>(dataHandle.Span[..DataFileHeader.Size]);

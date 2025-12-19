@@ -32,7 +32,7 @@ public readonly ref struct DataBufferReader : IDisposable
             throw new ArgumentException("Connection has not been opened.", nameof(connection));
         }
 
-        _spanHandle = connection.RentDataSpan();
+        _spanHandle = connection.AcquireDataSpanHandle();
         _data = _spanHandle.Span;
 
         _fileHeader = ref DataFileHeader.AsRef(_data);

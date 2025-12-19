@@ -49,6 +49,38 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
+    public void AcquireDataHandle_Test()
+    {
+        var mocks = new SimulatorConnectionMock();
+
+        var dataHandleMock = mocks.MockRepository.Create<IConnectionDataHandle>();
+        var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
+
+        openInnerConnectionMock.Setup(x => x.AcquireDataHandle()).Returns(dataHandleMock.Object);
+
+        // Create SimulatorConnection object and get the IOuterConnection implementation
+        var connection = mocks.CreateInstance();
+        var outerConnection = (IOuterConnection)connection;
+
+        mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
+
+        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
+
+        // Call Open() to put connection into Connecting state
+        connection.Open();
+
+        // Invoke SetOpenInnerConnection
+        outerConnection.SetOpenInnerConnection(openInnerConnectionMock.Object);
+
+        // Get the IConnectionDataHandle
+        var memoryHandle = connection.AcquireDataHandle();
+
+        Assert.Equal(dataHandleMock.Object, memoryHandle);
+
+        openInnerConnectionMock.Verify(x => x.AcquireDataHandle(), Times.Once);
+    }
+
+    [Fact]
     public void Close_Test()
     {
         var mocks = new SimulatorConnectionMock();
@@ -147,38 +179,6 @@ public partial class SimulatorConnectionTests
         Assert.Throws<ArgumentException>(() => connection.NotifyDataVariableActivated(string.Empty, callback));
         Assert.Throws<ArgumentNullException>(() => connection.NotifyDataVariableActivated(null!, callback));
         Assert.Throws<ArgumentNullException>(() => connection.NotifyDataVariableActivated(variableName, null!));
-    }
-
-    [Fact]
-    public void RentData_Test()
-    {
-        var mocks = new SimulatorConnectionMock();
-
-        var dataFileMemoryOwnerMock = mocks.MockRepository.Create<IConnectionDataHandle>();
-        var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
-
-        openInnerConnectionMock.Setup(x => x.RentDataFileMemory()).Returns(dataFileMemoryOwnerMock.Object);
-
-        // Create SimulatorConnection object and get the IOuterConnection implementation
-        var connection = mocks.CreateInstance();
-        var outerConnection = (IOuterConnection)connection;
-
-        mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
-
-        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
-
-        // Call Open() to put connection into Connecting state
-        connection.Open();
-
-        // Invoke SetOpenInnerConnection
-        outerConnection.SetOpenInnerConnection(openInnerConnectionMock.Object);
-
-        // Get the IDataFileMemoryOwner
-        var memoryHandle = connection.RentData();
-
-        Assert.Equal(dataFileMemoryOwnerMock.Object, memoryHandle);
-
-        openInnerConnectionMock.Verify(x => x.RentDataFileMemory(), Times.Once);
     }
 
     [Fact]

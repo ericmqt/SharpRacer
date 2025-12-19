@@ -17,6 +17,22 @@ public class IdleInnerConnectionTests
     }
 
     [Fact]
+    public void AcquireDataHandle_Test()
+    {
+        var idleConnection = new IdleInnerConnection();
+
+        Assert.Throws<InvalidOperationException>(() => idleConnection.AcquireDataHandle());
+    }
+
+    [Fact]
+    public void AcquireDataSpanHandle_Test()
+    {
+        var idleConnection = new IdleInnerConnection();
+
+        Assert.Throws<InvalidOperationException>(() => idleConnection.AcquireDataSpanHandle());
+    }
+
+    [Fact]
     public void CloseOuterConnectionTest()
     {
         var idleConnection = new IdleInnerConnection();
@@ -36,22 +52,6 @@ public class IdleInnerConnectionTests
         idleConnection.Dispose();
 
         dataFileMock.Verify(x => x.Dispose(), Times.Once);
-    }
-
-    [Fact]
-    public void RentDataFileMemoryTest()
-    {
-        var idleConnection = new IdleInnerConnection();
-
-        Assert.Throws<InvalidOperationException>(() => idleConnection.RentDataFileMemory());
-    }
-
-    [Fact]
-    public void RentDataFileSpanTest()
-    {
-        var idleConnection = new IdleInnerConnection();
-
-        Assert.Throws<InvalidOperationException>(() => idleConnection.RentDataFileSpan());
     }
 
     [Fact]

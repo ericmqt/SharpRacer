@@ -34,6 +34,39 @@ public class OpenInnerConnectionTests
     }
 
     [Fact]
+    public void AcquireDataHandle_Test()
+    {
+        var mocks = new OpenInnerConnectionMocks(MockBehavior.Strict);
+
+        mocks.ConnectionOwner.Setup(x => x.NewConnectionId()).Returns(ConnectionId);
+        mocks.ConnectionOwner.Setup(x => x.OnConnectionClosing(It.IsAny<IOpenInnerConnection>()));
+        mocks.DataFile.SetupGet(x => x.Memory).Returns(DataFileMemory);
+
+        var dataFileMemoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
+
+        mocks.DataFile.Setup(x => x.RentMemory())
+            .Returns(new ConnectionDataHandle(DataFileMemory, dataFileMemoryPoolMock.Object))
+            .Verifiable(Times.Once);
+
+        mocks.OuterConnectionTracker.SetupGet(x => x.CloseOnEmpty).Returns(true);
+
+        var openInnerConnection = new OpenInnerConnection(
+            mocks.ConnectionOwner.Object,
+            mocks.DataFile.Object,
+            mocks.OuterConnectionTracker.Object,
+            mocks.ClosedConnectionFactory.Object,
+            mocks.WorkerThreadFactory.Object,
+            mocks.TimeProvider);
+
+        var memoryOwner = openInnerConnection.AcquireDataHandle();
+
+        Assert.NotNull(memoryOwner);
+        Assert.True(memoryOwner.Memory.Span.SequenceEqual(DataFileMemory.Span));
+
+        mocks.Verify();
+    }
+
+    [Fact]
     public void Attach_Test()
     {
         var mocks = new OpenInnerConnectionMocks(MockBehavior.Strict);
@@ -396,39 +429,6 @@ public class OpenInnerConnectionTests
 
         var negativeTimeout = TimeSpan.FromSeconds(-5);
         Assert.Throws<InvalidOperationException>(() => openInnerConnection.IdleTimeout = negativeTimeout);
-    }
-
-    [Fact]
-    public void RentDataFileMemory_Test()
-    {
-        var mocks = new OpenInnerConnectionMocks(MockBehavior.Strict);
-
-        mocks.ConnectionOwner.Setup(x => x.NewConnectionId()).Returns(ConnectionId);
-        mocks.ConnectionOwner.Setup(x => x.OnConnectionClosing(It.IsAny<IOpenInnerConnection>()));
-        mocks.DataFile.SetupGet(x => x.Memory).Returns(DataFileMemory);
-
-        var dataFileMemoryPoolMock = mocks.Create<IConnectionDataMemoryOwner>();
-
-        mocks.DataFile.Setup(x => x.RentMemory())
-            .Returns(new ConnectionDataHandle(DataFileMemory, dataFileMemoryPoolMock.Object))
-            .Verifiable(Times.Once);
-
-        mocks.OuterConnectionTracker.SetupGet(x => x.CloseOnEmpty).Returns(true);
-
-        var openInnerConnection = new OpenInnerConnection(
-            mocks.ConnectionOwner.Object,
-            mocks.DataFile.Object,
-            mocks.OuterConnectionTracker.Object,
-            mocks.ClosedConnectionFactory.Object,
-            mocks.WorkerThreadFactory.Object,
-            mocks.TimeProvider);
-
-        var memoryOwner = openInnerConnection.RentDataFileMemory();
-
-        Assert.NotNull(memoryOwner);
-        Assert.True(memoryOwner.Memory.Span.SequenceEqual(DataFileMemory.Span));
-
-        mocks.Verify();
     }
 
     [Fact]

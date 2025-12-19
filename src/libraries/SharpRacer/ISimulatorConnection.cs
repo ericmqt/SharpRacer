@@ -137,18 +137,18 @@ public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
     Task OpenAsync(TimeSpan timeout, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Rents a handle to the connection data.
+    /// Obtains a handle to the connection data as a read-only memory object.
     /// </summary>
     /// <returns>A handle to the connection data.</returns>
     /// <exception cref="InvalidOperationException">The connection is not open.</exception>
-    IConnectionDataHandle RentData();
+    IConnectionDataHandle AcquireDataHandle();
 
     /// <summary>
-    /// Rents a handle to a read-only span of bytes over the connection data.
+    /// Obtains a handle to the connection data as a read-only span of bytes.
     /// </summary>
     /// <returns>A handle to the read-only span of bytes over the connection data.</returns>
     /// <exception cref="InvalidOperationException">The connection is not open.</exception>
-    ConnectionDataSpanHandle RentDataSpan();
+    ConnectionDataSpanHandle AcquireDataSpanHandle();
 
     /// <summary>
     /// Waits for the simulator to raise the data-ready event. Returns <see langword="true"/> if the data-ready event was raised,

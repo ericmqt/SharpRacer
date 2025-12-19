@@ -17,7 +17,7 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
         }
 
         _connection = connection;
-        _memoryHandle = _connection.RentData();
+        _memoryHandle = _connection.AcquireDataHandle();
     }
 
     protected ReadOnlyMemory<byte> Memory => _memoryHandle.Memory;

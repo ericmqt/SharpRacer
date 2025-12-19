@@ -42,6 +42,16 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
     public TimeSpan IdleTimeout { get; set; } = Timeout.InfiniteTimeSpan;
     public SimulatorConnectionState State { get; } = SimulatorConnectionState.Closed;
 
+    public IConnectionDataHandle AcquireDataHandle()
+    {
+        throw new InvalidOperationException("The connection is closed.");
+    }
+
+    public ConnectionDataSpanHandle AcquireDataSpanHandle()
+    {
+        throw new InvalidOperationException("The connection is closed.");
+    }
+
     public void Close()
     {
         // We are no longer accepting new outer connections beause OpenInnerConnection is closing, which will trigger new connection
@@ -85,16 +95,6 @@ internal sealed class ClosedInnerConnection : IClosedInnerConnection
             // No connections remain and it is not possible to attach more. We can now dispose.
             Dispose();
         }
-    }
-
-    public IConnectionDataHandle RentDataFileMemory()
-    {
-        throw new InvalidOperationException("The connection is closed.");
-    }
-
-    public ConnectionDataSpanHandle RentDataFileSpan()
-    {
-        throw new InvalidOperationException("The connection is closed.");
     }
 
     public bool WaitForDataReady(CancellationToken cancellationToken)

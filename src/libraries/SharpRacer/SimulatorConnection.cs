@@ -71,6 +71,18 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     public event EventHandler<SimulatorConnectionStateChangedEventArgs>? StateChanged;
 
     /// <inheritdoc />
+    public IConnectionDataHandle AcquireDataHandle()
+    {
+        return _innerConnection.AcquireDataHandle();
+    }
+
+    /// <inheritdoc />
+    public ConnectionDataSpanHandle AcquireDataSpanHandle()
+    {
+        return _innerConnection.AcquireDataSpanHandle();
+    }
+
+    /// <inheritdoc />
     public void Close()
     {
         if (State == SimulatorConnectionState.None || State == SimulatorConnectionState.Connecting)
@@ -216,18 +228,6 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
         {
             _openSemaphore.Release();
         }
-    }
-
-    /// <inheritdoc />
-    public IConnectionDataHandle RentData()
-    {
-        return _innerConnection.RentDataFileMemory();
-    }
-
-    /// <inheritdoc />
-    public ConnectionDataSpanHandle RentDataSpan()
-    {
-        return _innerConnection.RentDataFileSpan();
     }
 
     /// <inheritdoc />
