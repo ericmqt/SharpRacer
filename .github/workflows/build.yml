@@ -28,7 +28,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
     - name: Upload Test Coverage
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v6.0.0
       with:
         name: code-coverage-results
         path: artifacts/test/coverage/**/coverage.cobertura.xml
