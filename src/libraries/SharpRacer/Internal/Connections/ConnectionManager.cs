@@ -103,8 +103,14 @@ internal sealed class ConnectionManager : IConnectionManager, IConnectionProvide
         {
             _requestManager.QueueAsyncRequest(request);
 
-            // Process the queue on the thread pool so we don't block our caller, which is presumably an async method
-            ThreadPool.QueueUserWorkItem<object?>(_ => _requestManager.ProcessAsyncRequestQueue(this, force: false), null, false);
+            // Process the queue on the thread pool so we don't block our caller, which is presumably an async method.
+
+            // NOTE: Originally this called ThreadPool.QueueUserWorkItem directly, passing ProcessAsyncRequestQueue as the work item, but
+            // unit tests failed when running on GitHub Actions, claiming that ProcessAsyncRequestQueue was never invoked. I suspect that
+            // the GitHub Windows-based runner has some kind of restrictions around this, so I created ProcessAsyncRequestQueueOnThreadPool
+            // as a wrapper around ThreadPool.QueueUserWorkItem, allowing us to mock and verify the method invocation without needing to
+            // actually run it on the thread pool.
+            _requestManager.ProcessAsyncRequestQueueOnThreadPool(this, force: false);
         }
 
         await request.Completion.Task.ConfigureAwait(false);

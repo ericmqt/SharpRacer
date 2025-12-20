@@ -1,4 +1,5 @@
 ﻿namespace SharpRacer.Internal.Connections.Requests;
+
 internal interface IConnectionRequestManager
 {
     ConnectionRequest CreateRequest(IOuterConnection outerConnection);
@@ -16,5 +17,6 @@ internal interface IConnectionRequestManager
     BlockConnectionRequestsScope CreateRequestBlockingScope();
     bool HasPendingRequests();
     void ProcessAsyncRequestQueue(IConnectionProvider connectionProvider, bool force = false);
+    void ProcessAsyncRequestQueueOnThreadPool(IConnectionProvider connectionProvider, bool force = false);
     void QueueAsyncRequest(IAsyncConnectionRequest request);
 }

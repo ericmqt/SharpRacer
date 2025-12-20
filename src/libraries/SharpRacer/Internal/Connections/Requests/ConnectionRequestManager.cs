@@ -1,4 +1,5 @@
 ﻿namespace SharpRacer.Internal.Connections.Requests;
+
 internal class ConnectionRequestManager : IConnectionRequestManager
 {
     private readonly IAsyncConnectionRequestQueue _asyncRequestQueue;
@@ -71,6 +72,11 @@ internal class ConnectionRequestManager : IConnectionRequestManager
     public void ProcessAsyncRequestQueue(IConnectionProvider connectionProvider, bool force = false)
     {
         _asyncRequestQueue.ProcessQueue(connectionProvider, force);
+    }
+
+    public void ProcessAsyncRequestQueueOnThreadPool(IConnectionProvider connectionProvider, bool force = false)
+    {
+        ThreadPool.QueueUserWorkItem<object?>(_ => _asyncRequestQueue.ProcessQueue(connectionProvider, force), null, false);
     }
 
     public void QueueAsyncRequest(IAsyncConnectionRequest request)

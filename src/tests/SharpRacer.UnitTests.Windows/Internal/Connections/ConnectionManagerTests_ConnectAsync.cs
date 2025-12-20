@@ -2,6 +2,7 @@
 using SharpRacer.Internal.Connections.Requests;
 
 namespace SharpRacer.Internal.Connections;
+
 public class ConnectionManagerTests_ConnectAsync
 {
     [Fact]
@@ -146,7 +147,7 @@ public class ConnectionManagerTests_ConnectAsync
             .Verifiable(Times.Once());
 
         requestManagerMock.Setup(x => x.QueueAsyncRequest(It.IsAny<IAsyncConnectionRequest>()));
-        requestManagerMock.Setup(x => x.ProcessAsyncRequestQueue(It.IsAny<IConnectionProvider>(), It.IsAny<bool>()));
+        requestManagerMock.Setup(x => x.ProcessAsyncRequestQueueOnThreadPool(It.IsAny<IConnectionProvider>(), It.IsAny<bool>()));
 
         var connectionManager = new ConnectionManager(
             signalsMock.Object,
@@ -159,7 +160,7 @@ public class ConnectionManagerTests_ConnectAsync
         await connectionManager.ConnectAsync(outerConnectionMock.Object, cancellationSource.Token);
 
         requestManagerMock.Verify(x => x.QueueAsyncRequest(asyncRequestMock.Object), Times.Once());
-        requestManagerMock.Verify(x => x.ProcessAsyncRequestQueue(connectionManager, false), Times.Once());
+        requestManagerMock.Verify(x => x.ProcessAsyncRequestQueueOnThreadPool(connectionManager, false), Times.Once());
 
         mocks.Verify();
     }
@@ -199,7 +200,7 @@ public class ConnectionManagerTests_ConnectAsync
             .Verifiable(Times.Once());
 
         requestManagerMock.Setup(x => x.QueueAsyncRequest(It.IsAny<IAsyncConnectionRequest>()));
-        requestManagerMock.Setup(x => x.ProcessAsyncRequestQueue(It.IsAny<IConnectionProvider>(), It.IsAny<bool>()));
+        requestManagerMock.Setup(x => x.ProcessAsyncRequestQueueOnThreadPool(It.IsAny<IConnectionProvider>(), It.IsAny<bool>()));
 
         var connectionManager = new ConnectionManager(
             signalsMock.Object,
@@ -213,7 +214,7 @@ public class ConnectionManagerTests_ConnectAsync
         await connectionManager.ConnectAsync(outerConnectionMock.Object, timeout, cancellationSource.Token);
 
         requestManagerMock.Verify(x => x.QueueAsyncRequest(asyncRequestMock.Object), Times.Once());
-        requestManagerMock.Verify(x => x.ProcessAsyncRequestQueue(connectionManager, false), Times.Once());
+        requestManagerMock.Verify(x => x.ProcessAsyncRequestQueueOnThreadPool(connectionManager, false), Times.Once());
 
         mocks.Verify();
     }
