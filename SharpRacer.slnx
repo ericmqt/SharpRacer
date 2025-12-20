@@ -1,0 +1,24 @@
+<Solution>
+  <Folder Name="/generators/">
+    <Project Path="src/generators/SharpRacer.SourceGenerators/SharpRacer.SourceGenerators.csproj" />
+  </Folder>
+  <Folder Name="/generators/tests/">
+    <Project Path="src/generators/tests/SharpRacer.SourceGenerators.IntegrationTests/SharpRacer.SourceGenerators.IntegrationTests.csproj" />
+    <Project Path="src/generators/tests/SharpRacer.SourceGenerators.Testing/SharpRacer.SourceGenerators.Testing.csproj" />
+    <Project Path="src/generators/tests/SharpRacer.SourceGenerators.UnitTests/SharpRacer.SourceGenerators.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/libraries/">
+    <Project Path="src/libraries/SharpRacer.SessionInfo.Yaml/SharpRacer.SessionInfo.Yaml.csproj" />
+    <Project Path="src/libraries/SharpRacer/SharpRacer.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="src/tests/SharpRacer.Extensions.Xunit/SharpRacer.Extensions.Xunit.csproj" />
+    <Project Path="src/tests/SharpRacer.IntegrationTests/SharpRacer.IntegrationTests.csproj" />
+    <Project Path="src/tests/SharpRacer.SessionInfo.Yaml.UnitTests/SharpRacer.SessionInfo.Yaml.UnitTests.csproj" />
+    <Project Path="src/tests/SharpRacer.UnitTests.Windows/SharpRacer.UnitTests.Windows.csproj" />
+    <Project Path="src/tests/SharpRacer.UnitTests/SharpRacer.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="src/tools/SharpRacer.Tools.TelemetryVariables/SharpRacer.Tools.TelemetryVariables.csproj" />
+  </Folder>
+</Solution>
