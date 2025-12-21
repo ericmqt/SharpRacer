@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+
 public class ContextVariableModelTests
 {
     public static TheoryData<ContextVariableModel, ContextVariableModel> InequalityData => GetInequalityData();
@@ -132,7 +133,7 @@ public class ContextVariableModelTests
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ArrayDataVariable<int>(global::SharpRacer.Telemetry.DataVariableDescriptor.CreateArray<int>(\"Test\", 3), dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateArray<int>(\"Test\", 3), dataVariableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -150,7 +151,7 @@ public class ContextVariableModelTests
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ScalarDataVariable<int>(global::SharpRacer.Telemetry.DataVariableDescriptor.CreateScalar<int>(\"Test\"), dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateScalar<int>(\"Test\"), dataVariableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -170,7 +171,7 @@ public class ContextVariableModelTests
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ArrayDataVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -190,7 +191,7 @@ public class ContextVariableModelTests
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ScalarDataVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -248,7 +249,7 @@ public class ContextVariableModelTests
 
         var propertyType = model.PropertyType();
 
-        Assert.Equal("IArrayDataVariable<int>", propertyType.ToFullString());
+        Assert.Equal("IArrayTelemetryVariable<int>", propertyType.ToFullString());
     }
 
     [Fact]
@@ -264,7 +265,7 @@ public class ContextVariableModelTests
 
         var propertyType = model.PropertyType();
 
-        Assert.Equal("IScalarDataVariable<int>", propertyType.ToFullString());
+        Assert.Equal("IScalarTelemetryVariable<int>", propertyType.ToFullString());
     }
 
     [Fact]

@@ -21,7 +21,7 @@ internal static class DiagnosticIds
     // Syntax: ContextClass
     public const string ContextClassMustBeDeclaredPartial = "SR2201";
     public const string ContextClassMustNotBeDeclaredStatic = "SR2202";
-    public const string ContextClassMustInheritIDataVariablesContextInterface = "SR2203";
+    public const string ContextClassMustInheritITelemetryVariablesContextInterface = "SR2203";
 
     // Validation: TelemetryVariables
     public const string TelemetryVariablesFileContainsNoVariables = "SR3100";

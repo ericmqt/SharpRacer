@@ -42,6 +42,6 @@ public class VariableEntity
     public ContentVersion SimulatorVersion { get; set; }
 
     public int ValueCount { get; set; }
-    public DataVariableValueType ValueType { get; set; }
+    public TelemetryVariableValueType ValueType { get; set; }
     public string? ValueUnit { get; set; }
 }

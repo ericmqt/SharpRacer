@@ -6,6 +6,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+
 public readonly struct VariableClassModel : IEquatable<VariableClassModel>
 {
     private readonly string _descriptorFieldName;
@@ -72,15 +73,7 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
 
     public readonly BaseTypeSyntax BaseClassType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        /*var baseType = VariableValueCount > 1
-            ? SharpRacerTypes.ArrayDataVariableType(VariableValueTypeArg(typeNameFormat), TypeNameFormat.Qualified)
-            : SharpRacerTypes.ScalarDataVariableType(VariableValueTypeArg(typeNameFormat), TypeNameFormat.Qualified);
-
-        return SimpleBaseType(baseType);*/
-
-        // AliasQualifiedName("global", baseType)
-
-        var baseTypeClassName = VariableValueCount == 1 ? "ScalarDataVariable" : "ArrayDataVariable";
+        var baseTypeClassName = VariableValueCount == 1 ? "ScalarTelemetryVariable" : "ArrayTelemetryVariable";
         var typeArgument = VariableValueTypeArg(typeNameFormat);
 
         var baseTypeName =
@@ -135,7 +128,7 @@ public readonly struct VariableClassModel : IEquatable<VariableClassModel>
 
     public readonly TypeSyntax VariableValueTypeArg(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerTypes.DataVariableTypeArgument(VariableValueType, _variableValueUnit, typeNameFormat);
+        return SharpRacerTypes.TelemetryVariableTypeArgument(VariableValueType, _variableValueUnit, typeNameFormat);
     }
 
     public readonly VariableClassModel WithDiagnostics(Diagnostic diagnostic)

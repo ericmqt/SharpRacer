@@ -3,6 +3,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
+
 public class VariableClassGeneratorTests
 {
     [Fact]
@@ -73,31 +74,31 @@ public class VariableClassGeneratorTests
         $@"#nullable enable
 namespace TestApp.Variables
 {{
-    public partial class TestVariable : global::SharpRacer.Telemetry.ScalarDataVariable<int>
+    public partial class TestVariable : global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>
     {{
-        private static readonly global::SharpRacer.Telemetry.DataVariableDescriptor _Descriptor = new global::SharpRacer.Telemetry.DataVariableDescriptor(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+        private static readonly global::SharpRacer.Telemetry.TelemetryVariableDescriptor _Descriptor = new global::SharpRacer.Telemetry.TelemetryVariableDescriptor(""Test"", global::SharpRacer.Telemetry.TelemetryVariableValueType.Int, 1);
         /// <summary>
-        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.DataVariableInfo""/>.
+        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.TelemetryVariableInfo""/>.
         /// </summary>
-        /// <exception cref = ""SharpRacer.Telemetry.DataVariableInitializationException"">
+        /// <exception cref = ""SharpRacer.Telemetry.TelemetryVariableInitializationException"">
         /// <paramref name = ""dataVariableInfo""/> is not compatible with the telemetry variable represented by this instance.
         /// </exception>
         /// <remarks>
         /// If <paramref name = ""dataVariableInfo""/> is <see langword=""null""/>, the returned instance represents a telemetry variable which is unavailable in the current context and cannot be used to read data.
         /// </remarks>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public TestVariable(global::SharpRacer.Telemetry.DataVariableInfo? dataVariableInfo) : base(_Descriptor, dataVariableInfo)
+        public TestVariable(global::SharpRacer.Telemetry.TelemetryVariableInfo? dataVariableInfo) : base(_Descriptor, dataVariableInfo)
         {{
         }}
 
         /// <summary>
-        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.IDataVariableInfoProvider""/>.
+        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/>.
         /// </summary>
         /// <param name = ""dataVariableInfoProvider"">
-        /// The <seealso cref = ""global::SharpRacer.Telemetry.IDataVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
+        /// The <seealso cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
         /// </param>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public TestVariable(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider) : base(_Descriptor, dataVariableInfoProvider)
+        public TestVariable(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider) : base(_Descriptor, dataVariableInfoProvider)
         {{
         }}
     }}
@@ -107,31 +108,31 @@ namespace TestApp.Variables
         $@"#nullable enable
 namespace TestApp.Variables
 {{
-    public partial class TestVariable : global::SharpRacer.Telemetry.ScalarDataVariable<int>
+    public partial class TestVariable : global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>
     {{
-        private static readonly global::SharpRacer.Telemetry.DataVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;
+        private static readonly global::SharpRacer.Telemetry.TelemetryVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;
         /// <summary>
-        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.DataVariableInfo""/>.
+        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.TelemetryVariableInfo""/>.
         /// </summary>
-        /// <exception cref = ""SharpRacer.Telemetry.DataVariableInitializationException"">
+        /// <exception cref = ""SharpRacer.Telemetry.TelemetryVariableInitializationException"">
         /// <paramref name = ""dataVariableInfo""/> is not compatible with the telemetry variable represented by this instance.
         /// </exception>
         /// <remarks>
         /// If <paramref name = ""dataVariableInfo""/> is <see langword=""null""/>, the returned instance represents a telemetry variable which is unavailable in the current context and cannot be used to read data.
         /// </remarks>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public TestVariable(global::SharpRacer.Telemetry.DataVariableInfo? dataVariableInfo) : base(_Descriptor, dataVariableInfo)
+        public TestVariable(global::SharpRacer.Telemetry.TelemetryVariableInfo? dataVariableInfo) : base(_Descriptor, dataVariableInfo)
         {{
         }}
 
         /// <summary>
-        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.IDataVariableInfoProvider""/>.
+        /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/>.
         /// </summary>
         /// <param name = ""dataVariableInfoProvider"">
-        /// The <seealso cref = ""global::SharpRacer.Telemetry.IDataVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
+        /// The <seealso cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
         /// </param>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public TestVariable(global::SharpRacer.Telemetry.IDataVariableInfoProvider dataVariableInfoProvider) : base(_Descriptor, dataVariableInfoProvider)
+        public TestVariable(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider) : base(_Descriptor, dataVariableInfoProvider)
         {{
         }}
     }}

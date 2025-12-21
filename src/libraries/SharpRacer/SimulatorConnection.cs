@@ -19,20 +19,20 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     private IInnerConnection _innerConnection;
     private bool _isDisposed;
     private readonly SemaphoreSlim _openSemaphore;
-    private readonly IConnectionDataVariableInfoProvider _variableInfoProvider;
+    private readonly IConnectionTelemetryVariableInfoProvider _variableInfoProvider;
 
     /// <summary>
     /// Initializes an instance of <see cref="SimulatorConnection"/>.
     /// </summary>
     public SimulatorConnection()
-        : this(ConnectionManager.Default, new ConnectionDataVariableInfoProvider(), new ConnectionCancellationTokenSource())
+        : this(ConnectionManager.Default, new ConnectionTelemetryVariableInfoProvider(), new ConnectionCancellationTokenSource())
     {
 
     }
 
     internal SimulatorConnection(
         IConnectionManager connectionManager,
-        IConnectionDataVariableInfoProvider variableInfoProvider,
+        IConnectionTelemetryVariableInfoProvider variableInfoProvider,
         IConnectionCancellationTokenSource cancellationTokenSource)
     {
         _connectionManager = connectionManager ?? throw new ArgumentNullException(nameof(connectionManager));
@@ -53,7 +53,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     }
 
     /// <inheritdoc />
-    public IEnumerable<DataVariableInfo> DataVariables => _variableInfoProvider.DataVariables;
+    public IEnumerable<TelemetryVariableInfo> Variables => _variableInfoProvider.Variables;
 
     /// <inheritdoc />
     public SimulatorConnectionState State => (SimulatorConnectionState)_connectionStateValue;
@@ -123,14 +123,14 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The connection is disposed.</exception>
-    public void NotifyDataVariableActivated(string variableName, Action<DataVariableInfo> callback)
+    public void NotifyTelemetryVariableActivated(string variableName, Action<TelemetryVariableInfo> callback)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         ArgumentException.ThrowIfNullOrEmpty(variableName);
         ArgumentNullException.ThrowIfNull(callback);
 
-        _variableInfoProvider.NotifyDataVariableActivated(variableName, callback);
+        _variableInfoProvider.NotifyTelemetryVariableActivated(variableName, callback);
     }
 
     /// <inheritdoc />
@@ -351,7 +351,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
             Interlocked.Exchange(ref _innerConnection, openInnerConnection);
 
-            _variableInfoProvider.OnDataVariablesActivated(this);
+            _variableInfoProvider.OnTelemetryVariablesActivated(this);
 
             SetState(SimulatorConnectionState.Open);
         }

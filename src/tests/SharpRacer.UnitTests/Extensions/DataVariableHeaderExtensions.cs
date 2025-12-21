@@ -16,6 +16,6 @@ internal static class DataVariableHeaderExtensions
 
     public static int GetDataLength(this in DataVariableHeader variableHeader)
     {
-        return ((DataVariableValueType)variableHeader.Type).GetSize() * variableHeader.Count;
+        return ((TelemetryVariableValueType)variableHeader.Type).GetSize() * variableHeader.Count;
     }
 }

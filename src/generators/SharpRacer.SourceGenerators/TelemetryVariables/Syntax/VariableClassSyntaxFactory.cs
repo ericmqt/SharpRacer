@@ -7,16 +7,17 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+
 internal static class VariableClassSyntaxFactory
 {
-    private static string DataVariableInfoCtorParameterName = "dataVariableInfo";
-    private static string DataVariableInfoProviderCtorParameterName = "dataVariableInfoProvider";
+    private static string TelemetryVariableInfoCtorParameterName = "dataVariableInfo";
+    private static string TelemetryVariableInfoProviderCtorParameterName = "dataVariableInfoProvider";
 
-    public static ConstructorDeclarationSyntax ConstructorWithDataVariableInfoParameter(
+    public static ConstructorDeclarationSyntax ConstructorWithTelemetryVariableInfoParameter(
         ref readonly VariableClassModel model, bool appendXmlDocumentation)
     {
-        var dataVariableParameter = Parameter(Identifier(DataVariableInfoCtorParameterName))
-            .WithType(NullableType(SharpRacerTypes.DataVariableInfo(TypeNameFormat.GlobalQualified)));
+        var telemetryVariableParameter = Parameter(Identifier(TelemetryVariableInfoCtorParameterName))
+            .WithType(NullableType(SharpRacerTypes.TelemetryVariableInfo(TypeNameFormat.GlobalQualified)));
 
         var baseCtorInitializer = ConstructorInitializer(
             SyntaxKind.BaseConstructorInitializer,
@@ -24,28 +25,28 @@ internal static class VariableClassSyntaxFactory
                 SeparatedList(
                 [
                     Argument(model.DescriptorFieldIdentifierName()),
-                    Argument(IdentifierName(DataVariableInfoCtorParameterName))
+                    Argument(IdentifierName(TelemetryVariableInfoCtorParameterName))
                 ])));
 
         var node = ConstructorDeclaration(model.ClassIdentifier())
             .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))))
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithParameterList(ParameterList(SingletonSeparatedList(dataVariableParameter)))
+            .WithParameterList(ParameterList(SingletonSeparatedList(telemetryVariableParameter)))
             .WithInitializer(baseCtorInitializer)
             .WithBody(Block());
 
         return appendXmlDocumentation
-            ? node.WithLeadingTrivia(Trivia(ConstructorWithDataVariableInfoParameterXmlDocumentation(in model)))
+            ? node.WithLeadingTrivia(Trivia(ConstructorWithTelemetryVariableInfoParameterXmlDocumentation(in model)))
             : node;
     }
 
-    public static ConstructorDeclarationSyntax ConstructorWithIDataVariableInfoProviderParameter(
+    public static ConstructorDeclarationSyntax ConstructorWithITelemetryVariableInfoProviderParameter(
         ref readonly VariableClassModel model, bool appendXmlDocumentation)
     {
-        var dataVariableInfoProviderParameter = Parameter(Identifier(DataVariableInfoProviderCtorParameterName))
-            .WithType(SharpRacerTypes.IDataVariableInfoProvider(TypeNameFormat.GlobalQualified));
+        var variableInfoProviderParameter = Parameter(Identifier(TelemetryVariableInfoProviderCtorParameterName))
+            .WithType(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified));
 
-        var ctorParamList = ParameterList(SingletonSeparatedList(dataVariableInfoProviderParameter));
+        var ctorParamList = ParameterList(SingletonSeparatedList(variableInfoProviderParameter));
 
         var baseCtorInitializer = ConstructorInitializer(
             SyntaxKind.BaseConstructorInitializer,
@@ -53,7 +54,7 @@ internal static class VariableClassSyntaxFactory
                 SeparatedList(
                 [
                     Argument(model.DescriptorFieldIdentifierName()),
-                    Argument(IdentifierName(DataVariableInfoProviderCtorParameterName))
+                    Argument(IdentifierName(TelemetryVariableInfoProviderCtorParameterName))
                 ])));
 
         var node = ConstructorDeclaration(model.ClassIdentifier())
@@ -64,37 +65,39 @@ internal static class VariableClassSyntaxFactory
             .WithBody(Block());
 
         return appendXmlDocumentation
-            ? node.WithLeadingTrivia(Trivia(ConstructorWithIDataVariableInfoProviderParameterXmlDocumentation(in model)))
+            ? node.WithLeadingTrivia(Trivia(ConstructorWithITelemetryVariableInfoProviderParameterXmlDocumentation(in model)))
             : node;
     }
 
-    public static DocumentationCommentTriviaSyntax ConstructorWithDataVariableInfoParameterXmlDocumentation(ref readonly VariableClassModel model)
+    public static DocumentationCommentTriviaSyntax ConstructorWithTelemetryVariableInfoParameterXmlDocumentation(
+        ref readonly VariableClassModel model)
     {
         var classTypeIdentifier = model.ClassIdentifierName();
 
         return new XmlDocumentationTriviaBuilder()
             .Summary(
                 b => b.Text("Creates an instance of ").See(classTypeIdentifier).Text(" from the specified ")
-                    .See(SharpRacerTypes.DataVariableInfo(TypeNameFormat.GlobalQualified)).Text("."))
+                    .See(SharpRacerTypes.TelemetryVariableInfo(TypeNameFormat.GlobalQualified)).Text("."))
             .Remarks(
-                b => b.Text("If ").ParamRef(DataVariableInfoCtorParameterName).Text(" is ").NullKeyword()
+                b => b.Text("If ").ParamRef(TelemetryVariableInfoCtorParameterName).Text(" is ").NullKeyword()
                 .Text(", the returned instance represents a telemetry variable which is unavailable in the current context and cannot be used to read data."))
             .Exception(
-                TypeCref(SharpRacerTypes.DataVariableInitializationException(TypeNameFormat.Qualified)),
-                b => b.ParamRef(DataVariableInfoCtorParameterName).Text(" is not compatible with the telemetry variable represented by this instance."))
+                TypeCref(SharpRacerTypes.TelemetryVariableInitializationException(TypeNameFormat.Qualified)),
+                b => b.ParamRef(TelemetryVariableInfoCtorParameterName).Text(" is not compatible with the telemetry variable represented by this instance."))
             .ToTrivia();
     }
 
-    public static DocumentationCommentTriviaSyntax ConstructorWithIDataVariableInfoProviderParameterXmlDocumentation(ref readonly VariableClassModel model)
+    public static DocumentationCommentTriviaSyntax ConstructorWithITelemetryVariableInfoProviderParameterXmlDocumentation(
+        ref readonly VariableClassModel model)
     {
         var classTypeIdentifier = model.ClassIdentifierName();
 
         return new XmlDocumentationTriviaBuilder()
             .Summary(
                 b => b.Text("Creates an instance of ").See(classTypeIdentifier).Text(" from the specified ")
-                    .See(SharpRacerTypes.IDataVariableInfoProvider(TypeNameFormat.GlobalQualified)).Text("."))
-            .Param(DataVariableInfoProviderCtorParameterName,
-                b => b.Text("The ").SeeAlso(SharpRacerTypes.IDataVariableInfoProvider(TypeNameFormat.GlobalQualified))
+                    .See(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified)).Text("."))
+            .Param(TelemetryVariableInfoProviderCtorParameterName,
+                b => b.Text("The ").SeeAlso(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified))
                     .Text(" instance used to perform delayed initialization of ")
                     .See(classTypeIdentifier).Text(" when the associated telemetry variable is activated by the data source."))
             .ToTrivia();
@@ -102,7 +105,7 @@ internal static class VariableClassSyntaxFactory
 
     public static FieldDeclarationSyntax DescriptorStaticField(ref readonly VariableClassModel model)
     {
-        var objectCreationExpr = DataVariableDescriptorSyntaxFactory.CreateNewInstanceExpression(
+        var objectCreationExpr = TelemetryVariableDescriptorSyntaxFactory.CreateNewInstanceExpression(
             model.VariableName, model.VariableValueType, model.VariableValueCount);
 
         var declarator = VariableDeclarator(model.DescriptorFieldIdentifier())
@@ -113,7 +116,7 @@ internal static class VariableClassSyntaxFactory
             Token(SyntaxKind.StaticKeyword),
             Token(SyntaxKind.ReadOnlyKeyword)]);
 
-        var declaration = VariableDeclaration(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.GlobalQualified))
+        var declaration = VariableDeclaration(SharpRacerTypes.TelemetryVariableDescriptor(TypeNameFormat.GlobalQualified))
             .WithVariables(SingletonSeparatedList(declarator));
 
         return FieldDeclaration(declaration)
@@ -132,7 +135,7 @@ internal static class VariableClassSyntaxFactory
             Token(SyntaxKind.StaticKeyword),
             Token(SyntaxKind.ReadOnlyKeyword)]);
 
-        var declaration = VariableDeclaration(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.GlobalQualified))
+        var declaration = VariableDeclaration(SharpRacerTypes.TelemetryVariableDescriptor(TypeNameFormat.GlobalQualified))
             .WithVariables(SingletonSeparatedList(declarator));
 
         return FieldDeclaration(declaration)

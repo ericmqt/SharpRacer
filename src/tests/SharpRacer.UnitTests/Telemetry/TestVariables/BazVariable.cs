@@ -2,12 +2,12 @@
 
 internal static class TestDescriptors
 {
-    public static DataVariableDescriptor Baz { get; } = new DataVariableDescriptor("Baz", DataVariableValueType.Float, 3);
+    public static TelemetryVariableDescriptor Baz { get; } = new TelemetryVariableDescriptor("Baz", TelemetryVariableValueType.Float, 3);
 }
 
-internal class BazVariable : ArrayDataVariable<float>
+internal class BazVariable : ArrayTelemetryVariable<float>
 {
-    private static DataVariableDescriptor _Descriptor = TestDescriptors.Baz;
+    private static TelemetryVariableDescriptor _Descriptor = TestDescriptors.Baz;
 
     public BazVariable()
         : base(_Descriptor, variableInfo: null)
@@ -15,7 +15,7 @@ internal class BazVariable : ArrayDataVariable<float>
 
     }
 
-    public BazVariable(DataVariableInfo? variableInfo)
+    public BazVariable(TelemetryVariableInfo? variableInfo)
         : base(_Descriptor, variableInfo)
     {
     }

@@ -1,6 +1,7 @@
 ﻿using SharpRacer.Telemetry;
 
 namespace SharpRacer.SourceGenerators;
+
 public class SharpRacerIdentifiersTests
 {
     [Fact]
@@ -26,29 +27,29 @@ public class SharpRacerIdentifiersTests
     public static IEnumerable<object[]> TypeIdentifiersAndExpectedTypes =>
         new TheoryData<TypeIdentifier, Type>()
         {
-            { SharpRacerIdentifiers.ArrayDataVariable, typeof(ArrayDataVariable<>) },
+            { SharpRacerIdentifiers.ArrayTelemetryVariable, typeof(ArrayTelemetryVariable<>) },
             { SharpRacerIdentifiers.CameraState, typeof(CameraState) },
             { SharpRacerIdentifiers.CarLeftRight, typeof(CarLeftRight) },
-            { SharpRacerIdentifiers.DataVariableDescriptor, typeof(DataVariableDescriptor) },
-            { SharpRacerIdentifiers.DataVariableInfo, typeof(DataVariableInfo) },
-            { SharpRacerIdentifiers.DataVariableInitializationException, typeof(DataVariableInitializationException) },
-            { SharpRacerIdentifiers.DataVariableValueType, typeof(DataVariableValueType) },
             { SharpRacerIdentifiers.EngineWarnings, typeof(EngineWarnings) },
-            { SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute, typeof(GenerateDataVariableDescriptorsAttribute) },
-            { SharpRacerIdentifiers.GenerateDataVariablesContextAttribute, typeof(GenerateDataVariablesContextAttribute) },
-            { SharpRacerIdentifiers.IArrayDataVariable, typeof(IArrayDataVariable<>) },
-            { SharpRacerIdentifiers.IDataVariable, typeof(IDataVariable) },
-            { SharpRacerIdentifiers.IDataVariablesContext, typeof(IDataVariablesContext) },
-            { SharpRacerIdentifiers.IDataVariableInfoProvider, typeof(IDataVariableInfoProvider) },
-            { SharpRacerIdentifiers.IScalarDataVariable, typeof(IScalarDataVariable<>) },
+            { SharpRacerIdentifiers.GenerateTelemetryVariableDescriptorsAttribute, typeof(GenerateTelemetryVariableDescriptorsAttribute) },
+            { SharpRacerIdentifiers.GenerateTelemetryVariablesContextAttribute, typeof(GenerateTelemetryVariablesContextAttribute) },
+            { SharpRacerIdentifiers.IArrayTelemetryVariable, typeof(IArrayTelemetryVariable<>) },
+            { SharpRacerIdentifiers.ITelemetryVariable, typeof(ITelemetryVariable) },
+            { SharpRacerIdentifiers.ITelemetryVariablesContext, typeof(ITelemetryVariablesContext) },
+            { SharpRacerIdentifiers.ITelemetryVariableInfoProvider, typeof(ITelemetryVariableInfoProvider) },
+            { SharpRacerIdentifiers.IScalarTelemetryVariable, typeof(IScalarTelemetryVariable<>) },
             { SharpRacerIdentifiers.PaceMode, typeof(PaceMode) },
             { SharpRacerIdentifiers.PaceRacingFlags, typeof(PaceRacingFlags) },
             { SharpRacerIdentifiers.PitServiceOptions, typeof(PitServiceOptions) },
             { SharpRacerIdentifiers.PitServiceStatus, typeof(PitServiceStatus) },
             { SharpRacerIdentifiers.RacingFlags, typeof(RacingFlags) },
-            { SharpRacerIdentifiers.ScalarDataVariable, typeof(ScalarDataVariable<>) },
+            { SharpRacerIdentifiers.ScalarTelemetryVariable, typeof(ScalarTelemetryVariable<>) },
             { SharpRacerIdentifiers.SessionState, typeof(SessionState) },
             { SharpRacerIdentifiers.TrackLocationType, typeof(TrackLocationType) },
-            { SharpRacerIdentifiers.TrackSurfaceType, typeof(TrackSurfaceType) }
+            { SharpRacerIdentifiers.TrackSurfaceType, typeof(TrackSurfaceType) },
+            { SharpRacerIdentifiers.TelemetryVariableDescriptor, typeof(TelemetryVariableDescriptor) },
+            { SharpRacerIdentifiers.TelemetryVariableInfo, typeof(TelemetryVariableInfo) },
+            { SharpRacerIdentifiers.TelemetryVariableInitializationException, typeof(TelemetryVariableInitializationException) },
+            { SharpRacerIdentifiers.TelemetryVariableValueType, typeof(TelemetryVariableValueType) }
         };
 }

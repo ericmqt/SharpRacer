@@ -39,15 +39,15 @@ public readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
         return IdentifierName(PropertyName);
     }
 
-    public ObjectCreationExpressionSyntax PropertyObjectCreationExpression(IdentifierNameSyntax dataVariableInfoProviderIdentifier)
+    public ObjectCreationExpressionSyntax PropertyObjectCreationExpression(IdentifierNameSyntax variableInfoProviderIdentifier)
     {
         if (VariableClassReference != null)
         {
-            return VariableClassReference.Value.ConstructorInvocation(dataVariableInfoProviderIdentifier);
+            return VariableClassReference.Value.ConstructorInvocation(variableInfoProviderIdentifier);
         }
 
-        // Create ArrayDataVariable<T> and ScalarDataVariable<T> instances
-        var typeArg = SharpRacerTypes.DataVariableTypeArgument(
+        // Create ArrayTelemetryVariable<T> and ScalarTelemetryVariable<T> instances
+        var typeArg = SharpRacerTypes.TelemetryVariableTypeArgument(
             VariableModel.ValueType, VariableModel.ValueUnit, TypeNameFormat.GlobalQualified);
 
         ExpressionSyntax descriptorCtorArgumentExpr;
@@ -58,18 +58,18 @@ public readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
         }
         else
         {
-            descriptorCtorArgumentExpr = DataVariableDescriptorSyntaxFactory.StaticFactoryMethodInvocation(
+            descriptorCtorArgumentExpr = TelemetryVariableDescriptorSyntaxFactory.StaticFactoryMethodInvocation(
                 VariableModel.VariableName, VariableModel.ValueType, VariableModel.ValueCount, VariableModel.ValueUnit);
         }
 
         if (IsArray)
         {
-            return DataVariableTypeSyntaxFactory.ArrayDataVariableConstructor(
-                typeArg, descriptorCtorArgumentExpr, dataVariableInfoProviderIdentifier);
+            return TelemetryVariableTypeSyntaxFactory.ArrayTelemetryVariableConstructor(
+                typeArg, descriptorCtorArgumentExpr, variableInfoProviderIdentifier);
         }
 
-        return DataVariableTypeSyntaxFactory.ScalarDataVariableConstructor(
-                typeArg, descriptorCtorArgumentExpr, dataVariableInfoProviderIdentifier);
+        return TelemetryVariableTypeSyntaxFactory.ScalarTelemetryVariableConstructor(
+                typeArg, descriptorCtorArgumentExpr, variableInfoProviderIdentifier);
     }
 
     public TypeSyntax PropertyType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
@@ -79,14 +79,14 @@ public readonly struct ContextVariableModel : IEquatable<ContextVariableModel>
             return VariableClassReference.Value.GlobalQualifiedTypeName();
         }
 
-        var typeArg = VariableModel.DataVariableTypeArgument(typeNameFormat);
+        var typeArg = VariableModel.TelemetryVariableTypeArgument(typeNameFormat);
 
         if (IsArray)
         {
-            return SharpRacerTypes.IArrayDataVariableInterfaceType(typeArg, typeNameFormat);
+            return SharpRacerTypes.IArrayTelemetryVariableInterfaceType(typeArg, typeNameFormat);
         }
 
-        return SharpRacerTypes.IScalarDataVariableInterfaceType(typeArg, typeNameFormat);
+        return SharpRacerTypes.IScalarTelemetryVariableInterfaceType(typeArg, typeNameFormat);
     }
 
     public override bool Equals(object obj)

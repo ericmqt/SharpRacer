@@ -10,18 +10,18 @@ internal static class SharpRacerSymbols
         return namespaceSymbolDisplayString.Equals(SharpRacerIdentifiers.TelemetryNamespace.ToGlobalQualifiedName());
     }
 
-    public static bool IsIDataVariablesContextInterface(INamedTypeSymbol symbol)
+    public static bool IsITelemetryVariablesContextInterface(INamedTypeSymbol symbol)
     {
         if (symbol.TypeKind != TypeKind.Interface)
         {
             return false;
         }
 
-        if (!SharpRacerIdentifiers.IDataVariablesContext.Namespace.Equals(symbol.ContainingNamespace))
+        if (!SharpRacerIdentifiers.ITelemetryVariablesContext.Namespace.Equals(symbol.ContainingNamespace))
         {
             return false;
         }
 
-        return symbol.Name.Equals(SharpRacerIdentifiers.IDataVariablesContext);
+        return symbol.Name.Equals(SharpRacerIdentifiers.ITelemetryVariablesContext);
     }
 }

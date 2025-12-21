@@ -7,9 +7,9 @@ namespace SharpRacer.IO;
 /// <summary>
 /// Provides information about a telemetry file (*.IBT).
 /// </summary>
-public class TelemetryFileInfo : IDataVariableInfoProvider
+public class TelemetryFileInfo : ITelemetryVariableInfoProvider
 {
-    private readonly ImmutableArray<DataVariableInfo> _dataVariables;
+    private readonly ImmutableArray<TelemetryVariableInfo> _dataVariables;
     private readonly DataFileHeader _fileHeader;
 
     /// <summary>
@@ -40,7 +40,7 @@ public class TelemetryFileInfo : IDataVariableInfoProvider
             SessionInfo = fileReader.ReadSessionInfo();
 
             var variableHeaders = fileReader.ReadDataVariableHeaders();
-            var variableInfoArray = variableHeaders.Select(x => new DataVariableInfo(x)).ToArray();
+            var variableInfoArray = variableHeaders.Select(x => new TelemetryVariableInfo(x)).ToArray();
 
             _dataVariables = ImmutableArray.Create(variableInfoArray);
         }
@@ -50,7 +50,7 @@ public class TelemetryFileInfo : IDataVariableInfoProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<DataVariableInfo> DataVariables => _dataVariables;
+    public IEnumerable<TelemetryVariableInfo> Variables => _dataVariables;
 
     /// <summary>
     /// Gets a <see cref="FileInfo"/> object representing the telemetry file.
@@ -78,12 +78,12 @@ public class TelemetryFileInfo : IDataVariableInfoProvider
     public DateTimeOffset SessionStart { get; }
 
     /// <inheritdoc />
-    public void NotifyDataVariableActivated(string variableName, Action<DataVariableInfo> callback)
+    public void NotifyTelemetryVariableActivated(string variableName, Action<TelemetryVariableInfo> callback)
     {
         ArgumentException.ThrowIfNullOrEmpty(variableName);
         ArgumentNullException.ThrowIfNull(callback);
 
-        if (DataVariables.TryFindByName(variableName, out var variableInfo))
+        if (Variables.TryFindByName(variableName, out var variableInfo))
         {
             callback(variableInfo);
         }

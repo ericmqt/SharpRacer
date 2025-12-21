@@ -30,9 +30,9 @@ internal class TelemetryFileBuilder
         return new TelemetryFileBuilder(null);
     }
 
-    public static TelemetryFileBuilder Create(Action<TelemetryFileDataVariablesBuilder>? configureVariables)
+    public static TelemetryFileBuilder Create(Action<TelemetryFileVariablesBuilder>? configureVariables)
     {
-        var variablesBuilder = new TelemetryFileDataVariablesBuilder();
+        var variablesBuilder = new TelemetryFileVariablesBuilder();
 
         configureVariables?.Invoke(variablesBuilder);
 

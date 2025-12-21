@@ -7,40 +7,41 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 using static SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+
 internal static class VariableContextSyntaxFactory
 {
     public static ConstructorDeclarationSyntax Constructor(ref readonly ContextClassModel model)
     {
-        var dataVariableInfoProviderParameterName = "dataVariableInfoProvider";
+        var variableInfoProviderParameterName = "dataVariableInfoProvider";
 
-        var dataVariableInfoProviderParameter = Parameter(Identifier(dataVariableInfoProviderParameterName))
-            .WithType(SharpRacerTypes.IDataVariableInfoProvider(TypeNameFormat.GlobalQualified));
+        var variableInfoProviderParameter = Parameter(Identifier(variableInfoProviderParameterName))
+            .WithType(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified));
 
         var bodyStatements = new List<StatementSyntax>()
         {
-            NullCheck(IdentifierName(dataVariableInfoProviderParameterName), TypeNameFormat.Qualified)
+            NullCheck(IdentifierName(variableInfoProviderParameterName), TypeNameFormat.Qualified)
         };
 
         foreach (var variable in model.Variables)
         {
-            var initStatement = InitializeVariableProperty(in variable, IdentifierName(dataVariableInfoProviderParameterName));
+            var initStatement = InitializeVariableProperty(in variable, IdentifierName(variableInfoProviderParameterName));
 
             bodyStatements.Add(initStatement);
         }
 
         return ConstructorDeclaration(model.ClassIdentifier())
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithParameterList(ParameterList(SingletonSeparatedList(dataVariableInfoProviderParameter)))
+            .WithParameterList(ParameterList(SingletonSeparatedList(variableInfoProviderParameter)))
             .WithBody(Block(bodyStatements))
             .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))));
     }
 
     public static MethodDeclarationSyntax EnumerateVariablesMethod(ref readonly ContextClassModel model)
     {
-        var dataVariableType = SharpRacerIdentifiers.IDataVariable.ToTypeSyntax(TypeNameFormat.GlobalQualified);
+        var variableType = SharpRacerIdentifiers.ITelemetryVariable.ToTypeSyntax(TypeNameFormat.GlobalQualified);
 
         var returnType = SystemIdentifiers.IEnumerable_T.ToGenericTypeSyntax(
-            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(dataVariableType)),
+            TypeArgumentList(SingletonSeparatedList<TypeSyntax>(variableType)),
             TypeNameFormat.Qualified);
 
         var yieldReturnStatements = model.Variables
@@ -56,12 +57,12 @@ internal static class VariableContextSyntaxFactory
 
     public static ExpressionStatementSyntax InitializeVariableProperty(
         ref readonly ContextVariableModel model,
-        IdentifierNameSyntax dataVariableInfoProviderIdentifier)
+        IdentifierNameSyntax variableInfoProviderIdentifier)
     {
         var assignmentExpr = AssignmentExpression(
             SyntaxKind.SimpleAssignmentExpression,
             model.PropertyIdentifierName(),
-            model.PropertyObjectCreationExpression(dataVariableInfoProviderIdentifier));
+            model.PropertyObjectCreationExpression(variableInfoProviderIdentifier));
 
         return ExpressionStatement(assignmentExpr);
     }

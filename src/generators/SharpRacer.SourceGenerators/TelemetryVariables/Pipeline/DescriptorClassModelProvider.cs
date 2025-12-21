@@ -28,7 +28,7 @@ internal static class DescriptorClassModelProvider
             .WithTrackingName(TrackingNames.DescriptorClassModelProvider_GetDescriptorProperties);
 
         return syntaxValueProvider.ForAttributeWithMetadataName(
-                SharpRacerIdentifiers.GenerateDataVariableDescriptorsAttribute.ToQualifiedName(),
+                SharpRacerIdentifiers.GenerateTelemetryVariableDescriptorsAttribute.ToQualifiedName(),
                 predicate: static (node, _) => node is ClassDeclarationSyntax,
                 transform: GetDescriptorClassTarget)
             .Collect()

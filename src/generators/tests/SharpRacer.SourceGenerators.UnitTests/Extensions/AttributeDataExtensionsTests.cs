@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
 
 namespace SharpRacer.SourceGenerators.Extensions;
+
 public class AttributeDataExtensionsTests
 {
     [Fact]
@@ -12,12 +13,12 @@ public class AttributeDataExtensionsTests
         var descriptorClass = @"
 using SharpRacer.Telemetry.Variables;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors { }";
 
         var syntaxTree = CSharpSyntaxTree.ParseText(descriptorClass);
 
-        var attributeSpan = new TextSpan(68, length: 31);
+        var attributeSpan = new TextSpan(68, length: 36);
         var syntaxRef = new TestSyntaxReference(syntaxTree, attributeSpan);
         var attributeData = new TestAttributeData(syntaxRef);
 

@@ -28,7 +28,7 @@ public class SimulatorConnectionDataReaderTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Open the connection
         connection.Open();
@@ -65,7 +65,7 @@ public class SimulatorConnectionDataReaderTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Open the connection
         connection.Open();

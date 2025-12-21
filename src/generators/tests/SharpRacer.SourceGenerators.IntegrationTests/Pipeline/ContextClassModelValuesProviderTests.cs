@@ -12,6 +12,7 @@ using ContextClassModelsResult = (
     System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
+
 public class ContextClassModelValuesProviderTests
 {
     [Fact]
@@ -37,8 +38,8 @@ public class ContextClassModelValuesProviderTests
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariablesContext]
-internal partial class TelemetryVariables : IDataVariablesContext { }";
+[GenerateTelemetryVariablesContext]
+internal partial class TelemetryVariables : ITelemetryVariablesContext { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
@@ -70,8 +71,8 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariablesContext(""Assets\\TelemetryVariables_VariableNames.json"")]
-internal partial class TelemetryVariables : IDataVariablesContext { }";
+[GenerateTelemetryVariablesContext(""Assets\\TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : ITelemetryVariablesContext { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
@@ -108,8 +109,8 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
-internal partial class TelemetryVariables : IDataVariablesContext { }";
+[GenerateTelemetryVariablesContext(""TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : ITelemetryVariablesContext { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
@@ -150,7 +151,7 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariablesContext]
+[GenerateTelemetryVariablesContext]
 internal class TelemetryVariables { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -180,8 +181,8 @@ internal class TelemetryVariables { }";
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
-internal partial class TelemetryVariables : IDataVariablesContext { }";
+[GenerateTelemetryVariablesContext(""TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : ITelemetryVariablesContext { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")
@@ -207,8 +208,8 @@ internal partial class TelemetryVariables : IDataVariablesContext { }";
     {
         var contextClassDefinition = @"using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariablesContext(""TelemetryVariables_VariableNames.json"")]
-internal partial class TelemetryVariables : IDataVariablesContext { }";
+[GenerateTelemetryVariablesContext(""TelemetryVariables_VariableNames.json"")]
+internal partial class TelemetryVariables : ITelemetryVariablesContext { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
             .AddScalar("SessionTime", VariableValueType.Double, "Seconds since session start", "s")

@@ -81,7 +81,7 @@ public class GeneratorDiagnosticsTests
     {
         var diagnostic = GeneratorDiagnostics.ContextClassMustInheritIDataVariablesContextInterface("MyContext");
 
-        Assert.Equal(DiagnosticIds.ContextClassMustInheritIDataVariablesContextInterface, diagnostic.Id);
+        Assert.Equal(DiagnosticIds.ContextClassMustInheritITelemetryVariablesContextInterface, diagnostic.Id);
     }
 
     [Fact]

@@ -1,6 +1,6 @@
 ﻿namespace SharpRacer.Telemetry.TestVariables;
 
-internal class FooVariable : ScalarDataVariable<int>
+internal class FooVariable : ScalarTelemetryVariable<int>
 {
     private static readonly string _VariableName = "Foo";
 
@@ -10,13 +10,13 @@ internal class FooVariable : ScalarDataVariable<int>
 
     }
 
-    public FooVariable(DataVariableInfo variableInfo)
+    public FooVariable(TelemetryVariableInfo variableInfo)
         : base(_VariableName, variableInfo)
     {
 
     }
 
-    public static FooVariable Create(DataVariableInfo dataVariableInfo)
+    public static FooVariable Create(TelemetryVariableInfo dataVariableInfo)
     {
         return new FooVariable(dataVariableInfo);
     }

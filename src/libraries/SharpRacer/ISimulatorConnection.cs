@@ -6,7 +6,7 @@ namespace SharpRacer;
 /// <summary>
 /// Represents a connection to a simulator session.
 /// </summary>
-public interface ISimulatorConnection : IDataVariableInfoProvider, IDisposable
+public interface ISimulatorConnection : ITelemetryVariableInfoProvider, IDisposable
 {
     /// <summary>
     /// Gets a value indicating whether the connection is in a state that supports read operations.

@@ -28,7 +28,7 @@ public class DataVariableModel
         }
     }
 
-    public DataVariableModel(DataVariableInfo variableInfo, ContentVersion simulatorVersion)
+    public DataVariableModel(TelemetryVariableInfo variableInfo, ContentVersion simulatorVersion)
     {
         ArgumentNullException.ThrowIfNull(variableInfo);
 
@@ -48,6 +48,6 @@ public class DataVariableModel
     public string Name { get; set; } = string.Empty;
     public ContentVersion SimulatorVersion { get; set; }
     public int ValueCount { get; set; }
-    public DataVariableValueType ValueType { get; set; }
+    public TelemetryVariableValueType ValueType { get; set; }
     public string? ValueUnit { get; set; }
 }

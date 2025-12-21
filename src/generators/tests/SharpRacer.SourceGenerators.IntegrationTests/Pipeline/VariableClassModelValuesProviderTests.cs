@@ -7,6 +7,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
 using SharpRacer.SourceGenerators.Testing.TelemetryVariables;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
+
 public class VariableClassModelValuesProviderTests
 {
     [Fact]
@@ -15,7 +16,7 @@ public class VariableClassModelValuesProviderTests
         var descriptorClass = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -39,7 +40,7 @@ public static partial class MyDescriptors { }";
         var descriptorClass = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()

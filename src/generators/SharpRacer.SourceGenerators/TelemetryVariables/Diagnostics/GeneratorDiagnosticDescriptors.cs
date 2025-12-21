@@ -77,7 +77,7 @@ internal static partial class GeneratorDiagnosticDescriptors
 
     public static DiagnosticDescriptor ContextClassMustInheritIDataVariablesContextInterface
         = new(
-            DiagnosticIds.ContextClassMustInheritIDataVariablesContextInterface,
+            DiagnosticIds.ContextClassMustInheritITelemetryVariablesContextInterface,
             "Variable context class must inherit IDataVariablesContext",
             "Variable context '{0}' must inherit IDataVariablesContext for code generation to run",
             GeneratorDiagnosticCategories.Syntax,

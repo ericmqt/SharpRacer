@@ -6,7 +6,7 @@ internal static class VariablesGeneratorReferenceAssemblies
 {
     static VariablesGeneratorReferenceAssemblies()
     {
-        var sharpRacerAssembly = typeof(GenerateDataVariableDescriptorsAttribute).Assembly;
+        var sharpRacerAssembly = typeof(GenerateTelemetryVariableDescriptorsAttribute).Assembly;
         SharpRacerLibrary = MetadataReference.CreateFromFile(sharpRacerAssembly.Location);
 
         All = new List<MetadataReference>(Basic.Reference.Assemblies.Net80.References.All)

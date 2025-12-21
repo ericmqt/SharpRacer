@@ -8,10 +8,10 @@ public class TypeIdentifierSyntaxFactoryTests
     public void GlobalQualifiedTypeName_Test()
     {
         var result = TypeIdentifierSyntaxFactory.GlobalQualifiedTypeName(
-            SharpRacerIdentifiers.DataVariableDescriptor.Namespace,
-            IdentifierName(SharpRacerIdentifiers.DataVariableDescriptor.TypeName));
+            SharpRacerIdentifiers.TelemetryVariableDescriptor.Namespace,
+            IdentifierName(SharpRacerIdentifiers.TelemetryVariableDescriptor.TypeName));
 
-        var expected = ParseTypeName(SharpRacerIdentifiers.DataVariableDescriptor.ToString(TypeNameFormat.GlobalQualified));
+        var expected = ParseTypeName(SharpRacerIdentifiers.TelemetryVariableDescriptor.ToString(TypeNameFormat.GlobalQualified));
         var expectedStr = expected.ToFullString();
         var resultStr = result.ToFullString();
 
@@ -44,10 +44,10 @@ public class TypeIdentifierSyntaxFactoryTests
     public void QualifiedTypeName_Test()
     {
         var result = TypeIdentifierSyntaxFactory.QualifiedTypeName(
-            SharpRacerIdentifiers.DataVariableDescriptor.Namespace,
-            IdentifierName(SharpRacerIdentifiers.DataVariableDescriptor.TypeName));
+            SharpRacerIdentifiers.TelemetryVariableDescriptor.Namespace,
+            IdentifierName(SharpRacerIdentifiers.TelemetryVariableDescriptor.TypeName));
 
-        var expected = ParseTypeName(SharpRacerIdentifiers.DataVariableDescriptor.ToString(TypeNameFormat.Qualified));
+        var expected = ParseTypeName(SharpRacerIdentifiers.TelemetryVariableDescriptor.ToString(TypeNameFormat.Qualified));
         var expectedStr = expected.ToFullString();
         var resultStr = result.ToFullString();
 

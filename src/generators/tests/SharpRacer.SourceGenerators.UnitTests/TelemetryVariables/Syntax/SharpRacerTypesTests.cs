@@ -1,13 +1,14 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+
 public class SharpRacerTypesTests
 {
     [Theory]
     [InlineData(TypeNameFormat.Default, "CarLeftRight")]
     [InlineData(TypeNameFormat.Qualified, "SharpRacer.CarLeftRight")]
     [InlineData(TypeNameFormat.GlobalQualified, "global::SharpRacer.CarLeftRight")]
-    public void DataVariableTypeArgument_BitfieldTest(TypeNameFormat typeNameFormat, string expected)
+    public void TelemetryVariableTypeArgument_BitfieldTest(TypeNameFormat typeNameFormat, string expected)
     {
-        var type = SharpRacerTypes.DataVariableTypeArgument(VariableValueType.Bitfield, "irsdk_CarLeftRight", typeNameFormat);
+        var type = SharpRacerTypes.TelemetryVariableTypeArgument(VariableValueType.Bitfield, "irsdk_CarLeftRight", typeNameFormat);
 
         Assert.Equal(expected, type.ToFullString());
     }
@@ -18,17 +19,17 @@ public class SharpRacerTypesTests
     [InlineData(VariableValueType.Double, "double")]
     [InlineData(VariableValueType.Float, "float")]
     [InlineData(VariableValueType.Int, "int")]
-    public void DataVariableTypeArgument_ScalarTest(VariableValueType valueType, string expected)
+    public void TelemetryVariableTypeArgument_ScalarTest(VariableValueType valueType, string expected)
     {
-        var type = SharpRacerTypes.DataVariableTypeArgument(valueType, null);
+        var type = SharpRacerTypes.TelemetryVariableTypeArgument(valueType, null);
 
         Assert.Equal(expected, type.ToFullString());
     }
 
     [Fact]
-    public void DataVariableTypeArgument_ThrowOnInvalidVariableValueTypeTest()
+    public void TelemetryVariableTypeArgument_ThrowOnInvalidVariableValueTypeTest()
     {
-        Assert.Throws<ArgumentException>(() => SharpRacerTypes.DataVariableTypeArgument((VariableValueType)999, null));
+        Assert.Throws<ArgumentException>(() => SharpRacerTypes.TelemetryVariableTypeArgument((VariableValueType)999, null));
     }
 
     [Fact]
@@ -120,10 +121,10 @@ public class SharpRacerTypesTests
     }
 
     [Fact]
-    public void IDataVariablesContextInterfaceType_Test()
+    public void ITelemetryVariablesContextInterfaceType_Test()
     {
         Assert.Equal(
-            "IDataVariablesContext",
-            SharpRacerTypes.IDataVariablesContextInterfaceType(TypeNameFormat.Default).ToFullString());
+            "ITelemetryVariablesContext",
+            SharpRacerTypes.ITelemetryVariablesContextInterfaceType(TypeNameFormat.Default).ToFullString());
     }
 }

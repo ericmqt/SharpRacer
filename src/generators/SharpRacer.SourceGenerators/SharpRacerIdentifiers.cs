@@ -1,4 +1,5 @@
 ﻿namespace SharpRacer.SourceGenerators;
+
 public static class SharpRacerIdentifiers
 {
     static SharpRacerIdentifiers()
@@ -6,19 +7,19 @@ public static class SharpRacerIdentifiers
         SharpRacerNamespace = new NamespaceIdentifier("SharpRacer");
         TelemetryNamespace = new NamespaceIdentifier("SharpRacer.Telemetry");
 
-        ArrayDataVariable = TelemetryNamespace.CreateType("ArrayDataVariable");
-        DataVariableDescriptor = TelemetryNamespace.CreateType("DataVariableDescriptor");
-        DataVariableInfo = TelemetryNamespace.CreateType("DataVariableInfo");
-        DataVariableInitializationException = TelemetryNamespace.CreateType("DataVariableInitializationException");
-        DataVariableValueType = TelemetryNamespace.CreateType("DataVariableValueType");
-        GenerateDataVariableDescriptorsAttribute = TelemetryNamespace.CreateType("GenerateDataVariableDescriptorsAttribute");
-        GenerateDataVariablesContextAttribute = TelemetryNamespace.CreateType("GenerateDataVariablesContextAttribute");
-        IArrayDataVariable = TelemetryNamespace.CreateType("IArrayDataVariable");
-        IDataVariable = TelemetryNamespace.CreateType("IDataVariable");
-        IDataVariablesContext = TelemetryNamespace.CreateType("IDataVariablesContext");
-        IDataVariableInfoProvider = TelemetryNamespace.CreateType("IDataVariableInfoProvider");
-        IScalarDataVariable = TelemetryNamespace.CreateType("IScalarDataVariable");
-        ScalarDataVariable = TelemetryNamespace.CreateType("ScalarDataVariable");
+        ArrayTelemetryVariable = TelemetryNamespace.CreateType("ArrayTelemetryVariable");
+        TelemetryVariableDescriptor = TelemetryNamespace.CreateType("TelemetryVariableDescriptor");
+        TelemetryVariableInfo = TelemetryNamespace.CreateType("TelemetryVariableInfo");
+        TelemetryVariableInitializationException = TelemetryNamespace.CreateType("TelemetryVariableInitializationException");
+        TelemetryVariableValueType = TelemetryNamespace.CreateType("TelemetryVariableValueType");
+        GenerateTelemetryVariableDescriptorsAttribute = TelemetryNamespace.CreateType("GenerateTelemetryVariableDescriptorsAttribute");
+        GenerateTelemetryVariablesContextAttribute = TelemetryNamespace.CreateType("GenerateTelemetryVariablesContextAttribute");
+        IArrayTelemetryVariable = TelemetryNamespace.CreateType("IArrayTelemetryVariable");
+        ITelemetryVariable = TelemetryNamespace.CreateType("ITelemetryVariable");
+        ITelemetryVariablesContext = TelemetryNamespace.CreateType("ITelemetryVariablesContext");
+        ITelemetryVariableInfoProvider = TelemetryNamespace.CreateType("ITelemetryVariableInfoProvider");
+        IScalarTelemetryVariable = TelemetryNamespace.CreateType("IScalarTelemetryVariable");
+        ScalarTelemetryVariable = TelemetryNamespace.CreateType("ScalarTelemetryVariable");
 
         CameraState = SharpRacerNamespace.CreateType("CameraState");
         CarLeftRight = SharpRacerNamespace.CreateType("CarLeftRight");
@@ -36,28 +37,28 @@ public static class SharpRacerIdentifiers
     public static NamespaceIdentifier SharpRacerNamespace { get; }
     public static NamespaceIdentifier TelemetryNamespace { get; }
 
-    public static TypeIdentifier ArrayDataVariable { get; }
+    public static TypeIdentifier ArrayTelemetryVariable { get; }
     public static TypeIdentifier CameraState { get; }
     public static TypeIdentifier CarLeftRight { get; }
-    public static TypeIdentifier DataVariableDescriptor { get; }
-    public static TypeIdentifier DataVariableInfo { get; }
-    public static TypeIdentifier DataVariableInitializationException { get; }
-    public static TypeIdentifier DataVariableValueType { get; }
     public static TypeIdentifier EngineWarnings { get; }
-    public static TypeIdentifier GenerateDataVariableDescriptorsAttribute { get; }
-    public static TypeIdentifier GenerateDataVariablesContextAttribute { get; }
-    public static TypeIdentifier IArrayDataVariable { get; }
-    public static TypeIdentifier IDataVariable { get; }
-    public static TypeIdentifier IDataVariablesContext { get; }
-    public static TypeIdentifier IDataVariableInfoProvider { get; }
-    public static TypeIdentifier IScalarDataVariable { get; }
+    public static TypeIdentifier GenerateTelemetryVariableDescriptorsAttribute { get; }
+    public static TypeIdentifier GenerateTelemetryVariablesContextAttribute { get; }
+    public static TypeIdentifier IArrayTelemetryVariable { get; }
+    public static TypeIdentifier ITelemetryVariable { get; }
+    public static TypeIdentifier ITelemetryVariablesContext { get; }
+    public static TypeIdentifier ITelemetryVariableInfoProvider { get; }
+    public static TypeIdentifier IScalarTelemetryVariable { get; }
     public static TypeIdentifier PaceMode { get; }
     public static TypeIdentifier PaceRacingFlags { get; }
     public static TypeIdentifier PitServiceOptions { get; }
     public static TypeIdentifier PitServiceStatus { get; }
     public static TypeIdentifier RacingFlags { get; }
-    public static TypeIdentifier ScalarDataVariable { get; }
+    public static TypeIdentifier ScalarTelemetryVariable { get; }
     public static TypeIdentifier SessionState { get; }
     public static TypeIdentifier TrackLocationType { get; }
     public static TypeIdentifier TrackSurfaceType { get; }
+    public static TypeIdentifier TelemetryVariableDescriptor { get; }
+    public static TypeIdentifier TelemetryVariableInfo { get; }
+    public static TypeIdentifier TelemetryVariableInitializationException { get; }
+    public static TypeIdentifier TelemetryVariableValueType { get; }
 }

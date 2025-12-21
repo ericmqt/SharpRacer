@@ -34,7 +34,7 @@ public class DataVariableHeaderTests
         var unitStr = "kg/m";
         var unit = IRSDKString.FromString(unitStr);
 
-        var valueType = (int)DataVariableValueType.Double;
+        var valueType = (int)TelemetryVariableValueType.Double;
         var valueCount = 1;
         var isTimeSliceArray = false;
         var offset = 1024;
@@ -64,7 +64,7 @@ public class DataVariableHeaderTests
         var description = IRSDKDescString.FromString("Foo variable");
         var unit = IRSDKString.FromString("kg/m");
 
-        var type = (int)DataVariableValueType.Double;
+        var type = (int)TelemetryVariableValueType.Double;
         var count = 1;
         var countAsTime = false;
         var offset = 1024;
@@ -103,7 +103,7 @@ public class DataVariableHeaderTests
     {
         var constructedHeader = new DataVariableHeader(
             IRSDKString.FromString("Foo"),
-            (int)DataVariableValueType.Double,
+            (int)TelemetryVariableValueType.Double,
             1,
             false,
             1024,
@@ -118,7 +118,7 @@ public class DataVariableHeaderTests
     {
         var header1 = new DataVariableHeader(
             IRSDKString.FromString("Foo"),
-            (int)DataVariableValueType.Double,
+            (int)TelemetryVariableValueType.Double,
             1,
             false,
             1024,
@@ -127,7 +127,7 @@ public class DataVariableHeaderTests
 
         var header2 = new DataVariableHeader(
             IRSDKString.FromString("Foo"),
-            (int)DataVariableValueType.Double,
+            (int)TelemetryVariableValueType.Double,
             1,
             false,
             1024,
@@ -149,7 +149,7 @@ public class DataVariableHeaderTests
     {
         var constructedHeader = new DataVariableHeader(
             IRSDKString.FromString("Foo"),
-            (int)DataVariableValueType.Double,
+            (int)TelemetryVariableValueType.Double,
             1,
             false,
             1024,
@@ -165,7 +165,7 @@ public class DataVariableHeaderTests
         var description = IRSDKDescString.FromString("Foo variable");
         var unit = IRSDKString.FromString("kg/m");
 
-        var type = (int)DataVariableValueType.Double;
+        var type = (int)TelemetryVariableValueType.Double;
         var count = 1;
         var countAsTime = false;
         var offset = 1024;
@@ -174,8 +174,8 @@ public class DataVariableHeaderTests
         {
             // Type
             {
-                new DataVariableHeader(name, (int)DataVariableValueType.Double, count, countAsTime, offset, description, unit),
-                new DataVariableHeader(name, (int)DataVariableValueType.Float, count, countAsTime, offset, description, unit)
+                new DataVariableHeader(name, (int)TelemetryVariableValueType.Double, count, countAsTime, offset, description, unit),
+                new DataVariableHeader(name, (int)TelemetryVariableValueType.Float, count, countAsTime, offset, description, unit)
             },
 
             // Offset

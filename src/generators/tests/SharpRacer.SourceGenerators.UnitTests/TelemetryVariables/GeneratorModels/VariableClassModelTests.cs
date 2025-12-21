@@ -4,6 +4,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+
 public class VariableClassModelTests
 {
     [Fact]
@@ -77,7 +78,7 @@ public class VariableClassModelTests
             isClassInternal: false,
             isClassPartial: true);
 
-        Assert.Equal("global::SharpRacer.Telemetry.ArrayDataVariable<int>", classModel.BaseClassType().ToFullString());
+        Assert.Equal("global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>", classModel.BaseClassType().ToFullString());
     }
 
     [Fact]
@@ -94,7 +95,7 @@ public class VariableClassModelTests
             isClassInternal: false,
             isClassPartial: true);
 
-        Assert.Equal("global::SharpRacer.Telemetry.ScalarDataVariable<int>", classModel.BaseClassType().ToFullString());
+        Assert.Equal("global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>", classModel.BaseClassType().ToFullString());
     }
 
     [Fact]
@@ -183,7 +184,7 @@ public class VariableClassModelTests
             false,
             true);
 
-        var expected = "private static readonly global::SharpRacer.Telemetry.DataVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;";
+        var expected = "private static readonly global::SharpRacer.Telemetry.TelemetryVariableDescriptor _Descriptor = global::MyApp.Variables.VariableDescriptors.TestDescriptor;";
         var fieldDecl = classModel.DescriptorFieldDeclaration().NormalizeWhitespace().ToFullString();
 
         Assert.Equal(expected, fieldDecl);
@@ -203,7 +204,7 @@ public class VariableClassModelTests
             false,
             true);
 
-        var expected = "private static readonly global::SharpRacer.Telemetry.DataVariableDescriptor _Descriptor = new global::SharpRacer.Telemetry.DataVariableDescriptor(\"Test\", global::SharpRacer.Telemetry.DataVariableValueType.Int, 3);";
+        var expected = "private static readonly global::SharpRacer.Telemetry.TelemetryVariableDescriptor _Descriptor = new global::SharpRacer.Telemetry.TelemetryVariableDescriptor(\"Test\", global::SharpRacer.Telemetry.TelemetryVariableValueType.Int, 3);";
         var fieldDecl = classModel.DescriptorFieldDeclaration().NormalizeWhitespace().ToFullString();
 
         Assert.Equal(expected, fieldDecl);

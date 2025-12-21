@@ -17,6 +17,7 @@ using ContextClassWithIncludedVariablesFileResult = (
     System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
+
 internal static class ContextClassInfoValuesProvider
 {
     public static IncrementalValuesProvider<ContextClassInfoResult> GetValuesProvider(
@@ -24,7 +25,7 @@ internal static class ContextClassInfoValuesProvider
         IncrementalValuesProvider<AdditionalText> additionalTexts)
     {
         return syntaxValueProvider.ForAttributeWithMetadataName(
-                SharpRacerIdentifiers.GenerateDataVariablesContextAttribute.ToQualifiedName(),
+                SharpRacerIdentifiers.GenerateTelemetryVariablesContextAttribute.ToQualifiedName(),
                 predicate: static (node, _) => node is ClassDeclarationSyntax,
                 transform: GetContextClassTarget)
             .WithTrackingName(TrackingNames.ContextClassInfoValuesProvider_GetContextClassResults)
@@ -73,7 +74,7 @@ internal static class ContextClassInfoValuesProvider
             isValid = false;
         }
 
-        if (!classDeclarationSymbol.Interfaces.Any(SharpRacerSymbols.IsIDataVariablesContextInterface))
+        if (!classDeclarationSymbol.Interfaces.Any(SharpRacerSymbols.IsITelemetryVariablesContextInterface))
         {
             diagnosticsBuilder.Add(
                 GeneratorDiagnostics.ContextClassMustInheritIDataVariablesContextInterface(classIdentifier, classDeclLocation));

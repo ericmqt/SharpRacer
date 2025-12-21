@@ -1,6 +1,7 @@
 ﻿using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
+
 public class VariableModelTests
 {
     [Fact]
@@ -76,24 +77,6 @@ public class VariableModelTests
     public void Ctor_ThrowOnDefaultVariableInfoTest()
     {
         Assert.Throws<ArgumentException>(() => new VariableModel(default, new VariableOptions("Test", null, null)));
-    }
-
-    [Fact]
-    public void DataVariableTypeArgument_ScalarValueTypeTest()
-    {
-        var variable = new VariableInfo(
-            "Lat",
-            VariableValueType.Int,
-            1,
-            "Test variable",
-            "test/s",
-            true,
-            true,
-            "LatitudeEx");
-
-        var model = new VariableModel(variable, default);
-
-        Assert.Equal("int", model.DataVariableTypeArgument().ToFullString());
     }
 
     [Fact]
@@ -175,6 +158,24 @@ public class VariableModelTests
     public void Equals_InequalityTest(VariableModel model1, VariableModel model2)
     {
         EquatableStructAssert.NotEqual(model1, model2);
+    }
+
+    [Fact]
+    public void TelemetryVariableTypeArgument_ScalarValueTypeTest()
+    {
+        var variable = new VariableInfo(
+            "Lat",
+            VariableValueType.Int,
+            1,
+            "Test variable",
+            "test/s",
+            true,
+            true,
+            "LatitudeEx");
+
+        var model = new VariableModel(variable, default);
+
+        Assert.Equal("int", model.TelemetryVariableTypeArgument().ToFullString());
     }
 
     public static TheoryData<VariableModel, VariableModel> GetInequalityData()

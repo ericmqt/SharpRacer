@@ -19,7 +19,7 @@ internal static class DescriptorClassGenerator
 
         var xmlDoc = new XmlDocumentationTriviaBuilder()
             .Summary(b =>
-                b.Text("Provides ").See(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.GlobalQualified))
+                b.Text("Provides ").See(SharpRacerTypes.TelemetryVariableDescriptor(TypeNameFormat.GlobalQualified))
                 .Text(" values that describe telemetry variables."))
             .ToTrivia();
 
@@ -67,12 +67,12 @@ internal static class DescriptorClassGenerator
         ref readonly DescriptorPropertyModel descriptorPropertyModel,
         Accessibility accessibility)
     {
-        var objectCreationExpr = DataVariableDescriptorSyntaxFactory.ImplicitNewInstanceExpression(
+        var objectCreationExpr = TelemetryVariableDescriptorSyntaxFactory.ImplicitNewInstanceExpression(
             descriptorPropertyModel.VariableModel.VariableName,
             descriptorPropertyModel.VariableModel.ValueType,
             descriptorPropertyModel.VariableModel.ValueCount);
 
-        var decl = PropertyDeclaration(SharpRacerTypes.DataVariableDescriptor(TypeNameFormat.GlobalQualified), descriptorPropertyModel.PropertyIdentifier())
+        var decl = PropertyDeclaration(SharpRacerTypes.TelemetryVariableDescriptor(TypeNameFormat.GlobalQualified), descriptorPropertyModel.PropertyIdentifier())
             .WithModifiers(accessibility, isStatic: true)
             .WithGetOnlyAutoAccessor()
             .WithInitializer(EqualsValueClause(objectCreationExpr))

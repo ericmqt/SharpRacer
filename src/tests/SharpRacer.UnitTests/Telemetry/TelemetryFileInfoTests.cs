@@ -18,9 +18,9 @@ public class TelemetryFileInfoTests
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>
             {
-                varBuilder.AddScalarVariable("Foo", DataVariableValueType.Int, "test", "Description", out intVarHeader);
+                varBuilder.AddScalarVariable("Foo", TelemetryVariableValueType.Int, "test", "Description", out intVarHeader);
 
-                varBuilder.AddArrayVariable("Bar", DataVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
+                varBuilder.AddArrayVariable("Bar", TelemetryVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
             })
             .SetSessionInfo(sessionInfo, 1)
             .SetSessionStartAndDuration(sessionStart, sessionDuration)
@@ -41,7 +41,7 @@ public class TelemetryFileInfoTests
 
         Assert.NotNull(fileInfo.FileInfo);
         Assert.Equal(sessionInfo, fileInfo.SessionInfo);
-        Assert.Equal(writtenHeader.VariableCount, fileInfo.DataVariables.Count());
+        Assert.Equal(writtenHeader.VariableCount, fileInfo.Variables.Count());
         Assert.Equal(sessionStart, fileInfo.SessionStart);
         Assert.Equal(sessionEnd, fileInfo.SessionEnd);
         Assert.Equal(fileInfo.FileName, fileInfo.FileInfo.FullName);

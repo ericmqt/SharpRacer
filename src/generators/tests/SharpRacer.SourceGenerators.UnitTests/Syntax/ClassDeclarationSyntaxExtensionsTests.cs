@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.Syntax;
+
 public class ClassDeclarationSyntaxExtensionsTests
 {
     [Fact]
@@ -14,7 +15,7 @@ public class ClassDeclarationSyntaxExtensionsTests
                 SingletonList(
                     AttributeList(
                         SingletonSeparatedList(
-                        Attribute(IdentifierName("GenerateDataVariableDescriptorsAttribute"))))
+                        Attribute(IdentifierName("GenerateTelemetryVariableDescriptorsAttribute"))))
             ));
 
         Assert.True(decl.HasAttributes());

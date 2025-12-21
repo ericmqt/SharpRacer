@@ -15,9 +15,9 @@ public class TelemetryFileTests
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>
             {
-                varBuilder.AddScalarVariable("Foo", DataVariableValueType.Int, "test", "Description", out intVarHeader);
+                varBuilder.AddScalarVariable("Foo", TelemetryVariableValueType.Int, "test", "Description", out intVarHeader);
 
-                varBuilder.AddArrayVariable("Bar", DataVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
+                varBuilder.AddArrayVariable("Bar", TelemetryVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
             })
             .SetSessionInfo("Test session", version: 99)
             .AddDataFrame(

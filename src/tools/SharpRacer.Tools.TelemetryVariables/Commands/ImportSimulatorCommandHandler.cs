@@ -50,7 +50,7 @@ internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimu
             var sessionInfoModel = SessionInfoDocumentModel.FromYaml(sessionInfo.YamlDocument);
 
             // Import variables
-            var variableModels = connection.DataVariables.Select(x => new DataVariableModel(x, sessionInfoModel.WeekendInfo.BuildVersion));
+            var variableModels = connection.Variables.Select(x => new DataVariableModel(x, sessionInfoModel.WeekendInfo.BuildVersion));
 
             await _variableImporter.ImportVariablesAsync(variableModels, cancellationToken).ConfigureAwait(false);
 

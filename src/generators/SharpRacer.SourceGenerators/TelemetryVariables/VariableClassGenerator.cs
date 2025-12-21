@@ -45,8 +45,8 @@ internal static class VariableClassGenerator
         var members = new List<MemberDeclarationSyntax>()
         {
             model.DescriptorFieldDeclaration(),
-            VariableClassSyntaxFactory.ConstructorWithDataVariableInfoParameter(in model, appendXmlDocumentation: true),
-            VariableClassSyntaxFactory.ConstructorWithIDataVariableInfoProviderParameter(in model, appendXmlDocumentation: true)
+            VariableClassSyntaxFactory.ConstructorWithTelemetryVariableInfoParameter(in model, appendXmlDocumentation: true),
+            VariableClassSyntaxFactory.ConstructorWithITelemetryVariableInfoProviderParameter(in model, appendXmlDocumentation: true)
         };
 
         return List(members);

@@ -4,6 +4,7 @@ using SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels;
 using SharpRacer.SourceGenerators.TelemetryVariables.InputModels;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables;
+
 public class DescriptorClassGeneratorTests
 {
     [Fact]
@@ -75,7 +76,7 @@ public class DescriptorClassGeneratorTests
 namespace TestApp.Variables
 {{
     /// <summary>
-    /// Provides <see cref = ""global::SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""global::SharpRacer.Telemetry.TelemetryVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
     {{
@@ -84,7 +85,7 @@ namespace TestApp.Variables
         /// </summary>
         [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated by variable 'TestEx'."")]
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public static global::SharpRacer.Telemetry.DataVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+        public static global::SharpRacer.Telemetry.TelemetryVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.TelemetryVariableValueType.Int, 1);
     }}
 }}";
 
@@ -93,7 +94,7 @@ namespace TestApp.Variables
 namespace TestApp.Variables
 {{
     /// <summary>
-    /// Provides <see cref = ""global::SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""global::SharpRacer.Telemetry.TelemetryVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
     {{
@@ -102,7 +103,7 @@ namespace TestApp.Variables
         /// </summary>
         [System.ObsoleteAttribute(""Telemetry variable 'Test' is deprecated."")]
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public static global::SharpRacer.Telemetry.DataVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+        public static global::SharpRacer.Telemetry.TelemetryVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.TelemetryVariableValueType.Int, 1);
     }}
 }}";
 
@@ -111,7 +112,7 @@ namespace TestApp.Variables
 namespace TestApp.Variables
 {{
     /// <summary>
-    /// Provides <see cref = ""global::SharpRacer.Telemetry.DataVariableDescriptor""/> values that describe telemetry variables.
+    /// Provides <see cref = ""global::SharpRacer.Telemetry.TelemetryVariableDescriptor""/> values that describe telemetry variables.
     /// </summary>
     static partial class MyDescriptors
     {{
@@ -119,7 +120,7 @@ namespace TestApp.Variables
         /// Test XML summary
         /// </summary>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public static global::SharpRacer.Telemetry.DataVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.DataVariableValueType.Int, 1);
+        public static global::SharpRacer.Telemetry.TelemetryVariableDescriptor TestProperty {{ get; }} = new(""Test"", global::SharpRacer.Telemetry.TelemetryVariableValueType.Int, 1);
     }}
 }}";
 }

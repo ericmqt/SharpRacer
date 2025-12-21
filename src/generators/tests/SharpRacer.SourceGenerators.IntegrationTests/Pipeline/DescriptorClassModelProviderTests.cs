@@ -15,6 +15,7 @@ using DescriptorPropertiesResult = (
     System.Collections.Immutable.ImmutableArray<Microsoft.CodeAnalysis.Diagnostic> Diagnostics);
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Pipeline;
+
 public class DescriptorClassModelProviderTests
 {
     [Fact]
@@ -23,7 +24,7 @@ public class DescriptorClassModelProviderTests
         var descriptorClass = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -63,7 +64,7 @@ public static partial class MyDescriptors { }";
         var descriptorClass = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -104,13 +105,13 @@ public static partial class MyDescriptors { }";
         var descriptorClass1 = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors1 { }";
 
         var descriptorClass2 = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static partial class MyDescriptors2 { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -146,7 +147,7 @@ public static partial class MyDescriptors2 { }";
         var descriptorClass = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public static class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()
@@ -180,7 +181,7 @@ public static class MyDescriptors { }";
         var descriptorClass = @"
 using SharpRacer.Telemetry;
 namespace Test.Assembly;
-[GenerateDataVariableDescriptors]
+[GenerateTelemetryVariableDescriptors]
 public partial class MyDescriptors { }";
 
         var variablesText = new VariableInfoDocumentBuilder()

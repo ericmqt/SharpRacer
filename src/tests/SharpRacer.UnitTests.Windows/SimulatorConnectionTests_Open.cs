@@ -46,7 +46,7 @@ partial class SimulatorConnectionTests
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()))
             .Callback<IOuterConnection, TimeSpan>(connectionManagerConnect);
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnDataVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Call Open() to put connection into Connecting state
         connection.Open();

@@ -35,7 +35,7 @@ internal class DataFrameWriter
             throw new ArgumentException($"'{nameof(header)}' has count {header.Count} but value array has length {values.Length}.", nameof(values));
         }
 
-        var frameSlice = _dataFrame.Slice(header.Offset, ((DataVariableValueType)header.Type).GetSize() * header.Count).Span;
+        var frameSlice = _dataFrame.Slice(header.Offset, ((TelemetryVariableValueType)header.Type).GetSize() * header.Count).Span;
 
         MemoryMarshal.AsBytes<T>(values).CopyTo(frameSlice);
     }

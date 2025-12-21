@@ -24,10 +24,10 @@ public readonly struct VariableClassReference : IEquatable<VariableClassReferenc
     public readonly string ClassNamespace { get; }
     public readonly string VariableName { get; }
 
-    public ObjectCreationExpressionSyntax ConstructorInvocation(IdentifierNameSyntax dataVariableInfoProviderIdentifier)
+    public ObjectCreationExpressionSyntax ConstructorInvocation(IdentifierNameSyntax variableInfoProviderIdentifier)
     {
         return ObjectCreationExpression(GlobalQualifiedTypeName())
-            .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(dataVariableInfoProviderIdentifier))));
+            .WithArgumentList(ArgumentList(SingletonSeparatedList(Argument(variableInfoProviderIdentifier))));
     }
 
     public NameSyntax GlobalQualifiedTypeName()

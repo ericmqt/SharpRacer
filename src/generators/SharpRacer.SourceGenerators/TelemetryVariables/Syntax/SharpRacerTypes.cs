@@ -2,11 +2,12 @@
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+
 internal static class SharpRacerTypes
 {
-    public static TypeSyntax ArrayDataVariableType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    public static TypeSyntax ArrayTelemetryVariableType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerIdentifiers.ArrayDataVariable.ToGenericTypeSyntax(
+        return SharpRacerIdentifiers.ArrayTelemetryVariable.ToGenericTypeSyntax(
             TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
     }
 
@@ -16,65 +17,27 @@ internal static class SharpRacerTypes
     public static TypeSyntax CarLeftRight(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
         => SharpRacerIdentifiers.CarLeftRight.ToTypeSyntax(typeNameFormat);
 
-    public static TypeSyntax DataVariableTypeArgument(
-        VariableValueType valueType,
-        string? valueUnit,
-        TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return valueType switch
-        {
-            VariableValueType.Bitfield => VariableValueTypes.EnumerationOrInt(valueUnit, typeNameFormat),
-            VariableValueType.Bool => VariableValueTypes.Bool(),
-            VariableValueType.Byte => VariableValueTypes.Byte(),
-            VariableValueType.Double => VariableValueTypes.Double(),
-            VariableValueType.Float => VariableValueTypes.Float(),
-            VariableValueType.Int => VariableValueTypes.EnumerationOrInt(valueUnit, typeNameFormat),
-
-            _ => throw new ArgumentException($"{valueType} is not a valid {nameof(VariableValueType)} value.")
-        };
-    }
-
-    public static TypeSyntax DataVariableDescriptor(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return SharpRacerIdentifiers.DataVariableDescriptor.ToTypeSyntax(typeNameFormat);
-    }
-
-    public static TypeSyntax DataVariableInfo(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return SharpRacerIdentifiers.DataVariableInfo.ToTypeSyntax(typeNameFormat);
-    }
-
-    public static TypeSyntax DataVariableInitializationException(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return SharpRacerIdentifiers.DataVariableInitializationException.ToTypeSyntax(typeNameFormat);
-    }
-
-    public static TypeSyntax DataVariableValueType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
-    {
-        return SharpRacerIdentifiers.DataVariableValueType.ToTypeSyntax(typeNameFormat);
-    }
-
     public static TypeSyntax EngineWarnings(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
         => SharpRacerIdentifiers.EngineWarnings.ToTypeSyntax(typeNameFormat);
 
-    public static TypeSyntax IArrayDataVariableInterfaceType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    public static TypeSyntax IArrayTelemetryVariableInterfaceType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerIdentifiers.IArrayDataVariable.ToGenericTypeSyntax(TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
+        return SharpRacerIdentifiers.IArrayTelemetryVariable.ToGenericTypeSyntax(TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
     }
 
-    public static TypeSyntax IDataVariableInfoProvider(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    public static TypeSyntax ITelemetryVariableInfoProvider(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerIdentifiers.IDataVariableInfoProvider.ToTypeSyntax(typeNameFormat);
+        return SharpRacerIdentifiers.ITelemetryVariableInfoProvider.ToTypeSyntax(typeNameFormat);
     }
 
-    public static TypeSyntax IDataVariablesContextInterfaceType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    public static TypeSyntax ITelemetryVariablesContextInterfaceType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerIdentifiers.IDataVariablesContext.ToTypeSyntax(typeNameFormat);
+        return SharpRacerIdentifiers.ITelemetryVariablesContext.ToTypeSyntax(typeNameFormat);
     }
 
-    public static TypeSyntax IScalarDataVariableInterfaceType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    public static TypeSyntax IScalarTelemetryVariableInterfaceType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerIdentifiers.IScalarDataVariable.ToGenericTypeSyntax(
+        return SharpRacerIdentifiers.IScalarTelemetryVariable.ToGenericTypeSyntax(
             TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
     }
 
@@ -93,9 +56,9 @@ internal static class SharpRacerTypes
     public static TypeSyntax RacingFlags(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
         => SharpRacerIdentifiers.RacingFlags.ToTypeSyntax(typeNameFormat);
 
-    public static TypeSyntax ScalarDataVariableType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    public static TypeSyntax ScalarTelemetryVariableType(TypeSyntax typeArgument, TypeNameFormat typeNameFormat = TypeNameFormat.Default)
     {
-        return SharpRacerIdentifiers.ScalarDataVariable.ToGenericTypeSyntax(
+        return SharpRacerIdentifiers.ScalarTelemetryVariable.ToGenericTypeSyntax(
             TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
     }
 
@@ -107,4 +70,42 @@ internal static class SharpRacerTypes
 
     public static TypeSyntax TrackSurfaceType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
         => SharpRacerIdentifiers.TrackSurfaceType.ToTypeSyntax(typeNameFormat);
+
+    public static TypeSyntax TelemetryVariableTypeArgument(
+        VariableValueType valueType,
+        string? valueUnit,
+        TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        return valueType switch
+        {
+            VariableValueType.Bitfield => VariableValueTypes.EnumerationOrInt(valueUnit, typeNameFormat),
+            VariableValueType.Bool => VariableValueTypes.Bool(),
+            VariableValueType.Byte => VariableValueTypes.Byte(),
+            VariableValueType.Double => VariableValueTypes.Double(),
+            VariableValueType.Float => VariableValueTypes.Float(),
+            VariableValueType.Int => VariableValueTypes.EnumerationOrInt(valueUnit, typeNameFormat),
+
+            _ => throw new ArgumentException($"{valueType} is not a valid {nameof(VariableValueType)} value.")
+        };
+    }
+
+    public static TypeSyntax TelemetryVariableDescriptor(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        return SharpRacerIdentifiers.TelemetryVariableDescriptor.ToTypeSyntax(typeNameFormat);
+    }
+
+    public static TypeSyntax TelemetryVariableInfo(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        return SharpRacerIdentifiers.TelemetryVariableInfo.ToTypeSyntax(typeNameFormat);
+    }
+
+    public static TypeSyntax TelemetryVariableInitializationException(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        return SharpRacerIdentifiers.TelemetryVariableInitializationException.ToTypeSyntax(typeNameFormat);
+    }
+
+    public static TypeSyntax TelemetryVariableValueType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+    {
+        return SharpRacerIdentifiers.TelemetryVariableValueType.ToTypeSyntax(typeNameFormat);
+    }
 }
