@@ -3,6 +3,7 @@ using SharpRacer.SourceGenerators.Testing;
 using SharpRacer.SourceGenerators.Testing.Text;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
+
 public class GeneratorDiagnosticsTests
 {
     [Fact]
@@ -77,9 +78,9 @@ public class GeneratorDiagnosticsTests
     }
 
     [Fact]
-    public void ContextClassMustInheritIDataVariablesContextInterface_Test()
+    public void ContextClassMustInheritITelemetryVariablesContextInterface_Test()
     {
-        var diagnostic = GeneratorDiagnostics.ContextClassMustInheritIDataVariablesContextInterface("MyContext");
+        var diagnostic = GeneratorDiagnostics.ContextClassMustInheritITelemetryVariablesContextInterface("MyContext");
 
         Assert.Equal(DiagnosticIds.ContextClassMustInheritITelemetryVariablesContextInterface, diagnostic.Id);
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
+
 internal static partial class GeneratorDiagnosticDescriptors
 {
     public static DiagnosticDescriptor AdditionalTextContentReadError
@@ -75,11 +76,11 @@ internal static partial class GeneratorDiagnosticDescriptors
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
 
-    public static DiagnosticDescriptor ContextClassMustInheritIDataVariablesContextInterface
+    public static DiagnosticDescriptor ContextClassMustInheritITelemetryVariablesContextInterface
         = new(
             DiagnosticIds.ContextClassMustInheritITelemetryVariablesContextInterface,
-            "Variable context class must inherit IDataVariablesContext",
-            "Variable context '{0}' must inherit IDataVariablesContext for code generation to run",
+            "Variable context class must inherit ITelemetryVariablesContext",
+            "Variable context '{0}' must inherit ITelemetryVariablesContext for code generation to run",
             GeneratorDiagnosticCategories.Syntax,
             DiagnosticSeverity.Warning,
             isEnabledByDefault: true);
@@ -114,8 +115,8 @@ internal static partial class GeneratorDiagnosticDescriptors
     public static readonly DiagnosticDescriptor DescriptorClassAlreadyExistsInAssembly
         = new(
             DiagnosticIds.DescriptorClassAlreadyExistsInAssembly,
-            "GenerateDataVariableDescriptorsAttribute may decorate only one class in an assembly",
-            "'{0}' is decorated with GenerateDataVariableDescriptorsAttribute but a descriptor class is already defined by '{1}'. An assembly may only have one descriptor class.",
+            "GenerateTelemetryVariableDescriptorsAttribute may decorate only one class in an assembly",
+            "'{0}' is decorated with GenerateTelemetryVariableDescriptorsAttribute but a descriptor class is already defined by '{1}'. An assembly may only have one descriptor class.",
             GeneratorDiagnosticCategories.Syntax,
             DiagnosticSeverity.Error,
             isEnabledByDefault: true);

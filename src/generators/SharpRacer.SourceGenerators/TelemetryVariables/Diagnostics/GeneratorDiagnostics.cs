@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Diagnostics;
+
 internal static partial class GeneratorDiagnostics
 {
     public static Diagnostic AdditionalTextContentReadError(AdditionalText additionalText, Location? location = null)
@@ -68,12 +69,12 @@ internal static partial class GeneratorDiagnostics
         return Diagnostic.Create(GeneratorDiagnosticDescriptors.ContextClassMustBeDeclaredPartial, location, contextClassIdentifier);
     }
 
-    public static Diagnostic ContextClassMustInheritIDataVariablesContextInterface(
+    public static Diagnostic ContextClassMustInheritITelemetryVariablesContextInterface(
         string contextClassIdentifier,
         Location? location = null)
     {
         return Diagnostic.Create(
-            GeneratorDiagnosticDescriptors.ContextClassMustInheritIDataVariablesContextInterface,
+            GeneratorDiagnosticDescriptors.ContextClassMustInheritITelemetryVariablesContextInterface,
             location,
             contextClassIdentifier);
     }
