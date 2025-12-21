@@ -9,23 +9,23 @@ namespace SharpRacer.Interop;
 /// See: irsdk_varHeader
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public readonly struct DataVariableHeader : IEquatable<DataVariableHeader>
+public readonly struct TelemetryVariableHeader : IEquatable<TelemetryVariableHeader>
 {
     /// <summary>
-    /// The length, in bytes, of an instance of <see cref="DataVariableHeader"/>.
+    /// The length, in bytes, of an instance of <see cref="TelemetryVariableHeader"/>.
     /// </summary>
     public const int Size = 144;
 
     /// <summary>
-    /// Initializes an instance of <see cref="DataVariableHeader"/> with default values.
+    /// Initializes an instance of <see cref="TelemetryVariableHeader"/> with default values.
     /// </summary>
-    public DataVariableHeader()
+    public TelemetryVariableHeader()
     {
 
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="DataVariableHeader"/> with the specified values.
+    /// Initializes an instance of <see cref="TelemetryVariableHeader"/> with the specified values.
     /// </summary>
     /// <param name="name">The value to assign to the <see cref="Name"/> field.</param>
     /// <param name="type">The value to assign to the <see cref="Type"/> field.</param>
@@ -34,7 +34,7 @@ public readonly struct DataVariableHeader : IEquatable<DataVariableHeader>
     /// <param name="offset">The value to assign to the <see cref="Offset"/> field.</param>
     /// <param name="description">The value to assign to the <see cref="Description"/> field.</param>
     /// <param name="unit">The value to assign to the <see cref="Unit"/> field.</param>
-    public DataVariableHeader(
+    public TelemetryVariableHeader(
         IRSDKString name,
         int type,
         int count,
@@ -97,11 +97,11 @@ public readonly struct DataVariableHeader : IEquatable<DataVariableHeader>
     /// <inheritdoc/>
     public override bool Equals(object? obj)
     {
-        return obj is DataVariableHeader header && Equals(header);
+        return obj is TelemetryVariableHeader header && Equals(header);
     }
 
     /// <inheritdoc/>
-    public bool Equals(DataVariableHeader other)
+    public bool Equals(TelemetryVariableHeader other)
     {
         return Type == other.Type &&
                Offset == other.Offset &&
@@ -119,54 +119,54 @@ public readonly struct DataVariableHeader : IEquatable<DataVariableHeader>
     }
 
     /// <inheritdoc/>
-    public static bool operator ==(DataVariableHeader left, DataVariableHeader right)
+    public static bool operator ==(TelemetryVariableHeader left, TelemetryVariableHeader right)
     {
         return left.Equals(right);
     }
 
     /// <inheritdoc/>
-    public static bool operator !=(DataVariableHeader left, DataVariableHeader right)
+    public static bool operator !=(TelemetryVariableHeader left, TelemetryVariableHeader right)
     {
         return !(left == right);
     }
 
     /// <summary>
-    /// Provides field offsets for a <see cref="DataVariableHeader"/> structure.
+    /// Provides field offsets for a <see cref="TelemetryVariableHeader"/> structure.
     /// </summary>
     public static class FieldOffsets
     {
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="Type"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="Type"/> field is located.
         /// </summary>
         public const int TypeOffset = 0;
 
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="Offset"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="Offset"/> field is located.
         /// </summary>
         public const int OffsetOffset = 4;
 
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="Count"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="Count"/> field is located.
         /// </summary>
         public const int CountOffset = 8;
 
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="CountAsTime"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="CountAsTime"/> field is located.
         /// </summary>
         public const int CountAsTimeOffset = 12;
 
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="Name"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="Name"/> field is located.
         /// </summary>
         public const int NameOffset = 16;
 
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="Description"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="Description"/> field is located.
         /// </summary>
         public const int DescriptionOffset = 48;
 
         /// <summary>
-        /// The offset into a <see cref="DataVariableHeader"/> structure where the <see cref="Unit"/> field is located.
+        /// The offset into a <see cref="TelemetryVariableHeader"/> structure where the <see cref="Unit"/> field is located.
         /// </summary>
         public const int UnitOffset = 112;
     }

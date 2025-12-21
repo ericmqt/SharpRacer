@@ -50,7 +50,7 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         int variableHeaderOffset,
         int dataBufferCount,
         int dataBufferElementLength,
-        DataBufferHeaderArray dataBufferHeaders,
+        TelemetryBufferHeaderArray dataBufferHeaders,
         DiskSubHeader diskSubHeader)
     {
         HeaderVersion = headerVersion;
@@ -108,13 +108,13 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
     public readonly int SessionInfoOffset;
 
     /// <summary>
-    /// The length of the array of <see cref="DataVariableHeader"/> entries pointed to by <see cref="VariableHeaderOffset"/>.
+    /// The length of the array of <see cref="TelemetryVariableHeader"/> entries pointed to by <see cref="VariableHeaderOffset"/>.
     /// </summary>
     [FieldOffset(FieldOffsets.VariableCount)]
     public readonly int VariableCount;
 
     /// <summary>
-    /// The offset from the beginning of the data file where the array of <see cref="DataVariableHeader"/> entries is located.
+    /// The offset from the beginning of the data file where the array of <see cref="TelemetryVariableHeader"/> entries is located.
     /// </summary>
     [FieldOffset(FieldOffsets.VariableHeaderOffset)]
     public readonly int VariableHeaderOffset;
@@ -132,10 +132,10 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
     public readonly int DataBufferElementLength;
 
     /// <summary>
-    /// An inline array of <see cref="DataBufferHeader"/> elements.
+    /// An inline array of <see cref="TelemetryBufferHeader"/> elements.
     /// </summary>
     [FieldOffset(FieldOffsets.DataBufferHeaderArray)]
-    public readonly DataBufferHeaderArray DataBufferHeaders;
+    public readonly TelemetryBufferHeaderArray DataBufferHeaders;
 
     /// <summary>
     /// The sub-header used by telemetry files.
@@ -292,7 +292,7 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         public const int Padding = 40;
 
         /// <summary>
-        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataBufferHeader"/> array field is located.
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="TelemetryBufferHeader"/> array field is located.
         /// </summary>
         public const int DataBufferHeaderArray = 48;
 

@@ -4,14 +4,14 @@ using SharpRacer.Telemetry;
 
 namespace SharpRacer.Interop;
 
-public class DataVariableHeaderTests
+public class TelemetryVariableHeaderTests
 {
-    public static TheoryData<DataVariableHeader, DataVariableHeader> InequalityData => GetInequalityData();
+    public static TheoryData<TelemetryVariableHeader, TelemetryVariableHeader> InequalityData => GetInequalityData();
 
     [Fact]
     public void Ctor_DefaultTest()
     {
-        var header = new DataVariableHeader();
+        var header = new TelemetryVariableHeader();
 
         Assert.Equal(default, header.Count);
         Assert.Equal(default, header.CountAsTime);
@@ -39,7 +39,7 @@ public class DataVariableHeaderTests
         var isTimeSliceArray = false;
         var offset = 1024;
 
-        var header = new DataVariableHeader(
+        var header = new TelemetryVariableHeader(
             varName,
             valueType,
             valueCount,
@@ -69,17 +69,17 @@ public class DataVariableHeaderTests
         var countAsTime = false;
         var offset = 1024;
 
-        Span<byte> blob = new byte[DataVariableHeader.Size];
+        Span<byte> blob = new byte[TelemetryVariableHeader.Size];
 
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.CountAsTimeOffset..], countAsTime);
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.CountOffset..], count);
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.DescriptionOffset..], description);
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.NameOffset..], name);
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.OffsetOffset..], offset);
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.TypeOffset..], type);
-        MemoryMarshal.Write(blob[DataVariableHeader.FieldOffsets.UnitOffset..], unit);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.CountAsTimeOffset..], countAsTime);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.CountOffset..], count);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.DescriptionOffset..], description);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.NameOffset..], name);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.OffsetOffset..], offset);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.TypeOffset..], type);
+        MemoryMarshal.Write(blob[TelemetryVariableHeader.FieldOffsets.UnitOffset..], unit);
 
-        var header = MemoryMarshal.Read<DataVariableHeader>(blob);
+        var header = MemoryMarshal.Read<TelemetryVariableHeader>(blob);
 
         Assert.Equal(countAsTime, header.CountAsTime);
         Assert.Equal(count, header.Count);
@@ -93,7 +93,7 @@ public class DataVariableHeaderTests
     [Fact]
     public void Equals_DefaultValueEqualityTest()
     {
-        var constructedHeader = new DataVariableHeader();
+        var constructedHeader = new TelemetryVariableHeader();
 
         EquatableStructAssert.Equal(constructedHeader, default);
     }
@@ -101,7 +101,7 @@ public class DataVariableHeaderTests
     [Fact]
     public void Equals_DefaultValueInequalityTest()
     {
-        var constructedHeader = new DataVariableHeader(
+        var constructedHeader = new TelemetryVariableHeader(
             IRSDKString.FromString("Foo"),
             (int)TelemetryVariableValueType.Double,
             1,
@@ -116,7 +116,7 @@ public class DataVariableHeaderTests
     [Fact]
     public void Equals_EqualityTest()
     {
-        var header1 = new DataVariableHeader(
+        var header1 = new TelemetryVariableHeader(
             IRSDKString.FromString("Foo"),
             (int)TelemetryVariableValueType.Double,
             1,
@@ -125,7 +125,7 @@ public class DataVariableHeaderTests
             IRSDKDescString.FromString("Foo variable"),
             IRSDKString.FromString("km/h"));
 
-        var header2 = new DataVariableHeader(
+        var header2 = new TelemetryVariableHeader(
             IRSDKString.FromString("Foo"),
             (int)TelemetryVariableValueType.Double,
             1,
@@ -139,7 +139,7 @@ public class DataVariableHeaderTests
 
     [Theory]
     [MemberData(nameof(InequalityData))]
-    public void Equals_InequalityTest(DataVariableHeader header1, DataVariableHeader header2)
+    public void Equals_InequalityTest(TelemetryVariableHeader header1, TelemetryVariableHeader header2)
     {
         EquatableStructAssert.NotEqual(header1, header2);
     }
@@ -147,7 +147,7 @@ public class DataVariableHeaderTests
     [Fact]
     public void Equals_NullObjectTest()
     {
-        var constructedHeader = new DataVariableHeader(
+        var constructedHeader = new TelemetryVariableHeader(
             IRSDKString.FromString("Foo"),
             (int)TelemetryVariableValueType.Double,
             1,
@@ -159,7 +159,7 @@ public class DataVariableHeaderTests
         Assert.False(constructedHeader.Equals(obj: null));
     }
 
-    private static TheoryData<DataVariableHeader, DataVariableHeader> GetInequalityData()
+    private static TheoryData<TelemetryVariableHeader, TelemetryVariableHeader> GetInequalityData()
     {
         var name = IRSDKString.FromString("Foo");
         var description = IRSDKDescString.FromString("Foo variable");
@@ -170,48 +170,48 @@ public class DataVariableHeaderTests
         var countAsTime = false;
         var offset = 1024;
 
-        return new TheoryData<DataVariableHeader, DataVariableHeader>()
+        return new TheoryData<TelemetryVariableHeader, TelemetryVariableHeader>()
         {
             // Type
             {
-                new DataVariableHeader(name, (int)TelemetryVariableValueType.Double, count, countAsTime, offset, description, unit),
-                new DataVariableHeader(name, (int)TelemetryVariableValueType.Float, count, countAsTime, offset, description, unit)
+                new TelemetryVariableHeader(name, (int)TelemetryVariableValueType.Double, count, countAsTime, offset, description, unit),
+                new TelemetryVariableHeader(name, (int)TelemetryVariableValueType.Float, count, countAsTime, offset, description, unit)
             },
 
             // Offset
             {
-                new DataVariableHeader(name, type, count, countAsTime, 1024, description, unit),
-                new DataVariableHeader(name, type, count, countAsTime, 2048, description, unit)
+                new TelemetryVariableHeader(name, type, count, countAsTime, 1024, description, unit),
+                new TelemetryVariableHeader(name, type, count, countAsTime, 2048, description, unit)
             },
 
             // Count
             {
-                new DataVariableHeader(name, type, 1, countAsTime, offset, description, unit),
-                new DataVariableHeader(name, type, 4, countAsTime, offset, description, unit)
+                new TelemetryVariableHeader(name, type, 1, countAsTime, offset, description, unit),
+                new TelemetryVariableHeader(name, type, 4, countAsTime, offset, description, unit)
             },
 
             // CountAsTime
             {
-                new DataVariableHeader(name, type, count, true, offset, description, unit),
-                new DataVariableHeader(name, type, count, false, offset, description, unit)
+                new TelemetryVariableHeader(name, type, count, true, offset, description, unit),
+                new TelemetryVariableHeader(name, type, count, false, offset, description, unit)
             },
 
             // Name
             {
-                new DataVariableHeader(IRSDKString.FromString("Foo"), type, count, countAsTime, offset, description, unit),
-                new DataVariableHeader(IRSDKString.FromString("Bar"), type, count, countAsTime, offset, description, unit)
+                new TelemetryVariableHeader(IRSDKString.FromString("Foo"), type, count, countAsTime, offset, description, unit),
+                new TelemetryVariableHeader(IRSDKString.FromString("Bar"), type, count, countAsTime, offset, description, unit)
             },
 
             // Description
             {
-                new DataVariableHeader(name, type, count, countAsTime, offset, IRSDKDescString.FromString("Foo variable"), unit),
-                new DataVariableHeader(name, type, count, countAsTime, offset, IRSDKDescString.FromString("Bar variable"), unit)
+                new TelemetryVariableHeader(name, type, count, countAsTime, offset, IRSDKDescString.FromString("Foo variable"), unit),
+                new TelemetryVariableHeader(name, type, count, countAsTime, offset, IRSDKDescString.FromString("Bar variable"), unit)
             },
 
             // Unit
             {
-                new DataVariableHeader(name, type, count, countAsTime, offset, description, IRSDKString.FromString("kg/m")),
-                new DataVariableHeader(name, type, count, countAsTime, offset, description, IRSDKString.FromString("Gm/h"))
+                new TelemetryVariableHeader(name, type, count, countAsTime, offset, description, IRSDKString.FromString("kg/m")),
+                new TelemetryVariableHeader(name, type, count, countAsTime, offset, description, IRSDKString.FromString("Gm/h"))
             }
         };
     }

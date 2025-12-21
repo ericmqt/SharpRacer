@@ -107,13 +107,13 @@ internal class ExportCommandHandler : ICommandHandler<ExportCommandOptions>
         return results;
     }
 
-    private async Task<IEnumerable<DataVariableModel>> GetVariableModelsAsync(CancellationToken cancellationToken = default)
+    private async Task<IEnumerable<TelemetryVariableModel>> GetVariableModelsAsync(CancellationToken cancellationToken = default)
     {
         // Order session variables first in the resulting collection
         var sessionVariables = await _variableStore.ListSessionVariablesAsync(cancellationToken).ConfigureAwait(false);
         var carDependentVariables = await _variableStore.ListCarDependentVariablesAsync(cancellationToken).ConfigureAwait(false);
 
-        return sessionVariables.Concat(carDependentVariables).Select(x => new DataVariableModel(x));
+        return sessionVariables.Concat(carDependentVariables).Select(x => new TelemetryVariableModel(x));
     }
 
     private FileInfo GetExportFileInfo()

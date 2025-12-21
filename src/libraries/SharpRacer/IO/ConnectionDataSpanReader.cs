@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using SharpRacer.Interop;
 
 namespace SharpRacer.IO;
@@ -140,7 +139,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <returns>A byte array containing the contents of the active telemetry data buffer.</returns>
     public readonly byte[] ReadActiveDataBuffer(out int tickCount)
     {
-        using var reader = new DataBufferReader(_spanOwner.Span);
+        using var reader = new TelemetryBufferReader(_spanOwner.Span);
 
         var buffer = new byte[reader.BufferLength];
         bool copied = false;
@@ -170,7 +169,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <param name="tickCount">The tick value of the data buffer.</param>
     public readonly void ReadActiveDataBuffer(Span<byte> destination, out int tickCount)
     {
-        using var reader = new DataBufferReader(_spanOwner.Span);
+        using var reader = new TelemetryBufferReader(_spanOwner.Span);
 
         // TODO: Destination length check?
 
@@ -184,18 +183,18 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     }
 
     /// <summary>
-    /// Reads the array of <see cref="DataVariableHeader"/> structures from the data file.
+    /// Reads the array of <see cref="TelemetryVariableHeader"/> structures from the data file.
     /// </summary>
-    /// <returns>An array of <see cref="DataVariableHeader"/> structures.</returns>
-    public readonly DataVariableHeader[] ReadDataVariableHeaders()
+    /// <returns>An array of <see cref="TelemetryVariableHeader"/> structures.</returns>
+    public readonly TelemetryVariableHeader[] ReadTelemetryVariableHeaders()
     {
-        var variableHeaders = new DataVariableHeader[_fileHeader.VariableCount];
+        var variableHeaders = new TelemetryVariableHeader[_fileHeader.VariableCount];
 
         var variableHeaderBytes = _spanOwner.Span.Slice(
             _fileHeader.VariableHeaderOffset,
-            _fileHeader.VariableCount * DataVariableHeader.Size);
+            _fileHeader.VariableCount * TelemetryVariableHeader.Size);
 
-        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<DataVariableHeader>)variableHeaders));
+        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders));
 
         return variableHeaders;
     }

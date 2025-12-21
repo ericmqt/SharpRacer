@@ -108,7 +108,7 @@ partial class SimulatorConnectionTests
             .Callback<IOuterConnection, TimeSpan, CancellationToken>(connectionManagerConnect)
             .Returns(Task.CompletedTask);
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Configure ConnectionCancellationTokenSource
         using var mockedCancellationSource = new CancellationTokenSource();

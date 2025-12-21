@@ -9,8 +9,8 @@ public class TelemetryFileTests
     [Fact]
     public void SimpleFile_Test()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
 
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>

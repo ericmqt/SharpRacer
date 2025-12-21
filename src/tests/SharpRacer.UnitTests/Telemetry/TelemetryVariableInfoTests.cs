@@ -23,7 +23,7 @@ public class TelemetryVariableInfoTests
         var isTimeSliceArray = false;
         var offset = 1024;
 
-        var header = new DataVariableHeader(
+        var header = new TelemetryVariableHeader(
             varName,
             (int)valueType,
             valueCount,
@@ -113,7 +113,7 @@ public class TelemetryVariableInfoTests
         Assert.True(varHeaderValueSpan.SequenceEqual(valueSpan));
     }
 
-    private static DataVariableHeader CreateArrayHeader(
+    private static TelemetryVariableHeader CreateArrayHeader(
         string variableName,
         TelemetryVariableValueType valueType,
         int valueCount,
@@ -122,7 +122,7 @@ public class TelemetryVariableInfoTests
         string description,
         string? unit)
     {
-        return new DataVariableHeader(
+        return new TelemetryVariableHeader(
             IRSDKString.FromString(variableName),
             (int)valueType,
             valueCount,
@@ -132,14 +132,14 @@ public class TelemetryVariableInfoTests
             IRSDKString.FromString(unit));
     }
 
-    private static DataVariableHeader CreateScalarHeader(
+    private static TelemetryVariableHeader CreateScalarHeader(
         string variableName,
         TelemetryVariableValueType valueType,
         int offset,
         string description,
         string? unit)
     {
-        return new DataVariableHeader(
+        return new TelemetryVariableHeader(
             IRSDKString.FromString(variableName),
             (int)valueType,
             1,

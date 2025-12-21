@@ -62,7 +62,7 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        using var reader = new DataBufferReader(Span);
+        using var reader = new TelemetryBufferReader(Span);
 
         var buffer = new byte[reader.BufferLength];
         bool copied = false;
@@ -87,7 +87,7 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
-        using var reader = new DataBufferReader(Span);
+        using var reader = new TelemetryBufferReader(Span);
 
         // TODO: Destination length check?
 
@@ -101,19 +101,19 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     }
 
     /// <inheritdoc />
-    public DataVariableHeader[] ReadTelemetryVariableHeaders()
+    public TelemetryVariableHeader[] ReadTelemetryVariableHeaders()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         ref readonly var header = ref GetHeaderRef();
 
-        var variableHeaders = new DataVariableHeader[header.VariableCount];
+        var variableHeaders = new TelemetryVariableHeader[header.VariableCount];
 
         var variableHeaderBytes = Span.Slice(
             header.VariableHeaderOffset,
-            header.VariableCount * DataVariableHeader.Size);
+            header.VariableCount * TelemetryVariableHeader.Size);
 
-        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<DataVariableHeader>)variableHeaders));
+        variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders));
 
         return variableHeaders;
     }

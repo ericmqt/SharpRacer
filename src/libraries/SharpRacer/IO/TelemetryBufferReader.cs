@@ -5,7 +5,7 @@ namespace SharpRacer.IO;
 /// <summary>
 /// Provides a high-performance API for reading telemetry data buffers from a simulator connection.
 /// </summary>
-public readonly ref struct DataBufferReader : IDisposable
+public readonly ref struct TelemetryBufferReader : IDisposable
 {
     private readonly ref readonly DataFileHeader _fileHeader;
     private readonly ReadOnlySpan<byte> _data;
@@ -13,7 +13,7 @@ public readonly ref struct DataBufferReader : IDisposable
     private readonly bool _disposeDataSpanOwner = true;
 
     /// <summary>
-    /// Initializes an instance of the <see cref="DataBufferReader"/> structure using the specified connection as its data source.
+    /// Initializes an instance of the <see cref="TelemetryBufferReader"/> structure using the specified connection as its data source.
     /// </summary>
     /// <param name="connection">The <see cref="ISimulatorConnection"/> instance from which data will be read.</param>
     /// <exception cref="ArgumentException">
@@ -22,7 +22,7 @@ public readonly ref struct DataBufferReader : IDisposable
     /// <exception cref="ArgumentNullException">
     /// <paramref name="connection"/> is <see langword="null"/>.
     /// </exception>
-    public DataBufferReader(ISimulatorConnection connection)
+    public TelemetryBufferReader(ISimulatorConnection connection)
     {
         ArgumentNullException.ThrowIfNull(connection);
 
@@ -39,10 +39,10 @@ public readonly ref struct DataBufferReader : IDisposable
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DataBufferReader"/> structure.
+    /// Initializes a new instance of the <see cref="TelemetryBufferReader"/> structure.
     /// </summary>
     /// <param name="data">A read-only span of bytes representing the connection data.</param>
-    internal DataBufferReader(ReadOnlySpan<byte> data)
+    internal TelemetryBufferReader(ReadOnlySpan<byte> data)
     {
         _spanHandle = ConnectionDataSpanHandle.Ownerless(data);
         _data = _spanHandle.Span;
@@ -83,10 +83,10 @@ public readonly ref struct DataBufferReader : IDisposable
     }
 
     /// <summary>
-    /// Gets a read-only reference to the <see cref="DataBufferHeader"/> for the active data buffer.
+    /// Gets a read-only reference to the <see cref="TelemetryBufferHeader"/> for the active data buffer.
     /// </summary>
-    /// <returns>A read-only reference to the <see cref="DataBufferHeader"/> in the file header with the highest tick value.</returns>
-    public readonly ref readonly DataBufferHeader GetActiveBufferHeaderRef()
+    /// <returns>A read-only reference to the <see cref="TelemetryBufferHeader"/> in the file header with the highest tick value.</returns>
+    public readonly ref readonly TelemetryBufferHeader GetActiveBufferHeaderRef()
     {
         return ref _fileHeader.DataBufferHeaders[GetActiveBufferIndex()];
     }
@@ -115,11 +115,11 @@ public readonly ref struct DataBufferReader : IDisposable
     }
 
     /// <summary>
-    /// Gets a read-only reference to the <see cref="DataBufferHeader"/> at the specified index.
+    /// Gets a read-only reference to the <see cref="TelemetryBufferHeader"/> at the specified index.
     /// </summary>
     /// <param name="index">The index of the data buffer.</param>
-    /// <returns>A read-only reference to the <see cref="DataBufferHeader"/> at the specified index.</returns>
-    public readonly ref readonly DataBufferHeader GetBufferHeaderRef(int index)
+    /// <returns>A read-only reference to the <see cref="TelemetryBufferHeader"/> at the specified index.</returns>
+    public readonly ref readonly TelemetryBufferHeader GetBufferHeaderRef(int index)
     {
         return ref _fileHeader.DataBufferHeaders[index];
     }
@@ -129,14 +129,14 @@ public readonly ref struct DataBufferReader : IDisposable
     /// simulator during the operation.
     /// </summary>
     /// <param name="dataBufferHeader">
-    /// The read-only reference to the <see cref="DataBufferHeader"/> representing the buffer to copy into the destination span.
+    /// The read-only reference to the <see cref="TelemetryBufferHeader"/> representing the buffer to copy into the destination span.
     /// </param>
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
     /// <param name="tickCount">The tick value of the data buffer.</param>
     /// <returns>
     /// <see langword="true"/> if the buffer was not overwritten by the simulator during the operation, otherwise <see langword="false"/>.
     /// </returns>
-    public readonly bool TryCopyBuffer(ref readonly DataBufferHeader dataBufferHeader, Span<byte> destination, out int tickCount)
+    public readonly bool TryCopyBuffer(ref readonly TelemetryBufferHeader dataBufferHeader, Span<byte> destination, out int tickCount)
     {
         // Store tick count before copying so we can check to see if it changed afterwards, which would indicate the buffer was overwritten
         // and the operation fails.

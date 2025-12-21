@@ -7,11 +7,11 @@ internal class TelemetryFileBuilder
     private readonly int _dataFrameLength;
     private DataFileHeader _fileHeader;
     private string? _sessionInfo;
-    private readonly DataVariableHeader[] _variableHeaders;
+    private readonly TelemetryVariableHeader[] _variableHeaders;
 
-    private TelemetryFileBuilder(DataVariableHeader[]? variableHeaders)
+    private TelemetryFileBuilder(TelemetryVariableHeader[]? variableHeaders)
     {
-        _variableHeaders = variableHeaders ?? Array.Empty<DataVariableHeader>();
+        _variableHeaders = variableHeaders ?? Array.Empty<TelemetryVariableHeader>();
 
         _dataFrameLength = _variableHeaders.Sum(x => x.GetDataLength());
         _dataFrames = new List<Memory<byte>>();

@@ -9,27 +9,27 @@ namespace SharpRacer.Interop;
 /// See: irsdk_varBuf
 /// </remarks>
 [StructLayout(LayoutKind.Explicit, Size = Size)]
-public readonly struct DataBufferHeader : IEquatable<DataBufferHeader>
+public readonly struct TelemetryBufferHeader : IEquatable<TelemetryBufferHeader>
 {
     /// <summary>
-    /// The length, in bytes, of an instance of <see cref="DataBufferHeader"/>.
+    /// The length, in bytes, of an instance of <see cref="TelemetryBufferHeader"/>.
     /// </summary>
     public const int Size = 16;
 
     /// <summary>
-    /// Initializes an instance of <see cref="DataBufferHeader"/> to default values.
+    /// Initializes an instance of <see cref="TelemetryBufferHeader"/> to default values.
     /// </summary>
-    public DataBufferHeader()
+    public TelemetryBufferHeader()
     {
 
     }
 
     /// <summary>
-    /// Initializes an instance of <see cref="DataBufferHeader"/> with the specified values.
+    /// Initializes an instance of <see cref="TelemetryBufferHeader"/> with the specified values.
     /// </summary>
     /// <param name="tickCount">The tick count.</param>
     /// <param name="bufferOffset">The offset to the location of the buffer from the beginning of the <see cref="DataFileHeader"/>.</param>
-    public DataBufferHeader(int tickCount, int bufferOffset)
+    public TelemetryBufferHeader(int tickCount, int bufferOffset)
     {
         TickCount = tickCount;
         BufferOffset = bufferOffset;
@@ -50,11 +50,11 @@ public readonly struct DataBufferHeader : IEquatable<DataBufferHeader>
     /// <inheritdoc />
     public override bool Equals(object? obj)
     {
-        return obj is DataBufferHeader header && Equals(header);
+        return obj is TelemetryBufferHeader header && Equals(header);
     }
 
     /// <inheritdoc />
-    public bool Equals(DataBufferHeader other)
+    public bool Equals(TelemetryBufferHeader other)
     {
         return TickCount == other.TickCount &&
                BufferOffset == other.BufferOffset;
@@ -67,34 +67,34 @@ public readonly struct DataBufferHeader : IEquatable<DataBufferHeader>
     }
 
     /// <inheritdoc />
-    public static bool operator ==(DataBufferHeader left, DataBufferHeader right)
+    public static bool operator ==(TelemetryBufferHeader left, TelemetryBufferHeader right)
     {
         return left.Equals(right);
     }
 
     /// <inheritdoc />
-    public static bool operator !=(DataBufferHeader left, DataBufferHeader right)
+    public static bool operator !=(TelemetryBufferHeader left, TelemetryBufferHeader right)
     {
         return !(left == right);
     }
 
     /// <summary>
-    /// Provides field offsets for a <see cref="DataBufferHeader"/> structure.
+    /// Provides field offsets for a <see cref="TelemetryBufferHeader"/> structure.
     /// </summary>
     public static class FieldOffsets
     {
         /// <summary>
-        /// The offset into a <see cref="DataBufferHeader"/> structure where the <see cref="DataBufferHeader.TickCount"/> field is located.
+        /// The offset into a <see cref="TelemetryBufferHeader"/> structure where the <see cref="TelemetryBufferHeader.TickCount"/> field is located.
         /// </summary>
         public const int TickCount = 0;
 
         /// <summary>
-        /// The offset into a <see cref="DataBufferHeader"/> structure where the <see cref="DataBufferHeader.BufferOffset"/> field is located.
+        /// The offset into a <see cref="TelemetryBufferHeader"/> structure where the <see cref="TelemetryBufferHeader.BufferOffset"/> field is located.
         /// </summary>
         public const int BufferOffset = 4;
 
         /// <summary>
-        /// The offset into a <see cref="DataBufferHeader"/> structure where the padding field is located.
+        /// The offset into a <see cref="TelemetryBufferHeader"/> structure where the padding field is located.
         /// </summary>
         public const int Padding = 8;
     }

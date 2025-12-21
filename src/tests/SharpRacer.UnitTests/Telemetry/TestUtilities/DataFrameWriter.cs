@@ -11,7 +11,7 @@ internal class DataFrameWriter
         _dataFrame = dataFrame;
     }
 
-    public void Write<T>(in DataVariableHeader header, T value)
+    public void Write<T>(in TelemetryVariableHeader header, T value)
         where T : unmanaged
     {
         if (header.Count != 1)
@@ -22,7 +22,7 @@ internal class DataFrameWriter
         MemoryMarshal.Write<T>(_dataFrame.Slice(header.Offset).Span, value);
     }
 
-    public void WriteArray<T>(in DataVariableHeader header, T[] values)
+    public void WriteArray<T>(in TelemetryVariableHeader header, T[] values)
         where T : unmanaged
     {
         if (header.Count <= 1)

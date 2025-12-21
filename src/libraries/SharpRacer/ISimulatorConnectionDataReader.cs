@@ -65,11 +65,11 @@ public interface ISimulatorConnectionDataReader : IDisposable
     void ReadActiveTelemetryBuffer(Span<byte> destination, out int tickCount);
 
     /// <summary>
-    /// Returns an array of <see cref="DataVariableHeader"/> structures read from the data file.
+    /// Returns an array of <see cref="TelemetryVariableHeader"/> structures read from the data file.
     /// </summary>
-    /// <returns>An array of <see cref="DataVariableHeader"/> structures.</returns>
+    /// <returns>An array of <see cref="TelemetryVariableHeader"/> structures.</returns>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    DataVariableHeader[] ReadTelemetryVariableHeaders();
+    TelemetryVariableHeader[] ReadTelemetryVariableHeaders();
 
     /// <summary>
     /// Reads the <see cref="DataFileHeader"/> structure from the data file.

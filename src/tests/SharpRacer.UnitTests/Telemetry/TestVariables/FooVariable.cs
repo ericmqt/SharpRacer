@@ -16,8 +16,8 @@ internal class FooVariable : ScalarTelemetryVariable<int>
 
     }
 
-    public static FooVariable Create(TelemetryVariableInfo dataVariableInfo)
+    public static FooVariable Create(TelemetryVariableInfo variableInfo)
     {
-        return new FooVariable(dataVariableInfo);
+        return new FooVariable(variableInfo);
     }
 }

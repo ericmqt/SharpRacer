@@ -5,12 +5,12 @@ namespace SharpRacer.Telemetry.TestUtilities;
 internal class TelemetryFileVariablesBuilder
 {
     private int _nextVariableOffset;
-    private readonly List<DataVariableHeader> _variableHeaders;
+    private readonly List<TelemetryVariableHeader> _variableHeaders;
 
     public TelemetryFileVariablesBuilder()
     {
         _nextVariableOffset = 0;
-        _variableHeaders = new List<DataVariableHeader>();
+        _variableHeaders = new List<TelemetryVariableHeader>();
     }
 
     public TelemetryFileVariablesBuilder AddArrayVariable(
@@ -19,12 +19,12 @@ internal class TelemetryFileVariablesBuilder
         int valueCount,
         string? valueUnit,
         string description,
-        out DataVariableHeader header)
+        out TelemetryVariableHeader header)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
         ArgumentOutOfRangeException.ThrowIfLessThan(valueCount, 2);
 
-        header = new DataVariableHeader(
+        header = new TelemetryVariableHeader(
             IRSDKString.FromString(name),
             (int)valueType,
             valueCount,
@@ -45,11 +45,11 @@ internal class TelemetryFileVariablesBuilder
         TelemetryVariableValueType valueType,
         string? valueUnit,
         string description,
-        out DataVariableHeader header)
+        out TelemetryVariableHeader header)
     {
         ArgumentException.ThrowIfNullOrEmpty(name);
 
-        header = new DataVariableHeader(
+        header = new TelemetryVariableHeader(
             IRSDKString.FromString(name),
             (int)valueType,
             1,
@@ -65,7 +65,7 @@ internal class TelemetryFileVariablesBuilder
         return this;
     }
 
-    public DataVariableHeader[] Build()
+    public TelemetryVariableHeader[] Build()
     {
         return _variableHeaders.ToArray();
     }

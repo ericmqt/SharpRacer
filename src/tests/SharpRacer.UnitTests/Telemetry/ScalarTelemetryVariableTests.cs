@@ -179,7 +179,7 @@ public class ScalarTelemetryVariableTests
         var variableInfo = TelemetryVariableInfoFactory.CreateScalar("Foo", TelemetryVariableValueType.Int);
         var variableDescriptor = new TelemetryVariableDescriptor(variableInfo.Name, variableInfo.ValueType, variableInfo.ValueCount);
 
-        var fakeProvider = new FakeDataVariableInfoProvider();
+        var fakeProvider = new FakeVariableInfoProvider();
 
         var variable = new ScalarTelemetryVariable<int>(variableDescriptor, fakeProvider);
 
@@ -200,13 +200,13 @@ public class ScalarTelemetryVariableTests
         Assert.Equal(variableInfo.ValueSize, variable.DataLength);
     }
 
-    private class FakeDataVariableInfoProvider : ITelemetryVariableInfoProvider
+    private class FakeVariableInfoProvider : ITelemetryVariableInfoProvider
     {
         private readonly Dictionary<string, ConcurrentQueue<Action<TelemetryVariableInfo>>> _callbacks = [];
         private bool _isInitialized;
         private readonly List<TelemetryVariableInfo> _variables = [];
 
-        public FakeDataVariableInfoProvider()
+        public FakeVariableInfoProvider()
         {
 
         }

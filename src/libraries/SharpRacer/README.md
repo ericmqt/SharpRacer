@@ -8,8 +8,8 @@
 | ----------- | ---------- |
 | irsdk_diskSubHeader | SharpRacer.Interop.DiskSubHeader |
 | irsdk_header | SharpRacer.Interop.DataFileHeader |
-| irsdk_varBuf | SharpRacer.Interop.DataBufferHeader |
-| irsdk_varHeader | SharpRacer.Interop.DataVariableHeader |
+| irsdk_varBuf | SharpRacer.Interop.TelemetryBufferHeader |
+| irsdk_varHeader | SharpRacer.Interop.TelemetryVariableHeader |
 
 #### Enumerations
 

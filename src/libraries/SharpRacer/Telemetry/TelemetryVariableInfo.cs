@@ -8,10 +8,10 @@ namespace SharpRacer.Telemetry;
 public sealed class TelemetryVariableInfo
 {
     /// <summary>
-    /// Creates an instance of <see cref="TelemetryVariableInfo"/> from the specified <see cref="DataVariableHeader"/>.
+    /// Creates an instance of <see cref="TelemetryVariableInfo"/> from the specified <see cref="TelemetryVariableHeader"/>.
     /// </summary>
     /// <param name="variableHeader"></param>
-    public TelemetryVariableInfo(DataVariableHeader variableHeader)
+    public TelemetryVariableInfo(TelemetryVariableHeader variableHeader)
     {
         Description = variableHeader.Description.ToString();
         IsTimeSliceArray = variableHeader.CountAsTime;

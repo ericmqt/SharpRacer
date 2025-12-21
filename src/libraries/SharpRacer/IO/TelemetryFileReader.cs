@@ -9,7 +9,7 @@ namespace SharpRacer.IO;
 /// </summary>
 public class TelemetryFileReader : IDisposable
 {
-    private readonly DataBufferHeader _dataBufferHeader;
+    private readonly TelemetryBufferHeader _dataBufferHeader;
     private readonly SafeFileHandle _fileHandle;
     private readonly DataFileHeader _fileHeader;
     private bool _isDisposed;
@@ -186,24 +186,24 @@ public class TelemetryFileReader : IDisposable
     }
 
     /// <summary>
-    /// Reads the <see cref="DataVariableHeader"/> array.
+    /// Reads the <see cref="TelemetryVariableHeader"/> array.
     /// </summary>
-    /// <returns>An array of <see cref="DataVariableHeader"/> values describing the telemetry variables in the file.</returns>
+    /// <returns>An array of <see cref="TelemetryVariableHeader"/> values describing the telemetry variables in the file.</returns>
     /// <exception cref="IOException">The number of bytes read from the file was less than required to complete the operation.</exception>
     /// <exception cref="InvalidOperationException">The file handle is invalid or closed.</exception>
     /// <exception cref="ObjectDisposedException">The reader is disposed or the file is closed.</exception>
-    public DataVariableHeader[] ReadTelemetryVariableHeaders()
+    public TelemetryVariableHeader[] ReadTelemetryVariableHeaders()
     {
         VerifyCanRead();
 
-        var variableHeaders = new DataVariableHeader[_fileHeader.VariableCount];
+        var variableHeaders = new TelemetryVariableHeader[_fileHeader.VariableCount];
 
         var bytesRead = RandomAccess.Read(
             _fileHandle,
-            MemoryMarshal.AsBytes((Span<DataVariableHeader>)variableHeaders),
+            MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders),
             _fileHeader.VariableHeaderOffset);
 
-        VerifyBytesRead(bytesRead, DataVariableHeader.Size * _fileHeader.VariableCount);
+        VerifyBytesRead(bytesRead, TelemetryVariableHeader.Size * _fileHeader.VariableCount);
 
         return variableHeaders;
     }
@@ -231,7 +231,7 @@ public class TelemetryFileReader : IDisposable
     private static bool CheckFileSize(
         SafeFileHandle fileHandle,
         in DataFileHeader fileHeader,
-        in DataBufferHeader dataBufferHeader,
+        in TelemetryBufferHeader dataBufferHeader,
         out long fileLength,
         out long expectedLength)
     {

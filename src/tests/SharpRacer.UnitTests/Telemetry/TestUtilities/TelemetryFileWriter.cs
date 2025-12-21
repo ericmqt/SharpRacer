@@ -8,7 +8,7 @@ internal class TelemetryFileWriter
     public static void Write(
         string fileName,
         DataFileHeader fileHeader,
-        DataVariableHeader[]? variableHeaders,
+        TelemetryVariableHeader[]? variableHeaders,
         string? sessionInfoYaml,
         IReadOnlyList<Memory<byte>>? dataFrames,
         out DataFileHeader writtenFileHeader)
@@ -77,10 +77,10 @@ internal class TelemetryFileWriter
     {
         ArgumentNullException.ThrowIfNull(stream);
 
-        var dataFramesHeader = new DataBufferHeader(0, (int)stream.Position);
+        var dataFramesHeader = new TelemetryBufferHeader(0, (int)stream.Position);
 
         fileHeader = fileHeader
-            .WithDataBufferHeaders(DataBufferHeaderArray.FromArray([dataFramesHeader, default, default, default]))
+            .WithDataBufferHeaders(TelemetryBufferHeaderArray.FromArray([dataFramesHeader, default, default, default]))
             .WithDiskSubHeader(
                 fileHeader.DiskSubHeader.WithSessionRecordCount(dataFrames?.Count ?? 0));
 
@@ -106,7 +106,7 @@ internal class TelemetryFileWriter
         }
     }
 
-    private static void WriteVariableHeaders(FileStream stream, DataVariableHeader[]? variableHeaders, ref DataFileHeader fileHeader)
+    private static void WriteVariableHeaders(FileStream stream, TelemetryVariableHeader[]? variableHeaders, ref DataFileHeader fileHeader)
     {
         // Variable headers
         fileHeader = fileHeader
@@ -115,7 +115,7 @@ internal class TelemetryFileWriter
 
         if (variableHeaders != null && variableHeaders.Length > 0)
         {
-            var variableHeaderBytes = MemoryMarshal.AsBytes<DataVariableHeader>(variableHeaders);
+            var variableHeaderBytes = MemoryMarshal.AsBytes<TelemetryVariableHeader>(variableHeaders);
 
             stream.Write(variableHeaderBytes);
         }

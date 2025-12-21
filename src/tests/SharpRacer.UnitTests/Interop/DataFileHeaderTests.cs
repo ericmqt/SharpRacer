@@ -39,8 +39,8 @@ public class DataFileHeaderTests
         int dataBufferCount = 3;
         int dataBufferElementLength = 256;
 
-        var dataBufferHeaders = new DataBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
-        var dataBufferHeadersArray = DataBufferHeaderArray.FromArray(dataBufferHeaders);
+        var dataBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
+        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(dataBufferHeaders);
 
         var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
 
@@ -94,7 +94,7 @@ public class DataFileHeaderTests
         int dataBufferCount = 3;
         int dataBufferElementLength = 256;
 
-        var dataBufferHeaders = new DataBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
+        var dataBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
 
         var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
 
@@ -109,7 +109,7 @@ public class DataFileHeaderTests
         MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.DataBufferCount..], dataBufferCount);
         MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.DataBufferElementLength..], dataBufferElementLength);
 
-        MemoryMarshal.AsBytes<DataBufferHeader>(dataBufferHeaders)
+        MemoryMarshal.AsBytes<TelemetryBufferHeader>(dataBufferHeaders)
             .CopyTo(blob[DataFileHeader.FieldOffsets.DataBufferHeaderArray..]);
 
         MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.DiskSubHeader..], diskSubHeader);
@@ -151,8 +151,8 @@ public class DataFileHeaderTests
         int dataBufferCount = 3;
         int dataBufferElementLength = 256;
 
-        var dataBufferHeaders = new DataBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
-        var dataBufferHeadersArray = DataBufferHeaderArray.FromArray(dataBufferHeaders);
+        var dataBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
+        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(dataBufferHeaders);
 
         var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
 
@@ -199,7 +199,7 @@ public class DataFileHeaderTests
     [Fact]
     public void Equals_DefaultValueInequalityTest()
     {
-        var dataBufferHeadersArray = DataBufferHeaderArray.FromArray(
+        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(
             [
                 new(25, 5120),
                 new(52, 5376),
@@ -228,7 +228,7 @@ public class DataFileHeaderTests
         const int dataBufferCount = 3;
         const int dataBufferElementLength = 256;
 
-        var dataBufferHeadersArray = DataBufferHeaderArray.FromArray(
+        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(
             [
                 new(25, 5120),
                 new(52, 5376),
@@ -290,7 +290,7 @@ public class DataFileHeaderTests
         const int dataBufferCount = 3;
         const int dataBufferElementLength = 256;
 
-        var dataBufferHeadersArray = DataBufferHeaderArray.FromArray(
+        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(
             [
                 new(25, 5120),
                 new(52, 5376),
@@ -333,7 +333,7 @@ public class DataFileHeaderTests
         int dataBufferCount = 3;
         int dataBufferElementLength = 256;
 
-        var dataBufferHeaders = new DataBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
+        var dataBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
 
         var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
 
@@ -348,7 +348,7 @@ public class DataFileHeaderTests
         MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.DataBufferCount..], dataBufferCount);
         MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.DataBufferElementLength..], dataBufferElementLength);
 
-        MemoryMarshal.AsBytes<DataBufferHeader>(dataBufferHeaders)
+        MemoryMarshal.AsBytes<TelemetryBufferHeader>(dataBufferHeaders)
             .CopyTo(blob[DataFileHeader.FieldOffsets.DataBufferHeaderArray..]);
 
         MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.DiskSubHeader..], diskSubHeader);
@@ -387,7 +387,7 @@ public class DataFileHeaderTests
         const int dataBufferCount = 3;
         const int dataBufferElementLength = 256;
 
-        var dataBufferHeadersArray = DataBufferHeaderArray.FromArray(
+        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(
             [
                 new(25, 5120),
                 new(52, 5376),
@@ -447,7 +447,7 @@ public class DataFileHeaderTests
             {
                 header,
                 MutateHeader(header, dataBufferHeaders:
-                    DataBufferHeaderArray.FromArray(
+                    TelemetryBufferHeaderArray.FromArray(
                     [
                         new(1, 2),
                         new(2, 4),
@@ -472,7 +472,7 @@ public class DataFileHeaderTests
         int? variableHeaderOffset = null,
         int? dataBufferCount = null,
         int? dataBufferElementLength = null,
-        DataBufferHeaderArray? dataBufferHeaders = null,
+        TelemetryBufferHeaderArray? dataBufferHeaders = null,
         DiskSubHeader? diskSubHeader = null)
     {
         return new DataFileHeader(

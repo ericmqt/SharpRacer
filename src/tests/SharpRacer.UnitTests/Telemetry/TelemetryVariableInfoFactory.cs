@@ -33,7 +33,7 @@ internal static class TelemetryVariableInfoFactory
         return new TelemetryVariableInfo(header);
     }
 
-    private static DataVariableHeader CreateArrayHeader(
+    private static TelemetryVariableHeader CreateArrayHeader(
         string variableName,
         TelemetryVariableValueType valueType,
         int valueCount,
@@ -42,7 +42,7 @@ internal static class TelemetryVariableInfoFactory
         string description,
         string? unit)
     {
-        return new DataVariableHeader(
+        return new TelemetryVariableHeader(
             IRSDKString.FromString(variableName),
             (int)valueType,
             valueCount,
@@ -52,14 +52,14 @@ internal static class TelemetryVariableInfoFactory
             IRSDKString.FromString(unit));
     }
 
-    private static DataVariableHeader CreateScalarHeader(
+    private static TelemetryVariableHeader CreateScalarHeader(
         string variableName,
         TelemetryVariableValueType valueType,
         int offset,
         string description,
         string? unit)
     {
-        return new DataVariableHeader(
+        return new TelemetryVariableHeader(
             IRSDKString.FromString(variableName),
             (int)valueType,
             1,

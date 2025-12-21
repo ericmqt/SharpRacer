@@ -8,8 +8,8 @@ public class TelemetryFileInfoTests
     [Fact]
     public void Ctor_Test()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
         string sessionInfo = "Test session info";
         var sessionStart = new DateTimeOffset(2023, 9, 22, 14, 30, 12, TimeSpan.FromHours(-5));
         var sessionDuration = TimeSpan.FromMinutes(19);

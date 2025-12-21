@@ -31,8 +31,8 @@ public class TelemetryFileReaderTests
     [Fact]
     public void Ctor_ThrowOnFileTooSmallForContentsTest()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
 
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>
@@ -126,8 +126,8 @@ public class TelemetryFileReaderTests
     [Fact]
     public void ReadDataFrame_Test()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
 
         int fooVarValue = 12;
         float[] barVarValue = [1.0f, 2.0f, 3.0f];
@@ -176,8 +176,8 @@ public class TelemetryFileReaderTests
     [Fact]
     public void ReadDataFrame_Span_Test()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
 
         int fooVarValue = 12;
         float[] barVarValue = [1.0f, 2.0f, 3.0f];
@@ -230,8 +230,8 @@ public class TelemetryFileReaderTests
     [Fact]
     public void ReadDataFrame_Span_ThrowOnBufferTooSmallTest()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
 
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>
@@ -269,8 +269,8 @@ public class TelemetryFileReaderTests
     [Fact]
     public void SimpleFile_Test()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
         string sessionInfo = "Test session";
 
         var fileBuilder = TelemetryFileBuilder.Create(
@@ -312,8 +312,8 @@ public class TelemetryFileReaderTests
     [Fact]
     public void VerifyCanRead_ThrowOnClosedHandle()
     {
-        DataVariableHeader intVarHeader = default;
-        DataVariableHeader float3ArrayVarHeader = default;
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
 
         var fileBuilder = TelemetryFileBuilder.Create(
             varBuilder =>

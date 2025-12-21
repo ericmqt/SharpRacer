@@ -43,8 +43,8 @@ public class TelemetryFileValidateHeaderTests
             dataBufferElementLength: 1024,
             dataBufferFrameCount: 4096);
 
-        var bufferHeaderArray = DataBufferHeaderArray.FromArray(
-            [new DataBufferHeader(43, DataFileHeader.Size - 3), default, default, default]);
+        var bufferHeaderArray = TelemetryBufferHeaderArray.FromArray(
+            [new TelemetryBufferHeader(43, DataFileHeader.Size - 3), default, default, default]);
 
         fileHeader = fileHeader.WithDataBufferHeaders(bufferHeaderArray);
 
@@ -165,13 +165,13 @@ public class TelemetryFileValidateHeaderTests
         int dataBufferFrameCount)
     {
         var variableHeaderBufferOffset = DataFileHeader.Size;
-        var variableHeaderBufferLength = variableCount * DataVariableHeader.Size;
+        var variableHeaderBufferLength = variableCount * TelemetryVariableHeader.Size;
 
         var sessionInfoOffset = variableHeaderBufferOffset + variableHeaderBufferLength;
 
-        var dataBufferHeader = new DataBufferHeader(123, sessionInfoOffset + sessionInfoLength);
+        var dataBufferHeader = new TelemetryBufferHeader(123, sessionInfoOffset + sessionInfoLength);
 
-        var dataBufferHeaders = DataBufferHeaderArray.FromArray([dataBufferHeader, default, default, default]);
+        var dataBufferHeaders = TelemetryBufferHeaderArray.FromArray([dataBufferHeader, default, default, default]);
         var diskSubHeader = new DiskSubHeader(123, 456, 789, 20, dataBufferFrameCount);
 
         var header = new DataFileHeader(
@@ -202,7 +202,7 @@ public class TelemetryFileValidateHeaderTests
         int? variableHeaderOffset = null,
         int? dataBufferCount = null,
         int? dataBufferElementLength = null,
-        DataBufferHeaderArray? dataBufferHeaders = null,
+        TelemetryBufferHeaderArray? dataBufferHeaders = null,
         DiskSubHeader? diskSubHeader = null)
     {
         return new DataFileHeader(

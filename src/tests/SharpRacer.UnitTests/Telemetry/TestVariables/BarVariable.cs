@@ -11,14 +11,14 @@ internal class BarVariable : ArrayTelemetryVariable<float>
 
     }
 
-    public BarVariable(TelemetryVariableInfo dataVariableInfo)
-        : base(_VariableName, _ArrayLength, dataVariableInfo)
+    public BarVariable(TelemetryVariableInfo variableInfo)
+        : base(_VariableName, _ArrayLength, variableInfo)
     {
 
     }
 
-    public static BarVariable Create(TelemetryVariableInfo dataVariableInfo)
+    public static BarVariable Create(TelemetryVariableInfo variableInfo)
     {
-        return new BarVariable(dataVariableInfo);
+        return new BarVariable(variableInfo);
     }
 }

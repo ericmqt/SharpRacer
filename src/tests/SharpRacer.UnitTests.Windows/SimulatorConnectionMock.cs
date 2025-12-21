@@ -11,12 +11,12 @@ internal class SimulatorConnectionMock
 
         CancellationTokenSource = MockRepository.Create<IConnectionCancellationTokenSource>();
         ConnectionManager = MockRepository.Create<IConnectionManager>();
-        DataVariableInfoProvider = MockRepository.Create<IConnectionTelemetryVariableInfoProvider>();
+        TelemetryVariableInfoProvider = MockRepository.Create<IConnectionTelemetryVariableInfoProvider>();
     }
 
     public Mock<IConnectionCancellationTokenSource> CancellationTokenSource { get; }
     public Mock<IConnectionManager> ConnectionManager { get; }
-    public Mock<IConnectionTelemetryVariableInfoProvider> DataVariableInfoProvider { get; }
+    public Mock<IConnectionTelemetryVariableInfoProvider> TelemetryVariableInfoProvider { get; }
     public MockRepository MockRepository { get; }
 
     public Mock<T> Create<T>()
@@ -27,6 +27,6 @@ internal class SimulatorConnectionMock
 
     public SimulatorConnection CreateInstance()
     {
-        return new SimulatorConnection(ConnectionManager.Object, DataVariableInfoProvider.Object, CancellationTokenSource.Object);
+        return new SimulatorConnection(ConnectionManager.Object, TelemetryVariableInfoProvider.Object, CancellationTokenSource.Object);
     }
 }

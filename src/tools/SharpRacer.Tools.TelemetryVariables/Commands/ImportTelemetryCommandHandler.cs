@@ -75,7 +75,7 @@ internal class ImportTelemetryCommandHandler : ICommandHandler<ImportTelemetryCo
         var sessionInfo = SessionInfoDocumentModel.FromYaml(telemetryFile.SessionInfo);
 
         // Import variables
-        var variableModels = telemetryFile.Variables.Select(x => new DataVariableModel(x, sessionInfo.WeekendInfo.BuildVersion));
+        var variableModels = telemetryFile.Variables.Select(x => new TelemetryVariableModel(x, sessionInfo.WeekendInfo.BuildVersion));
 
         await _variableImporter.ImportVariablesAsync(variableModels, cancellationToken).ConfigureAwait(false);
 

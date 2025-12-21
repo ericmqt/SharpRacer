@@ -17,11 +17,11 @@ internal class VariableImporter
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<IEnumerable<ImportResult<DataVariableModel, VariableEntity>>> ImportVariablesAsync(
-        IEnumerable<DataVariableModel> variables,
+    public async Task<IEnumerable<ImportResult<TelemetryVariableModel, VariableEntity>>> ImportVariablesAsync(
+        IEnumerable<TelemetryVariableModel> variables,
         CancellationToken cancellationToken = default)
     {
-        var results = new List<ImportResult<DataVariableModel, VariableEntity>>();
+        var results = new List<ImportResult<TelemetryVariableModel, VariableEntity>>();
 
         foreach (var model in variables)
         {
@@ -62,7 +62,7 @@ internal class VariableImporter
         return results;
     }
 
-    private async Task<ImportResult<DataVariableModel, VariableEntity>> ImportVariableAsync(DataVariableModel variableModel, CancellationToken cancellationToken = default)
+    private async Task<ImportResult<TelemetryVariableModel, VariableEntity>> ImportVariableAsync(TelemetryVariableModel variableModel, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(variableModel);
 
@@ -86,7 +86,7 @@ internal class VariableImporter
         return ImportResult.Added(variableModel, entity);
     }
 
-    private Task<VariableEntity> CreateAsync(DataVariableModel variableModel, CancellationToken cancellationToken = default)
+    private Task<VariableEntity> CreateAsync(TelemetryVariableModel variableModel, CancellationToken cancellationToken = default)
     {
         var entity = new VariableEntity
         {
@@ -103,7 +103,7 @@ internal class VariableImporter
         return _variableStore.CreateAsync(entity, true, cancellationToken);
     }
 
-    private Task<VariableEntity> UpdateAsync(VariableEntity entity, DataVariableModel variableModel, CancellationToken cancellationToken = default)
+    private Task<VariableEntity> UpdateAsync(VariableEntity entity, TelemetryVariableModel variableModel, CancellationToken cancellationToken = default)
     {
         entity.SimulatorVersion = variableModel.SimulatorVersion;
 
@@ -117,12 +117,12 @@ internal class VariableImporter
         return _variableStore.UpdateAsync(entity, true, cancellationToken);
     }
 
-    private static bool IsDeprecated(DataVariableModel variableModel)
+    private static bool IsDeprecated(TelemetryVariableModel variableModel)
     {
         return variableModel.IsDeprecated || DeprecatedVariables.IsDeprecated(variableModel.Name);
     }
 
-    private static bool IsDeprecated(DataVariableModel variableModel, VariableEntity entity)
+    private static bool IsDeprecated(TelemetryVariableModel variableModel, VariableEntity entity)
     {
         return IsDeprecated(variableModel) || entity.IsDeprecated;
     }

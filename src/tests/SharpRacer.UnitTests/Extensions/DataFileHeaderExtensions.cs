@@ -15,7 +15,7 @@ internal static class DataFileHeaderExtensions
         int? variableHeaderOffset = null,
         int? dataBufferCount = null,
         int? dataBufferElementLength = null,
-        DataBufferHeaderArray? dataBufferHeaders = null,
+        TelemetryBufferHeaderArray? dataBufferHeaders = null,
         DiskSubHeader? diskSubHeader = null)
     {
         return new DataFileHeader(
@@ -38,7 +38,7 @@ internal static class DataFileHeaderExtensions
         return fileHeader.With(dataBufferCount: dataBufferCount);
     }
 
-    public static DataFileHeader WithDataBufferHeaders(this in DataFileHeader fileHeader, DataBufferHeaderArray dataBufferHeaders)
+    public static DataFileHeader WithDataBufferHeaders(this in DataFileHeader fileHeader, TelemetryBufferHeaderArray dataBufferHeaders)
     {
         return fileHeader.With(dataBufferHeaders: dataBufferHeaders);
     }

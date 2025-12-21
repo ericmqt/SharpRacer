@@ -51,7 +51,7 @@ public class TelemetryDataReader
     {
         VerifyCanRead();
 
-        using var reader = new DataBufferReader(_connection);
+        using var reader = new TelemetryBufferReader(_connection);
 
         return reader.GetActiveBufferIndex();
     }
@@ -76,7 +76,7 @@ public class TelemetryDataReader
     {
         VerifyCanRead();
 
-        using var reader = new DataBufferReader(_connection);
+        using var reader = new TelemetryBufferReader(_connection);
 
         var data = new byte[BufferLength];
 
@@ -105,7 +105,7 @@ public class TelemetryDataReader
     {
         VerifyCanRead();
 
-        var reader = new DataBufferReader(_connection);
+        var reader = new TelemetryBufferReader(_connection);
 
         reader.CopyActiveBuffer(destination, out tick);
     }
@@ -117,7 +117,7 @@ public class TelemetryDataReader
             return 0;
         }
 
-        var reader = new DataBufferReader(_connection);
+        var reader = new TelemetryBufferReader(_connection);
 
         return reader.BufferLength;
     }

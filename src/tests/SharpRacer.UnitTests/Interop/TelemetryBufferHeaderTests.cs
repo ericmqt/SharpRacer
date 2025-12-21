@@ -2,14 +2,15 @@
 using SharpRacer.Extensions.Xunit;
 
 namespace SharpRacer.Interop;
-public class DataBufferHeaderTests
+
+public class TelemetryBufferHeaderTests
 {
-    public static TheoryData<DataBufferHeader, DataBufferHeader> InequalityData => GetInequalityData();
+    public static TheoryData<TelemetryBufferHeader, TelemetryBufferHeader> InequalityData => GetInequalityData();
 
     [Fact]
     public void Ctor_DefaultTest()
     {
-        var header = new DataBufferHeader();
+        var header = new TelemetryBufferHeader();
 
         Assert.Equal(default, header.BufferOffset);
         Assert.Equal(default, header.TickCount);
@@ -21,7 +22,7 @@ public class DataBufferHeaderTests
         int tickCount = 1234;
         int bufferOffset = 98765;
 
-        var header = new DataBufferHeader(tickCount, bufferOffset);
+        var header = new TelemetryBufferHeader(tickCount, bufferOffset);
 
         Assert.Equal(tickCount, header.TickCount);
         Assert.Equal(bufferOffset, header.BufferOffset);
@@ -30,15 +31,15 @@ public class DataBufferHeaderTests
     [Fact]
     public void StructLayout_Test()
     {
-        var blob = new Span<byte>(new byte[DataBufferHeader.Size]);
+        var blob = new Span<byte>(new byte[TelemetryBufferHeader.Size]);
 
         int tickCount = 1234;
         int bufferOffset = 98765;
 
-        MemoryMarshal.Write(blob.Slice(DataBufferHeader.FieldOffsets.TickCount, sizeof(int)), tickCount);
-        MemoryMarshal.Write(blob.Slice(DataBufferHeader.FieldOffsets.BufferOffset, sizeof(int)), bufferOffset);
+        MemoryMarshal.Write(blob.Slice(TelemetryBufferHeader.FieldOffsets.TickCount, sizeof(int)), tickCount);
+        MemoryMarshal.Write(blob.Slice(TelemetryBufferHeader.FieldOffsets.BufferOffset, sizeof(int)), bufferOffset);
 
-        var header = MemoryMarshal.Read<DataBufferHeader>(blob);
+        var header = MemoryMarshal.Read<TelemetryBufferHeader>(blob);
 
         Assert.Equal(tickCount, header.TickCount);
         Assert.Equal(bufferOffset, header.BufferOffset);
@@ -47,7 +48,7 @@ public class DataBufferHeaderTests
     [Fact]
     public void Equals_DefaultValueEqualityTest()
     {
-        var constructedHeader = new DataBufferHeader();
+        var constructedHeader = new TelemetryBufferHeader();
 
         EquatableStructAssert.Equal(constructedHeader, default);
     }
@@ -55,7 +56,7 @@ public class DataBufferHeaderTests
     [Fact]
     public void Equals_DefaultValueInequalityTest()
     {
-        var constructedHeader = new DataBufferHeader(10, 20);
+        var constructedHeader = new TelemetryBufferHeader(10, 20);
 
         EquatableStructAssert.NotEqual(constructedHeader, default);
     }
@@ -63,15 +64,15 @@ public class DataBufferHeaderTests
     [Fact]
     public void Equals_EqualityTest()
     {
-        var header1 = new DataBufferHeader(2, 4);
-        var header2 = new DataBufferHeader(2, 4);
+        var header1 = new TelemetryBufferHeader(2, 4);
+        var header2 = new TelemetryBufferHeader(2, 4);
 
         EquatableStructAssert.Equal(header1, header2);
     }
 
     [Theory]
     [MemberData(nameof(InequalityData))]
-    public void Equals_InequalityTest(DataBufferHeader header1, DataBufferHeader header2)
+    public void Equals_InequalityTest(TelemetryBufferHeader header1, TelemetryBufferHeader header2)
     {
         EquatableStructAssert.NotEqual(header1, header2);
     }
@@ -79,25 +80,25 @@ public class DataBufferHeaderTests
     [Fact]
     public void Equals_NullObjectTest()
     {
-        var header1 = new DataBufferHeader(2, 4);
+        var header1 = new TelemetryBufferHeader(2, 4);
 
         Assert.False(header1.Equals(obj: null));
     }
 
-    private static TheoryData<DataBufferHeader, DataBufferHeader> GetInequalityData()
+    private static TheoryData<TelemetryBufferHeader, TelemetryBufferHeader> GetInequalityData()
     {
-        return new TheoryData<DataBufferHeader, DataBufferHeader>()
+        return new TheoryData<TelemetryBufferHeader, TelemetryBufferHeader>()
         {
             // Tick count
             {
-                new DataBufferHeader(1, 0),
-                new DataBufferHeader(2, 0)
+                new TelemetryBufferHeader(1, 0),
+                new TelemetryBufferHeader(2, 0)
             },
 
             // BufferOffset
             {
-                new DataBufferHeader(0, 1),
-                new DataBufferHeader(0, 2)
+                new TelemetryBufferHeader(0, 1),
+                new TelemetryBufferHeader(0, 2)
             }
         };
     }

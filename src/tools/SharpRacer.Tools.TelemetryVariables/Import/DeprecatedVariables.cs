@@ -18,12 +18,12 @@ internal static class DeprecatedVariables
         return _knownDeprecatedVariables.ContainsKey(variableName);
     }
 
-    public static bool IsDeprecated(DataVariableModel variableModel)
+    public static bool IsDeprecated(TelemetryVariableModel variableModel)
     {
         return variableModel.IsDeprecated || IsDeprecated(variableModel.Name);
     }
 
-    public static string? GetDeprecatingVariableName(DataVariableModel variableModel)
+    public static string? GetDeprecatingVariableName(TelemetryVariableModel variableModel)
     {
         if (!string.IsNullOrEmpty(variableModel.DeprecatedBy))
         {
@@ -35,7 +35,7 @@ internal static class DeprecatedVariables
         return deprecatingVariableName;
     }
 
-    public static bool TryGetDeprecatingVariableName(DataVariableModel variableModel, [NotNullWhen(true)] out string? deprecatingVariableName)
+    public static bool TryGetDeprecatingVariableName(TelemetryVariableModel variableModel, [NotNullWhen(true)] out string? deprecatingVariableName)
     {
         if (!string.IsNullOrEmpty(variableModel.DeprecatedBy))
         {

@@ -1,11 +1,12 @@
-﻿using Moq;
+﻿using DotNext.IO.MemoryMappedFiles;
+using Moq;
 using SharpRacer.Internal.Connections;
 using SharpRacer.IO;
 using SharpRacer.IO.Internal;
 using SharpRacer.Telemetry;
-using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer;
+
 public partial class SimulatorConnectionTests
 {
     [Fact]
@@ -24,7 +25,7 @@ public partial class SimulatorConnectionTests
         var mocks = new SimulatorConnectionMock();
         var connection = mocks.CreateInstance();
 
-        mocks.DataVariableInfoProvider.SetupGet(x => x.Variables).Returns(Enumerable.Empty<TelemetryVariableInfo>());
+        mocks.TelemetryVariableInfoProvider.SetupGet(x => x.Variables).Returns(Enumerable.Empty<TelemetryVariableInfo>());
 
         Assert.Equal(SimulatorConnectionState.None, connection.State);
         Assert.False(connection.CanRead);
@@ -37,13 +38,13 @@ public partial class SimulatorConnectionTests
         var mocks = new SimulatorConnectionMock();
 
         Assert.Throws<ArgumentNullException>(
-            () => new SimulatorConnection(null!, mocks.DataVariableInfoProvider.Object, mocks.CancellationTokenSource.Object));
+            () => new SimulatorConnection(null!, mocks.TelemetryVariableInfoProvider.Object, mocks.CancellationTokenSource.Object));
 
         Assert.Throws<ArgumentNullException>(
             () => new SimulatorConnection(mocks.ConnectionManager.Object, null!, mocks.CancellationTokenSource.Object));
 
         Assert.Throws<ArgumentNullException>(
-            () => new SimulatorConnection(mocks.ConnectionManager.Object, mocks.DataVariableInfoProvider.Object, null!));
+            () => new SimulatorConnection(mocks.ConnectionManager.Object, mocks.TelemetryVariableInfoProvider.Object, null!));
     }
 
     [Fact]
@@ -62,7 +63,7 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Call Open() to put connection into Connecting state
         connection.Open();
@@ -116,7 +117,7 @@ public partial class SimulatorConnectionTests
         var outerConnection = (IOuterConnection)connection;
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         Assert.Equal(SimulatorConnectionState.None, connection.State);
 
@@ -146,7 +147,7 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Open the connection
         connection.Open();
@@ -206,7 +207,7 @@ public partial class SimulatorConnectionTests
         var mocks = new SimulatorConnectionMock();
 
         var dataHandleMock = mocks.MockRepository.Create<IConnectionDataHandle>();
-        
+
         var openInnerConnectionMock = mocks.MockRepository.Create<IOpenInnerConnection>();
 
         openInnerConnectionMock.Setup(x => x.AcquireDataHandle()).Returns(dataHandleMock.Object);
@@ -217,7 +218,7 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Open the connection
         connection.Open();
@@ -249,31 +250,31 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void NotifyDataVariableActivatedTest()
+    public void NotifyTelemetryVariableActivatedTest()
     {
         string variableName = "Foo";
-        Action<TelemetryVariableInfo> callback = (dataVariableInfo) => { };
+        Action<TelemetryVariableInfo> callback = (variableInfo) => { };
 
         var mocks = new SimulatorConnectionMock();
         var connection = mocks.CreateInstance();
 
-        mocks.DataVariableInfoProvider.Setup(x => x.NotifyTelemetryVariableActivated(It.IsAny<string>(), It.IsAny<Action<TelemetryVariableInfo>>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.NotifyTelemetryVariableActivated(It.IsAny<string>(), It.IsAny<Action<TelemetryVariableInfo>>()));
 
         connection.NotifyTelemetryVariableActivated(variableName, callback);
 
-        mocks.DataVariableInfoProvider.Verify(x => x.NotifyTelemetryVariableActivated(variableName, callback));
+        mocks.TelemetryVariableInfoProvider.Verify(x => x.NotifyTelemetryVariableActivated(variableName, callback));
     }
 
     [Fact]
-    public void NotifyDataVariableActivated_ThrowOnInvalidArgsTest()
+    public void NotifyTelemetryVariableActivated_ThrowOnInvalidArgsTest()
     {
         string variableName = "Foo";
-        Action<TelemetryVariableInfo> callback = (dataVariableInfo) => { };
+        Action<TelemetryVariableInfo> callback = (variableInfo) => { };
 
         var mocks = new SimulatorConnectionMock();
         var connection = mocks.CreateInstance();
 
-        mocks.DataVariableInfoProvider.Setup(x => x.NotifyTelemetryVariableActivated(It.IsAny<string>(), It.IsAny<Action<TelemetryVariableInfo>>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.NotifyTelemetryVariableActivated(It.IsAny<string>(), It.IsAny<Action<TelemetryVariableInfo>>()));
 
         Assert.Throws<ArgumentException>(() => connection.NotifyTelemetryVariableActivated(string.Empty, callback));
         Assert.Throws<ArgumentNullException>(() => connection.NotifyTelemetryVariableActivated(null!, callback));
@@ -281,10 +282,10 @@ public partial class SimulatorConnectionTests
     }
 
     [Fact]
-    public void NotifyDataVariableActivated_ThrowIfDisposedTest()
+    public void NotifyTelemetryVariableActivated_ThrowIfDisposedTest()
     {
         string variableName = "Foo";
-        Action<TelemetryVariableInfo> callback = (dataVariableInfo) => { };
+        Action<TelemetryVariableInfo> callback = (variableInfo) => { };
 
         var connection = new SimulatorConnection();
         connection.Dispose();
@@ -413,8 +414,8 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()))
-            .Callback(onDataVariablesActivated);
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()))
+            .Callback(onVariablesActivated);
 
         Assert.Equal(SimulatorConnectionState.None, connection.State);
 
@@ -428,9 +429,9 @@ public partial class SimulatorConnectionTests
 
         Assert.Equal(SimulatorConnectionState.Open, connection.State);
 
-        mocks.DataVariableInfoProvider.Verify(x => x.OnTelemetryVariablesActivated(connection), Times.Once);
+        mocks.TelemetryVariableInfoProvider.Verify(x => x.OnTelemetryVariablesActivated(connection), Times.Once);
 
-        void onDataVariablesActivated(ISimulatorConnection conn)
+        void onVariablesActivated(ISimulatorConnection conn)
         {
             Assert.Equal(conn, connection);
         }
@@ -456,7 +457,7 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Call Open() to put connection into Connecting state
         connection.Open();
@@ -553,7 +554,7 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         openInnerConnectionMock.Setup(x => x.WaitForDataReady(It.IsAny<CancellationToken>())).Returns(true);
 
@@ -581,7 +582,7 @@ public partial class SimulatorConnectionTests
 
         mocks.ConnectionManager.Setup(x => x.Connect(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>()));
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         // Configure ConnectionCancellationTokenSource
         using var mockedCancellationSource = new CancellationTokenSource();
@@ -627,7 +628,7 @@ public partial class SimulatorConnectionTests
         mocks.ConnectionManager.Setup(x => x.ConnectAsync(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         openInnerConnectionMock.Setup(x => x.WaitForDataReadyAsync(It.IsAny<CancellationToken>()))
             .Returns(async () => await ValueTask.FromResult(true));
@@ -669,7 +670,7 @@ public partial class SimulatorConnectionTests
         mocks.ConnectionManager.Setup(x => x.ConnectAsync(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         openInnerConnectionMock.Setup(x => x.WaitForDataReadyAsync(It.IsAny<CancellationToken>()))
             .Returns(async () => await ValueTask.FromResult(true));
@@ -709,7 +710,7 @@ public partial class SimulatorConnectionTests
         mocks.ConnectionManager.Setup(x => x.ConnectAsync(It.IsAny<IOuterConnection>(), It.IsAny<TimeSpan>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        mocks.DataVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
+        mocks.TelemetryVariableInfoProvider.Setup(x => x.OnTelemetryVariablesActivated(It.IsAny<ISimulatorConnection>()));
 
         openInnerConnectionMock.Setup(x => x.WaitForDataReadyAsync(It.IsAny<CancellationToken>()))
             .Returns(async () => await ValueTask.FromResult(true));

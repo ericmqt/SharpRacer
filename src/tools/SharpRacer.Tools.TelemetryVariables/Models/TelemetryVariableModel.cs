@@ -2,14 +2,15 @@
 using SharpRacer.Tools.TelemetryVariables.Data.Entities;
 
 namespace SharpRacer.Tools.TelemetryVariables.Models;
-public class DataVariableModel
+
+public class TelemetryVariableModel
 {
-    public DataVariableModel()
+    public TelemetryVariableModel()
     {
 
     }
 
-    public DataVariableModel(VariableEntity variableEntity)
+    public TelemetryVariableModel(VariableEntity variableEntity)
     {
         ArgumentNullException.ThrowIfNull(variableEntity);
 
@@ -28,7 +29,7 @@ public class DataVariableModel
         }
     }
 
-    public DataVariableModel(TelemetryVariableInfo variableInfo, ContentVersion simulatorVersion)
+    public TelemetryVariableModel(TelemetryVariableInfo variableInfo, ContentVersion simulatorVersion)
     {
         ArgumentNullException.ThrowIfNull(variableInfo);
 
