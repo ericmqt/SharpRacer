@@ -54,7 +54,7 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     /// <summary>
     /// Gets the length, in bytes, of the buffers used for storing telemetry data.
     /// </summary>
-    public readonly int BufferLength => _fileHeader.DataBufferElementLength;
+    public readonly int BufferLength => _fileHeader.TelemetryBufferElementLength;
 
     /// <summary>
     /// Copies the active data buffer into the specified span.
@@ -88,7 +88,7 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     /// <returns>A read-only reference to the <see cref="TelemetryBufferHeader"/> in the file header with the highest tick value.</returns>
     public readonly ref readonly TelemetryBufferHeader GetActiveBufferHeaderRef()
     {
-        return ref _fileHeader.DataBufferHeaders[GetActiveBufferIndex()];
+        return ref _fileHeader.TelemetryBufferHeaders[GetActiveBufferIndex()];
     }
 
     /// <summary>
@@ -98,11 +98,11 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     public readonly int GetActiveBufferIndex()
     {
         int activeBufferIndex = 0;
-        int activeBufferTickCount = _fileHeader.DataBufferHeaders[0].TickCount;
+        int activeBufferTickCount = _fileHeader.TelemetryBufferHeaders[0].TickCount;
 
-        for (int i = 1; i < _fileHeader.DataBufferCount; i++)
+        for (int i = 1; i < _fileHeader.TelemetryBufferCount; i++)
         {
-            int tickCount = _fileHeader.DataBufferHeaders[i].TickCount;
+            int tickCount = _fileHeader.TelemetryBufferHeaders[i].TickCount;
 
             if (Math.Max(tickCount, activeBufferTickCount) != activeBufferTickCount)
             {
@@ -121,14 +121,14 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     /// <returns>A read-only reference to the <see cref="TelemetryBufferHeader"/> at the specified index.</returns>
     public readonly ref readonly TelemetryBufferHeader GetBufferHeaderRef(int index)
     {
-        return ref _fileHeader.DataBufferHeaders[index];
+        return ref _fileHeader.TelemetryBufferHeaders[index];
     }
 
     /// <summary>
-    /// Attempts to copy the specified data buffer into the destination span, ensuring that the buffer contents were not overwritten by the
-    /// simulator during the operation.
+    /// Attempts to copy the specified telemetry data buffer into the destination span, ensuring that the buffer contents were not
+    /// overwritten by the simulator during the operation.
     /// </summary>
-    /// <param name="dataBufferHeader">
+    /// <param name="telemetryBufferHeader">
     /// The read-only reference to the <see cref="TelemetryBufferHeader"/> representing the buffer to copy into the destination span.
     /// </param>
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
@@ -136,20 +136,20 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     /// <returns>
     /// <see langword="true"/> if the buffer was not overwritten by the simulator during the operation, otherwise <see langword="false"/>.
     /// </returns>
-    public readonly bool TryCopyBuffer(ref readonly TelemetryBufferHeader dataBufferHeader, Span<byte> destination, out int tickCount)
+    public readonly bool TryCopyBuffer(ref readonly TelemetryBufferHeader telemetryBufferHeader, Span<byte> destination, out int tickCount)
     {
         // Store tick count before copying so we can check to see if it changed afterwards, which would indicate the buffer was overwritten
         // and the operation fails.
-        tickCount = dataBufferHeader.TickCount;
+        tickCount = telemetryBufferHeader.TickCount;
 
-        _data.Slice(dataBufferHeader.BufferOffset, _fileHeader.DataBufferElementLength).CopyTo(destination);
+        _data.Slice(telemetryBufferHeader.BufferOffset, _fileHeader.TelemetryBufferElementLength).CopyTo(destination);
 
-        return tickCount == dataBufferHeader.TickCount;
+        return tickCount == telemetryBufferHeader.TickCount;
     }
 
     /// <summary>
-    /// Attempts to copy the active data buffer into the destination span, ensuring that the buffer contents were not overwritten by the
-    /// simulator during the operation.
+    /// Attempts to copy the active telemetry data buffer into the destination span, ensuring that the buffer contents were not overwritten
+    /// by the simulator during the operation.
     /// </summary>
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
     /// <param name="tickCount">The tick value of the data buffer.</param>

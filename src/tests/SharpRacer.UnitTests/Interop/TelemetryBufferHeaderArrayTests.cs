@@ -9,13 +9,13 @@ public class TelemetryBufferHeaderArrayTests
     [Fact]
     public void FromArray_Test()
     {
-        var dataBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
-        var dataBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(dataBufferHeaders);
+        var telemetryBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
+        var telemetryBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(telemetryBufferHeaders);
 
-        Assert.Equal(dataBufferHeaders[0], dataBufferHeadersArray[0]);
-        Assert.Equal(dataBufferHeaders[1], dataBufferHeadersArray[1]);
-        Assert.Equal(dataBufferHeaders[2], dataBufferHeadersArray[2]);
-        Assert.Equal(dataBufferHeaders[3], dataBufferHeadersArray[3]);
+        Assert.Equal(telemetryBufferHeaders[0], telemetryBufferHeadersArray[0]);
+        Assert.Equal(telemetryBufferHeaders[1], telemetryBufferHeadersArray[1]);
+        Assert.Equal(telemetryBufferHeaders[2], telemetryBufferHeadersArray[2]);
+        Assert.Equal(telemetryBufferHeaders[3], telemetryBufferHeadersArray[3]);
     }
 
     [Fact]

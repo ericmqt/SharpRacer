@@ -20,9 +20,9 @@ internal class TelemetryFileBuilder
             .WithHeaderVersion(DataFileConstants.HeaderVersion)
             .WithStatus(1)
             .WithTickRate(60)
-            .WithDataBufferCount(1)
-            .WithDataBufferElementLength(_dataFrameLength)
-            .WithVariableCount(_variableHeaders.Length);
+            .WithTelemetryBufferCount(1)
+            .WithTelemetryBufferElementLength(_dataFrameLength)
+            .WithTelemetryVariableCount(_variableHeaders.Length);
     }
 
     public static TelemetryFileBuilder Create()

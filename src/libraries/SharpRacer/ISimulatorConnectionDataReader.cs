@@ -12,7 +12,7 @@ public interface ISimulatorConnectionDataReader : IDisposable
     /// </summary>
     /// <returns>The length, in bytes, of the telemetry data buffers.</returns>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    int GetDataBufferLength();
+    int GetTelemetryBufferLength();
 
     /// <summary>
     /// Gets a read-only reference to the <see cref="DataFileHeader"/> structure.

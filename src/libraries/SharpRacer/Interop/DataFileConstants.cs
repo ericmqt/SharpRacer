@@ -26,7 +26,7 @@ public static class DataFileConstants
     public const int MaxDescriptionLength = 64;
 
     /// <summary>
-    /// The maximum number of data buffers that may be present in a data file.
+    /// The maximum number of telemetry data buffers that may be present in a data file.
     /// </summary>
-    public const int MaxDataBuffers = 4;
+    public const int MaxTelemetryBuffers = 4;
 }

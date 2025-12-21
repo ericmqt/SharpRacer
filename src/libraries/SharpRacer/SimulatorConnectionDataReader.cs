@@ -3,6 +3,7 @@ using SharpRacer.Interop;
 using SharpRacer.IO;
 
 namespace SharpRacer;
+
 internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
 {
     private readonly ISimulatorConnection _connection;
@@ -24,13 +25,13 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     protected ReadOnlySpan<byte> Span => _memoryHandle.Memory.Span;
 
     /// <inheritdoc />
-    public int GetDataBufferLength()
+    public int GetTelemetryBufferLength()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
         ref readonly var header = ref GetHeaderRef();
 
-        return header.DataBufferElementLength;
+        return header.TelemetryBufferElementLength;
     }
 
     /// <inheritdoc />
@@ -107,11 +108,11 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
 
         ref readonly var header = ref GetHeaderRef();
 
-        var variableHeaders = new TelemetryVariableHeader[header.VariableCount];
+        var variableHeaders = new TelemetryVariableHeader[header.TelemetryVariableCount];
 
         var variableHeaderBytes = Span.Slice(
-            header.VariableHeaderOffset,
-            header.VariableCount * TelemetryVariableHeader.Size);
+            header.TelemetryVariableHeaderOffset,
+            header.TelemetryVariableCount * TelemetryVariableHeader.Size);
 
         variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders));
 

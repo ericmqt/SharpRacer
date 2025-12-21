@@ -205,11 +205,11 @@ public class TelemetryFileReaderTests
 
         using (var reader = new TelemetryFileReader(fileName))
         {
-            dataFrameBlob = new byte[reader.FileHeader.DataBufferElementLength];
+            dataFrameBlob = new byte[reader.FileHeader.TelemetryBufferElementLength];
 
             var bytesRead = reader.ReadDataFrame(0, dataFrameBlob);
 
-            Assert.Equal(bytesRead, reader.FileHeader.DataBufferElementLength);
+            Assert.Equal(bytesRead, reader.FileHeader.TelemetryBufferElementLength);
         }
 
         // Read 'Foo' value
@@ -256,7 +256,7 @@ public class TelemetryFileReaderTests
         {
             Assert.Throws<ArgumentException>(() =>
             {
-                Span<byte> dataFrameBlob = new byte[reader.FileHeader.DataBufferElementLength - 1];
+                Span<byte> dataFrameBlob = new byte[reader.FileHeader.TelemetryBufferElementLength - 1];
 
                 reader.ReadDataFrame(0, dataFrameBlob);
             });
@@ -341,7 +341,7 @@ public class TelemetryFileReaderTests
             {
                 fileHandle.Close();
 
-                Span<byte> dataFrameBlob = new byte[reader.FileHeader.DataBufferElementLength];
+                Span<byte> dataFrameBlob = new byte[reader.FileHeader.TelemetryBufferElementLength];
 
                 reader.ReadDataFrame(0, dataFrameBlob);
             });

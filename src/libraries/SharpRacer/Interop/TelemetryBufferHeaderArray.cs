@@ -5,15 +5,15 @@ using System.Runtime.InteropServices;
 namespace SharpRacer.Interop;
 
 /// <summary>
-/// Inline <see cref="TelemetryBufferHeader"/> array of <see cref="DataFileConstants.MaxDataBuffers"/> elements.
+/// Inline <see cref="TelemetryBufferHeader"/> array of <see cref="DataFileConstants.MaxTelemetryBuffers"/> elements.
 /// </summary>
-[InlineArray(DataFileConstants.MaxDataBuffers)]
+[InlineArray(DataFileConstants.MaxTelemetryBuffers)]
 public struct TelemetryBufferHeaderArray : IEquatable<TelemetryBufferHeaderArray>
 {
     /// <summary>
     /// The length, in bytes, of an instance of <see cref="TelemetryBufferHeaderArray"/>.
     /// </summary>
-    public const int Size = TelemetryBufferHeader.Size * DataFileConstants.MaxDataBuffers;
+    public const int Size = TelemetryBufferHeader.Size * DataFileConstants.MaxTelemetryBuffers;
 
     [SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Field is required for InlineArray")]
     [SuppressMessage("Style", "IDE0044:Add readonly modifier", Justification = "Inline arrays do not allow readonly fields.")]
@@ -40,7 +40,7 @@ public struct TelemetryBufferHeaderArray : IEquatable<TelemetryBufferHeaderArray
     /// <inheritdoc />
     public readonly bool Equals(TelemetryBufferHeaderArray other)
     {
-        for (int i = 0; i < DataFileConstants.MaxDataBuffers; i++)
+        for (int i = 0; i < DataFileConstants.MaxTelemetryBuffers; i++)
         {
             if (this[i] != other[i])
             {
@@ -56,7 +56,7 @@ public struct TelemetryBufferHeaderArray : IEquatable<TelemetryBufferHeaderArray
     {
         var hc = new HashCode();
 
-        for (int i = 0; i < DataFileConstants.MaxDataBuffers; i++)
+        for (int i = 0; i < DataFileConstants.MaxTelemetryBuffers; i++)
         {
             hc.Add(this[i]);
         }

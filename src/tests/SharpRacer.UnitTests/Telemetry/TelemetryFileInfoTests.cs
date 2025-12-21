@@ -41,7 +41,7 @@ public class TelemetryFileInfoTests
 
         Assert.NotNull(fileInfo.FileInfo);
         Assert.Equal(sessionInfo, fileInfo.SessionInfo);
-        Assert.Equal(writtenHeader.VariableCount, fileInfo.Variables.Count());
+        Assert.Equal(writtenHeader.TelemetryVariableCount, fileInfo.Variables.Count());
         Assert.Equal(sessionStart, fileInfo.SessionStart);
         Assert.Equal(sessionEnd, fileInfo.SessionEnd);
         Assert.Equal(fileInfo.FileName, fileInfo.FileInfo.FullName);

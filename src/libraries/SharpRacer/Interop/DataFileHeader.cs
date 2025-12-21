@@ -33,11 +33,11 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
     /// <param name="sessionInfoVersion">The value to assign to the <see cref="SessionInfoVersion"/> field.</param>
     /// <param name="sessionInfoLength">The value to assign to the <see cref="SessionInfoLength"/> field.</param>
     /// <param name="sessionInfoOffset">The value to assign to the <see cref="SessionInfoOffset"/> field.</param>
-    /// <param name="variableCount">The value to assign to the <see cref="VariableCount"/> field.</param>
-    /// <param name="variableHeaderOffset">The value to assign to the <see cref="VariableHeaderOffset"/> field.</param>
-    /// <param name="dataBufferCount">The value to assign to the <see cref="DataBufferCount"/> field.</param>
-    /// <param name="dataBufferElementLength">The value to assign to the <see cref="DataBufferElementLength"/> field.</param>
-    /// <param name="dataBufferHeaders">The value to assign to the <see cref="DataBufferHeaders"/> field.</param>
+    /// <param name="telemetryVariableCount">The value to assign to the <see cref="TelemetryVariableCount"/> field.</param>
+    /// <param name="telemetryVariableHeaderOffset">The value to assign to the <see cref="TelemetryVariableHeaderOffset"/> field.</param>
+    /// <param name="telemetryBufferCount">The value to assign to the <see cref="TelemetryBufferCount"/> field.</param>
+    /// <param name="telemetryBufferElementLength">The value to assign to the <see cref="TelemetryBufferElementLength"/> field.</param>
+    /// <param name="telemetryBufferHeaders">The value to assign to the <see cref="TelemetryBufferHeaders"/> field.</param>
     /// <param name="diskSubHeader">The value to assign to the <see cref="DiskSubHeader"/> field.</param>
     public DataFileHeader(
         int headerVersion,
@@ -46,11 +46,11 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         int sessionInfoVersion,
         int sessionInfoLength,
         int sessionInfoOffset,
-        int variableCount,
-        int variableHeaderOffset,
-        int dataBufferCount,
-        int dataBufferElementLength,
-        TelemetryBufferHeaderArray dataBufferHeaders,
+        int telemetryVariableCount,
+        int telemetryVariableHeaderOffset,
+        int telemetryBufferCount,
+        int telemetryBufferElementLength,
+        TelemetryBufferHeaderArray telemetryBufferHeaders,
         DiskSubHeader diskSubHeader)
     {
         HeaderVersion = headerVersion;
@@ -61,12 +61,12 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         SessionInfoLength = sessionInfoLength;
         SessionInfoOffset = sessionInfoOffset;
 
-        VariableCount = variableCount;
-        VariableHeaderOffset = variableHeaderOffset;
+        TelemetryVariableCount = telemetryVariableCount;
+        TelemetryVariableHeaderOffset = telemetryVariableHeaderOffset;
 
-        DataBufferCount = dataBufferCount;
-        DataBufferElementLength = dataBufferElementLength;
-        DataBufferHeaders = dataBufferHeaders;
+        TelemetryBufferCount = telemetryBufferCount;
+        TelemetryBufferElementLength = telemetryBufferElementLength;
+        TelemetryBufferHeaders = telemetryBufferHeaders;
 
         DiskSubHeader = diskSubHeader;
     }
@@ -108,34 +108,34 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
     public readonly int SessionInfoOffset;
 
     /// <summary>
-    /// The length of the array of <see cref="TelemetryVariableHeader"/> entries pointed to by <see cref="VariableHeaderOffset"/>.
+    /// The length of the array of <see cref="TelemetryVariableHeader"/> entries pointed to by <see cref="TelemetryVariableHeaderOffset"/>.
     /// </summary>
-    [FieldOffset(FieldOffsets.VariableCount)]
-    public readonly int VariableCount;
+    [FieldOffset(FieldOffsets.TelemetryVariableCount)]
+    public readonly int TelemetryVariableCount;
 
     /// <summary>
     /// The offset from the beginning of the data file where the array of <see cref="TelemetryVariableHeader"/> entries is located.
     /// </summary>
-    [FieldOffset(FieldOffsets.VariableHeaderOffset)]
-    public readonly int VariableHeaderOffset;
+    [FieldOffset(FieldOffsets.TelemetryVariableHeaderOffset)]
+    public readonly int TelemetryVariableHeaderOffset;
 
     /// <summary>
     /// The number of data buffers.
     /// </summary>
-    [FieldOffset(FieldOffsets.DataBufferCount)]
-    public readonly int DataBufferCount;
+    [FieldOffset(FieldOffsets.TelemetryBufferCount)]
+    public readonly int TelemetryBufferCount;
 
     /// <summary>
     /// The length, in bytes, of a single data buffer.
     /// </summary>
-    [FieldOffset(FieldOffsets.DataBufferElementLength)]
-    public readonly int DataBufferElementLength;
+    [FieldOffset(FieldOffsets.TelemetryBufferElementLength)]
+    public readonly int TelemetryBufferElementLength;
 
     /// <summary>
     /// An inline array of <see cref="TelemetryBufferHeader"/> elements.
     /// </summary>
-    [FieldOffset(FieldOffsets.DataBufferHeaderArray)]
-    public readonly TelemetryBufferHeaderArray DataBufferHeaders;
+    [FieldOffset(FieldOffsets.TelemetryBufferHeaderArray)]
+    public readonly TelemetryBufferHeaderArray TelemetryBufferHeaders;
 
     /// <summary>
     /// The sub-header used by telemetry files.
@@ -190,11 +190,11 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
                SessionInfoVersion == other.SessionInfoVersion &&
                SessionInfoLength == other.SessionInfoLength &&
                SessionInfoOffset == other.SessionInfoOffset &&
-               VariableCount == other.VariableCount &&
-               VariableHeaderOffset == other.VariableHeaderOffset &&
-               DataBufferCount == other.DataBufferCount &&
-               DataBufferElementLength == other.DataBufferElementLength &&
-               DataBufferHeaders.Equals(other.DataBufferHeaders) &&
+               TelemetryVariableCount == other.TelemetryVariableCount &&
+               TelemetryVariableHeaderOffset == other.TelemetryVariableHeaderOffset &&
+               TelemetryBufferCount == other.TelemetryBufferCount &&
+               TelemetryBufferElementLength == other.TelemetryBufferElementLength &&
+               TelemetryBufferHeaders.Equals(other.TelemetryBufferHeaders) &&
                DiskSubHeader.Equals(other.DiskSubHeader);
     }
 
@@ -209,11 +209,11 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         hash.Add(SessionInfoVersion);
         hash.Add(SessionInfoLength);
         hash.Add(SessionInfoOffset);
-        hash.Add(VariableCount);
-        hash.Add(VariableHeaderOffset);
-        hash.Add(DataBufferCount);
-        hash.Add(DataBufferElementLength);
-        hash.Add(DataBufferHeaders);
+        hash.Add(TelemetryVariableCount);
+        hash.Add(TelemetryVariableHeaderOffset);
+        hash.Add(TelemetryBufferCount);
+        hash.Add(TelemetryBufferElementLength);
+        hash.Add(TelemetryBufferHeaders);
         hash.Add(DiskSubHeader);
 
         return hash.ToHashCode();
@@ -267,24 +267,24 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         public const int SessionInfoOffset = 20;
 
         /// <summary>
-        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.VariableCount"/> field is located.
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.TelemetryVariableCount"/> field is located.
         /// </summary>
-        public const int VariableCount = 24;
+        public const int TelemetryVariableCount = 24;
 
         /// <summary>
-        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.VariableHeaderOffset"/> field is located.
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.TelemetryVariableHeaderOffset"/> field is located.
         /// </summary>
-        public const int VariableHeaderOffset = 28;
+        public const int TelemetryVariableHeaderOffset = 28;
 
         /// <summary>
-        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DataBufferCount"/> field is located.
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.TelemetryBufferCount"/> field is located.
         /// </summary>
-        public const int DataBufferCount = 32;
+        public const int TelemetryBufferCount = 32;
 
         /// <summary>
-        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DataBufferElementLength"/> field is located.
+        /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.TelemetryBufferElementLength"/> field is located.
         /// </summary>
-        public const int DataBufferElementLength = 36;
+        public const int TelemetryBufferElementLength = 36;
 
         /// <summary>
         /// The offset into a <see cref="DataFileHeader"/> structure where the padding field is located.
@@ -294,7 +294,7 @@ public readonly struct DataFileHeader : IEquatable<DataFileHeader>
         /// <summary>
         /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="TelemetryBufferHeader"/> array field is located.
         /// </summary>
-        public const int DataBufferHeaderArray = 48;
+        public const int TelemetryBufferHeaderArray = 48;
 
         /// <summary>
         /// The offset into a <see cref="DataFileHeader"/> structure where the <see cref="DataFileHeader.DiskSubHeader"/> field is located.

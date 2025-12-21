@@ -94,9 +94,9 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// Gets the length, in bytes, of the telemetry data buffers in the data file.
     /// </summary>
     /// <returns>The length, in bytes, of the telemetry data buffers.</returns>
-    public readonly int GetDataBufferLength()
+    public readonly int GetTelemetryBufferLength()
     {
-        return _fileHeader.DataBufferElementLength;
+        return _fileHeader.TelemetryBufferElementLength;
     }
 
     /// <summary>
@@ -127,9 +127,9 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// Reads the active telemetry data buffer from the data file and returns it as a byte array.
     /// </summary>
     /// <returns>A byte array containing the contents of the active telemetry data buffer.</returns>
-    public readonly byte[] ReadActiveDataBuffer()
+    public readonly byte[] ReadActiveTelemetryBuffer()
     {
-        return ReadActiveDataBuffer(out _);
+        return ReadActiveTelemetryBuffer(out _);
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// </summary>
     /// <param name="tickCount">The tick value of the data buffer.</param>
     /// <returns>A byte array containing the contents of the active telemetry data buffer.</returns>
-    public readonly byte[] ReadActiveDataBuffer(out int tickCount)
+    public readonly byte[] ReadActiveTelemetryBuffer(out int tickCount)
     {
         using var reader = new TelemetryBufferReader(_spanOwner.Span);
 
@@ -157,9 +157,9 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// Copies the active telemetry data buffer from the data file into the specified span.
     /// </summary>
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
-    public readonly void ReadActiveDataBuffer(Span<byte> destination)
+    public readonly void ReadActiveTelemetryBuffer(Span<byte> destination)
     {
-        ReadActiveDataBuffer(destination, out _);
+        ReadActiveTelemetryBuffer(destination, out _);
     }
 
     /// <summary>
@@ -167,7 +167,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// </summary>
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
     /// <param name="tickCount">The tick value of the data buffer.</param>
-    public readonly void ReadActiveDataBuffer(Span<byte> destination, out int tickCount)
+    public readonly void ReadActiveTelemetryBuffer(Span<byte> destination, out int tickCount)
     {
         using var reader = new TelemetryBufferReader(_spanOwner.Span);
 
@@ -188,11 +188,11 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <returns>An array of <see cref="TelemetryVariableHeader"/> structures.</returns>
     public readonly TelemetryVariableHeader[] ReadTelemetryVariableHeaders()
     {
-        var variableHeaders = new TelemetryVariableHeader[_fileHeader.VariableCount];
+        var variableHeaders = new TelemetryVariableHeader[_fileHeader.TelemetryVariableCount];
 
         var variableHeaderBytes = _spanOwner.Span.Slice(
-            _fileHeader.VariableHeaderOffset,
-            _fileHeader.VariableCount * TelemetryVariableHeader.Size);
+            _fileHeader.TelemetryVariableHeaderOffset,
+            _fileHeader.TelemetryVariableCount * TelemetryVariableHeader.Size);
 
         variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders));
 

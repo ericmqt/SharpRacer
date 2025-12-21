@@ -80,8 +80,8 @@ internal class ConnectionTelemetryVariableInfoProvider : IConnectionTelemetryVar
             // Read variable headers from connection
             ref readonly var header = ref MemoryMarshal.AsRef<DataFileHeader>(dataHandle.Span[..DataFileHeader.Size]);
 
-            var variableHeaders = new TelemetryVariableHeader[header.VariableCount];
-            var variableHeaderBytes = dataHandle.Span.Slice(header.VariableHeaderOffset, TelemetryVariableHeader.Size * header.VariableCount);
+            var variableHeaders = new TelemetryVariableHeader[header.TelemetryVariableCount];
+            var variableHeaderBytes = dataHandle.Span.Slice(header.TelemetryVariableHeaderOffset, TelemetryVariableHeader.Size * header.TelemetryVariableCount);
 
             variableHeaderBytes.CopyTo(MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders));
 

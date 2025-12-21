@@ -16,9 +16,9 @@ internal static class TelemetryFile
     /// <returns>The expected length, in bytes, of the telemetry file.</returns>
     public static int CalculateFileLengthFromHeader(in DataFileHeader fileHeader)
     {
-        var totalDataBufferLength = fileHeader.DataBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount;
+        var totalTelemetryBufferLength = fileHeader.TelemetryBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount;
 
-        return fileHeader.DataBufferHeaders[0].BufferOffset + totalDataBufferLength;
+        return fileHeader.TelemetryBufferHeaders[0].BufferOffset + totalTelemetryBufferLength;
     }
 
     /// <summary>
@@ -83,18 +83,18 @@ internal static class TelemetryFile
             return false;
         }
 
-        if (fileHeader.DataBufferCount < 1 || fileHeader.DataBufferCount > DataFileConstants.MaxDataBuffers)
+        if (fileHeader.TelemetryBufferCount < 1 || fileHeader.TelemetryBufferCount > DataFileConstants.MaxTelemetryBuffers)
         {
             return false;
         }
 
         // Check that the data buffer length is at least one byte.
-        if (fileHeader.DataBufferElementLength < 1)
+        if (fileHeader.TelemetryBufferElementLength < 1)
         {
             return false;
         }
 
-        if (fileHeader.VariableCount < 0)
+        if (fileHeader.TelemetryVariableCount < 0)
         {
             return false;
         }
@@ -110,7 +110,7 @@ internal static class TelemetryFile
         }
 
         // Verify offsets are not negative or point to an offset inside the file header
-        if (fileHeader.VariableHeaderOffset < 0 || fileHeader.VariableHeaderOffset < DataFileHeader.Size)
+        if (fileHeader.TelemetryVariableHeaderOffset < 0 || fileHeader.TelemetryVariableHeaderOffset < DataFileHeader.Size)
         {
             return false;
         }
@@ -120,7 +120,7 @@ internal static class TelemetryFile
             return false;
         }
 
-        if (fileHeader.DataBufferHeaders[0].BufferOffset < DataFileHeader.Size)
+        if (fileHeader.TelemetryBufferHeaders[0].BufferOffset < DataFileHeader.Size)
         {
             return false;
         }

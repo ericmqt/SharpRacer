@@ -9,7 +9,7 @@ namespace SharpRacer.IO;
 /// </summary>
 public class TelemetryFileReader : IDisposable
 {
-    private readonly TelemetryBufferHeader _dataBufferHeader;
+    private readonly TelemetryBufferHeader _telemetryBufferHeader;
     private readonly SafeFileHandle _fileHandle;
     private readonly DataFileHeader _fileHeader;
     private bool _isDisposed;
@@ -98,10 +98,10 @@ public class TelemetryFileReader : IDisposable
         DataFrameCount = _fileHeader.DiskSubHeader.SessionRecordCount;
 
         // An IBT file only contains one data buffer header, the remainder will be empty
-        _dataBufferHeader = _fileHeader.DataBufferHeaders[0];
+        _telemetryBufferHeader = _fileHeader.TelemetryBufferHeaders[0];
 
         // Calculate the minimum size of the file and check against the actual length of the file
-        if (!CheckFileSize(fileHandle, _fileHeader, _dataBufferHeader, out fileLength, out var expectedLength))
+        if (!CheckFileSize(fileHandle, _fileHeader, _telemetryBufferHeader, out fileLength, out var expectedLength))
         {
             if (ownsHandle)
             {
@@ -142,9 +142,9 @@ public class TelemetryFileReader : IDisposable
         ArgumentOutOfRangeException.ThrowIfLessThan(frameIndex, 0);
         ArgumentOutOfRangeException.ThrowIfGreaterThan(frameIndex, _fileHeader.DiskSubHeader.SessionRecordCount, nameof(frameIndex));
 
-        var frameBlob = new byte[_fileHeader.DataBufferElementLength];
+        var frameBlob = new byte[_fileHeader.TelemetryBufferElementLength];
 
-        var offset = _dataBufferHeader.BufferOffset + frameIndex * _fileHeader.DataBufferElementLength;
+        var offset = _telemetryBufferHeader.BufferOffset + frameIndex * _fileHeader.TelemetryBufferElementLength;
 
         var bytesRead = RandomAccess.Read(_fileHandle, frameBlob, offset);
 
@@ -171,16 +171,16 @@ public class TelemetryFileReader : IDisposable
         ArgumentOutOfRangeException.ThrowIfLessThan(frameIndex, 0);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(frameIndex, DataFrameCount, nameof(frameIndex));
 
-        if (buffer.Length < _fileHeader.DataBufferElementLength)
+        if (buffer.Length < _fileHeader.TelemetryBufferElementLength)
         {
             throw new ArgumentException(
-                $"The specified buffer has a length ({buffer.Length}) less than the length of a data frame ({_fileHeader.DataBufferElementLength}).");
+                $"The specified buffer has a length ({buffer.Length}) less than the length of a data frame ({_fileHeader.TelemetryBufferElementLength}).");
         }
 
-        var offset = _dataBufferHeader.BufferOffset + frameIndex * _fileHeader.DataBufferElementLength;
+        var offset = _telemetryBufferHeader.BufferOffset + frameIndex * _fileHeader.TelemetryBufferElementLength;
         var bytesRead = RandomAccess.Read(_fileHandle, buffer, offset);
 
-        VerifyBytesRead(bytesRead, _fileHeader.DataBufferElementLength);
+        VerifyBytesRead(bytesRead, _fileHeader.TelemetryBufferElementLength);
 
         return bytesRead;
     }
@@ -196,14 +196,14 @@ public class TelemetryFileReader : IDisposable
     {
         VerifyCanRead();
 
-        var variableHeaders = new TelemetryVariableHeader[_fileHeader.VariableCount];
+        var variableHeaders = new TelemetryVariableHeader[_fileHeader.TelemetryVariableCount];
 
         var bytesRead = RandomAccess.Read(
             _fileHandle,
             MemoryMarshal.AsBytes((Span<TelemetryVariableHeader>)variableHeaders),
-            _fileHeader.VariableHeaderOffset);
+            _fileHeader.TelemetryVariableHeaderOffset);
 
-        VerifyBytesRead(bytesRead, TelemetryVariableHeader.Size * _fileHeader.VariableCount);
+        VerifyBytesRead(bytesRead, TelemetryVariableHeader.Size * _fileHeader.TelemetryVariableCount);
 
         return variableHeaders;
     }
@@ -231,7 +231,7 @@ public class TelemetryFileReader : IDisposable
     private static bool CheckFileSize(
         SafeFileHandle fileHandle,
         in DataFileHeader fileHeader,
-        in TelemetryBufferHeader dataBufferHeader,
+        in TelemetryBufferHeader telemetryBufferHeader,
         out long fileLength,
         out long expectedLength)
     {
@@ -239,8 +239,8 @@ public class TelemetryFileReader : IDisposable
 
         fileLength = RandomAccess.GetLength(fileHandle);
 
-        expectedLength = dataBufferHeader.BufferOffset +
-            fileHeader.DataBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount;
+        expectedLength = telemetryBufferHeader.BufferOffset +
+            fileHeader.TelemetryBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount;
 
         return fileLength >= expectedLength;
     }

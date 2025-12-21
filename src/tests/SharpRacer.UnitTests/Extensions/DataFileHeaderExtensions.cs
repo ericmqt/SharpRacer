@@ -1,6 +1,7 @@
 ﻿using SharpRacer.Interop;
 
 namespace SharpRacer;
+
 internal static class DataFileHeaderExtensions
 {
     public static DataFileHeader With(
@@ -11,11 +12,11 @@ internal static class DataFileHeaderExtensions
         int? sessionInfoVersion = null,
         int? sessionInfoLength = null,
         int? sessionInfoOffset = null,
-        int? variableCount = null,
-        int? variableHeaderOffset = null,
-        int? dataBufferCount = null,
-        int? dataBufferElementLength = null,
-        TelemetryBufferHeaderArray? dataBufferHeaders = null,
+        int? telemetryVariableCount = null,
+        int? telemetryVariableHeaderOffset = null,
+        int? telemetryBufferCount = null,
+        int? telemetryBufferElementLength = null,
+        TelemetryBufferHeaderArray? telemetryBufferHeaders = null,
         DiskSubHeader? diskSubHeader = null)
     {
         return new DataFileHeader(
@@ -25,27 +26,29 @@ internal static class DataFileHeaderExtensions
                 sessionInfoVersion ?? fileHeader.SessionInfoVersion,
                 sessionInfoLength ?? fileHeader.SessionInfoLength,
                 sessionInfoOffset ?? fileHeader.SessionInfoOffset,
-                variableCount ?? fileHeader.VariableCount,
-                variableHeaderOffset ?? fileHeader.VariableHeaderOffset,
-                dataBufferCount ?? fileHeader.DataBufferCount,
-                dataBufferElementLength ?? fileHeader.DataBufferElementLength,
-                dataBufferHeaders ?? fileHeader.DataBufferHeaders,
+                telemetryVariableCount ?? fileHeader.TelemetryVariableCount,
+                telemetryVariableHeaderOffset ?? fileHeader.TelemetryVariableHeaderOffset,
+                telemetryBufferCount ?? fileHeader.TelemetryBufferCount,
+                telemetryBufferElementLength ?? fileHeader.TelemetryBufferElementLength,
+                telemetryBufferHeaders ?? fileHeader.TelemetryBufferHeaders,
                 diskSubHeader ?? fileHeader.DiskSubHeader);
     }
 
-    public static DataFileHeader WithDataBufferCount(this in DataFileHeader fileHeader, int dataBufferCount)
+    public static DataFileHeader WithTelemetryBufferCount(this in DataFileHeader fileHeader, int telemetryBufferCount)
     {
-        return fileHeader.With(dataBufferCount: dataBufferCount);
+        return fileHeader.With(telemetryBufferCount: telemetryBufferCount);
     }
 
-    public static DataFileHeader WithDataBufferHeaders(this in DataFileHeader fileHeader, TelemetryBufferHeaderArray dataBufferHeaders)
+    public static DataFileHeader WithTelemetryBufferHeaders(
+        this in DataFileHeader fileHeader,
+        TelemetryBufferHeaderArray telemetryBufferHeaders)
     {
-        return fileHeader.With(dataBufferHeaders: dataBufferHeaders);
+        return fileHeader.With(telemetryBufferHeaders: telemetryBufferHeaders);
     }
 
-    public static DataFileHeader WithDataBufferElementLength(this in DataFileHeader fileHeader, int dataBufferElementLength)
+    public static DataFileHeader WithTelemetryBufferElementLength(this in DataFileHeader fileHeader, int telemetryBufferElementLength)
     {
-        return fileHeader.With(dataBufferElementLength: dataBufferElementLength);
+        return fileHeader.With(telemetryBufferElementLength: telemetryBufferElementLength);
     }
 
     public static DataFileHeader WithDiskSubHeader(this in DataFileHeader fileHeader, DiskSubHeader diskSubHeader)
@@ -83,13 +86,13 @@ internal static class DataFileHeaderExtensions
         return fileHeader.With(tickRate: tickRate);
     }
 
-    public static DataFileHeader WithVariableCount(this in DataFileHeader fileHeader, int variableCount)
+    public static DataFileHeader WithTelemetryVariableCount(this in DataFileHeader fileHeader, int variableCount)
     {
-        return fileHeader.With(variableCount: variableCount);
+        return fileHeader.With(telemetryVariableCount: variableCount);
     }
 
-    public static DataFileHeader WithVariableHeaderOffset(this in DataFileHeader fileHeader, int variableHeaderOffset)
+    public static DataFileHeader WithTelemetryVariableHeaderOffset(this in DataFileHeader fileHeader, int variableHeaderOffset)
     {
-        return fileHeader.With(variableHeaderOffset: variableHeaderOffset);
+        return fileHeader.With(telemetryVariableHeaderOffset: variableHeaderOffset);
     }
 }

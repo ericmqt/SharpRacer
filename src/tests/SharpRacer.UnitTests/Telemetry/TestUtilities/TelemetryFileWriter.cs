@@ -15,7 +15,7 @@ internal class TelemetryFileWriter
     {
         ArgumentException.ThrowIfNullOrEmpty(fileName);
 
-        fileHeader = fileHeader.WithDataBufferElementLength(variableHeaders.GetDataFrameLength());
+        fileHeader = fileHeader.WithTelemetryBufferElementLength(variableHeaders.GetDataFrameLength());
 
         if (dataFrames != null && dataFrames.Any())
         {
@@ -31,10 +31,10 @@ internal class TelemetryFileWriter
 
             var dataFrameLength = variableHeaders.GetDataFrameLength();
 
-            if (!dataFrames.All(x => x.Length == fileHeader.DataBufferElementLength))
+            if (!dataFrames.All(x => x.Length == fileHeader.TelemetryBufferElementLength))
             {
                 throw new ArgumentException(
-                    $"One or more data frames has a length less than the required length {fileHeader.DataBufferElementLength} based on the variable headers.",
+                    $"One or more data frames has a length less than the required length {fileHeader.TelemetryBufferElementLength} based on the variable headers.",
                     nameof(dataFrames));
             }
         }
@@ -80,7 +80,7 @@ internal class TelemetryFileWriter
         var dataFramesHeader = new TelemetryBufferHeader(0, (int)stream.Position);
 
         fileHeader = fileHeader
-            .WithDataBufferHeaders(TelemetryBufferHeaderArray.FromArray([dataFramesHeader, default, default, default]))
+            .WithTelemetryBufferHeaders(TelemetryBufferHeaderArray.FromArray([dataFramesHeader, default, default, default]))
             .WithDiskSubHeader(
                 fileHeader.DiskSubHeader.WithSessionRecordCount(dataFrames?.Count ?? 0));
 
@@ -110,8 +110,8 @@ internal class TelemetryFileWriter
     {
         // Variable headers
         fileHeader = fileHeader
-            .WithVariableCount(variableHeaders?.Length ?? 0)
-            .WithVariableHeaderOffset((int)stream.Position);
+            .WithTelemetryVariableCount(variableHeaders?.Length ?? 0)
+            .WithTelemetryVariableHeaderOffset((int)stream.Position);
 
         if (variableHeaders != null && variableHeaders.Length > 0)
         {

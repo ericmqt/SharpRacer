@@ -2,6 +2,7 @@
 using SharpRacer.IO;
 
 namespace SharpRacer.Telemetry;
+
 public class TelemetryFileValidateHeaderTests
 {
     [Fact]
@@ -10,60 +11,60 @@ public class TelemetryFileValidateHeaderTests
         var header = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.True(TelemetryFile.ValidateHeader(header));
     }
 
     [Fact]
-    public void TelemetryFile_ValidateHeader_InvalidDataBufferCountTest()
+    public void TelemetryFile_ValidateHeader_InvalidTelemetryBufferCountTest()
     {
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, dataBufferCount: -4)));
+                CopyHeader(validHeader, telemetryBufferCount: -4)));
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, dataBufferCount: DataFileConstants.MaxDataBuffers + 1)));
+                CopyHeader(validHeader, telemetryBufferCount: DataFileConstants.MaxTelemetryBuffers + 1)));
     }
 
     [Fact]
-    public void TelemetryFile_ValidateHeader_InvalidDataBufferHeaderBufferOffsetTest()
+    public void TelemetryFile_ValidateHeader_InvalidTelemetryBufferHeaderBufferOffsetTest()
     {
         var fileHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         var bufferHeaderArray = TelemetryBufferHeaderArray.FromArray(
             [new TelemetryBufferHeader(43, DataFileHeader.Size - 3), default, default, default]);
 
-        fileHeader = fileHeader.WithDataBufferHeaders(bufferHeaderArray);
+        fileHeader = fileHeader.WithTelemetryBufferHeaders(bufferHeaderArray);
 
         Assert.False(
             TelemetryFile.ValidateHeader(fileHeader));
     }
 
     [Fact]
-    public void TelemetryFile_ValidateHeader_InvalidDataBufferElementLengthTest()
+    public void TelemetryFile_ValidateHeader_InvalidTelemetryBufferElementLengthTest()
     {
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, dataBufferElementLength: 0)));
+                CopyHeader(validHeader, telemetryBufferElementLength: 0)));
     }
 
     [Fact]
@@ -72,8 +73,8 @@ public class TelemetryFileValidateHeaderTests
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         var testHeader = CopyHeader(validHeader, headerVersion: 12345);
 
@@ -86,8 +87,8 @@ public class TelemetryFileValidateHeaderTests
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
@@ -100,8 +101,8 @@ public class TelemetryFileValidateHeaderTests
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
@@ -118,8 +119,8 @@ public class TelemetryFileValidateHeaderTests
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
@@ -132,12 +133,12 @@ public class TelemetryFileValidateHeaderTests
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, variableCount: -4)));
+                CopyHeader(validHeader, telemetryVariableCount: -4)));
     }
 
     [Fact]
@@ -146,33 +147,33 @@ public class TelemetryFileValidateHeaderTests
         var validHeader = CreateValidHeader(
             variableCount: 42,
             sessionInfoLength: 256,
-            dataBufferElementLength: 1024,
-            dataBufferFrameCount: 4096);
+            telemetryBufferElementLength: 1024,
+            telemetryaBufferFrameCount: 4096);
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, variableHeaderOffset: -4)));
+                CopyHeader(validHeader, telemetryVariableHeaderOffset: -4)));
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, variableHeaderOffset: DataFileHeader.Size - 1)));
+                CopyHeader(validHeader, telemetryVariableHeaderOffset: DataFileHeader.Size - 1)));
     }
 
     private static DataFileHeader CreateValidHeader(
         int variableCount,
         int sessionInfoLength,
-        int dataBufferElementLength,
-        int dataBufferFrameCount)
+        int telemetryBufferElementLength,
+        int telemetryaBufferFrameCount)
     {
         var variableHeaderBufferOffset = DataFileHeader.Size;
         var variableHeaderBufferLength = variableCount * TelemetryVariableHeader.Size;
 
         var sessionInfoOffset = variableHeaderBufferOffset + variableHeaderBufferLength;
 
-        var dataBufferHeader = new TelemetryBufferHeader(123, sessionInfoOffset + sessionInfoLength);
+        var telemetryBufferHeader = new TelemetryBufferHeader(123, sessionInfoOffset + sessionInfoLength);
 
-        var dataBufferHeaders = TelemetryBufferHeaderArray.FromArray([dataBufferHeader, default, default, default]);
-        var diskSubHeader = new DiskSubHeader(123, 456, 789, 20, dataBufferFrameCount);
+        var telemetryBufferHeaders = TelemetryBufferHeaderArray.FromArray([telemetryBufferHeader, default, default, default]);
+        var diskSubHeader = new DiskSubHeader(123, 456, 789, 20, telemetryaBufferFrameCount);
 
         var header = new DataFileHeader(
             headerVersion: DataFileConstants.HeaderVersion,
@@ -181,11 +182,11 @@ public class TelemetryFileValidateHeaderTests
             sessionInfoVersion: 1,
             sessionInfoLength: sessionInfoLength,
             sessionInfoOffset: sessionInfoOffset,
-            variableCount: variableCount,
-            variableHeaderOffset: variableHeaderBufferOffset,
-            dataBufferCount: 1,
-            dataBufferElementLength: dataBufferElementLength,
-            dataBufferHeaders: dataBufferHeaders,
+            telemetryVariableCount: variableCount,
+            telemetryVariableHeaderOffset: variableHeaderBufferOffset,
+            telemetryBufferCount: 1,
+            telemetryBufferElementLength: telemetryBufferElementLength,
+            telemetryBufferHeaders: telemetryBufferHeaders,
             diskSubHeader: diskSubHeader);
 
         return header;
@@ -198,11 +199,11 @@ public class TelemetryFileValidateHeaderTests
         int? sessionInfoVersion = null,
         int? sessionInfoLength = null,
         int? sessionInfoOffset = null,
-        int? variableCount = null,
-        int? variableHeaderOffset = null,
-        int? dataBufferCount = null,
-        int? dataBufferElementLength = null,
-        TelemetryBufferHeaderArray? dataBufferHeaders = null,
+        int? telemetryVariableCount = null,
+        int? telemetryVariableHeaderOffset = null,
+        int? telemetryBufferCount = null,
+        int? telemetryBufferElementLength = null,
+        TelemetryBufferHeaderArray? telemetryBufferHeaders = null,
         DiskSubHeader? diskSubHeader = null)
     {
         return new DataFileHeader(
@@ -212,11 +213,11 @@ public class TelemetryFileValidateHeaderTests
                 sessionInfoVersion ?? header.SessionInfoVersion,
                 sessionInfoLength ?? header.SessionInfoLength,
                 sessionInfoOffset ?? header.SessionInfoOffset,
-                variableCount ?? header.VariableCount,
-                variableHeaderOffset ?? header.VariableHeaderOffset,
-                dataBufferCount ?? header.DataBufferCount,
-                dataBufferElementLength ?? header.DataBufferElementLength,
-                dataBufferHeaders ?? header.DataBufferHeaders,
+                telemetryVariableCount ?? header.TelemetryVariableCount,
+                telemetryVariableHeaderOffset ?? header.TelemetryVariableHeaderOffset,
+                telemetryBufferCount ?? header.TelemetryBufferCount,
+                telemetryBufferElementLength ?? header.TelemetryBufferElementLength,
+                telemetryBufferHeaders ?? header.TelemetryBufferHeaders,
                 diskSubHeader ?? header.DiskSubHeader);
     }
 }
