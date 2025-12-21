@@ -131,11 +131,11 @@ public abstract class TelemetryVariableBase<T> : ITelemetryVariable<T>
     /// Initializes an instance of <see cref="TelemetryVariableBase{T}"/> from the specified variable descriptor and <see cref="ITelemetryVariableInfoProvider"/>.
     /// </summary>
     /// <param name="variableDescriptor">The variable descriptor.</param>
-    /// <param name="dataVariableInfoProvider">
+    /// <param name="variableInfoProvider">
     /// The <see cref="ITelemetryVariableInfoProvider"/> instance used to notify this instance when the telemetry variable becomes available in
     /// the data source.
     /// </param>
-    protected TelemetryVariableBase(TelemetryVariableDescriptor variableDescriptor, ITelemetryVariableInfoProvider dataVariableInfoProvider)
+    protected TelemetryVariableBase(TelemetryVariableDescriptor variableDescriptor, ITelemetryVariableInfoProvider variableInfoProvider)
     {
         ArgumentNullException.ThrowIfNull(variableDescriptor);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableDescriptor.ValueType);
@@ -147,7 +147,7 @@ public abstract class TelemetryVariableBase<T> : ITelemetryVariable<T>
 
         _dataOffset = -1;
 
-        dataVariableInfoProvider.NotifyTelemetryVariableActivated(variableDescriptor.Name, SetVariableInfo);
+        variableInfoProvider.NotifyTelemetryVariableActivated(variableDescriptor.Name, SetVariableInfo);
     }
 
     /// <inheritdoc />
@@ -214,8 +214,8 @@ public abstract class TelemetryVariableBase<T> : ITelemetryVariable<T>
 
     private void ValidateVariableInfo(TelemetryVariableInfo variableInfo, string name, int valueCount)
     {
-        TelemetryVariableInitializationException.ThrowIfDataVariableInfoNameIsNotEqual(GetType(), variableInfo, name);
-        TelemetryVariableInitializationException.ThrowIfDataVariableInfoValueCountIsNotEqual(GetType(), variableInfo, valueCount);
+        TelemetryVariableInitializationException.ThrowIfVariableInfoNameIsNotEqual(GetType(), variableInfo, name);
+        TelemetryVariableInitializationException.ThrowIfVariableInfoValueCountIsNotEqual(GetType(), variableInfo, valueCount);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<T>(GetType(), variableInfo.ValueType);
     }
 }

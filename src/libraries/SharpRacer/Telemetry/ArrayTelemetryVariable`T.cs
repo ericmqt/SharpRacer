@@ -57,12 +57,12 @@ public class ArrayTelemetryVariable<T> : TelemetryVariableBase<T>, IArrayTelemet
     /// Initializes an instance of <see cref="ArrayTelemetryVariable{T}"/> using the specified <see cref="ITelemetryVariableInfoProvider"/>.
     /// </summary>
     /// <param name="variableDescriptor">The variable descriptor.</param>
-    /// <param name="dataVariableInfoProvider">
+    /// <param name="variableInfoProvider">
     /// The <see cref="ITelemetryVariableInfoProvider"/> instance used to notify this instance when the telemetry variable becomes available in
     /// the data source.
     /// </param>
-    public ArrayTelemetryVariable(TelemetryVariableDescriptor variableDescriptor, ITelemetryVariableInfoProvider dataVariableInfoProvider)
-        : base(variableDescriptor, dataVariableInfoProvider)
+    public ArrayTelemetryVariable(TelemetryVariableDescriptor variableDescriptor, ITelemetryVariableInfoProvider variableInfoProvider)
+        : base(variableDescriptor, variableInfoProvider)
     {
 
     }

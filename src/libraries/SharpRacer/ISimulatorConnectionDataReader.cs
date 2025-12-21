@@ -39,7 +39,7 @@ public interface ISimulatorConnectionDataReader : IDisposable
     /// </summary>
     /// <returns>A byte array containing the contents of the active telemetry data buffer.</returns>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    byte[] ReadActiveDataBuffer();
+    byte[] ReadActiveTelemetryBuffer();
 
     /// <summary>
     /// Returns the active telemetry data buffer as a byte array.
@@ -47,14 +47,14 @@ public interface ISimulatorConnectionDataReader : IDisposable
     /// <param name="tickCount">The tick value of the data buffer.</param>
     /// <returns>A byte array containing the contents of the active telemetry data buffer.</returns>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    byte[] ReadActiveDataBuffer(out int tickCount);
+    byte[] ReadActiveTelemetryBuffer(out int tickCount);
 
     /// <summary>
     /// Copies the active telemetry data buffer into the specified span.
     /// </summary>
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    void ReadActiveDataBuffer(Span<byte> destination);
+    void ReadActiveTelemetryBuffer(Span<byte> destination);
 
     /// <summary>
     /// Copies the active telemetry data buffer into the specified span.
@@ -62,14 +62,14 @@ public interface ISimulatorConnectionDataReader : IDisposable
     /// <param name="destination">A span of bytes into which the buffer data will be copied.</param>
     /// <param name="tickCount">The tick value of the data buffer.</param>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    void ReadActiveDataBuffer(Span<byte> destination, out int tickCount);
+    void ReadActiveTelemetryBuffer(Span<byte> destination, out int tickCount);
 
     /// <summary>
     /// Returns an array of <see cref="DataVariableHeader"/> structures read from the data file.
     /// </summary>
     /// <returns>An array of <see cref="DataVariableHeader"/> structures.</returns>
     /// <exception cref="ObjectDisposedException">The instance is disposed.</exception>
-    DataVariableHeader[] ReadDataVariableHeaders();
+    DataVariableHeader[] ReadTelemetryVariableHeaders();
 
     /// <summary>
     /// Reads the <see cref="DataFileHeader"/> structure from the data file.

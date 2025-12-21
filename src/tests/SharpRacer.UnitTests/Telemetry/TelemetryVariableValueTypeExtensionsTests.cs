@@ -33,7 +33,7 @@ public class TelemetryVariableValueTypeExtensionsTests
     }
 
     [Fact]
-    public void IsCompatibleValueTypeArgumentTest_InvalidDataVariableValueTypeValueReturnsFalseTest()
+    public void IsCompatibleValueTypeArgumentTest_InvalidVariableValueTypeValueReturnsFalseTest()
     {
         var impossibleValue = (TelemetryVariableValueType)9000;
 

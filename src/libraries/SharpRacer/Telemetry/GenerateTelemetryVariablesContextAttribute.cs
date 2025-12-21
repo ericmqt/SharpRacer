@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer.Telemetry;
 
 /// <summary>
-/// Indicates that the decorated class is a source generator target for generating a data variables context.
+/// Indicates that the decorated class is a source generator target for generating a telemetry variables context.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public sealed class GenerateTelemetryVariablesContextAttribute : Attribute

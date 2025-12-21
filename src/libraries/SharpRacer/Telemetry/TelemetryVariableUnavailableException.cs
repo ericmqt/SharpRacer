@@ -49,6 +49,6 @@ public sealed class TelemetryVariableUnavailableException : Exception
 
     private static string FormatDefaultMessage(string variableName)
     {
-        return $"Data variable '{variableName ?? string.Empty}' is unavailable in the current context.";
+        return $"Telemetry variable '{variableName ?? string.Empty}' is unavailable in the current context.";
     }
 }

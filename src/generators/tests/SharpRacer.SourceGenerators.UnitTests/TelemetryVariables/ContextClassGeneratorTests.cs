@@ -238,14 +238,14 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
 
-            Test = new global::SharpRacer.Telemetry.ScalarTelemetryVariable<global::SharpRacer.CameraState>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
+            Test = new global::SharpRacer.Telemetry.ScalarTelemetryVariable<global::SharpRacer.CameraState>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, variableInfoProvider);
         }}
 
         /// <summary>
@@ -269,14 +269,14 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
 
-            Test = new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider);
+            Test = new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, variableInfoProvider);
         }}
 
         /// <summary>
@@ -300,14 +300,14 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
 
-            Test = new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateScalar<int>(""Test""), dataVariableInfoProvider);
+            Test = new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateScalar<int>(""Test""), variableInfoProvider);
         }}
 
         /// <summary>
@@ -331,14 +331,14 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
 
-            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+            Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
         }}
 
         /// <summary>
@@ -362,15 +362,15 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
             
-            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
-            TestEx = new global::MyApp.Variables.TestExVariable(dataVariableInfoProvider);
+            Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
+            TestEx = new global::MyApp.Variables.TestExVariable(variableInfoProvider);
         }}
 
         /// <summary>
@@ -400,14 +400,14 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
             
-            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+            Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
         }}
 
         /// <summary>
@@ -432,14 +432,14 @@ namespace TestAssembly.Variables
     partial class MyContext
     {{
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
-        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider dataVariableInfoProvider)
+        public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
-            if (dataVariableInfoProvider is null)
+            if (variableInfoProvider is null)
             {{
-                throw new System.ArgumentNullException(""dataVariableInfoProvider"");
+                throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
             
-            Test = new global::MyApp.Variables.TestVariable(dataVariableInfoProvider);
+            Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
         }}
 
         /// <summary>

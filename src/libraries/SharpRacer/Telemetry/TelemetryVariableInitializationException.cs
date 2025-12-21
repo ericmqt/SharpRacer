@@ -3,7 +3,7 @@
 namespace SharpRacer.Telemetry;
 
 /// <summary>
-/// The exception that is thrown when a data variable object cannot be initialized due to the violation of an invariant of the object
+/// The exception that is thrown when a telemetry variable object cannot be initialized due to the violation of an invariant of the object
 /// being initialized.
 /// </summary>
 public class TelemetryVariableInitializationException : Exception
@@ -30,76 +30,76 @@ public class TelemetryVariableInitializationException : Exception
     }
 
     /// <summary>
-    /// Throws a <see cref="TelemetryVariableInitializationException"/> if <paramref name="dataVariableInfo"/> is an array variable.
+    /// Throws a <see cref="TelemetryVariableInitializationException"/> if <paramref name="variableInfo"/> is an array variable.
     /// </summary>
-    /// <param name="dataVariableType">The type of the data variable object being initialized.</param>
-    /// <param name="dataVariableInfo">The <see cref="TelemetryVariableInfo"/> object expected to be a scalar variable.</param>
-    /// <exception cref="TelemetryVariableInitializationException"><paramref name="dataVariableInfo"/> is an array variable.</exception>
-    public static void ThrowIfDataVariableInfoIsNotScalar(Type dataVariableType, TelemetryVariableInfo dataVariableInfo)
+    /// <param name="variableType">The type of the telemetry variable object being initialized.</param>
+    /// <param name="variableInfo">The <see cref="TelemetryVariableInfo"/> object expected to be a scalar variable.</param>
+    /// <exception cref="TelemetryVariableInitializationException"><paramref name="variableInfo"/> is an array variable.</exception>
+    public static void ThrowIfVariableInfoIsNotScalar(Type variableType, TelemetryVariableInfo variableInfo)
     {
-        ArgumentNullException.ThrowIfNull(dataVariableType);
-        ArgumentNullException.ThrowIfNull(dataVariableInfo);
+        ArgumentNullException.ThrowIfNull(variableType);
+        ArgumentNullException.ThrowIfNull(variableInfo);
 
-        if (dataVariableInfo.ValueCount != 1)
+        if (variableInfo.ValueCount != 1)
         {
             throw new TelemetryVariableInitializationException(
                 FormatMessage(
-                    dataVariableType,
-                    $"{dataVariableType} expects a scalar variable, but an array variable was provided instead."));
+                    variableType,
+                    $"{variableType} expects a scalar variable, but an array variable was provided instead."));
         }
     }
 
     /// <summary>
-    /// Throws a <see cref="TelemetryVariableInitializationException"/> if <paramref name="dataVariableInfo"/> property value
+    /// Throws a <see cref="TelemetryVariableInitializationException"/> if <paramref name="variableInfo"/> property value
     /// <see cref="TelemetryVariableInfo.Name"/> is not equal to <paramref name="variableName"/>.
     /// </summary>
-    /// <param name="dataVariableType">The type of the data variable object being initialized.</param>
-    /// <param name="dataVariableInfo">
+    /// <param name="variableType">The type of the telemetry variable object being initialized.</param>
+    /// <param name="variableInfo">
     /// The <see cref="TelemetryVariableInfo"/> object expected to have a value for property <see cref="TelemetryVariableInfo.Name"/> equal to
     /// <paramref name="variableName"/>.
     /// </param>
-    /// <param name="variableName">The expected value of <paramref name="dataVariableInfo"/> property <see cref="TelemetryVariableInfo.Name"/>.</param>
+    /// <param name="variableName">The expected value of <paramref name="variableInfo"/> property <see cref="TelemetryVariableInfo.Name"/>.</param>
     /// <exception cref="TelemetryVariableInitializationException">
-    /// <paramref name="dataVariableInfo"/> property value <see cref="TelemetryVariableInfo.Name"/> is not equal to <paramref name="variableName"/>.
+    /// <paramref name="variableInfo"/> property value <see cref="TelemetryVariableInfo.Name"/> is not equal to <paramref name="variableName"/>.
     /// </exception>
-    public static void ThrowIfDataVariableInfoNameIsNotEqual(Type dataVariableType, TelemetryVariableInfo dataVariableInfo, string variableName)
+    public static void ThrowIfVariableInfoNameIsNotEqual(Type variableType, TelemetryVariableInfo variableInfo, string variableName)
     {
-        ArgumentNullException.ThrowIfNull(dataVariableType);
-        ArgumentNullException.ThrowIfNull(dataVariableInfo);
+        ArgumentNullException.ThrowIfNull(variableType);
+        ArgumentNullException.ThrowIfNull(variableInfo);
 
-        if (!string.Equals(dataVariableInfo.Name, variableName, StringComparison.Ordinal))
+        if (!string.Equals(variableInfo.Name, variableName, StringComparison.Ordinal))
         {
             throw new TelemetryVariableInitializationException(
                 FormatMessage(
-                    dataVariableType,
-                    $"Value for property {nameof(TelemetryVariableInfo)}.{nameof(TelemetryVariableInfo.Name)} is invalid (Value: \"{dataVariableInfo.Name}\", expected: \"{variableName}\")."));
+                    variableType,
+                    $"Value for property {nameof(TelemetryVariableInfo)}.{nameof(TelemetryVariableInfo.Name)} is invalid (Value: \"{variableInfo.Name}\", expected: \"{variableName}\")."));
         }
     }
 
     /// <summary>
-    /// Throws a <see cref="TelemetryVariableInitializationException"/> if <paramref name="dataVariableInfo"/> property value
+    /// Throws a <see cref="TelemetryVariableInitializationException"/> if <paramref name="variableInfo"/> property value
     /// <see cref="TelemetryVariableInfo.ValueCount"/> is not equal to <paramref name="valueCount"/>.
     /// </summary>
-    /// <param name="dataVariableType">The type of the data variable object being initialized.</param>
-    /// <param name="dataVariableInfo">
+    /// <param name="variableType">The type of the telemetry variable object being initialized.</param>
+    /// <param name="variableInfo">
     /// The <see cref="TelemetryVariableInfo"/> object expected to have a value for property <see cref="TelemetryVariableInfo.ValueCount"/> equal to
     /// <paramref name="valueCount"/>.
     /// </param>
-    /// <param name="valueCount">The expected value of <paramref name="dataVariableInfo"/> property <see cref="TelemetryVariableInfo.ValueCount"/>.</param>
+    /// <param name="valueCount">The expected value of <paramref name="variableInfo"/> property <see cref="TelemetryVariableInfo.ValueCount"/>.</param>
     /// <exception cref="TelemetryVariableInitializationException">
-    /// <paramref name="dataVariableInfo"/> property value <see cref="TelemetryVariableInfo.ValueCount"/> is not equal to <paramref name="valueCount"/>.
+    /// <paramref name="variableInfo"/> property value <see cref="TelemetryVariableInfo.ValueCount"/> is not equal to <paramref name="valueCount"/>.
     /// </exception>
-    public static void ThrowIfDataVariableInfoValueCountIsNotEqual(Type dataVariableType, TelemetryVariableInfo dataVariableInfo, int valueCount)
+    public static void ThrowIfVariableInfoValueCountIsNotEqual(Type variableType, TelemetryVariableInfo variableInfo, int valueCount)
     {
-        ArgumentNullException.ThrowIfNull(dataVariableType);
-        ArgumentNullException.ThrowIfNull(dataVariableInfo);
+        ArgumentNullException.ThrowIfNull(variableType);
+        ArgumentNullException.ThrowIfNull(variableInfo);
 
-        if (dataVariableInfo.ValueCount != valueCount)
+        if (variableInfo.ValueCount != valueCount)
         {
             throw new TelemetryVariableInitializationException(
                 FormatMessage(
-                    dataVariableType,
-                    $"Value for property {nameof(TelemetryVariableInfo)}.{nameof(TelemetryVariableInfo.ValueCount)} is invalid (Value: {dataVariableInfo.ValueCount}, expected: {valueCount})."));
+                    variableType,
+                    $"Value for property {nameof(TelemetryVariableInfo)}.{nameof(TelemetryVariableInfo.ValueCount)} is invalid (Value: {variableInfo.ValueCount}, expected: {valueCount})."));
         }
     }
 
@@ -108,21 +108,21 @@ public class TelemetryVariableInitializationException : Exception
     /// argument for the specified <see cref="TelemetryVariableValueType" />.
     /// </summary>
     /// <typeparam name="TValue">The value type of the <see cref="ITelemetryVariable{T}"/> implementation.</typeparam>
-    /// <param name="dataVariableType">The type of the data variable object being initialized.</param>
+    /// <param name="variableType">The type of the telemetry variable object being initialized.</param>
     /// <param name="variableValueType">The variable value type.</param>
     /// <exception cref="TelemetryVariableInitializationException">
     /// Type parameter <typeparamref name="TValue"/> is not a valid type argument for the specified <see cref="TelemetryVariableValueType" />.
     /// </exception>
-    public static void ThrowIfValueTypeArgumentIsInvalid<TValue>(Type dataVariableType, TelemetryVariableValueType variableValueType)
+    public static void ThrowIfValueTypeArgumentIsInvalid<TValue>(Type variableType, TelemetryVariableValueType variableValueType)
         where TValue : unmanaged
     {
-        ArgumentNullException.ThrowIfNull(dataVariableType);
+        ArgumentNullException.ThrowIfNull(variableType);
 
         if (variableValueType == TelemetryVariableValueType.Bitfield && Unsafe.SizeOf<TValue>() != Unsafe.SizeOf<int>())
         {
             throw new TelemetryVariableInitializationException(
                 FormatMessage(
-                    dataVariableType,
+                    variableType,
                     $"Type argument {typeof(TValue)} is not a valid bitfield variable value type argument (Bitfield variables must use a 32-bit value type)."));
         }
 
@@ -130,13 +130,13 @@ public class TelemetryVariableInitializationException : Exception
         {
             throw new TelemetryVariableInitializationException(
                 FormatMessage(
-                    dataVariableType,
+                    variableType,
                     $"Type argument {typeof(TValue)} is invalid for variable value type '{variableValueType}'."));
         }
     }
 
-    private static string FormatMessage(Type dataVariableType, string message)
+    private static string FormatMessage(Type variableType, string message)
     {
-        return $"{dataVariableType} initialization failed: {message}";
+        return $"{variableType} initialization failed: {message}";
     }
 }

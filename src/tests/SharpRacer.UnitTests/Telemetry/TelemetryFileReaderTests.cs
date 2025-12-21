@@ -299,7 +299,7 @@ public class TelemetryFileReaderTests
             Assert.Equal(writtenHeader, reader.FileHeader);
 
             var testVariableHeaders = new[] { intVarHeader, float3ArrayVarHeader };
-            var fileVariableHeaders = reader.ReadDataVariableHeaders();
+            var fileVariableHeaders = reader.ReadTelemetryVariableHeaders();
             var fileSessionInfo = reader.ReadSessionInfo();
 
             Assert.True(testVariableHeaders.SequenceEqual(fileVariableHeaders));

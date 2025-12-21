@@ -77,7 +77,7 @@ internal static class ContextClassInfoValuesProvider
         if (!classDeclarationSymbol.Interfaces.Any(SharpRacerSymbols.IsITelemetryVariablesContextInterface))
         {
             diagnosticsBuilder.Add(
-                GeneratorDiagnostics.ContextClassMustInheritIDataVariablesContextInterface(classIdentifier, classDeclLocation));
+                GeneratorDiagnostics.ContextClassMustInheritITelemetryVariablesContextInterface(classIdentifier, classDeclLocation));
 
             isValid = false;
         }

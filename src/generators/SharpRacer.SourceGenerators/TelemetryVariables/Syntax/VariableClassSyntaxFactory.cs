@@ -10,8 +10,8 @@ namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
 
 internal static class VariableClassSyntaxFactory
 {
-    private static string TelemetryVariableInfoCtorParameterName = "dataVariableInfo";
-    private static string TelemetryVariableInfoProviderCtorParameterName = "dataVariableInfoProvider";
+    private static string TelemetryVariableInfoCtorParameterName = "variableInfo";
+    private static string TelemetryVariableInfoProviderCtorParameterName = "variableInfoProvider";
 
     public static ConstructorDeclarationSyntax ConstructorWithTelemetryVariableInfoParameter(
         ref readonly VariableClassModel model, bool appendXmlDocumentation)

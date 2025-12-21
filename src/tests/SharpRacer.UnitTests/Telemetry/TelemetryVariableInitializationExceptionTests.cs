@@ -16,54 +16,54 @@ public class TelemetryVariableInitializationExceptionTests
     }
 
     [Fact]
-    public void ThrowIfDataVariableInfoIsNotScalar_ArrayTest()
+    public void ThrowIfVariableInfoIsNotScalar_ArrayTest()
     {
         var variableInfo = TelemetryVariableInfoFactory.CreateArray("Bar", TelemetryVariableValueType.Int, 4);
 
         Assert.Throws<TelemetryVariableInitializationException>(() =>
-            TelemetryVariableInitializationException.ThrowIfDataVariableInfoIsNotScalar(GetType(), variableInfo));
+            TelemetryVariableInitializationException.ThrowIfVariableInfoIsNotScalar(GetType(), variableInfo));
     }
 
     [Fact]
-    public void ThrowIfDataVariableInfoIsNotScalar_ScalarTest()
+    public void ThrowIfVariableInfoIsNotScalar_ScalarTest()
     {
         var variableInfo = TelemetryVariableInfoFactory.CreateScalar("Foo", TelemetryVariableValueType.Int);
 
-        TelemetryVariableInitializationException.ThrowIfDataVariableInfoIsNotScalar(GetType(), variableInfo);
+        TelemetryVariableInitializationException.ThrowIfVariableInfoIsNotScalar(GetType(), variableInfo);
     }
 
     [Fact]
-    public void ThrowIfDataVariableInfoNameIsNotEqual_NameEqualsTest()
+    public void ThrowIfVariableInfoNameIsNotEqual_NameEqualsTest()
     {
         var variableInfo = TelemetryVariableInfoFactory.CreateScalar("Foo", TelemetryVariableValueType.Int);
 
-        TelemetryVariableInitializationException.ThrowIfDataVariableInfoNameIsNotEqual(GetType(), variableInfo, "Foo");
+        TelemetryVariableInitializationException.ThrowIfVariableInfoNameIsNotEqual(GetType(), variableInfo, "Foo");
     }
 
     [Fact]
-    public void ThrowIfDataVariableInfoNameIsNotEqual_NameNotEqualsTest()
+    public void ThrowIfVariableInfoNameIsNotEqual_NameNotEqualsTest()
     {
         var variableInfo = TelemetryVariableInfoFactory.CreateScalar("Bar", TelemetryVariableValueType.Int);
 
         Assert.Throws<TelemetryVariableInitializationException>(() =>
-            TelemetryVariableInitializationException.ThrowIfDataVariableInfoNameIsNotEqual(GetType(), variableInfo, "Foo"));
+            TelemetryVariableInitializationException.ThrowIfVariableInfoNameIsNotEqual(GetType(), variableInfo, "Foo"));
     }
 
     [Fact]
-    public void ThrowIfDataVariableInfoValueCountIsNotEqual_ValueCountEqualTest()
+    public void ThrowIfVariableInfoValueCountIsNotEqual_ValueCountEqualTest()
     {
         var variableInfo = TelemetryVariableInfoFactory.CreateArray("Bar", TelemetryVariableValueType.Int, 4);
 
-        TelemetryVariableInitializationException.ThrowIfDataVariableInfoValueCountIsNotEqual(GetType(), variableInfo, 4);
+        TelemetryVariableInitializationException.ThrowIfVariableInfoValueCountIsNotEqual(GetType(), variableInfo, 4);
     }
 
     [Fact]
-    public void ThrowIfDataVariableInfoValueCountIsNotEqual_ValueCountNotEqualTest()
+    public void ThrowIfVariableInfoValueCountIsNotEqual_ValueCountNotEqualTest()
     {
         var variableInfo = TelemetryVariableInfoFactory.CreateArray("Bar", TelemetryVariableValueType.Int, 4);
 
         Assert.Throws<TelemetryVariableInitializationException>(() =>
-            TelemetryVariableInitializationException.ThrowIfDataVariableInfoValueCountIsNotEqual(GetType(), variableInfo, 1));
+            TelemetryVariableInitializationException.ThrowIfVariableInfoValueCountIsNotEqual(GetType(), variableInfo, 1));
     }
 
     [Fact]

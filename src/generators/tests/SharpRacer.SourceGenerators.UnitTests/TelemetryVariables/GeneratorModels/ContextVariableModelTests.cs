@@ -128,12 +128,12 @@ public class ContextVariableModelTests
         var propertyName = "Test";
         var model = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, null);
 
-        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("dataVariableInfoProvider"));
+        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("variableInfoProvider"));
 
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateArray<int>(\"Test\", 3), dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateArray<int>(\"Test\", 3), variableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -146,12 +146,12 @@ public class ContextVariableModelTests
         var propertyName = "Test";
         var model = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, null);
 
-        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("dataVariableInfoProvider"));
+        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("variableInfoProvider"));
 
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateScalar<int>(\"Test\"), dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::SharpRacer.Telemetry.TelemetryVariableDescriptor.CreateScalar<int>(\"Test\"), variableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -166,12 +166,12 @@ public class ContextVariableModelTests
         var propertyName = "Test";
         var model = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, descriptorRef);
 
-        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("dataVariableInfoProvider"));
+        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("variableInfoProvider"));
 
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ArrayTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, variableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -186,12 +186,12 @@ public class ContextVariableModelTests
         var propertyName = "Test";
         var model = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", null, descriptorRef);
 
-        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("dataVariableInfoProvider"));
+        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("variableInfoProvider"));
 
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, dataVariableInfoProvider)",
+            "new global::SharpRacer.Telemetry.ScalarTelemetryVariable<int>(global::MyApp.Variables.VariableDescriptors.TestDescriptor, variableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -206,12 +206,12 @@ public class ContextVariableModelTests
         var propertyName = "Test";
         var model = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", classRef, null);
 
-        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("dataVariableInfoProvider"));
+        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("variableInfoProvider"));
 
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::MyApp.Variables.TestVariable(dataVariableInfoProvider)",
+            "new global::MyApp.Variables.TestVariable(variableInfoProvider)",
             expr.ToFullString());
     }
 
@@ -227,12 +227,12 @@ public class ContextVariableModelTests
         var propertyName = "Test";
         var model = new ContextVariableModel(variableModel, propertyName, "This is the test variable.", classRef, descriptorRef);
 
-        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("dataVariableInfoProvider"));
+        var expr = model.PropertyObjectCreationExpression(SyntaxFactory.IdentifierName("variableInfoProvider"));
 
         expr = expr.NormalizeWhitespace();
 
         Assert.Equal(
-            "new global::MyApp.Variables.TestVariable(dataVariableInfoProvider)",
+            "new global::MyApp.Variables.TestVariable(variableInfoProvider)",
             expr.ToFullString());
     }
 

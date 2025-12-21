@@ -192,7 +192,7 @@ public class TelemetryFileReader : IDisposable
     /// <exception cref="IOException">The number of bytes read from the file was less than required to complete the operation.</exception>
     /// <exception cref="InvalidOperationException">The file handle is invalid or closed.</exception>
     /// <exception cref="ObjectDisposedException">The reader is disposed or the file is closed.</exception>
-    public DataVariableHeader[] ReadDataVariableHeaders()
+    public DataVariableHeader[] ReadTelemetryVariableHeaders()
     {
         VerifyCanRead();
 

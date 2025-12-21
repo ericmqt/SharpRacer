@@ -35,7 +35,7 @@ internal class ConnectionTelemetryVariableInfoProvider : IConnectionTelemetryVar
 
             if (!_isInitialized)
             {
-                RegisterDataVariableActivatedCallback(variableName, callback);
+                RegisterVariableActivationCallback(variableName, callback);
             }
             else
             {
@@ -64,7 +64,7 @@ internal class ConnectionTelemetryVariableInfoProvider : IConnectionTelemetryVar
          * A note on locks:
          * 
          * When this method acquires a write lock on the variables collection, we are guaranteed to have no other threads currently holding
-         * a read lock. Calls to NotifyDataVariableActivated are then blocked prior to checking whether the variable collection has
+         * a read lock. Calls to NotifyTelemetryVariableActivated are then blocked prior to checking whether the variable collection has
          * been initialized or subsequently acquiring a read/write lock on the callbacks dictionary and scheduling callbacks.
          * 
          * As long as this method holds a write lock on the variables collection, we are free to modify either collection while only
@@ -119,7 +119,7 @@ internal class ConnectionTelemetryVariableInfoProvider : IConnectionTelemetryVar
         }
     }
 
-    private void RegisterDataVariableActivatedCallback(string variableName, Action<TelemetryVariableInfo> callback)
+    private void RegisterVariableActivationCallback(string variableName, Action<TelemetryVariableInfo> callback)
     {
         ArgumentException.ThrowIfNullOrEmpty(variableName);
         ArgumentNullException.ThrowIfNull(callback);

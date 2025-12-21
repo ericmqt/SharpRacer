@@ -91,12 +91,12 @@ public class ScalarTelemetryVariable<T> : TelemetryVariableBase<T>, IScalarTelem
     /// Initializes an instance of <see cref="ScalarTelemetryVariable{T}"/> from the specified variable descriptor.
     /// </summary>
     /// <param name="variableDescriptor">The variable descriptor.</param>
-    /// <param name="dataVariableInfoProvider">
+    /// <param name="variableInfoProvider">
     /// The <see cref="ITelemetryVariableInfoProvider"/> instance used to notify this instance when the telemetry variable becomes available in
     /// the data source.
     /// </param>
-    public ScalarTelemetryVariable(TelemetryVariableDescriptor variableDescriptor, ITelemetryVariableInfoProvider dataVariableInfoProvider)
-        : base(variableDescriptor, dataVariableInfoProvider)
+    public ScalarTelemetryVariable(TelemetryVariableDescriptor variableDescriptor, ITelemetryVariableInfoProvider variableInfoProvider)
+        : base(variableDescriptor, variableInfoProvider)
     {
 
     }

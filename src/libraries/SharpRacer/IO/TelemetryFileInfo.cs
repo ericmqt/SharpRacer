@@ -9,8 +9,8 @@ namespace SharpRacer.IO;
 /// </summary>
 public class TelemetryFileInfo : ITelemetryVariableInfoProvider
 {
-    private readonly ImmutableArray<TelemetryVariableInfo> _dataVariables;
     private readonly DataFileHeader _fileHeader;
+    private readonly ImmutableArray<TelemetryVariableInfo> _telemetryVariables;
 
     /// <summary>
     /// Initializes a new instance of <see cref="TelemetryFileInfo"/> from the specified file name.
@@ -39,10 +39,10 @@ public class TelemetryFileInfo : ITelemetryVariableInfoProvider
 
             SessionInfo = fileReader.ReadSessionInfo();
 
-            var variableHeaders = fileReader.ReadDataVariableHeaders();
+            var variableHeaders = fileReader.ReadTelemetryVariableHeaders();
             var variableInfoArray = variableHeaders.Select(x => new TelemetryVariableInfo(x)).ToArray();
 
-            _dataVariables = ImmutableArray.Create(variableInfoArray);
+            _telemetryVariables = ImmutableArray.Create(variableInfoArray);
         }
 
         SessionStart = _fileHeader.DiskSubHeader.GetSessionStartDateTimeOffset().ToLocalTime();
@@ -50,7 +50,7 @@ public class TelemetryFileInfo : ITelemetryVariableInfoProvider
     }
 
     /// <inheritdoc />
-    public IEnumerable<TelemetryVariableInfo> Variables => _dataVariables;
+    public IEnumerable<TelemetryVariableInfo> Variables => _telemetryVariables;
 
     /// <summary>
     /// Gets a <see cref="FileInfo"/> object representing the telemetry file.

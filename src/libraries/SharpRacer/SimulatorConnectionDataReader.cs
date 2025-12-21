@@ -52,13 +52,13 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     }
 
     /// <inheritdoc />
-    public byte[] ReadActiveDataBuffer()
+    public byte[] ReadActiveTelemetryBuffer()
     {
-        return ReadActiveDataBuffer(out _);
+        return ReadActiveTelemetryBuffer(out _);
     }
 
     /// <inheritdoc />
-    public byte[] ReadActiveDataBuffer(out int tickCount)
+    public byte[] ReadActiveTelemetryBuffer(out int tickCount)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
@@ -77,13 +77,13 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     }
 
     /// <inheritdoc />
-    public void ReadActiveDataBuffer(Span<byte> destination)
+    public void ReadActiveTelemetryBuffer(Span<byte> destination)
     {
-        ReadActiveDataBuffer(destination, out _);
+        ReadActiveTelemetryBuffer(destination, out _);
     }
 
     /// <inheritdoc />
-    public void ReadActiveDataBuffer(Span<byte> destination, out int tickCount)
+    public void ReadActiveTelemetryBuffer(Span<byte> destination, out int tickCount)
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 
@@ -101,7 +101,7 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
     }
 
     /// <inheritdoc />
-    public DataVariableHeader[] ReadDataVariableHeaders()
+    public DataVariableHeader[] ReadTelemetryVariableHeaders()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
 

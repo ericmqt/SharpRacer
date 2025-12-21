@@ -12,7 +12,7 @@ internal static class VariableContextSyntaxFactory
 {
     public static ConstructorDeclarationSyntax Constructor(ref readonly ContextClassModel model)
     {
-        var variableInfoProviderParameterName = "dataVariableInfoProvider";
+        var variableInfoProviderParameterName = "variableInfoProvider";
 
         var variableInfoProviderParameter = Parameter(Identifier(variableInfoProviderParameterName))
             .WithType(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified));
