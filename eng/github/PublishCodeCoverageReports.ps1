@@ -72,8 +72,8 @@ if (-not (Test-Path -Path $script:jsonDir -PathType Container))
 }
 
 # Copy code coverage files into their respective directories
-Copy-Item -Path $ArtifactDirectory\*.xml -Destination $script:codeCoverageDir -Force
-Copy-Item -Path $ArtifactDirectory\*.json -Destination $script:jsonDir -Force
+Copy-Item -Path $ArtifactDirectory\coverage -Destination $script:outputDir -Recurse -Force
+Copy-Item -Path $ArtifactDirectory\json -Destination $script:outputDir -Recurse -Force
 
 git add $script:jsonDir/*.json
 git add $script:codeCoverageDir/*.xml
