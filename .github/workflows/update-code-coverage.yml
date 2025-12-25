@@ -22,7 +22,7 @@ jobs:
       with:
         run-id: ${{ github.event.workflow_run.id }}
         github-token: ${{ github.token }}
-        name: code-coverage-reports
+        name: code-coverage-results
         path: ./code-coverage-main
     - name: Update code-coverage branch
       if: ${{ github.event_name != 'pull_request' }}
