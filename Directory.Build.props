@@ -35,9 +35,4 @@
 	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
   		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 	</PropertyGroup>
-
-	<!-- Coverlet -->
-	<PropertyGroup>
-		<CoverletOutput>$([MSBuild]::EnsureTrailingSlash('$(RepositoryTestCoverageOutputPath)\$(MSBuildProjectName)'))</CoverletOutput>
-	</PropertyGroup>
 </Project>

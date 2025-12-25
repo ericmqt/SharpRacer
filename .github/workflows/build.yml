@@ -23,12 +23,17 @@ jobs:
         dotnet-quality: 'ga'
     - name: Restore dependencies
       run: dotnet restore
+    - name: Restore dotnet tools
+      run: dotnet tool restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
-    - name: Upload Test Coverage
+      run: dotnet test --no-build --verbosity normal
+    - name: Collect Code Coverage
+      shell: pwsh
+      run: ./eng/GenerateCodeCoverageReport.ps1 -OutputDirectory artifacts/codecoverage -SharpRacer -SourceGenerator -Json -NoBuild
+    - name: Upload Code Coverage Reports
       uses: actions/upload-artifact@v6.0.0
       with:
         name: code-coverage-results
-        path: artifacts/test/coverage/**/coverage.cobertura.xml
+        path: artifacts/codecoverage/**/*

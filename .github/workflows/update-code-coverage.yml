@@ -1,0 +1,30 @@
+name: update code coverage
+on:
+  workflow_run:
+    workflows: [build and test]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  update-code-coverage:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6.0.1
+    - name: 'Download code coverage reports'
+      uses: actions/download-artifact@v4
+      with:
+        run-id: ${{ github.event.workflow_run.id }}
+        github-token: ${{ github.token }}
+        name: code-coverage-reports
+        path: ./code-coverage-main
+    - name: Update code-coverage branch
+      if: ${{ github.event_name != 'pull_request' }}
+      shell: pwsh
+      run: ./eng/github/PublishCodeCoverageReports.ps1 -SourceBranch ${{ github.ref_name }} -CodeCoverageBranch code-coverage -ArtifactDirectory ./code-coverage-main

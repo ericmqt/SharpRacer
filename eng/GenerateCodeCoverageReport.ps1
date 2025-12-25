@@ -1,0 +1,176 @@
+[CmdletBinding()]
+Param(
+    [Parameter(Mandatory=$true)]
+    [string]$OutputDirectory,
+    [Parameter(Mandatory=$false)]
+    [switch]$SharpRacer,
+    [Parameter(Mandatory=$false)]
+    [switch]$SourceGenerator,
+    [Parameter(Mandatory=$false)]
+    [switch]$ExcludeIntegrationTests,
+    [Parameter(Mandatory=$false)]
+    [switch]$Json,
+    [Parameter(Mandatory=$false)]
+    [switch]$Html,
+    [Parameter(Mandatory=$false)]
+    [switch]$NoBuild
+)
+
+. $PSScriptRoot\ps\CodeCoverage.ps1
+. $PSScriptRoot\ps\ReportGenerator.ps1
+
+$ErrorActionPreference = 'Stop'
+
+if ((-not $SharpRacer) -and (-not $SourceGenerator))
+{
+    throw "At least one switch must be set: -SharpRacer, -SourceGenerator"
+}
+
+# Configure collection options
+$script:outputRootDirectory = (Get-RelativeRepositoryPath -Path $OutputDirectory)
+
+$script:codeCoverageOptions = New-CodeCoverageCollectionOptions `
+    -CodeCoverageDirectory (Join-Path $script:outputRootDirectory "coverage") `
+    -HtmlReportsDirectory (Join-Path $script:outputRootDirectory "html") `
+    -JsonReportsDirectory (Join-Path $script:outputRootDirectory "json")
+
+# Set up test projects
+$script:sharpRacerTestProjects = @()
+$script:sourceGeneratorTestProjects = @()
+
+$script:sharpRacerTestProjects += New-CodeCoverageTestProject `
+        -ProjectFileName (Get-RelativeRepositoryPath -Path ".\src\tests\SharpRacer.UnitTests\SharpRacer.UnitTests.csproj") `
+        -ProjectType UnitTest `
+        -Options $script:codeCoverageOptions `
+        -TargetPlatform Any
+
+$script:sharpRacerTestProjects += New-CodeCoverageTestProject `
+        -ProjectFileName (Get-RelativeRepositoryPath -Path ".\src\tests\SharpRacer.UnitTests.Windows\SharpRacer.UnitTests.Windows.csproj") `
+        -ProjectType UnitTest `
+        -Options $script:codeCoverageOptions `
+        -TargetPlatform Windows
+
+$script:sharpRacerTestProjects += New-CodeCoverageTestProject `
+        -ProjectFileName (Get-RelativeRepositoryPath -Path ".\src\tests\SharpRacer.IntegrationTests\SharpRacer.IntegrationTests.csproj") `
+        -ProjectType IntegrationTest `
+        -Options $script:codeCoverageOptions `
+        -TargetPlatform Any
+
+$script:sourceGeneratorTestProjects += New-CodeCoverageTestProject `
+        -ProjectFileName (Get-RelativeRepositoryPath -Path ".\src\generators\tests\SharpRacer.SourceGenerators.UnitTests\SharpRacer.SourceGenerators.UnitTests.csproj") `
+        -ProjectType UnitTest `
+        -Options $script:codeCoverageOptions `
+        -TargetPlatform Any
+
+$script:sourceGeneratorTestProjects += New-CodeCoverageTestProject `
+        -ProjectFileName (Get-RelativeRepositoryPath -Path ".\src\generators\tests\SharpRacer.SourceGenerators.IntegrationTests\SharpRacer.SourceGenerators.IntegrationTests.csproj") `
+        -ProjectType IntegrationTest `
+        -Options $script:codeCoverageOptions `
+        -TargetPlatform Any
+
+# Build projects
+if (-not $NoBuild)
+{
+    Invoke-DotNetBuild -Project (Get-RepositoryDirectoryPath)
+}
+
+# Collect code coverage files
+[string[]]$script:sharpRacerCodeCoverageFiles = @()
+[string[]]$script:sourceGeneratorCodeCoverageFiles = @()
+
+if ($SharpRacer)
+{
+    try
+    {
+        $script:sharpRacerCodeCoverageFiles = Build-CodeCoverageResults `
+            -Projects $script:sharpRacerTestProjects `
+            -IncludeUnitTests `
+            -IncludeIntegrationTests:(-not $ExcludeIntegrationTests) `
+            -NoBuild
+    }
+    catch
+    {
+        Write-Output "Collection failed. Terminating."
+        throw
+    }
+}
+
+if ($SourceGenerator)
+{
+    try
+    {
+        $script:sourceGeneratorCodeCoverageFiles = Build-CodeCoverageResults `
+            -Projects $script:sourceGeneratorTestProjects `
+            -IncludeUnitTests `
+            -IncludeIntegrationTests:(-not $ExcludeIntegrationTests) `
+            -NoBuild
+    }
+    catch
+    {
+        Write-Output "Collection failed. Terminating."
+        throw
+    }
+}
+
+# Generate report(s)
+[bool]$script:generateCombinedReport = ($SharpRacer -and $SourceGenerator)
+
+if ($Json)
+{
+    Clear-ReportOutputDirectory $script:codeCoverageOptions.JsonReportsDirectory
+
+    if ($SharpRacer)
+    {
+        New-JsonCodeCoverageReport -FileName (Join-Path $script:codeCoverageOptions.JsonReportsDirectory "SharpRacer.json") `
+            -CodeCoverageFileNames $script:sharpRacerCodeCoverageFiles `
+            -ExcludedClasses @("Windows.Win32.*") `
+            -ReportTitle "SharpRacer Library"
+    }
+
+    if ($SourceGenerator)
+    {
+        New-JsonCodeCoverageReport -FileName (Join-Path $script:codeCoverageOptions.JsonReportsDirectory "SharpRacer.SourceGenerators.json") `
+            -CodeCoverageFileNames $script:sourceGeneratorCodeCoverageFiles `
+            -ExcludedAssemblies @("SharpRacer") `
+            -ExcludedClasses @("Windows.Win32.*") `
+            -ReportTitle "SharpRacer.SourceGenerators"
+    }
+
+    if ($script:generateCombinedReport)
+    {
+        New-JsonCodeCoverageReport -FileName (Join-Path $script:codeCoverageOptions.JsonReportsDirectory "SharpRacer.all.json") `
+            -CodeCoverageFileNames @($script:sharpRacerCodeCoverageFiles + $script:sourceGeneratorCodeCoverageFiles) `
+            -ExcludedClasses @("Windows.Win32.*") `
+            -ReportTitle "SharpRacer"
+    }
+}
+
+if ($Html)
+{
+    Clear-ReportOutputDirectory $script:codeCoverageOptions.HtmlReportsDirectory
+
+    if ($SharpRacer)
+    {
+        New-HtmlCodeCoverageReport -OutputDirectory (Join-Path $script:codeCoverageOptions.HtmlReportsDirectory "SharpRacer") `
+            -CodeCoverageFileNames $script:sharpRacerCodeCoverageFiles `
+            -ExcludedClasses @("Windows.Win32.*") `
+            -ReportTitle "SharpRacer Library"
+    }
+
+    if ($SourceGenerator)
+    {
+        New-HtmlCodeCoverageReport -OutputDirectory (Join-Path $script:codeCoverageOptions.HtmlReportsDirectory "SharpRacer.SourceGenerators") `
+            -CodeCoverageFileNames $script:sourceGeneratorCodeCoverageFiles `
+            -ExcludedAssemblies @("SharpRacer") `
+            -ExcludedClasses @("Windows.Win32.*") `
+            -ReportTitle "SharpRacer.SourceGenerators"
+    }
+
+    if ($script:generateCombinedReport)
+    {
+        New-HtmlCodeCoverageReport -OutputDirectory (Join-Path $script:codeCoverageOptions.HtmlReportsDirectory "SharpRacer.all") `
+            -CodeCoverageFileNames @($script:sharpRacerCodeCoverageFiles + $script:sourceGeneratorCodeCoverageFiles) `
+            -ExcludedClasses @("Windows.Win32.*") `
+            -ReportTitle "SharpRacer"
+    }
+}

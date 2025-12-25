@@ -39,6 +39,35 @@ class DotNetCommandException : System.Exception
     }
 }
 
+class DotNetBuildCommandException : DotNetCommandException
+{
+    DotNetBuildCommandException(
+        [string]$Message,
+        [string]$Project,
+        [string[]]$AdditionalArguments,
+        [int]$ExitCode)
+        : base($Message, 'test', $ExitCode)
+    {
+        $this.Project = $Project
+        $this.AdditionalArguments = $AdditionalArguments
+    }
+
+    DotNetBuildCommandException(
+        [string]$Message,
+        [string]$Project,
+        [string[]]$AdditionalArguments,
+        [int]$ExitCode,
+        [System.Exception]$InnerException)
+        : base($Message, 'test', $ExitCode, $InnerException)
+    {
+        $this.Project = $Project
+        $this.AdditionalArguments = $AdditionalArguments
+    }
+
+    [string[]]$AdditionalArguments
+    [string]$Project
+}
+
 class DotNetTestCommandException : DotNetCommandException
 {
     DotNetTestCommandException(
@@ -93,13 +122,44 @@ function Invoke-DotNet
     }
 }
 
+function Invoke-DotNetBuild
+{
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true, Position = 0)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Project,
+        [Parameter(Mandatory = $false, Position = 2)]
+        [string[]]$AdditionalArguments
+    )
+
+    $local:args = @($Project) + $AdditionalArguments
+
+    try
+    {
+        Invoke-DotNet -Command "build" -ArgumentList $local:args
+    }
+    catch [DotNetCommandException]
+    {
+        $local:projectFileName = [System.IO.Path]::GetFileNameWithoutExtension($Project)
+
+        $local:testEx = [DotNetBuildCommandException]::new(
+            "[$local:projectFileName] dotnet build failed (exit code $($PSItem.Exception.ExitCode))",
+            $Project,
+            $AdditionalArguments,
+            $PSItem.Exception.ExitCode,
+            $PSItem.Exception)
+        
+        $PSCmdlet.ThrowTerminatingError($local:testEx.ToErrorRecord('DotNetBuildCommandException'))
+    }
+}
+
 function Invoke-DotNetTest
 {
     [CmdletBinding()]
     Param (
         [Parameter(Mandatory = $true, Position = 0)]
-        [string]
-        $Project,
+        [string] $Project,
         [Parameter(Mandatory = $false, Position = 1)]
         [string[]]
         $AdditionalArguments
@@ -123,61 +183,5 @@ function Invoke-DotNetTest
             $PSItem.Exception)
         
         $PSCmdlet.ThrowTerminatingError($local:testEx.ToErrorRecord('DotNetTestCommandException'))
-    }
-}
-
-function New-TestCoverageReport
-{
-    [CmdletBinding()]
-    Param (
-        [Parameter(Mandatory=$true)]
-        [string[]]$CoverageFiles,
-
-        [Parameter(Mandatory=$true)]
-        [string]$OutputDirectory,
-
-        [Parameter(Mandatory=$false)]
-        [string[]]$ExcludedAssemblies,
-
-        [Parameter(Mandatory=$false)]
-        [string[]]$ExcludedClasses,
-
-        [Parameter(Mandatory=$false)]
-        [string]$ReportTitle,
-
-        [Parameter(Mandatory=$false)]
-        [string]$ReportFormat = "HtmlInline_AzurePipelines"
-    )
-
-    $local:coverageFilesArg = $CoverageFiles -join ";"
-    $local:args = @("`"-reports:$local:coverageFilesArg`"", "-targetdir:$OutputDirectory", "-reporttypes:$ReportFormat")
-
-    if (![string]::IsNullOrEmpty($ReportTitle))
-    {
-        $local:args += "`"-title:$ReportTitle`""
-    }
-
-    if ($ExcludedAssemblies.Length -gt 0)
-    {
-        $local:excludedAssemblyFilters = $ExcludedAssemblies | ForEach-Object { "-{0}" -f $_ }
-        $local:assemblyFiltersArg = $local:excludedAssemblyFilters -join ";"
-        $local:args += "`"-assemblyfilters:$local:assemblyFiltersArg`""
-    }
-
-    if ($ExcludedClasses.Length -gt 0)
-    {
-        $local:excludedClassesFilters = $ExcludedClasses | ForEach-Object { "-{0}" -f $_ }
-        $local:classFiltersArg = $local:excludedClassesFilters -join ";"
-
-        $local:args += "`"-classfilters:$local:classFiltersArg`""
-    }
-
-    try
-    {
-        Invoke-DotNet -Command 'reportgenerator' -ArgumentList $local:args
-    }
-    catch [DotNetCommandException]
-    {
-        $PSCmdlet.ThrowTerminatingError($PSItem)
     }
 }
