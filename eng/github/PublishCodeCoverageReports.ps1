@@ -21,7 +21,7 @@ git config --global user.email '41898282+github-actions[bot]@users.noreply.githu
 
 # Fetch remote branches and check if the badges branch exists
 git fetch
-git ls-remote --heads origin $CodeCoverageBranch
+git show-branch "remotes/origin/$CodeCoverageBranch"
 
 if ($?)
 {
@@ -34,7 +34,21 @@ else
 
     git switch --orphan $CodeCoverageBranch
 
-    Write-Output "Created code coverage branch: $CodeCoverageBranch"
+    if ($?)
+    {
+        Write-Output "Created code coverage branch: $CodeCoverageBranch"
+    }
+    else
+    {
+        throw "Failed to create orphan branch: $CodeCoverageBranch"
+    }
+}
+
+$script:currentBranch = git branch --show-current
+
+if ($script:currentBranch -ne $CodeCoverageBranch)
+{
+    throw "Current branch '$script:currentBranch' is not the expected branch '$CodeCoverageBranch'"
 }
 
 # Create directories if they don't already exist
@@ -64,4 +78,4 @@ Copy-Item -Path $ArtifactDirectory\*.json -Destination $script:jsonDir -Force
 git add $script:jsonDir/*.json
 git add $script:codeCoverageDir/*.xml
 git commit -m "Updated code coverage files for branch '$SourceBranch'"
-git push origin $CodeCoverageBranch
+git push -u origin $CodeCoverageBranch
