@@ -11,7 +11,7 @@ public class TelemetryFileReader : IDisposable
 {
     private readonly TelemetryBufferHeader _telemetryBufferHeader;
     private readonly SafeFileHandle _fileHandle;
-    private readonly DataFileHeader _fileHeader;
+    private readonly TelemetryFileHeader _fileHeader;
     private bool _isDisposed;
     private readonly bool _isFileHandleOwner;
 
@@ -124,7 +124,7 @@ public class TelemetryFileReader : IDisposable
     /// <summary>
     /// Gets the file header.
     /// </summary>
-    public DataFileHeader FileHeader => _fileHeader;
+    public TelemetryFileHeader FileHeader => _fileHeader;
 
     /// <summary>
     /// Reads a data frame at the specified index.
@@ -230,7 +230,7 @@ public class TelemetryFileReader : IDisposable
 
     private static bool CheckFileSize(
         SafeFileHandle fileHandle,
-        in DataFileHeader fileHeader,
+        in TelemetryFileHeader fileHeader,
         in TelemetryBufferHeader telemetryBufferHeader,
         out long fileLength,
         out long expectedLength)

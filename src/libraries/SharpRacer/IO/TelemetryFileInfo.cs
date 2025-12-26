@@ -9,7 +9,7 @@ namespace SharpRacer.IO;
 /// </summary>
 public class TelemetryFileInfo : ITelemetryVariableInfoProvider
 {
-    private readonly DataFileHeader _fileHeader;
+    private readonly TelemetryFileHeader _fileHeader;
     private readonly ImmutableArray<TelemetryVariableInfo> _telemetryVariables;
 
     /// <summary>

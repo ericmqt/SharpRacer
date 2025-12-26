@@ -12,9 +12,9 @@ internal static class TelemetryFile
     /// <summary>
     /// Calculates the expected length of a telemetry file from its header.
     /// </summary>
-    /// <param name="fileHeader">The <see cref="DataFileHeader"/> from which to calculate the expected file size.</param>
+    /// <param name="fileHeader">The <see cref="TelemetryFileHeader"/> from which to calculate the expected file size.</param>
     /// <returns>The expected length, in bytes, of the telemetry file.</returns>
-    public static int CalculateFileLengthFromHeader(in DataFileHeader fileHeader)
+    public static int CalculateFileLengthFromHeader(in TelemetryFileHeader fileHeader)
     {
         var totalTelemetryBufferLength = fileHeader.TelemetryBufferElementLength * fileHeader.DiskSubHeader.SessionRecordCount;
 
@@ -32,13 +32,13 @@ internal static class TelemetryFile
     }
 
     /// <summary>
-    /// Reads a <see cref="DataFileHeader"/> value from the specified telemetry file path.
+    /// Reads a <see cref="TelemetryFileHeader"/> value from the specified telemetry file path.
     /// </summary>
     /// <param name="fileName">The path to the telemetry file.</param>
-    /// <returns>The <see cref="DataFileHeader"/> value read from the telemetry file.</returns>
+    /// <returns>The <see cref="TelemetryFileHeader"/> value read from the telemetry file.</returns>
     /// <exception cref="ArgumentException"><paramref name="fileName"/> is a null or empty string.</exception>
     /// <exception cref="IOException">The number of bytes read from the file was insufficient to complete the operation.</exception>
-    public static DataFileHeader ReadHeader(string fileName)
+    public static TelemetryFileHeader ReadHeader(string fileName)
     {
         ArgumentException.ThrowIfNullOrEmpty(fileName);
 
@@ -48,35 +48,35 @@ internal static class TelemetryFile
     }
 
     /// <summary>
-    /// Reads a <see cref="DataFileHeader"/> value from the specified <see cref="SafeFileHandle"/>.
+    /// Reads a <see cref="TelemetryFileHeader"/> value from the specified <see cref="SafeFileHandle"/>.
     /// </summary>
     /// <param name="fileHandle">The handle to the telemetry file to read.</param>
-    /// <returns>The <see cref="DataFileHeader"/> value read from the telemetry file.</returns>
+    /// <returns>The <see cref="TelemetryFileHeader"/> value read from the telemetry file.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="fileHandle"/> is null.</exception>
     /// <exception cref="IOException">The number of bytes read from the file was insufficient to complete the operation.</exception>
-    public static DataFileHeader ReadHeader(SafeFileHandle fileHandle)
+    public static TelemetryFileHeader ReadHeader(SafeFileHandle fileHandle)
     {
         ArgumentNullException.ThrowIfNull(fileHandle);
 
-        Span<byte> headerBlob = new byte[DataFileHeader.Size];
+        Span<byte> headerBlob = new byte[TelemetryFileHeader.Size];
 
         var bytesRead = RandomAccess.Read(fileHandle, headerBlob, DataFileConstants.HeaderOffset);
 
-        if (bytesRead < DataFileHeader.Size)
+        if (bytesRead < TelemetryFileHeader.Size)
         {
             throw new IOException(
-                $"The number of bytes read from the file ({bytesRead}) was insufficient to complete the operation ({DataFileHeader.Size}).");
+                $"The number of bytes read from the file ({bytesRead}) was insufficient to complete the operation ({TelemetryFileHeader.Size}).");
         }
 
-        return MemoryMarshal.Read<DataFileHeader>(headerBlob);
+        return MemoryMarshal.Read<TelemetryFileHeader>(headerBlob);
     }
 
     /// <summary>
-    /// Validates the specified <see cref="DataFileHeader"/> to ensure it has valid or expected values.
+    /// Validates the specified <see cref="TelemetryFileHeader"/> to ensure it has valid or expected values.
     /// </summary>
-    /// <param name="fileHeader">The <see cref="DataFileHeader"/> to validate.</param>
+    /// <param name="fileHeader">The <see cref="TelemetryFileHeader"/> to validate.</param>
     /// <returns><see langword="true"/> if the specified header is valid, otherwise <see langword="false" />.</returns>
-    public static bool ValidateHeader(in DataFileHeader fileHeader)
+    public static bool ValidateHeader(in TelemetryFileHeader fileHeader)
     {
         if (fileHeader.HeaderVersion != DataFileConstants.HeaderVersion)
         {
@@ -110,17 +110,17 @@ internal static class TelemetryFile
         }
 
         // Verify offsets are not negative or point to an offset inside the file header
-        if (fileHeader.TelemetryVariableHeaderOffset < 0 || fileHeader.TelemetryVariableHeaderOffset < DataFileHeader.Size)
+        if (fileHeader.TelemetryVariableHeaderOffset < 0 || fileHeader.TelemetryVariableHeaderOffset < TelemetryFileHeader.Size)
         {
             return false;
         }
 
-        if (fileHeader.SessionInfoOffset < 0 || fileHeader.SessionInfoOffset < DataFileHeader.Size)
+        if (fileHeader.SessionInfoOffset < 0 || fileHeader.SessionInfoOffset < TelemetryFileHeader.Size)
         {
             return false;
         }
 
-        if (fileHeader.TelemetryBufferHeaders[0].BufferOffset < DataFileHeader.Size)
+        if (fileHeader.TelemetryBufferHeaders[0].BufferOffset < TelemetryFileHeader.Size)
         {
             return false;
         }

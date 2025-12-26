@@ -3,15 +3,16 @@ using System.Text;
 using SharpRacer.Interop;
 
 namespace SharpRacer.Telemetry.TestUtilities;
+
 internal class TelemetryFileWriter
 {
     public static void Write(
         string fileName,
-        DataFileHeader fileHeader,
+        TelemetryFileHeader fileHeader,
         TelemetryVariableHeader[]? variableHeaders,
         string? sessionInfoYaml,
         IReadOnlyList<Memory<byte>>? dataFrames,
-        out DataFileHeader writtenFileHeader)
+        out TelemetryFileHeader writtenFileHeader)
     {
         ArgumentException.ThrowIfNullOrEmpty(fileName);
 
@@ -63,17 +64,17 @@ internal class TelemetryFileWriter
         }
     }
 
-    private static void WriteFileHeader(FileStream stream, in DataFileHeader fileHeader)
+    private static void WriteFileHeader(FileStream stream, in TelemetryFileHeader fileHeader)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
-        var headerBytes = new byte[DataFileHeader.Size];
+        var headerBytes = new byte[TelemetryFileHeader.Size];
         MemoryMarshal.Write(headerBytes, fileHeader);
 
         stream.Write(headerBytes);
     }
 
-    private static void WriteDataFrames(FileStream stream, IReadOnlyList<Memory<byte>>? dataFrames, ref DataFileHeader fileHeader)
+    private static void WriteDataFrames(FileStream stream, IReadOnlyList<Memory<byte>>? dataFrames, ref TelemetryFileHeader fileHeader)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -95,7 +96,7 @@ internal class TelemetryFileWriter
         }
     }
 
-    private static void WriteSessionInfo(FileStream stream, string? sessionInfoYaml, ref DataFileHeader fileHeader)
+    private static void WriteSessionInfo(FileStream stream, string? sessionInfoYaml, ref TelemetryFileHeader fileHeader)
     {
         fileHeader = fileHeader.WithSessionInfoOffset((int)stream.Position)
             .WithSessionInfoLength(sessionInfoYaml?.Length ?? 0);
@@ -106,7 +107,7 @@ internal class TelemetryFileWriter
         }
     }
 
-    private static void WriteVariableHeaders(FileStream stream, TelemetryVariableHeader[]? variableHeaders, ref DataFileHeader fileHeader)
+    private static void WriteVariableHeaders(FileStream stream, TelemetryVariableHeader[]? variableHeaders, ref TelemetryFileHeader fileHeader)
     {
         // Variable headers
         fileHeader = fileHeader

@@ -1,11 +1,12 @@
 ﻿using SharpRacer.Interop;
 
 namespace SharpRacer.Telemetry.TestUtilities;
+
 internal class TelemetryFileBuilder
 {
     private List<Memory<byte>> _dataFrames;
     private readonly int _dataFrameLength;
-    private DataFileHeader _fileHeader;
+    private TelemetryFileHeader _fileHeader;
     private string? _sessionInfo;
     private readonly TelemetryVariableHeader[] _variableHeaders;
 
@@ -16,7 +17,7 @@ internal class TelemetryFileBuilder
         _dataFrameLength = _variableHeaders.Sum(x => x.GetDataLength());
         _dataFrames = new List<Memory<byte>>();
 
-        _fileHeader = new DataFileHeader()
+        _fileHeader = new TelemetryFileHeader()
             .WithHeaderVersion(DataFileConstants.HeaderVersion)
             .WithStatus(1)
             .WithTickRate(60)
@@ -79,7 +80,7 @@ internal class TelemetryFileBuilder
         return this;
     }
 
-    public void Write(string fileName, out DataFileHeader fileHeader)
+    public void Write(string fileName, out TelemetryFileHeader fileHeader)
     {
         TelemetryFileWriter.Write(
             fileName,

@@ -45,7 +45,7 @@ public class TelemetryFileValidateHeaderTests
             telemetryaBufferFrameCount: 4096);
 
         var bufferHeaderArray = TelemetryBufferHeaderArray.FromArray(
-            [new TelemetryBufferHeader(43, DataFileHeader.Size - 3), default, default, default]);
+            [new TelemetryBufferHeader(43, TelemetryFileHeader.Size - 3), default, default, default]);
 
         fileHeader = fileHeader.WithTelemetryBufferHeaders(bufferHeaderArray);
 
@@ -110,7 +110,7 @@ public class TelemetryFileValidateHeaderTests
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, sessionInfoOffset: DataFileHeader.Size - 1)));
+                CopyHeader(validHeader, sessionInfoOffset: TelemetryFileHeader.Size - 1)));
     }
 
     [Fact]
@@ -156,16 +156,16 @@ public class TelemetryFileValidateHeaderTests
 
         Assert.False(
             TelemetryFile.ValidateHeader(
-                CopyHeader(validHeader, telemetryVariableHeaderOffset: DataFileHeader.Size - 1)));
+                CopyHeader(validHeader, telemetryVariableHeaderOffset: TelemetryFileHeader.Size - 1)));
     }
 
-    private static DataFileHeader CreateValidHeader(
+    private static TelemetryFileHeader CreateValidHeader(
         int variableCount,
         int sessionInfoLength,
         int telemetryBufferElementLength,
         int telemetryaBufferFrameCount)
     {
-        var variableHeaderBufferOffset = DataFileHeader.Size;
+        var variableHeaderBufferOffset = TelemetryFileHeader.Size;
         var variableHeaderBufferLength = variableCount * TelemetryVariableHeader.Size;
 
         var sessionInfoOffset = variableHeaderBufferOffset + variableHeaderBufferLength;
@@ -175,7 +175,7 @@ public class TelemetryFileValidateHeaderTests
         var telemetryBufferHeaders = TelemetryBufferHeaderArray.FromArray([telemetryBufferHeader, default, default, default]);
         var diskSubHeader = new DiskSubHeader(123, 456, 789, 20, telemetryaBufferFrameCount);
 
-        var header = new DataFileHeader(
+        var header = new TelemetryFileHeader(
             headerVersion: DataFileConstants.HeaderVersion,
             status: 1,
             tickRate: 60,
@@ -192,7 +192,7 @@ public class TelemetryFileValidateHeaderTests
         return header;
     }
 
-    private static DataFileHeader CopyHeader(in DataFileHeader header,
+    private static TelemetryFileHeader CopyHeader(in TelemetryFileHeader header,
         int? headerVersion = null,
         int? status = null,
         int? tickRate = null,
@@ -206,7 +206,7 @@ public class TelemetryFileValidateHeaderTests
         TelemetryBufferHeaderArray? telemetryBufferHeaders = null,
         DiskSubHeader? diskSubHeader = null)
     {
-        return new DataFileHeader(
+        return new TelemetryFileHeader(
                 headerVersion ?? header.HeaderVersion,
                 status ?? header.Status,
                 tickRate ?? header.TickRate,

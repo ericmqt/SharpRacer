@@ -1,20 +1,20 @@
 ﻿using System.Runtime.InteropServices;
 using SharpRacer.Extensions.Xunit;
-
 namespace SharpRacer.Interop;
 
-public class DataFileHeaderTests
+public class TelemetryFileHeaderTests
 {
-    public static TheoryData<DataFileHeader, DataFileHeader> InequalityData => GetInequalityData();
+    public static TheoryData<TelemetryFileHeader, TelemetryFileHeader> InequalityData => GetInequalityData();
 
     [Fact]
     public void Ctor_DefaultTest()
     {
-        var header = new DataFileHeader();
+        var header = new TelemetryFileHeader();
 
         Assert.Equal(default, header.TelemetryBufferCount);
         Assert.Equal(default, header.TelemetryBufferElementLength);
         Assert.Equal(default, header.TelemetryBufferHeaders);
+        Assert.Equal(default, header.DiskSubHeader);
         Assert.Equal(default, header.HeaderVersion);
         Assert.Equal(default, header.SessionInfoLength);
         Assert.Equal(default, header.SessionInfoOffset);
@@ -42,7 +42,9 @@ public class DataFileHeaderTests
         var telemetryBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
         var telemetryBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(telemetryBufferHeaders);
 
-        var header = new DataFileHeader(
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
+        var header = new TelemetryFileHeader(
             headerVersion,
             status,
             tickRate,
@@ -53,7 +55,8 @@ public class DataFileHeaderTests
             variableHeaderOffset,
             telemetryBufferCount,
             telemetryBufferElementLength,
-            telemetryBufferHeadersArray);
+            telemetryBufferHeadersArray,
+            diskSubHeader);
 
         Assert.Equal(headerVersion, header.HeaderVersion);
         Assert.Equal(status, header.Status);
@@ -71,12 +74,14 @@ public class DataFileHeaderTests
         Assert.Equal(telemetryBufferHeaders[1], header.TelemetryBufferHeaders[1]);
         Assert.Equal(telemetryBufferHeaders[2], header.TelemetryBufferHeaders[2]);
         Assert.Equal(telemetryBufferHeaders[3], header.TelemetryBufferHeaders[3]);
+
+        Assert.Equal(diskSubHeader, header.DiskSubHeader);
     }
 
     [Fact]
     public void StructLayout_Test()
     {
-        var blob = new Span<byte>(new byte[DataFileHeader.Size]);
+        var blob = new Span<byte>(new byte[TelemetryFileHeader.Size]);
 
         int headerVersion = 1;
         int status = 1;
@@ -91,21 +96,25 @@ public class DataFileHeaderTests
 
         var telemetryBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
 
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
         MemoryMarshal.Write(blob, headerVersion);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.Status..], status);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TickRate..], tickRate);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.SessionInfoVersion..], sessionInfoVersion);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.SessionInfoLength..], sessionInfoLength);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.SessionInfoOffset..], sessionInfoOffset);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryVariableCount..], variableCount);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryVariableHeaderOffset..], variableHeaderOffset);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryBufferCount..], telemetryBufferCount);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryBufferElementLength..], telemetryBufferElementLength);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.Status..], status);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TickRate..], tickRate);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.SessionInfoVersion..], sessionInfoVersion);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.SessionInfoLength..], sessionInfoLength);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.SessionInfoOffset..], sessionInfoOffset);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryVariableCount..], variableCount);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryVariableHeaderOffset..], variableHeaderOffset);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryBufferCount..], telemetryBufferCount);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryBufferElementLength..], telemetryBufferElementLength);
 
         MemoryMarshal.AsBytes<TelemetryBufferHeader>(telemetryBufferHeaders)
-            .CopyTo(blob[DataFileHeader.FieldOffsets.TelemetryBufferHeaderArray..]);
+            .CopyTo(blob[TelemetryFileHeader.FieldOffsets.TelemetryBufferHeaderArray..]);
 
-        var header = MemoryMarshal.Read<DataFileHeader>(blob);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.DiskSubHeader..], diskSubHeader);
+
+        var header = MemoryMarshal.Read<TelemetryFileHeader>(blob);
 
         Assert.Equal(headerVersion, header.HeaderVersion);
         Assert.Equal(status, header.Status);
@@ -122,12 +131,14 @@ public class DataFileHeaderTests
         Assert.Equal(telemetryBufferHeaders[1], header.TelemetryBufferHeaders[1]);
         Assert.Equal(telemetryBufferHeaders[2], header.TelemetryBufferHeaders[2]);
         Assert.Equal(telemetryBufferHeaders[3], header.TelemetryBufferHeaders[3]);
+
+        Assert.Equal(diskSubHeader, header.DiskSubHeader);
     }
 
     [Fact]
     public void AsRef_Test()
     {
-        var blob = new Span<byte>(new byte[DataFileHeader.Size]);
+        var blob = new Span<byte>(new byte[TelemetryFileHeader.Size]);
 
         int headerVersion = 1;
         int status = 1;
@@ -143,7 +154,9 @@ public class DataFileHeaderTests
         var telemetryBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
         var telemetryBufferHeadersArray = TelemetryBufferHeaderArray.FromArray(telemetryBufferHeaders);
 
-        var header = new DataFileHeader(
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
+        var header = new TelemetryFileHeader(
             headerVersion,
             status,
             tickRate,
@@ -154,12 +167,13 @@ public class DataFileHeaderTests
             variableHeaderOffset,
             telemetryBufferCount,
             telemetryBufferElementLength,
-            telemetryBufferHeadersArray);
+            telemetryBufferHeadersArray,
+            diskSubHeader);
 
         MemoryMarshal.Write(blob, header);
 
         // Obtain a readonly reference header over the blob
-        ref readonly var headerRef = ref DataFileHeader.AsRef(blob);
+        ref readonly var headerRef = ref TelemetryFileHeader.AsRef(blob);
 
         Assert.Equal(tickRate, headerRef.TickRate);
         EquatableStructAssert.Equal(header, headerRef);
@@ -177,7 +191,7 @@ public class DataFileHeaderTests
     [Fact]
     public void Equals_DefaultValueEqualityTest()
     {
-        var constructedHeader = new DataFileHeader();
+        var constructedHeader = new TelemetryFileHeader();
 
         EquatableStructAssert.Equal(constructedHeader, default);
     }
@@ -193,7 +207,9 @@ public class DataFileHeaderTests
                 new(17, 5888)
             ]);
 
-        var constructedHeader = new DataFileHeader(1, 1, 60, 1, 32, 64, 12, 144, 4, 256, telemetryBufferHeadersArray);
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
+        var constructedHeader = new TelemetryFileHeader(1, 1, 60, 1, 32, 64, 12, 144, 4, 256, telemetryBufferHeadersArray, diskSubHeader);
 
         EquatableStructAssert.NotEqual(constructedHeader, default);
     }
@@ -220,20 +236,9 @@ public class DataFileHeaderTests
                 new(17, 5888)
             ]);
 
-        var header1 = new DataFileHeader(
-            headerVersion,
-            status,
-            tickRate,
-            sessionInfoVersion,
-            sessionInfoLength,
-            sessionInfoOffset,
-            variableCount,
-            variableHeaderOffset,
-            telemetryBufferCount,
-            telemetryBufferElementLength,
-            telemetryBufferHeadersArray);
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
 
-        var header2 = new DataFileHeader(
+        var header1 = new TelemetryFileHeader(
             headerVersion,
             status,
             tickRate,
@@ -244,14 +249,29 @@ public class DataFileHeaderTests
             variableHeaderOffset,
             telemetryBufferCount,
             telemetryBufferElementLength,
-            telemetryBufferHeadersArray);
+            telemetryBufferHeadersArray,
+            diskSubHeader);
+
+        var header2 = new TelemetryFileHeader(
+            headerVersion,
+            status,
+            tickRate,
+            sessionInfoVersion,
+            sessionInfoLength,
+            sessionInfoOffset,
+            variableCount,
+            variableHeaderOffset,
+            telemetryBufferCount,
+            telemetryBufferElementLength,
+            telemetryBufferHeadersArray,
+            diskSubHeader);
 
         EquatableStructAssert.Equal(header1, header2);
     }
 
     [Theory]
     [MemberData(nameof(InequalityData))]
-    public void Equals_InequalityTest(DataFileHeader header1, DataFileHeader header2)
+    public void Equals_InequalityTest(TelemetryFileHeader header1, TelemetryFileHeader header2)
     {
         EquatableStructAssert.NotEqual(header1, header2);
     }
@@ -278,7 +298,9 @@ public class DataFileHeaderTests
                 new(17, 5888)
             ]);
 
-        var header1 = new DataFileHeader(
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
+        var header1 = new TelemetryFileHeader(
             headerVersion,
             status,
             tickRate,
@@ -289,7 +311,8 @@ public class DataFileHeaderTests
             variableHeaderOffset,
             telemetryBufferCount,
             telemetryBufferElementLength,
-            telemetryBufferHeadersArray);
+            telemetryBufferHeadersArray,
+            diskSubHeader);
 
         Assert.False(header1.Equals(obj: null));
     }
@@ -297,7 +320,7 @@ public class DataFileHeaderTests
     [Fact]
     public void Read_Test()
     {
-        var blob = new Span<byte>(new byte[DataFileHeader.Size]);
+        var blob = new Span<byte>(new byte[TelemetryFileHeader.Size]);
 
         int headerVersion = 1;
         int status = 1;
@@ -312,21 +335,25 @@ public class DataFileHeaderTests
 
         var telemetryBufferHeaders = new TelemetryBufferHeader[] { new(25, 5120), new(52, 5376), new(1, 5632), new(17, 5888) };
 
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
         MemoryMarshal.Write(blob, headerVersion);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.Status..], status);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TickRate..], tickRate);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.SessionInfoVersion..], sessionInfoVersion);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.SessionInfoLength..], sessionInfoLength);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.SessionInfoOffset..], sessionInfoOffset);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryVariableCount..], variableCount);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryVariableHeaderOffset..], variableHeaderOffset);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryBufferCount..], telemetryBufferCount);
-        MemoryMarshal.Write(blob[DataFileHeader.FieldOffsets.TelemetryBufferElementLength..], telemetryBufferElementLength);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.Status..], status);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TickRate..], tickRate);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.SessionInfoVersion..], sessionInfoVersion);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.SessionInfoLength..], sessionInfoLength);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.SessionInfoOffset..], sessionInfoOffset);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryVariableCount..], variableCount);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryVariableHeaderOffset..], variableHeaderOffset);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryBufferCount..], telemetryBufferCount);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.TelemetryBufferElementLength..], telemetryBufferElementLength);
 
         MemoryMarshal.AsBytes<TelemetryBufferHeader>(telemetryBufferHeaders)
-            .CopyTo(blob[DataFileHeader.FieldOffsets.TelemetryBufferHeaderArray..]);
+            .CopyTo(blob[TelemetryFileHeader.FieldOffsets.TelemetryBufferHeaderArray..]);
 
-        var header = DataFileHeader.Read(blob);
+        MemoryMarshal.Write(blob[TelemetryFileHeader.FieldOffsets.DiskSubHeader..], diskSubHeader);
+
+        var header = TelemetryFileHeader.Read(blob);
 
         Assert.Equal(headerVersion, header.HeaderVersion);
         Assert.Equal(status, header.Status);
@@ -343,9 +370,11 @@ public class DataFileHeaderTests
         Assert.Equal(telemetryBufferHeaders[1], header.TelemetryBufferHeaders[1]);
         Assert.Equal(telemetryBufferHeaders[2], header.TelemetryBufferHeaders[2]);
         Assert.Equal(telemetryBufferHeaders[3], header.TelemetryBufferHeaders[3]);
+
+        Assert.Equal(diskSubHeader, header.DiskSubHeader);
     }
 
-    private static TheoryData<DataFileHeader, DataFileHeader> GetInequalityData()
+    private static TheoryData<TelemetryFileHeader, TelemetryFileHeader> GetInequalityData()
     {
         const int headerVersion = 1;
         const int status = 1;
@@ -366,7 +395,9 @@ public class DataFileHeaderTests
                 new(17, 5888)
             ]);
 
-        var header = new DataFileHeader(
+        var diskSubHeader = new DiskSubHeader(23402342, 25.1d, 209.4d, 11, 4096);
+
+        var header = new TelemetryFileHeader(
             headerVersion,
             status,
             tickRate,
@@ -377,9 +408,10 @@ public class DataFileHeaderTests
             variableHeaderOffset,
             telemetryBufferCount,
             telemetryBufferElementLength,
-            telemetryBufferHeadersArray);
+            telemetryBufferHeadersArray,
+            diskSubHeader);
 
-        return new TheoryData<DataFileHeader, DataFileHeader>()
+        return new TheoryData<TelemetryFileHeader, TelemetryFileHeader>()
         {
             // HeaderVersion
             { header, MutateHeader(header, headerVersion: 2) },
@@ -422,11 +454,14 @@ public class DataFileHeaderTests
                         new(3, 8),
                         new(4, 12)
                     ]))
-            }
+            },
+
+            // DiskSubHeader
+            { header, MutateHeader(header, diskSubHeader: new DiskSubHeader(123, 456, 789, 987, 654)) },
         };
     }
 
-    private static DataFileHeader MutateHeader(in DataFileHeader header,
+    private static TelemetryFileHeader MutateHeader(in TelemetryFileHeader header,
         int? headerVersion = null,
         int? status = null,
         int? tickRate = null,
@@ -437,9 +472,10 @@ public class DataFileHeaderTests
         int? variableHeaderOffset = null,
         int? telemetryBufferCount = null,
         int? telemetryBufferElementLength = null,
-        TelemetryBufferHeaderArray? telemetryBufferHeaders = null)
+        TelemetryBufferHeaderArray? telemetryBufferHeaders = null,
+        DiskSubHeader? diskSubHeader = null)
     {
-        return new DataFileHeader(
+        return new TelemetryFileHeader(
                 headerVersion ?? header.HeaderVersion,
                 status ?? header.Status,
                 tickRate ?? header.TickRate,
@@ -450,6 +486,7 @@ public class DataFileHeaderTests
                 variableHeaderOffset ?? header.TelemetryVariableHeaderOffset,
                 telemetryBufferCount ?? header.TelemetryBufferCount,
                 telemetryBufferElementLength ?? header.TelemetryBufferElementLength,
-                telemetryBufferHeaders ?? header.TelemetryBufferHeaders);
+                telemetryBufferHeaders ?? header.TelemetryBufferHeaders,
+                diskSubHeader ?? header.DiskSubHeader);
     }
 }
