@@ -6,6 +6,7 @@ using SharpRacer.IO;
 using SharpRacer.Telemetry.TestUtilities;
 
 namespace SharpRacer.Telemetry;
+
 public class TelemetryFileReaderTests
 {
     [Fact]

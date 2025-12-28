@@ -85,7 +85,7 @@ public partial class SimulatorConnectionTests
         var mocks = new SimulatorConnectionMock();
 
         // Configure an instance of ConnectionDataSpanOwner
-        byte[] spanData = [0xDE, 0xAD, 0xBE, 0xEF];
+        var spanData = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
         var spanFactory = new FakeConnectionDataSpanFactory(spanData);
 
         var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
@@ -129,7 +129,7 @@ public partial class SimulatorConnectionTests
         var spanHandle = connection.AcquireDataSpanHandle();
 
         Assert.True(spanHandle.IsOwned);
-        Assert.True(spanHandle.Span.SequenceEqual(spanData));
+        Assert.True(spanHandle.Span.SequenceEqual(spanData.Span));
         Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, spanHandle.Token);
     }
 

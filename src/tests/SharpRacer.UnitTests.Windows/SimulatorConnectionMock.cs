@@ -3,11 +3,18 @@ using SharpRacer.Internal;
 using SharpRacer.Internal.Connections;
 
 namespace SharpRacer;
+
 internal class SimulatorConnectionMock
 {
     public SimulatorConnectionMock()
+        : this(new MockRepository(MockBehavior.Strict))
     {
-        MockRepository = new MockRepository(MockBehavior.Strict);
+
+    }
+
+    public SimulatorConnectionMock(MockRepository mockRepository)
+    {
+        MockRepository = mockRepository ?? throw new ArgumentNullException(nameof(mockRepository));
 
         CancellationTokenSource = MockRepository.Create<IConnectionCancellationTokenSource>();
         ConnectionManager = MockRepository.Create<IConnectionManager>();

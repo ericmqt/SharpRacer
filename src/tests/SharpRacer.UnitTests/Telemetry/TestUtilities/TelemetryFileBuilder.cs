@@ -57,6 +57,21 @@ internal class TelemetryFileBuilder
         return this;
     }
 
+    public TelemetryFileBuilder AddDataFrame(int length, Action<DataFrameWriter> writeFrameAction)
+    {
+        ArgumentNullException.ThrowIfNull(writeFrameAction);
+
+        var frame = new Memory<byte>(new byte[length]);
+
+        var writer = new DataFrameWriter(frame);
+
+        writeFrameAction(writer);
+
+        _dataFrames.Add(frame);
+
+        return this;
+    }
+
     public TelemetryFileBuilder SetHeaderVersion(int headerVersion)
     {
         _fileHeader = _fileHeader.WithHeaderVersion(headerVersion);

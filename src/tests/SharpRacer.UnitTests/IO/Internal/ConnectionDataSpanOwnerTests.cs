@@ -1,6 +1,7 @@
 ﻿using Moq;
 
 namespace SharpRacer.IO.Internal;
+
 public class ConnectionDataSpanOwnerTests
 {
     [Fact]
@@ -39,10 +40,10 @@ public class ConnectionDataSpanOwnerTests
     [Fact]
     public void AcquireSpanHandle_Test()
     {
-        byte[] spanArray = [0xDE, 0xAD, 0xBE, 0xEF];
         var mocks = new MockRepository(MockBehavior.Strict);
 
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory(spanArray);
+        var fakeSpanFactoryMemory = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(fakeSpanFactoryMemory);
 
         var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
         var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
@@ -55,7 +56,7 @@ public class ConnectionDataSpanOwnerTests
         var spanHandle = spanOwner.AcquireSpanHandle();
 
         Assert.NotEqual(ConnectionDataSpanHandleToken.Zero, spanHandle.Token);
-        Assert.True(spanHandle.Span.SequenceEqual(spanArray));
+        Assert.True(spanHandle.Span.SequenceEqual(fakeSpanFactoryMemory.Span));
         Assert.True(spanHandle.IsOwned);
         Assert.Equal(spanOwner, spanHandle.Owner);
     }
@@ -63,11 +64,10 @@ public class ConnectionDataSpanOwnerTests
     [Fact]
     public void AcquireSpanHandle_ThrowsIfClosedTest()
     {
-        byte[] spanArray = [0xDE, 0xAD, 0xBE, 0xEF];
-
         var mocks = new MockRepository(MockBehavior.Strict);
 
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory(spanArray);
+        var fakeSpanFactoryMemory = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(fakeSpanFactoryMemory);
         var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
         var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
 
@@ -89,7 +89,8 @@ public class ConnectionDataSpanOwnerTests
     [Fact]
     public void AcquireSpanHandle_ThrowsIfDisposedTest()
     {
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactoryMemory = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(fakeSpanFactoryMemory);
 
         var mocks = new MockRepository(MockBehavior.Strict);
 
@@ -112,7 +113,8 @@ public class ConnectionDataSpanOwnerTests
     {
         var mocks = new MockRepository(MockBehavior.Strict);
 
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactoryMemory = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(fakeSpanFactoryMemory);
 
         var dataFileLifetimeMock = mocks.Create<IConnectionDataFileLifetime>();
         var dataFileLifetimeHandleMock = mocks.Create<IConnectionDataFileLifetimeHandle>();
@@ -218,7 +220,8 @@ public class ConnectionDataSpanOwnerTests
     [Fact]
     public void ReleaseSpanHandle_Test()
     {
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactoryMemory = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(fakeSpanFactoryMemory);
 
         var mocks = new MockRepository(MockBehavior.Strict);
 
@@ -253,7 +256,8 @@ public class ConnectionDataSpanOwnerTests
     [Fact]
     public void ReleaseSpanHandle_DisposeOnClosedAndLastHandleReturnedTest()
     {
-        var fakeSpanFactory = new FakeConnectionDataSpanFactory([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactoryMemory = new Memory<byte>([0xDE, 0xAD, 0xBE, 0xEF]);
+        var fakeSpanFactory = new FakeConnectionDataSpanFactory(fakeSpanFactoryMemory);
 
         var mocks = new MockRepository(MockBehavior.Strict);
 
