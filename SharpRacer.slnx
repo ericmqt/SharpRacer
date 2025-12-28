@@ -15,6 +15,7 @@
     <Project Path="src/tests/SharpRacer.Extensions.Xunit/SharpRacer.Extensions.Xunit.csproj" />
     <Project Path="src/tests/SharpRacer.IntegrationTests/SharpRacer.IntegrationTests.csproj" />
     <Project Path="src/tests/SharpRacer.SessionInfo.Yaml.UnitTests/SharpRacer.SessionInfo.Yaml.UnitTests.csproj" />
+    <Project Path="src/tests/SharpRacer.Testing/SharpRacer.Testing.csproj" />
     <Project Path="src/tests/SharpRacer.UnitTests.Windows/SharpRacer.UnitTests.Windows.csproj" />
     <Project Path="src/tests/SharpRacer.UnitTests/SharpRacer.UnitTests.csproj" />
   </Folder>

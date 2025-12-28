@@ -123,6 +123,7 @@ if ($Json)
     {
         New-JsonCodeCoverageReport -FileName (Join-Path $script:codeCoverageOptions.JsonReportsDirectory "SharpRacer.json") `
             -CodeCoverageFileNames $script:sharpRacerCodeCoverageFiles `
+            -ExcludedAssemblies @("SharpRacer.Testing") `
             -ExcludedClasses @("Windows.Win32.*") `
             -ReportTitle "SharpRacer Library"
     }
@@ -131,7 +132,7 @@ if ($Json)
     {
         New-JsonCodeCoverageReport -FileName (Join-Path $script:codeCoverageOptions.JsonReportsDirectory "SharpRacer.SourceGenerators.json") `
             -CodeCoverageFileNames $script:sourceGeneratorCodeCoverageFiles `
-            -ExcludedAssemblies @("SharpRacer") `
+            -ExcludedAssemblies @("SharpRacer", "SharpRacer.Testing") `
             -ExcludedClasses @("Windows.Win32.*") `
             -ReportTitle "SharpRacer.SourceGenerators"
     }
@@ -140,6 +141,7 @@ if ($Json)
     {
         New-JsonCodeCoverageReport -FileName (Join-Path $script:codeCoverageOptions.JsonReportsDirectory "SharpRacer.all.json") `
             -CodeCoverageFileNames @($script:sharpRacerCodeCoverageFiles + $script:sourceGeneratorCodeCoverageFiles) `
+            -ExcludedAssemblies @("SharpRacer.Testing") `
             -ExcludedClasses @("Windows.Win32.*") `
             -ReportTitle "SharpRacer"
     }
@@ -153,6 +155,7 @@ if ($Html)
     {
         New-HtmlCodeCoverageReport -OutputDirectory (Join-Path $script:codeCoverageOptions.HtmlReportsDirectory "SharpRacer") `
             -CodeCoverageFileNames $script:sharpRacerCodeCoverageFiles `
+            -ExcludedAssemblies @("SharpRacer.Testing") `
             -ExcludedClasses @("Windows.Win32.*") `
             -ReportTitle "SharpRacer Library"
     }
@@ -161,7 +164,7 @@ if ($Html)
     {
         New-HtmlCodeCoverageReport -OutputDirectory (Join-Path $script:codeCoverageOptions.HtmlReportsDirectory "SharpRacer.SourceGenerators") `
             -CodeCoverageFileNames $script:sourceGeneratorCodeCoverageFiles `
-            -ExcludedAssemblies @("SharpRacer") `
+            -ExcludedAssemblies @("SharpRacer", "SharpRacer.Testing") `
             -ExcludedClasses @("Windows.Win32.*") `
             -ReportTitle "SharpRacer.SourceGenerators"
     }
@@ -170,6 +173,7 @@ if ($Html)
     {
         New-HtmlCodeCoverageReport -OutputDirectory (Join-Path $script:codeCoverageOptions.HtmlReportsDirectory "SharpRacer.all") `
             -CodeCoverageFileNames @($script:sharpRacerCodeCoverageFiles + $script:sourceGeneratorCodeCoverageFiles) `
+            -ExcludedAssemblies @("SharpRacer.Testing") `
             -ExcludedClasses @("Windows.Win32.*") `
             -ReportTitle "SharpRacer"
     }
