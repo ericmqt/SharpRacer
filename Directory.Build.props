@@ -16,7 +16,7 @@
 
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<WarningsAsErrors>nullable,CA2016</WarningsAsErrors>
+		<WarningsAsErrors>nullable,CA2016,CA1416</WarningsAsErrors>
 	</PropertyGroup>
 
 	<!-- Assembly information -->
