@@ -1,3 +1,30 @@
+<#
+    .SYNOPSIS
+    Generates code coverage reports using ReportGenerator.
+
+    .PARAMETER OutputDirectory
+    The directory where generated reports will be stored.
+
+    .PARAMETER SharpRacer
+    Generates code coverage for the main SharpRacer library.
+
+    .PARAMETER SourceGenerator
+    Generates code coverage for the SharpRacer.SourceGenerators library.
+
+    .PARAMETER ExcludeIntegrationTests
+    Excludes integration tests from code coverage reports.
+
+    .PARAMETER Json
+    Generate a JSON code coverage report for each library in the $OutputDirectory/json directory.
+
+    .PARAMETER Html
+    Generate an HTML code coverage report for each library in the $OutputDirectory/html directory.
+
+    .PARAMETER NoBuild
+    If specified, projects will not be compiled before running tests.
+#>
+
+
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$true)]
