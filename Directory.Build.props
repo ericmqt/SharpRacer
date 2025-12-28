@@ -7,7 +7,6 @@
 		<RepositoryArtifactsDirectory>$(RepositoryRootDirectory)\artifacts</RepositoryArtifactsDirectory>
 		<RepositoryBinDirectory>$(RepositoryArtifactsDirectory)\bin</RepositoryBinDirectory>
 		<RepositoryPackageOutputDirectory>$(RepositoryArtifactsDirectory)\nupkg</RepositoryPackageOutputDirectory>
-		<RepositoryTestCoverageOutputPath>$(RepositoryArtifactsDirectory)\test\coverage</RepositoryTestCoverageOutputPath>
 	</PropertyGroup>
 	
 	<PropertyGroup>
