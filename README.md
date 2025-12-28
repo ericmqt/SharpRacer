@@ -5,3 +5,44 @@
 SharpRacer is a modern, high-performance .NET library for interacting with the [iRacing racing simulator](https://www.iracing.com/).
 
 This project is under active development and is currently in a pre-release state.
+
+## Getting Started
+
+*TODO*
+
+## Testing
+
+### Running the Test Suite
+
+```
+dotnet restore
+dotnet build
+dotnet test --no-build
+```
+
+### Generate Code Coverage Reports
+
+Install [ReportGenerator](https://reportgenerator.io/) as a dotnet local tool:
+
+```
+dotnet new tool-manifest
+dotnet tool install dotnet-reportgenerator-globaltool
+```
+
+Generate the reports using the `eng\GenerateCodeCoverageReport.ps1` PowerShell script:
+
+```powershell
+PS> .\eng\GenerateCodeCoverageReport.ps1 -OutputDirectory .\artifacts\test -SharpRacer -SourceGenerator -Html
+```
+
+## Contributing
+
+This project is not accepting contributions at the moment. I will begin taking contributions once the first release is completed and published.
+
+## License
+
+This project is licensed under the terms of the MIT license. See the [LICENSE](LICENSE) file for details.
+
+## Support
+
+If you like this project, found it useful, and want to support my work, you can [buy me a coffee](https://buymeacoffee.com/ericmqt). You don't have to, though. I promise I won't be mad if you don't.
