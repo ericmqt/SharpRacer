@@ -1,11 +1,12 @@
 ﻿using System.Runtime.Versioning;
 
 namespace SharpRacer.Tools.TelemetryVariables;
+
 internal static class SimulatorPlatformGuard
 {
-    [SupportedOSPlatformGuard("windows5.1.2600")]
+    [SupportedOSPlatformGuard("windows")]
     public static bool IsSupportedPlatform()
     {
-        return OperatingSystem.IsOSPlatformVersionAtLeast("windows", 5, 1, 2600);
+        return OperatingSystem.IsWindows();
     }
 }

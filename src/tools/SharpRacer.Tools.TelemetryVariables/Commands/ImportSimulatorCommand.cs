@@ -9,7 +9,7 @@ using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
 
-[SupportedOSPlatform("windows5.1.2600")]
+[SupportedOSPlatform("windows")]
 internal sealed class ImportSimulatorCommand
     : CliCommand<ImportSimulatorCommandHandler, ImportSimulatorCommandOptions>, IConfigureDbContextCommand
 {

@@ -9,7 +9,7 @@ using SharpRacer.Tools.TelemetryVariables.Models;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
 
-[SupportedOSPlatform("windows5.1.2600")]
+[SupportedOSPlatform("windows")]
 internal sealed class ImportSimulatorCommandHandler : ICommandHandler<ImportSimulatorCommandOptions>
 {
     private readonly CarImporter _carImporter;
