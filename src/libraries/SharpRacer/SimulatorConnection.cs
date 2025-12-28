@@ -9,7 +9,6 @@ namespace SharpRacer;
 /// <summary>
 /// Represents a connection to a simulator session.
 /// </summary>
-[SupportedOSPlatform("windows5.1.2600")]
 public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection, IDisposable
 {
     private readonly IConnectionCancellationTokenSource _cancellationTokenSource;
@@ -24,6 +23,7 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
     /// <summary>
     /// Initializes an instance of <see cref="SimulatorConnection"/>.
     /// </summary>
+    [SupportedOSPlatform("windows")]
     public SimulatorConnection()
         : this(ConnectionManager.Default, new ConnectionTelemetryVariableInfoProvider(), new ConnectionCancellationTokenSource())
     {
