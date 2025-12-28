@@ -1,25 +1,25 @@
 {
   "summary": {
-    "generatedon": "2025-12-28T19:41:55Z",
+    "generatedon": "2025-12-28T21:21:19Z",
     "parser": "MultiReport (3x Cobertura)",
     "assemblies": 1,
     "classes": 78,
     "files": 78,
-    "coveredlines": 2949,
-    "uncoveredlines": 324,
+    "coveredlines": 2985,
+    "uncoveredlines": 288,
     "coverablelines": 3273,
     "totallines": 8051,
-    "linecoverage": 90.1,
-    "coveredbranches": 655,
+    "linecoverage": 91.2,
+    "coveredbranches": 663,
     "totalbranches": 685,
-    "branchcoverage": 95.6,
-    "coveredmethods": 524,
+    "branchcoverage": 96.7,
+    "coveredmethods": 528,
     "totalmethods": 602,
-    "methodcoverage": 87
+    "methodcoverage": 87.7
  },
   "coverage": {
     "assemblies": [
-      { "name": "SharpRacer", "classes": 78, "coverage": 90.1, "coveredlines": 2949, "coverablelines": 3273, "totallines": 8051, "branchcoverage": 95.6, "coveredbranches": 655, "totalbranches": 685, "methodcoverage": 87, "coveredmethods": 524, "totalmethods": 602, "classesinassembly": [
+      { "name": "SharpRacer", "classes": 78, "coverage": 91.2, "coveredlines": 2985, "coverablelines": 3273, "totallines": 8051, "branchcoverage": 96.7, "coveredbranches": 663, "totalbranches": 685, "methodcoverage": 87.7, "coveredmethods": 528, "totalmethods": 602, "classesinassembly": [
         { "name": "SharpRacer.Commands.CameraCommands", "coverage": 0, "coveredlines": 0, "coverablelines": 15, "totallines": 72, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 5 },
         { "name": "SharpRacer.Commands.ChatCommands", "coverage": 0, "coveredlines": 0, "coverablelines": 20, "totallines": 61, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 6 },
         { "name": "SharpRacer.Commands.ForceFeedbackCommands", "coverage": 0, "coveredlines": 0, "coverablelines": 3, "totallines": 23, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 1 },
@@ -61,7 +61,7 @@
         { "name": "SharpRacer.Interop.DiskSubHeader", "coverage": 100, "coveredlines": 34, "coverablelines": 34, "totallines": 156, "branchcoverage": 100, "coveredbranches": 10, "totalbranches": 10, "methodcoverage": 100, "coveredmethods": 9, "totalmethods": 9 },
         { "name": "SharpRacer.Interop.IRSDKDescString", "coverage": 100, "coveredlines": 54, "coverablelines": 54, "totallines": 117, "branchcoverage": 100, "coveredbranches": 16, "totalbranches": 16, "methodcoverage": 100, "coveredmethods": 8, "totalmethods": 8 },
         { "name": "SharpRacer.Interop.IRSDKString", "coverage": 100, "coveredlines": 54, "coverablelines": 54, "totallines": 117, "branchcoverage": 100, "coveredbranches": 16, "totalbranches": 16, "methodcoverage": 100, "coveredmethods": 8, "totalmethods": 8 },
-        { "name": "SharpRacer.Interop.SessionInfoString", "coverage": 2.7, "coveredlines": 1, "coverablelines": 37, "totallines": 113, "branchcoverage": 0, "coveredbranches": 0, "totalbranches": 8, "methodcoverage": 20, "coveredmethods": 1, "totalmethods": 5 },
+        { "name": "SharpRacer.Interop.SessionInfoString", "coverage": 100, "coveredlines": 37, "coverablelines": 37, "totallines": 113, "branchcoverage": 100, "coveredbranches": 8, "totalbranches": 8, "methodcoverage": 100, "coveredmethods": 5, "totalmethods": 5 },
         { "name": "SharpRacer.Interop.TelemetryBufferHeader", "coverage": 100, "coveredlines": 22, "coverablelines": 22, "totallines": 101, "branchcoverage": 100, "coveredbranches": 4, "totalbranches": 4, "methodcoverage": 100, "coveredmethods": 7, "totalmethods": 7 },
         { "name": "SharpRacer.Interop.TelemetryBufferHeaderArray", "coverage": 100, "coveredlines": 33, "coverablelines": 33, "totallines": 78, "branchcoverage": 100, "coveredbranches": 10, "totalbranches": 10, "methodcoverage": 100, "coveredmethods": 6, "totalmethods": 6 },
         { "name": "SharpRacer.Interop.TelemetryFileHeader", "coverage": 100, "coveredlines": 61, "coverablelines": 61, "totallines": 292, "branchcoverage": 100, "coveredbranches": 24, "totalbranches": 24, "methodcoverage": 100, "coveredmethods": 9, "totalmethods": 9 },
