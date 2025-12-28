@@ -12,6 +12,8 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
 
     public SimulatorConnectionDataReader(ISimulatorConnection connection)
     {
+        ArgumentNullException.ThrowIfNull(connection);
+
         if (connection.State != SimulatorConnectionState.Open)
         {
             throw new ArgumentException("The connection is not open.", nameof(connection));
@@ -21,7 +23,6 @@ internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
         _memoryHandle = _connection.AcquireDataHandle();
     }
 
-    protected ReadOnlyMemory<byte> Memory => _memoryHandle.Memory;
     protected ReadOnlySpan<byte> Span => _memoryHandle.Memory.Span;
 
     /// <inheritdoc />

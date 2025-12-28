@@ -9,8 +9,7 @@ namespace SharpRacer.IO;
 public readonly ref struct ConnectionDataSpanReader : IDisposable
 {
     private readonly ref readonly DataFileHeader _fileHeader;
-    private readonly ConnectionDataSpanHandle _spanOwner;
-    private readonly bool _isSpanOwnedByReader;
+    private readonly ConnectionDataSpanHandle _spanHandle;
 
     /// <summary>
     /// Initializes an instance of the <see cref="ConnectionDataSpanReader"/> structure using the specified connection as its data source.
@@ -26,16 +25,15 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     {
         ArgumentNullException.ThrowIfNull(connection);
 
-        // Allow reading from Closed connection since data file will be frozen and readable until all of the outer connections have closed.
-        if (connection.State < SimulatorConnectionState.Open)
+        if (connection.State != SimulatorConnectionState.Open)
         {
-            throw new ArgumentException("Connection has not been opened.", nameof(connection));
+            throw new ArgumentException("The connection is not open.", nameof(connection));
         }
 
-        _spanOwner = connection.AcquireDataSpanHandle();
-        _isSpanOwnedByReader = true;
+        _spanHandle = connection.AcquireDataSpanHandle();
+        IsHandleOwnedByReader = true;
 
-        _fileHeader = ref DataFileHeader.AsRef(_spanOwner.Span);
+        _fileHeader = ref DataFileHeader.AsRef(_spanHandle.Span);
     }
 
     /// <summary>
@@ -46,7 +44,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <paramref name="dataFileSpan"/> has a length less than the minimum length of <see cref="DataFileHeader.Size"/>.
     /// </exception>
     public ConnectionDataSpanReader(ReadOnlySpan<byte> dataFileSpan)
-        : this(ConnectionDataSpanHandle.Ownerless(dataFileSpan), isOwnedByReader: false)
+        : this(ConnectionDataSpanHandle.Ownerless(dataFileSpan), isHandleOwnedByReader: false)
     {
 
     }
@@ -56,7 +54,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// releasing the handle when the reader is disposed.
     /// </summary>
     /// <param name="spanHandle">The <see cref="ConnectionDataSpanHandle"/> acquired from the connection.</param>
-    /// <param name="isOwnedByReader">
+    /// <param name="isHandleOwnedByReader">
     /// If <see langword="true"/>, disposing the <see cref="ConnectionDataSpanReader"/> will cause <paramref name="spanHandle"/> to be
     /// disposed as well. Use this when you do not need to retain a reference to <paramref name="spanHandle"/> after initializing the
     /// <see cref="ConnectionDataSpanReader"/> structure.
@@ -64,29 +62,31 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <exception cref="ArgumentException">
     /// The span pointed to by <paramref name="spanHandle"/> has a length less than the minimum length of <see cref="DataFileHeader.Size"/>.
     /// </exception>
-    public ConnectionDataSpanReader(ConnectionDataSpanHandle spanHandle, bool isOwnedByReader)
+    public ConnectionDataSpanReader(ConnectionDataSpanHandle spanHandle, bool isHandleOwnedByReader)
     {
         if (spanHandle.Span.Length < DataFileHeader.Size)
         {
             throw new ArgumentException(
-                $"The data file span has length {spanHandle.Span.Length}, which is less than the minimum length {DataFileHeader.Size}",
+                $"The data span handle has length {spanHandle.Span.Length}, which is less than the minimum length {DataFileHeader.Size}",
                 nameof(spanHandle));
         }
 
-        _spanOwner = spanHandle;
-        _isSpanOwnedByReader = isOwnedByReader;
+        _spanHandle = spanHandle;
+        IsHandleOwnedByReader = isHandleOwnedByReader;
 
-        _fileHeader = ref DataFileHeader.AsRef(_spanOwner.Span);
+        _fileHeader = ref DataFileHeader.AsRef(_spanHandle.Span);
     }
+
+    internal bool IsHandleOwnedByReader { get; }
 
     /// <summary>
     /// Releases the underlying data file span handle.
     /// </summary>
     public readonly void Dispose()
     {
-        if (_isSpanOwnedByReader)
+        if (IsHandleOwnedByReader)
         {
-            _spanOwner.Dispose();
+            _spanHandle.Dispose();
         }
     }
 
@@ -120,7 +120,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <returns>A read-only span of bytes representing the contents of the session information string.</returns>
     public readonly ReadOnlySpan<byte> GetSessionInfoStringSpan()
     {
-        return _spanOwner.Span.Slice(_fileHeader.SessionInfoOffset, _fileHeader.SessionInfoLength);
+        return _spanHandle.Span.Slice(_fileHeader.SessionInfoOffset, _fileHeader.SessionInfoLength);
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <returns>A byte array containing the contents of the active telemetry data buffer.</returns>
     public readonly byte[] ReadActiveTelemetryBuffer(out int tickCount)
     {
-        using var reader = new TelemetryBufferReader(_spanOwner.Span);
+        using var reader = new TelemetryBufferReader(_spanHandle.Span);
 
         var buffer = new byte[reader.BufferLength];
         bool copied = false;
@@ -169,7 +169,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <param name="tickCount">The tick value of the data buffer.</param>
     public readonly void ReadActiveTelemetryBuffer(Span<byte> destination, out int tickCount)
     {
-        using var reader = new TelemetryBufferReader(_spanOwner.Span);
+        using var reader = new TelemetryBufferReader(_spanHandle.Span);
 
         // TODO: Destination length check?
 
@@ -190,7 +190,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     {
         var variableHeaders = new TelemetryVariableHeader[_fileHeader.TelemetryVariableCount];
 
-        var variableHeaderBytes = _spanOwner.Span.Slice(
+        var variableHeaderBytes = _spanHandle.Span.Slice(
             _fileHeader.TelemetryVariableHeaderOffset,
             _fileHeader.TelemetryVariableCount * TelemetryVariableHeader.Size);
 
@@ -205,7 +205,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
     /// <returns>The <see cref="DataFileHeader"/> structure read from the data file.</returns>
     public readonly DataFileHeader ReadHeader()
     {
-        return DataFileHeader.Read(_spanOwner.Span);
+        return DataFileHeader.Read(_spanHandle.Span);
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ public readonly ref struct ConnectionDataSpanReader : IDisposable
         {
             sessionInfoVersion = _fileHeader.SessionInfoVersion;
 
-            var span = _spanOwner.Span.Slice(_fileHeader.SessionInfoOffset, _fileHeader.SessionInfoLength);
+            var span = _spanHandle.Span.Slice(_fileHeader.SessionInfoOffset, _fileHeader.SessionInfoLength);
 
             sessionInfoStr = SessionInfoString.Encoding.GetString(span);
         }

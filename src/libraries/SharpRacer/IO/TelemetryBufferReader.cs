@@ -8,9 +8,7 @@ namespace SharpRacer.IO;
 public readonly ref struct TelemetryBufferReader : IDisposable
 {
     private readonly ref readonly DataFileHeader _fileHeader;
-    private readonly ReadOnlySpan<byte> _data;
     private readonly ConnectionDataSpanHandle _spanHandle;
-    private readonly bool _disposeDataSpanOwner = true;
 
     /// <summary>
     /// Initializes an instance of the <see cref="TelemetryBufferReader"/> structure using the specified connection as its data source.
@@ -26,35 +24,48 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     {
         ArgumentNullException.ThrowIfNull(connection);
 
-        // Allow reading from Closed connection since data file will be frozen and readable until all of the outer connections have closed.
-        if (connection.State < SimulatorConnectionState.Open)
+        if (connection.State != SimulatorConnectionState.Open)
         {
-            throw new ArgumentException("Connection has not been opened.", nameof(connection));
+            throw new ArgumentException("The connection is not open.", nameof(connection));
         }
 
         _spanHandle = connection.AcquireDataSpanHandle();
-        _data = _spanHandle.Span;
+        IsHandleOwnedByReader = true;
 
-        _fileHeader = ref DataFileHeader.AsRef(_data);
+        _fileHeader = ref DataFileHeader.AsRef(_spanHandle.Span);
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TelemetryBufferReader"/> structure.
+    /// Initializes an instance of the <see cref="TelemetryBufferReader"/> structure.
     /// </summary>
     /// <param name="data">A read-only span of bytes representing the connection data.</param>
     internal TelemetryBufferReader(ReadOnlySpan<byte> data)
+        : this(ConnectionDataSpanHandle.Ownerless(data), isHandleOwnedByReader: false)
     {
-        _spanHandle = ConnectionDataSpanHandle.Ownerless(data);
-        _data = _spanHandle.Span;
 
-        _fileHeader = ref DataFileHeader.AsRef(_data);
-        _disposeDataSpanOwner = false;
+    }
+
+    internal TelemetryBufferReader(ConnectionDataSpanHandle spanHandle, bool isHandleOwnedByReader)
+    {
+        if (spanHandle.Span.Length < DataFileHeader.Size)
+        {
+            throw new ArgumentException(
+                $"The data span handle has length {spanHandle.Span.Length}, which is less than the minimum length {DataFileHeader.Size}",
+                nameof(spanHandle));
+        }
+
+        _spanHandle = spanHandle;
+        IsHandleOwnedByReader = isHandleOwnedByReader;
+
+        _fileHeader = ref DataFileHeader.AsRef(_spanHandle.Span);
     }
 
     /// <summary>
     /// Gets the length, in bytes, of the buffers used for storing telemetry data.
     /// </summary>
     public readonly int BufferLength => _fileHeader.TelemetryBufferElementLength;
+
+    internal bool IsHandleOwnedByReader { get; }
 
     /// <summary>
     /// Copies the active data buffer into the specified span.
@@ -76,7 +87,7 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (_disposeDataSpanOwner)
+        if (IsHandleOwnedByReader)
         {
             _spanHandle.Dispose();
         }
@@ -119,8 +130,18 @@ public readonly ref struct TelemetryBufferReader : IDisposable
     /// </summary>
     /// <param name="index">The index of the data buffer.</param>
     /// <returns>A read-only reference to the <see cref="TelemetryBufferHeader"/> at the specified index.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index"/> is less than zero.
+    /// 
+    /// -OR-
+    /// 
+    /// <paramref name="index"/> is greater than or equal to the <see cref="DataFileConstants.MaxTelemetryBuffers"/>.
+    /// </exception>
     public readonly ref readonly TelemetryBufferHeader GetBufferHeaderRef(int index)
     {
+        ArgumentOutOfRangeException.ThrowIfLessThan(index, 0);
+        ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, DataFileConstants.MaxTelemetryBuffers);
+
         return ref _fileHeader.TelemetryBufferHeaders[index];
     }
 
@@ -142,7 +163,7 @@ public readonly ref struct TelemetryBufferReader : IDisposable
         // and the operation fails.
         tickCount = telemetryBufferHeader.TickCount;
 
-        _data.Slice(telemetryBufferHeader.BufferOffset, _fileHeader.TelemetryBufferElementLength).CopyTo(destination);
+        _spanHandle.Span.Slice(telemetryBufferHeader.BufferOffset, _fileHeader.TelemetryBufferElementLength).CopyTo(destination);
 
         return tickCount == telemetryBufferHeader.TickCount;
     }
