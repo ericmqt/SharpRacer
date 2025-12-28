@@ -12,27 +12,27 @@ This project is under active development and is currently in a pre-release state
 
 ## Testing
 
+SharpRacer includes an automated test suite for the SharpRacer library and the source generator. The tests can be run using the `dotnet test` command from the repository directory.
+
 ### Running the Test Suite
 
 ```
 dotnet restore
-dotnet build
-dotnet test --no-build
+dotnet test
 ```
 
 ### Generate Code Coverage Reports
 
-Install [ReportGenerator](https://reportgenerator.io/) as a dotnet local tool:
+This repository uses [ReportGenerator](https://reportgenerator.io/) as a dotnet local tool for generating code coverage reports. Before generating code coverage reports, you'll need to ensure it is installed for your local copy of the repository:
 
 ```
-dotnet new tool-manifest
-dotnet tool install dotnet-reportgenerator-globaltool
+dotnet tool restore
 ```
 
-Generate the reports using the `eng\GenerateCodeCoverageReport.ps1` PowerShell script:
+Generate the code coverage reports using the `eng\GenerateCodeCoverageReport.ps1` PowerShell script:
 
 ```powershell
-PS> .\eng\GenerateCodeCoverageReport.ps1 -OutputDirectory .\artifacts\test -SharpRacer -SourceGenerator -Html
+.\eng\GenerateCodeCoverageReport.ps1 -OutputDirectory .\artifacts\test -SharpRacer -SourceGenerator -Html
 ```
 
 ## Contributing
