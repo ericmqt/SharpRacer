@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DotNext.Unsafe" Version="5.14.0" />
+        <PackageReference Include="DotNext.Unsafe" Version="5.26.1" />
     </ItemGroup>
 
     <ItemGroup>
