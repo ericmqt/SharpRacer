@@ -1,25 +1,25 @@
 {
   "summary": {
-    "generatedon": "2025-12-28T21:21:21Z",
+    "generatedon": "2025-12-28T21:54:05Z",
     "parser": "MultiReport (5x Cobertura)",
     "assemblies": 2,
-    "classes": 155,
-    "files": 155,
+    "classes": 156,
+    "files": 156,
     "coveredlines": 6835,
-    "uncoveredlines": 330,
-    "coverablelines": 7165,
+    "uncoveredlines": 335,
+    "coverablelines": 7170,
     "totallines": 14541,
     "linecoverage": 95.3,
     "coveredbranches": 1495,
     "totalbranches": 1539,
     "branchcoverage": 97.1,
     "coveredmethods": 1138,
-    "totalmethods": 1213,
-    "methodcoverage": 93.8
+    "totalmethods": 1215,
+    "methodcoverage": 93.6
  },
   "coverage": {
     "assemblies": [
-      { "name": "SharpRacer", "classes": 78, "coverage": 91.2, "coveredlines": 2985, "coverablelines": 3273, "totallines": 8051, "branchcoverage": 96.7, "coveredbranches": 663, "totalbranches": 685, "methodcoverage": 87.7, "coveredmethods": 528, "totalmethods": 602, "classesinassembly": [
+      { "name": "SharpRacer", "classes": 79, "coverage": 91, "coveredlines": 2985, "coverablelines": 3278, "totallines": 8051, "branchcoverage": 96.7, "coveredbranches": 663, "totalbranches": 685, "methodcoverage": 87.4, "coveredmethods": 528, "totalmethods": 604, "classesinassembly": [
         { "name": "SharpRacer.Commands.CameraCommands", "coverage": 0, "coveredlines": 0, "coverablelines": 15, "totallines": 72, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 5 },
         { "name": "SharpRacer.Commands.ChatCommands", "coverage": 0, "coveredlines": 0, "coverablelines": 20, "totallines": 61, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 6 },
         { "name": "SharpRacer.Commands.ForceFeedbackCommands", "coverage": 0, "coveredlines": 0, "coverablelines": 3, "totallines": 23, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 1 },
@@ -97,7 +97,8 @@
         { "name": "SharpRacer.Telemetry.TelemetryVariableInfoCollectionExtensions", "coverage": 100, "coveredlines": 13, "coverablelines": 13, "totallines": 87, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 4, "totalmethods": 4 },
         { "name": "SharpRacer.Telemetry.TelemetryVariableInitializationException", "coverage": 100, "coveredlines": 54, "coverablelines": 54, "totallines": 142, "branchcoverage": 100, "coveredbranches": 12, "totalbranches": 12, "methodcoverage": 100, "coveredmethods": 7, "totalmethods": 7 },
         { "name": "SharpRacer.Telemetry.TelemetryVariableUnavailableException", "coverage": 100, "coveredlines": 16, "coverablelines": 16, "totallines": 54, "branchcoverage": 100, "coveredbranches": 4, "totalbranches": 4, "methodcoverage": 100, "coveredmethods": 5, "totalmethods": 5 },
-        { "name": "SharpRacer.Telemetry.TelemetryVariableValueTypeExtensions", "coverage": 100, "coveredlines": 34, "coverablelines": 34, "totallines": 57, "branchcoverage": 100, "coveredbranches": 19, "totalbranches": 19, "methodcoverage": 100, "coveredmethods": 2, "totalmethods": 2 } ] },
+        { "name": "SharpRacer.Telemetry.TelemetryVariableValueTypeExtensions", "coverage": 100, "coveredlines": 34, "coverablelines": 34, "totallines": 57, "branchcoverage": 100, "coveredbranches": 19, "totalbranches": 19, "methodcoverage": 100, "coveredmethods": 2, "totalmethods": 2 },
+        { "name": "System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute", "coverage": 0, "coveredlines": 0, "coverablelines": 5, "totallines": 0, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 2 } ] },
       { "name": "SharpRacer.SourceGenerators", "classes": 77, "coverage": 98.9, "coveredlines": 3850, "coverablelines": 3892, "totallines": 6490, "branchcoverage": 97.4, "coveredbranches": 832, "totalbranches": 854, "methodcoverage": 99.8, "coveredmethods": 610, "totalmethods": 611, "classesinassembly": [
         { "name": "SharpRacer.SourceGenerators.AnalyzerConfigOptionsExtensions", "coverage": 100, "coveredlines": 7, "coverablelines": 7, "totallines": 18, "branchcoverage": 100, "coveredbranches": 2, "totalbranches": 2, "methodcoverage": 100, "coveredmethods": 1, "totalmethods": 1 },
         { "name": "SharpRacer.SourceGenerators.AttributeDataExtensions", "coverage": 100, "coveredlines": 11, "coverablelines": 11, "totallines": 23, "branchcoverage": 100, "coveredbranches": 4, "totalbranches": 4, "methodcoverage": 100, "coveredmethods": 1, "totalmethods": 1 },
