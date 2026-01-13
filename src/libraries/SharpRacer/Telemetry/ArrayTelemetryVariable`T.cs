@@ -10,7 +10,7 @@ public class ArrayTelemetryVariable<T> : TelemetryVariableBase<T>, IArrayTelemet
     where T : unmanaged
 {
     /// <summary>
-    /// Initializes an instance of <see cref="ArrayTelemetryVariable{T}"/> from the specified <seealso cref="TelemetryVariableInfo"/>.
+    /// Initializes an instance of <see cref="ArrayTelemetryVariable{T}"/> from the specified <see cref="TelemetryVariableInfo"/>.
     /// </summary>
     /// <param name="variableInfo">The <see cref="TelemetryVariableInfo"/> object from which to initialize the <see cref="ArrayTelemetryVariable{T}"/> instance.</param>
     /// <exception cref="ArgumentNullException"><paramref name="variableInfo"/> is <see langword="null" />.</exception>
