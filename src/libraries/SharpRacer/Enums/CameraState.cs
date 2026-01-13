@@ -47,9 +47,28 @@ public enum CameraState : ushort
     /// </remarks>
     IsUIHidden = 0x0008,
 
+    /// <summary>
+    /// Use automatic shot selection.
+    /// </summary>
     UseAutoShotSelection = 0x0010,
+
+    /// <summary>
+    /// Use temporary edits.
+    /// </summary>
     UseTemporaryEdits = 0x0020,
+
+    /// <summary>
+    /// Use key acceleration.
+    /// </summary>
     UseKeyAcceleration = 0x0040,
+
+    /// <summary>
+    /// Use key 10x acceleration.
+    /// </summary>
     UseKey10xAcceleration = 0x0080,
+
+    /// <summary>
+    /// Use mouse aiming.
+    /// </summary>
     UseMouseAimMode = 0x0100
 }

@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer.Interop;
 
 /// <summary>
-/// Provides constant values that may be used when reading from simulator data files.
+/// Defines constants used for reading from simulator data files.
 /// </summary>
 public static class DataFileConstants
 {

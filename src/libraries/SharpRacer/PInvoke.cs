@@ -9,6 +9,8 @@ internal static partial class PInvoke
 {
     public const string MinOSPlatform = "windows5.1.2600";
 
+    public static readonly HWND HWND_BROADCAST = new(0xFFFF);
+
     [SupportedOSPlatform("windows")]
     internal static unsafe SafeWaitHandle CreateEventAsSafeWaitHandle(SECURITY_ATTRIBUTES? lpEventAttributes, BOOL bManualReset, BOOL bInitialState, string lpName)
     {
