@@ -14,7 +14,6 @@ public abstract class TelemetryVariableBase<T> : ITelemetryVariable<T>
 {
     private int _dataOffset;
     private bool _isAvailable;
-    private bool _isInitialized;
     private TelemetryVariableInfo? _variableInfo;
 
     /// <summary>
@@ -208,8 +207,6 @@ public abstract class TelemetryVariableBase<T> : ITelemetryVariable<T>
         _dataOffset = variableInfo.Offset;
         _isAvailable = variableInfo != null;
         _variableInfo = variableInfo;
-
-        _isInitialized = true;
     }
 
     private void ValidateVariableInfo(TelemetryVariableInfo variableInfo, string name, int valueCount)
