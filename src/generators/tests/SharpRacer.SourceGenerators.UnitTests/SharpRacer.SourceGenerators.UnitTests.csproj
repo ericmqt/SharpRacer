@@ -24,10 +24,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\SharpRacer.SourceGenerators.Testing\SharpRacer.SourceGenerators.Testing.csproj" />
 		<ProjectReference Include="..\..\SharpRacer.SourceGenerators\SharpRacer.SourceGenerators.csproj" />
 		<ProjectReference Include="..\..\..\libraries\SharpRacer\SharpRacer.csproj" />
-		<ProjectReference Include="..\..\..\tests\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj" />
-		<ProjectReference Include="..\SharpRacer.SourceGenerators.Testing\SharpRacer.SourceGenerators.Testing.csproj" />
+		<ProjectReference Include="..\..\..\testlib\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj" />
 	</ItemGroup>
 
     <Target Name="ChangeAliasesOfNugetRefs" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">

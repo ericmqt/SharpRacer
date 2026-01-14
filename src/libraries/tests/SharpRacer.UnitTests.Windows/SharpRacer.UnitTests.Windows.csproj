@@ -26,9 +26,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
-	  <ProjectReference Include="..\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj" />
-	  <ProjectReference Include="..\SharpRacer.Testing\SharpRacer.Testing.csproj" />
+	  <ProjectReference Include="..\..\..\testlib\SharpRacer.Extensions.Xunit\SharpRacer.Extensions.Xunit.csproj" />
+	  <ProjectReference Include="..\..\..\testlib\SharpRacer.Testing\SharpRacer.Testing.csproj" />
+	  <ProjectReference Include="..\..\SharpRacer\SharpRacer.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
+      <ProjectReference Include="..\..\libraries\SharpRacer\SharpRacer.csproj" />
     </ItemGroup>
 
 </Project>

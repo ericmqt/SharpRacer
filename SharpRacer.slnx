@@ -11,13 +11,15 @@
     <Project Path="src/libraries/SharpRacer.SessionInfo.Yaml/SharpRacer.SessionInfo.Yaml.csproj" />
     <Project Path="src/libraries/SharpRacer/SharpRacer.csproj" />
   </Folder>
-  <Folder Name="/tests/">
-    <Project Path="src/tests/SharpRacer.Extensions.Xunit/SharpRacer.Extensions.Xunit.csproj" />
-    <Project Path="src/tests/SharpRacer.IntegrationTests/SharpRacer.IntegrationTests.csproj" />
-    <Project Path="src/tests/SharpRacer.SessionInfo.Yaml.UnitTests/SharpRacer.SessionInfo.Yaml.UnitTests.csproj" />
-    <Project Path="src/tests/SharpRacer.Testing/SharpRacer.Testing.csproj" />
-    <Project Path="src/tests/SharpRacer.UnitTests.Windows/SharpRacer.UnitTests.Windows.csproj" />
-    <Project Path="src/tests/SharpRacer.UnitTests/SharpRacer.UnitTests.csproj" />
+  <Folder Name="/libraries/tests/">
+    <Project Path="src/libraries/tests/SharpRacer.IntegrationTests/SharpRacer.IntegrationTests.csproj" />
+    <Project Path="src/libraries/tests/SharpRacer.SessionInfo.Yaml.UnitTests/SharpRacer.SessionInfo.Yaml.UnitTests.csproj" />
+    <Project Path="src/libraries/tests/SharpRacer.UnitTests.Windows/SharpRacer.UnitTests.Windows.csproj" />
+    <Project Path="src/libraries/tests/SharpRacer.UnitTests/SharpRacer.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/testlib/">
+    <Project Path="src/testlib/SharpRacer.Extensions.Xunit/SharpRacer.Extensions.Xunit.csproj" />
+    <Project Path="src/testlib/SharpRacer.Testing/SharpRacer.Testing.csproj" />
   </Folder>
   <Folder Name="/tools/">
     <Project Path="src/tools/SharpRacer.Tools.TelemetryVariables/SharpRacer.Tools.TelemetryVariables.csproj" />

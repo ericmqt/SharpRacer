@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\libraries\SharpRacer.SessionInfo.Yaml\SharpRacer.SessionInfo.Yaml.csproj" />
+    <ProjectReference Include="..\..\SharpRacer.SessionInfo.Yaml\SharpRacer.SessionInfo.Yaml.csproj" />
   </ItemGroup>
 
 </Project>
