@@ -21,6 +21,9 @@
     <Project Path="src/testlib/SharpRacer.Extensions.Xunit/SharpRacer.Extensions.Xunit.csproj" />
     <Project Path="src/testlib/SharpRacer.Testing/SharpRacer.Testing.csproj" />
   </Folder>
+  <Folder Name="/testlib/tests/">
+    <Project Path="src/testlib/tests/SharpRacer.Extensions.Xunit.UnitTests/SharpRacer.Extensions.Xunit.UnitTests.csproj" Id="09bd9643-73a2-468f-81ad-79dc2cc5cfd8" />
+  </Folder>
   <Folder Name="/tools/">
     <Project Path="src/tools/SharpRacer.Tools.TelemetryVariables/SharpRacer.Tools.TelemetryVariables.csproj" />
   </Folder>

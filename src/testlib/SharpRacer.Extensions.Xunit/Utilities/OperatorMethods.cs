@@ -1,4 +1,5 @@
 ﻿namespace SharpRacer.Extensions.Xunit.Utilities;
+
 internal static class OperatorMethods
 {
     private static string _EqualityOperatorName = "op_Equality";
@@ -11,7 +12,7 @@ internal static class OperatorMethods
     public static OperatorMethod Equality { get; } = new OperatorMethod(_EqualityOperatorName, "==");
     public static OperatorMethod GreaterThan { get; } = new OperatorMethod(_GreaterThanOperatorName, ">");
     public static OperatorMethod GreaterThanOrEqual { get; } = new OperatorMethod(_GreaterThanOrEqualOperatorName, ">=");
-    public static OperatorMethod Inquality { get; } = new OperatorMethod(_InequalityOperatorName, "!=");
+    public static OperatorMethod Inequality { get; } = new OperatorMethod(_InequalityOperatorName, "!=");
     public static OperatorMethod LessThan { get; } = new OperatorMethod(_LessThanOperatorName, "<");
     public static OperatorMethod LessThanOrEqual { get; } = new OperatorMethod(_LessThanOrEqualOperatorName, "<=");
 }

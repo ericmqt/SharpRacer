@@ -2,6 +2,7 @@
 using SharpRacer.Extensions.Xunit.Utilities;
 
 namespace SharpRacer.Extensions.Xunit;
+
 public static class OperatorAssert
 {
     public static void Equality<T>(
@@ -21,7 +22,7 @@ public static class OperatorAssert
         [CallerArgumentExpression(nameof(first))] string? firstArg = null,
         [CallerArgumentExpression(nameof(second))] string? secondArg = null)
     {
-        OperatorMethods.Inquality.Assert(expected, first, second, firstArg, secondArg);
+        OperatorMethods.Inequality.Assert(expected, first, second, firstArg, secondArg);
     }
 
     public static void OperandsEqual<T>(
