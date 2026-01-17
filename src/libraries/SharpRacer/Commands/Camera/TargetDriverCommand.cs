@@ -51,7 +51,7 @@ public readonly struct TargetDriverCommand : ISimulatorCommand<TargetDriverComma
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.CameraSwitchNumber;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.CameraTargetDriver;
 
     /// <summary>
     /// Gets the value indicating the targeted driver number if <see cref="TargetMode">TargetMode</see> is set to

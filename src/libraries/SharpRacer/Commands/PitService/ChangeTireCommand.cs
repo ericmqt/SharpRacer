@@ -33,7 +33,7 @@ public readonly struct ChangeTireCommand : ISimulatorCommand<ChangeTireCommand>
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitService;
 
     /// <summary>
     /// Gets the tire pressure, in kilo-Pascals, to use for the new tire. This property returns zero if no tire pressure was specified.

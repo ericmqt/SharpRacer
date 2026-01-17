@@ -4,7 +4,7 @@ public class ResetPitServiceCommandTests :
     PitServiceCommandUnitTests<ResetPitServiceCommand, ResetPitServiceCommandTests>,
     IPitServiceCommandUnitTests<ResetPitServiceCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.PitCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.PitService;
 
     public static PitServiceCommandType[] PitServiceCommandTypes { get; } = [
             PitServiceCommandType.Reset,

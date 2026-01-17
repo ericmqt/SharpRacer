@@ -4,7 +4,7 @@ namespace SharpRacer.Commands.Telemetry;
 
 public class TelemetryCommandTests : CommandUnitTests<TelemetryCommand, TelemetryCommandTests>, ICommandUnitTests<TelemetryCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.TelemetryCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.Telemetry;
 
     [Fact]
     public void Ctor_Test()

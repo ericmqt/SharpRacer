@@ -39,7 +39,7 @@ public readonly struct MacroCommand : ISimulatorCommand<MacroCommand>
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.ChatCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.Chat;
 
     /// <summary>
     /// Gets the ID of the macro to execute.

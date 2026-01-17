@@ -10,7 +10,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_CommandIdTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
 
         var msg = new CommandMessage(commandId);
 
@@ -23,7 +23,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_Arg1Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         var msg = new CommandMessage(commandId, arg1);
@@ -37,7 +37,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_Arg2BoolTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         // arg2: true
@@ -60,7 +60,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_Arg2FloatTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         // 12345.0f * ScaleFactor = 809041920 = (0011 0000 0011 1001) (0000 0000 0000 0000)
@@ -85,7 +85,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_Arg2IntTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         // 1234567890 = (0100 1001 1001 0110) (0000 0010 1101 0010)
@@ -105,7 +105,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_Arg3Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
         const ushort arg2 = 24;
         const ushort arg3 = 36;
@@ -121,7 +121,7 @@ public class CommandMessageTests
     [Fact]
     public void Ctor_SimulatorNotifyMessageDataTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         // 1234567890 = (0100 1001 1001 0110) (0000 0010 1101 0010)
@@ -145,7 +145,7 @@ public class CommandMessageTests
     [Fact]
     public void ToNotifyMessageTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
         const int arg2 = 1234567890;
 
@@ -163,8 +163,8 @@ public class CommandMessageTests
     [Fact]
     public void Equals_Test()
     {
-        var command1 = new CommandMessage((ushort)SimulatorCommandId.CameraSwitchNumber, 1, 2, 3);
-        var command2 = new CommandMessage((ushort)SimulatorCommandId.CameraSwitchNumber, 1, 2, 3);
+        var command1 = new CommandMessage((ushort)SimulatorCommandId.CameraTargetDriver, 1, 2, 3);
+        var command2 = new CommandMessage((ushort)SimulatorCommandId.CameraTargetDriver, 1, 2, 3);
 
         EquatableStructAssert.Equal(command1, command2);
     }
@@ -179,7 +179,7 @@ public class CommandMessageTests
     [Fact]
     public void Equals_ObjectInequalityTest()
     {
-        var command1 = new CommandMessage((ushort)SimulatorCommandId.CameraSwitchNumber, 123);
+        var command1 = new CommandMessage((ushort)SimulatorCommandId.CameraTargetDriver, 123);
         var command2 = new object();
 
         EquatableStructAssert.ObjectEqualsMethod(false, command1, command2);
@@ -187,8 +187,8 @@ public class CommandMessageTests
 
     private static TheoryData<CommandMessage, CommandMessage> GetInequalityTestData()
     {
-        var commandId1 = (ushort)SimulatorCommandId.CameraSwitchNumber;
-        var commandId2 = (ushort)SimulatorCommandId.CameraSwitchPosition;
+        var commandId1 = (ushort)SimulatorCommandId.CameraTargetDriver;
+        var commandId2 = (ushort)SimulatorCommandId.CameraTargetRacePosition;
 
         return new TheoryData<CommandMessage, CommandMessage>()
         {

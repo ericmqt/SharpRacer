@@ -2,7 +2,7 @@
 
 public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, TargetDriverCommandTests>, ICommandUnitTests<TargetDriverCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.CameraSwitchNumber;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.CameraTargetDriver;
 
     [Fact]
     public void Ctor_DriverNumberTest()

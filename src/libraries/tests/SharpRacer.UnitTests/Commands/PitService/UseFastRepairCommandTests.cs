@@ -4,7 +4,7 @@ public class UseFastRepairCommandTests :
     PitServiceCommandUnitTests<UseFastRepairCommand, UseFastRepairCommandTests>,
     IPitServiceCommandUnitTests<UseFastRepairCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.PitCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.PitService;
     public static PitServiceCommandType[] PitServiceCommandTypes { get; } = [PitServiceCommandType.FastRepair];
 
     [Fact]

@@ -3,7 +3,7 @@
 public class OpenChatCommandTests : ChatCommandUnitTests<OpenChatCommand, OpenChatCommandTests>, IChatCommandUnitTests<OpenChatCommand>
 {
     public static ChatCommandType ChatCommandType { get; } = ChatCommandType.OpenChat;
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ChatCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.Chat;
 
     [Fact]
     public void ToCommandMessage_Test()

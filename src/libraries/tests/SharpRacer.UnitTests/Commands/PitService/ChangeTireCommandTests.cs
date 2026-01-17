@@ -4,7 +4,7 @@ public class ChangeTireCommandTests :
     PitServiceCommandUnitTests<ChangeTireCommand, ChangeTireCommandTests>,
     IPitServiceCommandUnitTests<ChangeTireCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.PitCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.PitService;
     public static PitServiceCommandType[] PitServiceCommandTypes { get; } = [
             (PitServiceCommandType)((ushort)PitServiceCommandType.TireChange + (byte)TireChangeTarget.LeftFront),
             (PitServiceCommandType)((ushort)PitServiceCommandType.TireChange + (byte)TireChangeTarget.RightFront),

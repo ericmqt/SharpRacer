@@ -3,7 +3,7 @@
 public class CloseChatCommandTests : ChatCommandUnitTests<CloseChatCommand, CloseChatCommandTests>, IChatCommandUnitTests<CloseChatCommand>
 {
     public static ChatCommandType ChatCommandType { get; } = ChatCommandType.CloseChat;
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ChatCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.Chat;
 
     [Fact]
     public void ToCommandMessage_Test()

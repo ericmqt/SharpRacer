@@ -37,7 +37,7 @@ public class CommandMessageParseExceptionTests
     [Fact]
     public void ThrowIfCommandIdNotEqual_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.CameraSwitchNumber;
+        const ushort commandId = (ushort)SimulatorCommandId.CameraTargetDriver;
         const ushort messageCommandId = (ushort)SimulatorCommandId.ReplaySearchSessionTime;
 
         var msg = new CommandMessage(messageCommandId);
@@ -48,8 +48,8 @@ public class CommandMessageParseExceptionTests
     [Fact]
     public void ThrowIfCommandIdNotEqual_DoesNotThrowIfEqualTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.CameraSwitchNumber;
-        const ushort messageCommandId = (ushort)SimulatorCommandId.CameraSwitchNumber;
+        const ushort commandId = (ushort)SimulatorCommandId.CameraTargetDriver;
+        const ushort messageCommandId = (ushort)SimulatorCommandId.CameraTargetDriver;
 
         var msg = new CommandMessage(messageCommandId);
 

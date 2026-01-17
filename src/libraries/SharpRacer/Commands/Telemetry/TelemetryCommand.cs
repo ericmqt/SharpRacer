@@ -16,7 +16,7 @@ public readonly struct TelemetryCommand : ISimulatorCommand<TelemetryCommand>
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.TelemetryCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.Telemetry;
 
     /// <summary>
     /// Gets a value that indicates the telemetry command to execute.

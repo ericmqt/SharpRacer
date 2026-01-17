@@ -17,7 +17,7 @@ public readonly struct SetMaxForceCommand : ISimulatorCommand<SetMaxForceCommand
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.ForceFeedbackCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.ForceFeedback;
 
     /// <summary>
     /// The maximum force in Newton-meters.

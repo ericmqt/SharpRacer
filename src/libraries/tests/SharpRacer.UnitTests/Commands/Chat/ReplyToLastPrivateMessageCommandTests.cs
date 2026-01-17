@@ -5,7 +5,7 @@ public class ReplyToLastPrivateMessageCommandTests :
     IChatCommandUnitTests<ReplyToLastPrivateMessageCommand>
 {
     public static ChatCommandType ChatCommandType { get; } = ChatCommandType.ReplyToLastPrivateMessage;
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ChatCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.Chat;
 
     [Fact]
     public void ToCommandMessage_Test()

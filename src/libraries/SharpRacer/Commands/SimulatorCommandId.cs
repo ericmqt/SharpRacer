@@ -1,29 +1,34 @@
-﻿namespace SharpRacer.Commands;
+﻿using SharpRacer.Commands.Chat;
+using SharpRacer.Commands.PitService;
+using SharpRacer.Commands.Telemetry;
+using SharpRacer.Commands.VideoCapture;
+
+namespace SharpRacer.Commands;
 
 /// <summary>
-/// Defines window message IDs used to send commands to the simulator.
+/// Defines the primary identifiers used by the simulator to discriminate between various types of commands.
 /// </summary>
 /// <remarks>See irsdk_BroadcastMsg in the iRacing SDK.</remarks>
 public enum SimulatorCommandId : ushort
 {
     /// <summary>
-    /// The CameraSwitchPosition command.
+    /// Directs a camera to target a specific car by race position or to change the targeting mode.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastCamSwitchPos value in the iRacing SDK.
     /// </remarks>
-    CameraSwitchPosition = 0,
+    CameraTargetRacePosition = 0,
 
     /// <summary>
-    /// The CameraSwitchNumber command.
+    /// Directs a camera to target a specific driver or to change the targeting mode.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastCamSwitchNum value in the iRacing SDK.
     /// </remarks>
-    CameraSwitchNumber = 1,
+    CameraTargetDriver = 1,
 
     /// <summary>
-    /// The CameraSetState command.
+    /// Sets the state of the camera tool.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastCamSetState value in the iRacing SDK.
@@ -31,7 +36,7 @@ public enum SimulatorCommandId : ushort
     CameraSetState = 2,
 
     /// <summary>
-    /// The ReplaySetPlaySpeed command.
+    /// Sets the replay playback speed.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastReplaySetPlaySpeed value in the iRacing SDK.
@@ -39,7 +44,7 @@ public enum SimulatorCommandId : ushort
     ReplaySetPlaySpeed = 3,
 
     /// <summary>
-    /// The ReplaySetPlayPosition command.
+    /// Sets the replay playback position.
     /// </summary>
     /// <remarks>
     /// Represents the irskd_BroadcastReplaySetPlayPosition value in the iRacing SDK.
@@ -47,7 +52,7 @@ public enum SimulatorCommandId : ushort
     ReplaySetPlayPosition = 4,
 
     /// <summary>
-    /// The ReplaySearch command.
+    /// Searches the replay tape for a particular event.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastReplaySearch value in the iRacing SDK.
@@ -55,7 +60,7 @@ public enum SimulatorCommandId : ushort
     ReplaySearch = 5,
 
     /// <summary>
-    /// The ReplaySetState command.
+    /// Sets the state of the replay tool. Currently only used to erase the replay tape.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastReplaySetState value in the iRacing SDK.
@@ -63,47 +68,48 @@ public enum SimulatorCommandId : ushort
     ReplaySetState = 6,
 
     /// <summary>
-    /// The ReloadTextures command.
+    /// Reloads custom car textures.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastReloadTextures value in the iRacing SDK.
     /// </remarks>
-    ReloadTextures = 7,
+    CarTextureReload = 7,
 
     /// <summary>
-    /// The ChatCommand command.
+    /// Identifies a chat command. See <see cref="ChatCommandType"/> for a listing of subcommands.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastChatComand value in the iRacing SDK.
     /// </remarks>
-    ChatCommand = 8,
+    Chat = 8,
 
     /// <summary>
-    /// The PitCommand command.
+    /// Identifies a pit service command. See <see cref="PitCommandType"/> for a listing of subcommands.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastPitCommand value in the iRacing SDK.
     /// </remarks>
-    PitCommand = 9,
+    PitService = 9,
 
     /// <summary>
-    /// The TelemetryCommand command.
+    /// Identifies a telemetry recording command. See <see cref="TelemetryCommandType"/> for a listing of subcommands.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastTelemCommand value in the iRacing SDK.
     /// </remarks>
-    TelemetryCommand = 10,
+    Telemetry = 10,
 
     /// <summary>
-    /// The ForceFeedbackCommand command.
+    /// Identifies a force-feedback command. Currently only used to set the maximum force generated when mapping steering wheel torque to
+    /// direct-drive steering wheels.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastFFBCommand value in the iRacing SDK.
     /// </remarks>
-    ForceFeedbackCommand = 11,
+    ForceFeedback = 11,
 
     /// <summary>
-    /// The ReplaySearchSessionTime command.
+    /// Search the replay tape for a timestamp within a specified session.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastReplaySearchSessionTime value in the iRacing SDK.
@@ -111,7 +117,7 @@ public enum SimulatorCommandId : ushort
     ReplaySearchSessionTime = 12,
 
     /// <summary>
-    /// The VideoCapture command.
+    /// Identifies a video capture command. See <see cref="VideoCaptureCommandType"/> for a listing of subcommands.
     /// </summary>
     /// <remarks>
     /// Represents the irsdk_BroadcastVideoCapture value in the iRacing SDK.

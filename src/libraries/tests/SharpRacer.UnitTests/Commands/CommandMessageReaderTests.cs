@@ -10,7 +10,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg1_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         var msg = new CommandMessage(commandId, arg1);
@@ -26,7 +26,7 @@ public class CommandMessageReaderTests
     [InlineData(CameraTargetMode.Driver)]
     public void ReadArg1_TEnum_ShortTest(CameraTargetMode targetMode)
     {
-        const ushort commandId = (ushort)SimulatorCommandId.CameraSwitchPosition;
+        const ushort commandId = (ushort)SimulatorCommandId.CameraTargetRacePosition;
 
         var msg = new CommandMessage(commandId, (ushort)targetMode);
 
@@ -42,7 +42,7 @@ public class CommandMessageReaderTests
     [InlineData(ChatCommandType.CloseChat)]
     public void ReadArg1_TEnum_UShortTest(ChatCommandType chatCommandType)
     {
-        const ushort commandId = (ushort)SimulatorCommandId.ChatCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.Chat;
 
         var msg = new CommandMessage(commandId, (ushort)chatCommandType);
 
@@ -54,7 +54,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg1_TEnum_ThrowIfEnumValueNotDefinedTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.TelemetryCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.Telemetry;
         var invalidTelemetryCommandTypeVal = (ushort)(EnumTestUtilities.MaxIntegralValue<TelemetryCommandType, ushort>() + 1);
 
         var msg = new CommandMessage(commandId, invalidTelemetryCommandTypeVal);
@@ -98,7 +98,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg2_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
         const ushort arg2 = 24;
         const ushort arg3 = 36;
@@ -112,7 +112,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg2Bool_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
 
         // arg2: true
@@ -131,7 +131,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg2Float_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
         const float arg2F = 12345.0f;
 
@@ -144,7 +144,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg2Int_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
         const int arg2 = 1234567890;
 
@@ -157,7 +157,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void ReadArg3_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.PitCommand;
+        const ushort commandId = (ushort)SimulatorCommandId.PitService;
         const ushort arg1 = 12;
         const ushort arg2 = 24;
         const ushort arg3 = 36;
@@ -171,7 +171,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void TryReadArg1_TEnum_Test()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.CameraSwitchNumber;
+        const ushort commandId = (ushort)SimulatorCommandId.CameraTargetDriver;
         const CameraTargetMode arg1 = CameraTargetMode.Incident;
         const ushort arg2 = 24;
         const ushort arg3 = 36;
@@ -186,7 +186,7 @@ public class CommandMessageReaderTests
     [Fact]
     public void TryReadArg1_TEnum_ReturnsFalseOnUndefinedValueTest()
     {
-        const ushort commandId = (ushort)SimulatorCommandId.CameraSwitchNumber;
+        const ushort commandId = (ushort)SimulatorCommandId.CameraTargetDriver;
         const CameraTargetMode arg1 = (CameraTargetMode)32;
         const ushort arg2 = 24;
         const ushort arg3 = 36;

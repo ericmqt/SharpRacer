@@ -51,7 +51,7 @@ public readonly struct TargetRacePositionCommand : ISimulatorCommand<TargetRaceP
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.CameraSwitchPosition;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.CameraTargetRacePosition;
 
     /// <summary>
     /// Gets the value indicating the camera group to use.

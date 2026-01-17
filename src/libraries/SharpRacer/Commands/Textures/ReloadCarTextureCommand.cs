@@ -32,7 +32,7 @@ public readonly struct ReloadCarTextureCommand : ISimulatorCommand<ReloadCarText
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.ReloadTextures;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.CarTextureReload;
 
     /// <summary>
     /// Gets the index of the car whose texture will be reloaded when the command is executed or returns zero if the textures for all cars

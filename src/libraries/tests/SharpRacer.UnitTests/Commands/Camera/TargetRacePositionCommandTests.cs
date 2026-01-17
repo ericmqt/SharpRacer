@@ -2,7 +2,7 @@
 
 public class TargetRacePositionCommandTests : CommandUnitTests<TargetRacePositionCommand, TargetRacePositionCommandTests>, ICommandUnitTests<TargetRacePositionCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.CameraSwitchPosition;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.CameraTargetRacePosition;
 
     [Fact]
     public void Ctor_PositionTest()

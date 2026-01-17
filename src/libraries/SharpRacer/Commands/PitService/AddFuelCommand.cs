@@ -29,7 +29,7 @@ public readonly struct AddFuelCommand : ISimulatorCommand<AddFuelCommand>
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitService;
 
     /// <summary>
     /// Gets the amount of fuel to add, in liters, during the next pit stop.

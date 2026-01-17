@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer.Commands.PitService;
 
 /// <summary>
-/// Defines subcommands for the <see cref="SimulatorCommandId.PitCommand"/> simulator command.
+/// Defines subcommands for the <see cref="SimulatorCommandId.PitService"/> simulator command.
 /// </summary>
 /// <seealso cref="SimulatorCommandId"/>
 public enum PitServiceCommandType : ushort

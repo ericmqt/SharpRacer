@@ -16,7 +16,7 @@ public readonly struct UseFastRepairCommand : ISimulatorCommand<UseFastRepairCom
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitService;
 
     /// <inheritdoc />
     public readonly CommandMessage ToCommandMessage()

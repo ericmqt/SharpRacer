@@ -2,7 +2,7 @@
 
 public class MacroCommandTests : ChatCommandUnitTests<MacroCommand, MacroCommandTests>, IChatCommandUnitTests<MacroCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ChatCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.Chat;
     public static ChatCommandType ChatCommandType { get; } = ChatCommandType.Macro;
 
     [Fact]

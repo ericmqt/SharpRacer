@@ -2,7 +2,7 @@
 
 public class SetMaxForceCommandTests : CommandUnitTests<SetMaxForceCommand, SetMaxForceCommandTests>, ICommandUnitTests<SetMaxForceCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ForceFeedbackCommand;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ForceFeedback;
 
     [Fact]
     public void Ctor_Test()

@@ -18,7 +18,7 @@ public readonly struct ResetPitServiceCommand : ISimulatorCommand<ResetPitServic
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.PitService;
 
     /// <summary>
     /// Gets a value indicating the pit service that will be reset when the command is executed.

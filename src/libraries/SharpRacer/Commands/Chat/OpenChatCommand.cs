@@ -16,7 +16,7 @@ public readonly struct OpenChatCommand : ISimulatorCommand<OpenChatCommand>
     }
 
     /// <inheritdoc />
-    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.ChatCommand;
+    public static ushort CommandId { get; } = (ushort)SimulatorCommandId.Chat;
 
     /// <inheritdoc />
     public readonly CommandMessage ToCommandMessage()

@@ -2,7 +2,7 @@
 
 public class ReloadCarTextureCommandTests : CommandUnitTests<ReloadCarTextureCommand, ReloadCarTextureCommandTests>, ICommandUnitTests<ReloadCarTextureCommand>
 {
-    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.ReloadTextures;
+    public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.CarTextureReload;
 
     [Fact]
     public void Ctor_Test()
