@@ -22,7 +22,7 @@ public class VideoCaptureCommandClientTests : CommandClientUnitTests
     }
 
     [Fact]
-    public void HideTimer_Test()
+    public void HideVideoTimer_Test()
     {
         var command = new VideoCaptureCommand(VideoCaptureCommandType.HideVideoTimer);
         var commandMessage = command.ToCommandMessage();
@@ -31,7 +31,7 @@ public class VideoCaptureCommandClientTests : CommandClientUnitTests
         ConfigureExpectedCommand(command, commandMessage, notifyMessage, Times.Once());
 
         var client = new VideoCaptureCommandClient(CommandSink);
-        client.HideTimer();
+        client.HideVideoTimer();
 
         Mocks.Verify();
     }
@@ -52,7 +52,7 @@ public class VideoCaptureCommandClientTests : CommandClientUnitTests
     }
 
     [Fact]
-    public void ShowTimer_Test()
+    public void ShowVideoTimer_Test()
     {
         var command = new VideoCaptureCommand(VideoCaptureCommandType.ShowVideoTimer);
         var commandMessage = command.ToCommandMessage();
@@ -61,37 +61,37 @@ public class VideoCaptureCommandClientTests : CommandClientUnitTests
         ConfigureExpectedCommand(command, commandMessage, notifyMessage, Times.Once());
 
         var client = new VideoCaptureCommandClient(CommandSink);
-        client.ShowTimer();
+        client.ShowVideoTimer();
 
         Mocks.Verify();
     }
 
     [Fact]
-    public void Start_Test()
+    public void StartVideoCapture_Test()
     {
-        var command = new VideoCaptureCommand(VideoCaptureCommandType.BeginVideoCapture);
+        var command = new VideoCaptureCommand(VideoCaptureCommandType.StartVideoCapture);
         var commandMessage = command.ToCommandMessage();
         var notifyMessage = commandMessage.ToNotifyMessage();
 
         ConfigureExpectedCommand(command, commandMessage, notifyMessage, Times.Once());
 
         var client = new VideoCaptureCommandClient(CommandSink);
-        client.Start();
+        client.StartVideoCapture();
 
         Mocks.Verify();
     }
 
     [Fact]
-    public void Stop_Test()
+    public void StopVideoCapture_Test()
     {
-        var command = new VideoCaptureCommand(VideoCaptureCommandType.EndVideoCapture);
+        var command = new VideoCaptureCommand(VideoCaptureCommandType.StopVideoCapture);
         var commandMessage = command.ToCommandMessage();
         var notifyMessage = commandMessage.ToNotifyMessage();
 
         ConfigureExpectedCommand(command, commandMessage, notifyMessage, Times.Once());
 
         var client = new VideoCaptureCommandClient(CommandSink);
-        client.Stop();
+        client.StopVideoCapture();
 
         Mocks.Verify();
     }

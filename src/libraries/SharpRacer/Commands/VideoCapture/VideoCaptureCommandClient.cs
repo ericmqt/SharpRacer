@@ -32,7 +32,7 @@ public sealed class VideoCaptureCommandClient : CommandClientBase, IVideoCapture
     }
 
     /// <inheritdoc />
-    public void HideTimer()
+    public void HideVideoTimer()
     {
         Send(new VideoCaptureCommand(VideoCaptureCommandType.HideVideoTimer));
     }
@@ -44,21 +44,21 @@ public sealed class VideoCaptureCommandClient : CommandClientBase, IVideoCapture
     }
 
     /// <inheritdoc />
-    public void ShowTimer()
+    public void ShowVideoTimer()
     {
         Send(new VideoCaptureCommand(VideoCaptureCommandType.ShowVideoTimer));
     }
 
     /// <inheritdoc />
-    public void Start()
+    public void StartVideoCapture()
     {
-        Send(new VideoCaptureCommand(VideoCaptureCommandType.BeginVideoCapture));
+        Send(new VideoCaptureCommand(VideoCaptureCommandType.StartVideoCapture));
     }
 
     /// <inheritdoc />
-    public void Stop()
+    public void StopVideoCapture()
     {
-        Send(new VideoCaptureCommand(VideoCaptureCommandType.EndVideoCapture));
+        Send(new VideoCaptureCommand(VideoCaptureCommandType.StopVideoCapture));
     }
 
     /// <inheritdoc />

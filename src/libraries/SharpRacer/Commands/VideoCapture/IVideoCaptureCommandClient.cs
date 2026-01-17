@@ -8,7 +8,7 @@ public interface IVideoCaptureCommandClient
     /// <summary>
     /// Hide the video capture timer.
     /// </summary>
-    void HideTimer();
+    void HideVideoTimer();
 
     /// <summary>
     /// Save a screenshot to disk.
@@ -18,17 +18,17 @@ public interface IVideoCaptureCommandClient
     /// <summary>
     /// Show the video capture timer.
     /// </summary>
-    void ShowTimer();
+    void ShowVideoTimer();
 
     /// <summary>
     /// Start video capture.
     /// </summary>
-    void Start();
+    void StartVideoCapture();
 
     /// <summary>
     /// Stop video capture.
     /// </summary>
-    void Stop();
+    void StopVideoCapture();
 
     /// <summary>
     /// Toggle video capture on and off.

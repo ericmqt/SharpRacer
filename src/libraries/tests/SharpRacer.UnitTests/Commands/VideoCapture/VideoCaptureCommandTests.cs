@@ -29,7 +29,7 @@ public class VideoCaptureCommandTests : CommandUnitTests<VideoCaptureCommand, Vi
     }
 
     [Fact]
-    public void Parse_ThrowIfTelemetryCommandTypeNotValidTest()
+    public void Parse_ThrowIfVideoCaptureCommandTypeNotValidTest()
     {
         var invalidVideoCaptureCommandTypeVal = (ushort)(EnumTestUtilities.MaxIntegralValue<VideoCaptureCommandType, ushort>() + 1);
 
@@ -39,7 +39,7 @@ public class VideoCaptureCommandTests : CommandUnitTests<VideoCaptureCommand, Vi
     }
 
     [Fact]
-    public void TryParse_ReturnFalseIfTelemetryCommandTypeNotValidTest()
+    public void TryParse_ReturnFalseIfVideoCaptureCommandTypeNotValidTest()
     {
         var invalidVideoCaptureCommandTypeVal = (ushort)(EnumTestUtilities.MaxIntegralValue<VideoCaptureCommandType, ushort>() + 1);
 
@@ -64,8 +64,8 @@ public class VideoCaptureCommandTests : CommandUnitTests<VideoCaptureCommand, Vi
     public static IEnumerable<VideoCaptureCommand> EnumerateValidCommands()
     {
         yield return new(VideoCaptureCommandType.CaptureScreenshot);
-        yield return new(VideoCaptureCommandType.BeginVideoCapture);
-        yield return new(VideoCaptureCommandType.EndVideoCapture);
+        yield return new(VideoCaptureCommandType.StartVideoCapture);
+        yield return new(VideoCaptureCommandType.StopVideoCapture);
         yield return new(VideoCaptureCommandType.ToggleVideoCapture);
         yield return new(VideoCaptureCommandType.ShowVideoTimer);
         yield return new(VideoCaptureCommandType.HideVideoTimer);

@@ -16,12 +16,12 @@ public enum VideoCaptureCommandType : ushort
     /// <summary>
     /// Start capturing video.
     /// </summary>
-    BeginVideoCapture = 1,
+    StartVideoCapture = 1,
 
     /// <summary>
     /// Stop capturing video.
     /// </summary>
-    EndVideoCapture = 2,
+    StopVideoCapture = 2,
 
     /// <summary>
     /// Toggle video capture on/off.
