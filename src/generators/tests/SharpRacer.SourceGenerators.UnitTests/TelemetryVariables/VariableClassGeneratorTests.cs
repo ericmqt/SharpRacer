@@ -95,7 +95,7 @@ namespace TestApp.Variables
         /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/>.
         /// </summary>
         /// <param name = ""variableInfoProvider"">
-        /// The <seealso cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
+        /// The <see cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
         /// </param>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
         public TestVariable(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider) : base(_Descriptor, variableInfoProvider)
@@ -129,7 +129,7 @@ namespace TestApp.Variables
         /// Creates an instance of <see cref = ""TestVariable""/> from the specified <see cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/>.
         /// </summary>
         /// <param name = ""variableInfoProvider"">
-        /// The <seealso cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
+        /// The <see cref = ""global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider""/> instance used to perform delayed initialization of <see cref = ""TestVariable""/> when the associated telemetry variable is activated by the data source.
         /// </param>
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
         public TestVariable(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider) : base(_Descriptor, variableInfoProvider)

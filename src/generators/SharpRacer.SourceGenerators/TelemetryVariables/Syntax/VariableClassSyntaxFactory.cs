@@ -97,7 +97,7 @@ internal static class VariableClassSyntaxFactory
                 b => b.Text("Creates an instance of ").See(classTypeIdentifier).Text(" from the specified ")
                     .See(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified)).Text("."))
             .Param(TelemetryVariableInfoProviderCtorParameterName,
-                b => b.Text("The ").SeeAlso(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified))
+                b => b.Text("The ").See(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified))
                     .Text(" instance used to perform delayed initialization of ")
                     .See(classTypeIdentifier).Text(" when the associated telemetry variable is activated by the data source."))
             .ToTrivia();
