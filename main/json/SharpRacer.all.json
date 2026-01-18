@@ -1,29 +1,29 @@
 {
   "summary": {
-    "generatedon": "2026-01-18T18:55:27Z",
+    "generatedon": "2026-01-18T21:39:21Z",
     "parser": "MultiReport (5x Cobertura)",
     "assemblies": 2,
     "classes": 184,
     "files": 184,
-    "coveredlines": 8414,
+    "coveredlines": 8434,
     "uncoveredlines": 168,
-    "coverablelines": 8582,
-    "totallines": 17960,
+    "coverablelines": 8602,
+    "totallines": 17999,
     "linecoverage": 98,
-    "coveredbranches": 1778,
-    "totalbranches": 1823,
+    "coveredbranches": 1786,
+    "totalbranches": 1831,
     "branchcoverage": 97.5,
-    "coveredmethods": 1528,
-    "totalmethods": 1550,
+    "coveredmethods": 1530,
+    "totalmethods": 1552,
     "methodcoverage": 98.5
  },
   "coverage": {
     "assemblies": [
-      { "name": "SharpRacer", "classes": 107, "coverage": 97.3, "coveredlines": 4564, "coverablelines": 4690, "totallines": 11470, "branchcoverage": 97.6, "coveredbranches": 946, "totalbranches": 969, "methodcoverage": 97.7, "coveredmethods": 918, "totalmethods": 939, "classesinassembly": [
-        { "name": "SharpRacer.CarNumber", "coverage": 100, "coveredlines": 101, "coverablelines": 101, "totallines": 282, "branchcoverage": 100, "coveredbranches": 30, "totalbranches": 30, "methodcoverage": 100, "coveredmethods": 18, "totalmethods": 18 },
-        { "name": "SharpRacer.Commands.Camera.CameraCommandClient", "coverage": 100, "coveredlines": 21, "coverablelines": 21, "totallines": 64, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 7, "totalmethods": 7 },
+      { "name": "SharpRacer", "classes": 107, "coverage": 97.3, "coveredlines": 4584, "coverablelines": 4710, "totallines": 11509, "branchcoverage": 97.6, "coveredbranches": 954, "totalbranches": 977, "methodcoverage": 97.7, "coveredmethods": 920, "totalmethods": 941, "classesinassembly": [
+        { "name": "SharpRacer.CarNumber", "coverage": 100, "coveredlines": 107, "coverablelines": 107, "totallines": 297, "branchcoverage": 100, "coveredbranches": 34, "totalbranches": 34, "methodcoverage": 100, "coveredmethods": 20, "totalmethods": 20 },
+        { "name": "SharpRacer.Commands.Camera.CameraCommandClient", "coverage": 100, "coveredlines": 26, "coverablelines": 26, "totallines": 71, "branchcoverage": 100, "coveredbranches": 2, "totalbranches": 2, "methodcoverage": 100, "coveredmethods": 7, "totalmethods": 7 },
         { "name": "SharpRacer.Commands.Camera.SetCameraStateCommand", "coverage": 100, "coveredlines": 42, "coverablelines": 42, "totallines": 101, "branchcoverage": 100, "coveredbranches": 4, "totalbranches": 4, "methodcoverage": 100, "coveredmethods": 12, "totalmethods": 12 },
-        { "name": "SharpRacer.Commands.Camera.TargetDriverCommand", "coverage": 100, "coveredlines": 83, "coverablelines": 83, "totallines": 183, "branchcoverage": 100, "coveredbranches": 26, "totalbranches": 26, "methodcoverage": 100, "coveredmethods": 17, "totalmethods": 17 },
+        { "name": "SharpRacer.Commands.Camera.TargetCarCommand", "coverage": 100, "coveredlines": 92, "coverablelines": 92, "totallines": 200, "branchcoverage": 100, "coveredbranches": 28, "totalbranches": 28, "methodcoverage": 100, "coveredmethods": 17, "totalmethods": 17 },
         { "name": "SharpRacer.Commands.Camera.TargetRacePositionCommand", "coverage": 100, "coveredlines": 83, "coverablelines": 83, "totallines": 183, "branchcoverage": 100, "coveredbranches": 26, "totalbranches": 26, "methodcoverage": 100, "coveredmethods": 17, "totalmethods": 17 },
         { "name": "SharpRacer.Commands.Chat.ChatCommandClient", "coverage": 100, "coveredlines": 18, "coverablelines": 18, "totallines": 58, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 6, "totalmethods": 6 },
         { "name": "SharpRacer.Commands.Chat.CloseChatCommand", "coverage": 100, "coveredlines": 49, "coverablelines": 49, "totallines": 110, "branchcoverage": 100, "coveredbranches": 10, "totalbranches": 10, "methodcoverage": 100, "coveredmethods": 11, "totalmethods": 11 },
