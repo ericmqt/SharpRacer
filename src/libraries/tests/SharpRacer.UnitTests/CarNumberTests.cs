@@ -15,10 +15,23 @@ public class CarNumberTests
     {
         var carNumber = new CarNumber(rawValue);
 
+        Assert.True(carNumber.HasValue);
         Assert.Equal(expected.ExpectedValue, carNumber.Value);
         Assert.Equal(expected.ExpectedBase, carNumber.Base);
         Assert.Equal(expected.ExpectedLength, carNumber.Length);
         Assert.Equal(expected.ExpectedString, carNumber.ToString());
+    }
+
+    [Fact]
+    public void Ctor_DefaultTest()
+    {
+        var carNumber = default(CarNumber);
+
+        Assert.False(carNumber.HasValue);
+        Assert.Equal(0, carNumber.Value);
+        Assert.Equal(0, carNumber.Length);
+        Assert.Equal(0, carNumber.Base);
+        Assert.Equal(string.Empty, carNumber.ToString());
     }
 
     [Fact]
@@ -40,6 +53,18 @@ public class CarNumberTests
         EquatableStructAssert.Equal(left, right);
     }
 
+    [Fact]
+    public void Equals_DefaultValueTest()
+    {
+        var carNumber1 = default(CarNumber);
+        var carNumber2 = default(CarNumber);
+
+        EquatableStructAssert.Equal(carNumber1, carNumber2);
+
+        carNumber1 = new CarNumber(0);
+        EquatableStructAssert.NotEqual(carNumber1, carNumber2);
+    }
+
     [Theory]
     [MemberData(nameof(InequalityTestData))]
     public void Equals_InequalityTest(CarNumber left, CarNumber right)
@@ -54,6 +79,18 @@ public class CarNumberTests
         var other = new object();
 
         EquatableStructAssert.ObjectEqualsMethod(false, carNumber, other);
+    }
+
+    [Fact]
+    public void None_Test()
+    {
+        var carNumber = CarNumber.None;
+
+        Assert.False(carNumber.HasValue);
+        Assert.Equal(0, carNumber.Value);
+        Assert.Equal(0, carNumber.Length);
+        Assert.Equal(0, carNumber.Base);
+        Assert.Equal(string.Empty, carNumber.ToString());
     }
 
     [Fact]
@@ -286,6 +323,7 @@ public class CarNumberTests
     {
         return new TheoryData<CarNumber, CarNumber>()
         {
+            { new(0), default },
             { new(0), new(1) },
             { new(1), new(2) },
 

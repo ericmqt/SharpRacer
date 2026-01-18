@@ -34,12 +34,24 @@ public readonly struct CarNumber : IEquatable<CarNumber>, IParsable<CarNumber>, 
 
         Length = nLeadingZeroes + nBaseDigits;
         Value = nLeadingZeroes > 0 ? Base + (Length * LengthFactor) : Base;
+
+        HasValue = true;
     }
+
+    /// <summary>
+    /// Gets a <see cref="CarNumber"/> value that indicates a value was not specified.
+    /// </summary>
+    public static CarNumber None { get; } = default;
 
     /// <summary>
     /// Gets the integer representation of the car number.
     /// </summary>
     internal readonly int Base { get; }
+
+    /// <summary>
+    /// Gets a value indicating if this instance was initialized.
+    /// </summary>
+    internal readonly bool HasValue { get; }
 
     /// <summary>
     /// Gets the length of the car number when formatted as a string, including any leading zeroes.
@@ -60,15 +72,13 @@ public readonly struct CarNumber : IEquatable<CarNumber>, IParsable<CarNumber>, 
     /// <inheritdoc />
     public bool Equals(CarNumber other)
     {
-        // The other properties are calculated from Value so there is no need to compare them all, just Value.
-
-        return Value == other.Value;
+        return Value == other.Value && HasValue == other.HasValue;
     }
 
     /// <inheritdoc />
     public override int GetHashCode()
     {
-        return HashCode.Combine(Value);
+        return HashCode.Combine(HasValue, Value);
     }
 
     /// <summary>
@@ -77,6 +87,11 @@ public readonly struct CarNumber : IEquatable<CarNumber>, IParsable<CarNumber>, 
     /// <returns>The car number as a string.</returns>
     public override string ToString()
     {
+        if (!HasValue)
+        {
+            return string.Empty;
+        }
+
         return Base.ToString($"D{Length}");
     }
 
