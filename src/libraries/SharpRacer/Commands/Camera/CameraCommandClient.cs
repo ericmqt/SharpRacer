@@ -39,25 +39,32 @@ public class CameraCommandClient : CommandClientBase, ICameraCommandClient
     }
 
     /// <inheritdoc />
-    public void TargetDriver(int driverNumber, int cameraGroup, int cameraIndex)
+    public void TargetCar(CarNumber carNumber, int cameraGroup, int cameraIndex)
     {
-        Send(new TargetDriverCommand(driverNumber, cameraGroup, cameraIndex));
+        if (carNumber == default)
+        {
+            throw new ArgumentException(
+                $"'{nameof(carNumber)}' cannot be equal to {nameof(CarNumber)}.{nameof(CarNumber.None)}.",
+                nameof(carNumber));
+        }
+
+        Send(new TargetCarCommand(carNumber, cameraGroup, cameraIndex));
     }
 
     /// <inheritdoc />
-    public void TargetDriver(CameraTargetMode targetMode, int cameraGroup, int cameraIndex)
+    public void TargetCar(CameraTargetMode targetMode, int cameraGroup, int cameraIndex)
     {
-        Send(new TargetDriverCommand(targetMode, cameraGroup, cameraIndex));
+        Send(new TargetCarCommand(targetMode, cameraGroup, cameraIndex));
     }
 
     /// <inheritdoc />
-    public void TargetRacePosition(int position, int cameraGroup, int cameraIndex)
+    public void TargetCarByPosition(int position, int cameraGroup, int cameraIndex)
     {
         Send(new TargetRacePositionCommand(position, cameraGroup, cameraIndex));
     }
 
     /// <inheritdoc />
-    public void TargetRacePosition(CameraTargetMode targetMode, int cameraGroup, int cameraIndex)
+    public void TargetCarByPosition(CameraTargetMode targetMode, int cameraGroup, int cameraIndex)
     {
         Send(new TargetRacePositionCommand(targetMode, cameraGroup, cameraIndex));
     }

@@ -13,13 +13,16 @@ public interface ICameraCommandClient
     void SetState(CameraState cameraState);
 
     /// <summary>
-    /// Sets the camera to target the car driven by the specified driver.
+    /// Sets the camera to target a car by its car number.
     /// </summary>
-    /// <param name="driverNumber"></param>
+    /// <param name="carNumber">The number of the car to target.</param>
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
     /// <remarks>See irsdk_BroadcastCamSwitchNum in the iRacing SDK.</remarks>
-    void TargetDriver(int driverNumber, int cameraGroup, int cameraIndex);
+    /// <exception cref="ArgumentException">
+    /// <paramref name="carNumber"/> equals <see cref="CarNumber.None"/>.
+    /// </exception>
+    void TargetCar(CarNumber carNumber, int cameraGroup, int cameraIndex);
 
     /// <summary>
     /// Sets the camera to use the specified <see cref="CameraTargetMode">CameraTargetMode</see>.
@@ -28,16 +31,16 @@ public interface ICameraCommandClient
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
     /// <remarks>See irsdk_BroadcastCamSwitchNum and irsdk_csMode in the iRacing SDK.</remarks>
-    void TargetDriver(CameraTargetMode targetMode, int cameraGroup, int cameraIndex);
+    void TargetCar(CameraTargetMode targetMode, int cameraGroup, int cameraIndex);
 
     /// <summary>
-    /// Sets the camera to target the car in the specified race position.
+    /// Sets the camera to target the car in the specified position.
     /// </summary>
     /// <param name="position">The race position of the car to target.</param>
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
     /// <remarks>See irsdk_BroadcastCamSwitchPos in the iRacing SDK.</remarks>
-    void TargetRacePosition(int position, int cameraGroup, int cameraIndex);
+    void TargetCarByPosition(int position, int cameraGroup, int cameraIndex);
 
     /// <summary>
     /// Sets the camera to use the specified <see cref="CameraTargetMode">CameraTargetMode</see>.
@@ -46,5 +49,5 @@ public interface ICameraCommandClient
     /// <param name="cameraGroup">The camera group.</param>
     /// <param name="cameraIndex">The camera index.</param>
     /// <remarks>See irsdk_BroadcastCamSwitchPos and irsdk_csMode in the iRacing SDK.</remarks>
-    void TargetRacePosition(CameraTargetMode targetMode, int cameraGroup, int cameraIndex);
+    void TargetCarByPosition(CameraTargetMode targetMode, int cameraGroup, int cameraIndex);
 }

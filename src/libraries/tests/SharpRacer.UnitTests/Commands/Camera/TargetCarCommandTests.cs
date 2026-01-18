@@ -1,22 +1,33 @@
 ﻿namespace SharpRacer.Commands.Camera;
 
-public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, TargetDriverCommandTests>, ICommandUnitTests<TargetDriverCommand>
+public class TargetCarCommandTests : CommandUnitTests<TargetCarCommand, TargetCarCommandTests>, ICommandUnitTests<TargetCarCommand>
 {
     public static SimulatorCommandId CommandId { get; } = SimulatorCommandId.CameraTargetDriver;
 
     [Fact]
-    public void Ctor_DriverNumberTest()
+    public void Ctor_CarNumberTest()
     {
-        const ushort driverNumber = 42;
+        var carNumber = new CarNumber(42);
         const ushort cameraGroup = 2;
         const ushort cameraIndex = 37;
 
-        var cmd = new TargetDriverCommand(driverNumber, cameraGroup, cameraIndex);
+        var cmd = new TargetCarCommand(carNumber, cameraGroup, cameraIndex);
 
         Assert.Equal(CameraTargetMode.Driver, cmd.TargetMode);
-        Assert.Equal(driverNumber, cmd.DriverNumber);
+        Assert.Equal(carNumber, cmd.CarNumber);
         Assert.Equal(cameraGroup, cmd.CameraGroup);
         Assert.Equal(cameraIndex, cmd.CameraIndex);
+    }
+
+    [Fact]
+    public void Ctor_CarNumber_ThrowIfCarNumberEqualsNoneTest()
+    {
+        const ushort cameraGroup = 2;
+        const ushort cameraIndex = 37;
+
+        Assert.Throws<ArgumentException>(() => new TargetCarCommand(CarNumber.None, cameraGroup, cameraIndex));
+
+        Assert.Throws<ArgumentException>(() => new TargetCarCommand(default(CarNumber), cameraGroup, cameraIndex));
     }
 
     [Fact]
@@ -26,18 +37,24 @@ public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, Ta
         const ushort cameraGroup = 2;
         const ushort cameraIndex = 37;
 
-        var cmd = new TargetDriverCommand(targetMode, cameraGroup, cameraIndex);
+        var cmd = new TargetCarCommand(targetMode, cameraGroup, cameraIndex);
 
         Assert.Equal(targetMode, cmd.TargetMode);
-        Assert.Equal(0, cmd.DriverNumber);
+        Assert.Equal(CarNumber.None, cmd.CarNumber);
         Assert.Equal(cameraGroup, cmd.CameraGroup);
         Assert.Equal(cameraIndex, cmd.CameraIndex);
     }
 
     [Fact]
-    public void CtorInternal_ThrowIfTargetModeNotValidForDriverNumberTest()
+    public void CtorInternal_ThrowIfCarNumberNotValidForTargetModeTest()
     {
-        Assert.Throws<ArgumentException>(() => new TargetDriverCommand(CameraTargetMode.Incident, 42, 1, 1));
+        Assert.Throws<ArgumentException>(() => new TargetCarCommand(CarNumber.None, CameraTargetMode.Driver, 1, 1));
+    }
+
+    [Fact]
+    public void CtorInternal_ThrowIfTargetModeNotValidForCarNumberTest()
+    {
+        Assert.Throws<ArgumentException>(() => new TargetCarCommand(new CarNumber(42), CameraTargetMode.Incident, 1, 1));
     }
 
     [Fact]
@@ -47,7 +64,7 @@ public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, Ta
         const ushort cameraGroup = 2;
         const ushort cameraIndex = 37;
 
-        var msg = new CommandMessage(TargetDriverCommand.CommandId, driverNumber, cameraGroup, cameraIndex);
+        var msg = new CommandMessage(TargetCarCommand.CommandId, driverNumber, cameraGroup, cameraIndex);
 
         CommandMessageAssert.Arg1Equals(driverNumber, msg);
         CommandMessageAssert.Arg2Equals(cameraGroup, msg);
@@ -61,7 +78,7 @@ public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, Ta
         const ushort cameraGroup = 2;
         const ushort cameraIndex = 37;
 
-        var msg = new CommandMessage(TargetDriverCommand.CommandId, unchecked((ushort)targetMode), cameraGroup, cameraIndex);
+        var msg = new CommandMessage(TargetCarCommand.CommandId, unchecked((ushort)targetMode), cameraGroup, cameraIndex);
 
         CommandMessageAssert.Arg1Equals(targetMode, msg);
         CommandMessageAssert.Arg2Equals(cameraGroup, msg);
@@ -75,9 +92,9 @@ public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, Ta
         const ushort cameraGroup = 2;
         const ushort cameraIndex = 37;
 
-        var msg = new CommandMessage(TargetDriverCommand.CommandId, invalidTargetMode, cameraGroup, cameraIndex);
+        var msg = new CommandMessage(TargetCarCommand.CommandId, invalidTargetMode, cameraGroup, cameraIndex);
 
-        Assert.Throws<CommandMessageParseException>(() => TargetDriverCommand.Parse(msg));
+        Assert.Throws<CommandMessageParseException>(() => TargetCarCommand.Parse(msg));
     }
 
     [Fact]
@@ -87,50 +104,50 @@ public class TargetDriverCommandTests : CommandUnitTests<TargetDriverCommand, Ta
         const ushort cameraGroup = 2;
         const ushort cameraIndex = 37;
 
-        var msg = new CommandMessage(TargetDriverCommand.CommandId, invalidTargetMode, cameraGroup, cameraIndex);
+        var msg = new CommandMessage(TargetCarCommand.CommandId, invalidTargetMode, cameraGroup, cameraIndex);
 
-        Assert.False(TargetDriverCommand.TryParse(msg, out var parsedCommand));
+        Assert.False(TargetCarCommand.TryParse(msg, out var parsedCommand));
         Assert.Equal(default, parsedCommand);
     }
 
-    public static IEnumerable<(TargetDriverCommand Command1, TargetDriverCommand Command2)> EnumerateEqualityValues()
+    public static IEnumerable<(TargetCarCommand Command1, TargetCarCommand Command2)> EnumerateEqualityValues()
     {
         const CameraTargetMode targetMode = CameraTargetMode.Incident;
-        const int driverNumber = 42;
         const int cameraGroup = 2;
         const int cameraIndex = 37;
+        var carNumber = new CarNumber(42);
 
         yield return (new(targetMode, cameraGroup, cameraIndex), new(targetMode, cameraGroup, cameraIndex));
-        yield return (new(driverNumber, cameraGroup, cameraIndex), new(driverNumber, cameraGroup, cameraIndex));
+        yield return (new(carNumber, cameraGroup, cameraIndex), new(carNumber, cameraGroup, cameraIndex));
         yield return (default, default);
     }
 
-    public static IEnumerable<(TargetDriverCommand Command1, TargetDriverCommand Command2)> EnumerateInequalityValues()
+    public static IEnumerable<(TargetCarCommand Command1, TargetCarCommand Command2)> EnumerateInequalityValues()
     {
         const CameraTargetMode targetMode = CameraTargetMode.Incident;
-        const int driverNumber = 42;
         const int cameraGroup = 2;
         const int cameraIndex = 37;
+        var carNumber = new CarNumber(42);
 
         yield return (new(CameraTargetMode.Incident, cameraGroup, cameraIndex), new(CameraTargetMode.Leader, cameraGroup, cameraIndex));
         yield return (new(targetMode, cameraGroup, cameraIndex), new(targetMode, cameraGroup + 1, cameraIndex));
         yield return (new(targetMode, cameraGroup, cameraIndex), new(targetMode, cameraGroup, cameraIndex + 1));
         yield return (new(CameraTargetMode.Incident, cameraGroup, cameraIndex), default);
 
-        yield return (new(1, cameraGroup, cameraIndex), new(2, cameraGroup, cameraIndex));
-        yield return (new(driverNumber, cameraGroup, cameraIndex), new(driverNumber, cameraGroup + 1, cameraIndex));
-        yield return (new(driverNumber, cameraGroup, cameraIndex), new(driverNumber, cameraGroup, cameraIndex + 1));
-        yield return (new(driverNumber, cameraGroup, cameraIndex), default);
+        yield return (new(new CarNumber(1), cameraGroup, cameraIndex), new(new CarNumber(3), cameraGroup, cameraIndex));
+        yield return (new(carNumber, cameraGroup, cameraIndex), new(carNumber, cameraGroup + 1, cameraIndex));
+        yield return (new(carNumber, cameraGroup, cameraIndex), new(carNumber, cameraGroup, cameraIndex + 1));
+        yield return (new(carNumber, cameraGroup, cameraIndex), default);
     }
 
-    public static IEnumerable<TargetDriverCommand> EnumerateValidCommands()
+    public static IEnumerable<TargetCarCommand> EnumerateValidCommands()
     {
         const CameraTargetMode targetMode = CameraTargetMode.Incident;
-        const int driverNumber = 42;
         const int cameraGroup = 2;
         const int cameraIndex = 37;
+        var carNumber = new CarNumber(42);
 
         yield return new(targetMode, cameraGroup, cameraIndex);
-        yield return new(driverNumber, cameraGroup, cameraIndex);
+        yield return new(carNumber, cameraGroup, cameraIndex);
     }
 }
