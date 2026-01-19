@@ -1,18 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-        <AssemblyVersion>$(SharpRacerAssemblyVersion)</AssemblyVersion>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-	</PropertyGroup>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    </PropertyGroup>
 
     <!-- Package -->
     <PropertyGroup>
         <PackageId>SharpRacer</PackageId>
-        <Version>$(SharpRacerPackageVersion)</Version>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/ericmqt/SharpRacer.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -21,16 +19,20 @@
         </Description>
     </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="DotNext.Threading" Version="5.26.1" PrivateAssets="compile" />
-		<PackageReference Include="DotNext.Unsafe" Version="5.26.1" PrivateAssets="compile" />
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.264">
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Nito.AsyncEx.Interop.WaitHandles" Version="5.1.2" PrivateAssets="compile" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <AdditionalFiles Include="NativeMethods.txt" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DotNext.Threading" Version="5.26.1" PrivateAssets="compile" />
+        <PackageReference Include="DotNext.Unsafe" Version="5.26.1" PrivateAssets="compile" />
+        <PackageReference Include="GitVersion.MsBuild" Version="6.5.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.264">
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Nito.AsyncEx.Interop.WaitHandles" Version="5.1.2" PrivateAssets="compile" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="NativeMethods.txt" />
+    </ItemGroup>
 </Project>

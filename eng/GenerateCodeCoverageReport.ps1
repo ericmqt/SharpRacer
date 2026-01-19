@@ -40,7 +40,9 @@ Param(
     [Parameter(Mandatory=$false)]
     [switch]$Html,
     [Parameter(Mandatory=$false)]
-    [switch]$NoBuild
+    [switch]$NoBuild,
+    [Parameter(Mandatory=$false)]
+    [string]$Configuration = "Debug"
 )
 
 . $PSScriptRoot\ps\CodeCoverage.ps1
@@ -102,7 +104,7 @@ $script:sourceGeneratorTestProjects += New-CodeCoverageTestProject `
 # Build projects
 if (-not $NoBuild)
 {
-    Invoke-DotNetBuild -Project (Get-RepositoryDirectoryPath)
+    Invoke-DotNetBuild -Project (Get-RepositoryDirectoryPath) -Configuration $Configuration
 }
 
 # Collect code coverage files
@@ -117,6 +119,7 @@ if ($SharpRacer)
             -Projects $script:sharpRacerTestProjects `
             -IncludeUnitTests `
             -IncludeIntegrationTests:(-not $ExcludeIntegrationTests) `
+            -Configuration $Configuration `
             -NoBuild
     }
     catch
@@ -134,6 +137,7 @@ if ($SourceGenerator)
             -Projects $script:sourceGeneratorTestProjects `
             -IncludeUnitTests `
             -IncludeIntegrationTests:(-not $ExcludeIntegrationTests) `
+            -Configuration $Configuration `
             -NoBuild
     }
     catch

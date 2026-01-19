@@ -1,17 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="YamlDotNet" Version="15.1.2" />
-  </ItemGroup>
+    <!-- Package -->
+    <PropertyGroup>
+        <PackageId>SharpRacer.SessionInfo.Yaml</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/ericmqt/SharpRacer.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <Description>
+            Deserialize the YAML session information string into typed objects. Experimental.
+        </Description>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SharpRacer\SharpRacer.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="GitVersion.MsBuild" Version="6.5.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="YamlDotNet" Version="15.1.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SharpRacer\SharpRacer.csproj" />
+    </ItemGroup>
 
 </Project>

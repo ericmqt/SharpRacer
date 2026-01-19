@@ -1,6 +1,4 @@
 <Project>
-	<Import Project="eng\Versions.props" />
-	
 	<PropertyGroup>
 		<RepositoryRootDirectory>$(MSBuildThisFileDirectory)</RepositoryRootDirectory>
 		<RepositorySourceDirectory>$(RepositoryRootDirectory)\src</RepositorySourceDirectory>

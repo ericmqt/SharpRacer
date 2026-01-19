@@ -129,11 +129,14 @@ function Invoke-DotNetBuild
         [Parameter(Mandatory = $true, Position = 0)]
         [ValidateNotNullOrWhiteSpace()]
         [string]$Project,
+        [Parameter(Mandatory=$false, Position = 1)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Configuration = "Debug",
         [Parameter(Mandatory = $false, Position = 2)]
         [string[]]$AdditionalArguments
     )
 
-    $local:args = @($Project) + $AdditionalArguments
+    $local:args = @($Project) + @("--configuration", $Configuration) + $AdditionalArguments
 
     try
     {
@@ -160,7 +163,10 @@ function Invoke-DotNetTest
     Param (
         [Parameter(Mandatory = $true, Position = 0)]
         [string] $Project,
-        [Parameter(Mandatory = $false, Position = 1)]
+        [Parameter(Mandatory=$false, Position = 1)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Configuration = "Debug",
+        [Parameter(Mandatory = $false, Position = 2)]
         [string[]]
         $AdditionalArguments
     )
@@ -169,7 +175,7 @@ function Invoke-DotNetTest
 
     try
     {
-        Invoke-DotNet -Command "test" -ArgumentList $local:args
+        Invoke-DotNet -Command "test" -Configuration $Configuration -ArgumentList $local:args
     }
     catch [DotNetCommandException]
     {

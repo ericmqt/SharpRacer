@@ -206,6 +206,10 @@ function Measure-CodeCoverage
         [CodeCoverageTestProject]$Project,
 
         [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Configuration,
+
+        [Parameter(Mandatory=$true)]
         [switch]$NoBuild
     )
 
@@ -229,7 +233,7 @@ function Measure-CodeCoverage
         }
 
         # Build the 'dotnet test' command
-        $dotnetTestExpr = "dotnet test $($Project.ProjectFileName) --collect:`"XPlat Code Coverage`" --results-directory `"$local:tempDir`""
+        $dotnetTestExpr = "dotnet test $($Project.ProjectFileName) --configuration $Configuration --collect:`"XPlat Code Coverage`" --results-directory `"$local:tempDir`""
 
         if ($NoBuild)
         {
@@ -287,6 +291,10 @@ function Build-CodeCoverageResults
         [switch]$IncludeIntegrationTests,
 
         [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrWhiteSpace()]
+        [string]$Configuration,
+
+        [Parameter(Mandatory=$true)]
         [switch]$NoBuild
     )
 
@@ -304,7 +312,7 @@ function Build-CodeCoverageResults
     {
         try
         {
-            $null = Measure-CodeCoverage -Project $project -NoBuild
+            $null = Measure-CodeCoverage -Project $project -Configuration $Configuration -NoBuild
 
             $local:codeCoverageFiles.Add($project.CodeCoverageFileName)
         }

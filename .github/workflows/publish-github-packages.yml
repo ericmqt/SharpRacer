@@ -1,4 +1,4 @@
-name: update code coverage
+name: Publish GitHub Packages
 on:
   workflow_run:
     workflows: ["build"]
@@ -14,19 +14,21 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       actions: read
-      contents: write
+      contents: read
+      packages: write
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v6.0.1
-    - name: 'Download code coverage reports'
+    - name: 'Download NuGet packages artifact'
       uses: actions/download-artifact@v4
       with:
         run-id: ${{ github.event.workflow_run.id }}
         github-token: ${{ github.token }}
-        name: code-coverage-results
-        path: ./code-coverage-main
-    - name: Update code-coverage branch
+        name: nuget-packages
+        path: ./nuget-packages
+    - name: Push NuGet packages
       if: ${{ github.event_name != 'pull_request' }}
       shell: pwsh
-      run: ./eng/github/PublishCodeCoverageReports.ps1 -SourceBranch ${{ github.ref_name }} -CodeCoverageBranch code-coverage -ArtifactDirectory ./code-coverage-main
+      run: |
+        Get-ChildItem -Path ./nuget-packages *.nupkg -File | ForEach-Object {
+            & dotnet nuget push $_.FullName --source https://nuget.pkg.github.com/ericmqt/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+        }
