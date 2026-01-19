@@ -64,19 +64,19 @@ public readonly struct CarNumber : IEquatable<CarNumber>, IParsable<CarNumber>, 
     public readonly int Value { get; }
 
     /// <inheritdoc />
-    public override bool Equals(object? obj)
+    public override readonly bool Equals(object? obj)
     {
         return obj is CarNumber number && Equals(number);
     }
 
     /// <inheritdoc />
-    public bool Equals(CarNumber other)
+    public readonly bool Equals(CarNumber other)
     {
         return Value == other.Value && HasValue == other.HasValue;
     }
 
     /// <inheritdoc />
-    public override int GetHashCode()
+    public override readonly int GetHashCode()
     {
         return HashCode.Combine(HasValue, Value);
     }
@@ -85,7 +85,7 @@ public readonly struct CarNumber : IEquatable<CarNumber>, IParsable<CarNumber>, 
     /// Returns the string representation of the car number, including any leading zeroes.
     /// </summary>
     /// <returns>The car number as a string.</returns>
-    public override string ToString()
+    public override readonly string ToString()
     {
         if (!HasValue)
         {
