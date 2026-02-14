@@ -71,12 +71,18 @@ public class TelemetryVariableInitializationExceptionTests
     {
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<int>(GetType(), TelemetryVariableValueType.Bitfield);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<uint>(GetType(), TelemetryVariableValueType.Bitfield);
+        TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<CameraState>(GetType(), TelemetryVariableValueType.Bitfield);
+        TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<PaceRacingFlags>(GetType(), TelemetryVariableValueType.Bitfield);
+        TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<RacingFlags>(GetType(), TelemetryVariableValueType.Bitfield);
 
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<bool>(GetType(), TelemetryVariableValueType.Bool);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<byte>(GetType(), TelemetryVariableValueType.Byte);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<double>(GetType(), TelemetryVariableValueType.Double);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<float>(GetType(), TelemetryVariableValueType.Float);
         TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<int>(GetType(), TelemetryVariableValueType.Int);
+
+        TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<PaceMode>(GetType(), TelemetryVariableValueType.Int);
+        TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<PitServiceStatus>(GetType(), TelemetryVariableValueType.Int);
     }
 
     [Fact]
@@ -89,9 +95,6 @@ public class TelemetryVariableInitializationExceptionTests
     [Fact]
     public void ThrowIfValueTypeArgumentIsInvalid_ValueTypeWrongSizeForBitfieldTest()
     {
-        Assert.Throws<TelemetryVariableInitializationException>(() =>
-            TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<short>(GetType(), TelemetryVariableValueType.Bitfield));
-
         Assert.Throws<TelemetryVariableInitializationException>(() =>
             TelemetryVariableInitializationException.ThrowIfValueTypeArgumentIsInvalid<long>(GetType(), TelemetryVariableValueType.Bitfield));
     }

@@ -14,13 +14,17 @@ public class TelemetryVariableValueTypeExtensionsTests
     public void IsCompatibleValueTypeArgumentTest()
     {
         Assert.True(TelemetryVariableValueType.Bitfield.IsCompatibleValueTypeArgument<int>());
+        Assert.True(TelemetryVariableValueType.Bitfield.IsCompatibleValueTypeArgument<short>());
+        Assert.True(TelemetryVariableValueType.Bitfield.IsCompatibleValueTypeArgument<CameraState>());
+
         Assert.True(TelemetryVariableValueType.Bool.IsCompatibleValueTypeArgument<bool>());
         Assert.True(TelemetryVariableValueType.Byte.IsCompatibleValueTypeArgument<byte>());
         Assert.True(TelemetryVariableValueType.Double.IsCompatibleValueTypeArgument<double>());
         Assert.True(TelemetryVariableValueType.Float.IsCompatibleValueTypeArgument<float>());
-        Assert.True(TelemetryVariableValueType.Int.IsCompatibleValueTypeArgument<int>());
 
-        Assert.False(TelemetryVariableValueType.Bitfield.IsCompatibleValueTypeArgument<short>());
+        Assert.True(TelemetryVariableValueType.Int.IsCompatibleValueTypeArgument<int>());
+        Assert.True(TelemetryVariableValueType.Int.IsCompatibleValueTypeArgument<PaceMode>());
+
         Assert.False(TelemetryVariableValueType.Bitfield.IsCompatibleValueTypeArgument<long>());
 
         Assert.False(TelemetryVariableValueType.Byte.IsCompatibleValueTypeArgument<short>());

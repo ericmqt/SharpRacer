@@ -24,7 +24,7 @@ internal static class TelemetryVariableValueTypeExtensions
     {
         if (valueType == TelemetryVariableValueType.Bitfield)
         {
-            return Unsafe.SizeOf<T>() == Unsafe.SizeOf<int>();
+            return Unsafe.SizeOf<T>() <= Unsafe.SizeOf<int>();
         }
 
         if (valueType == TelemetryVariableValueType.Bool)
@@ -39,7 +39,14 @@ internal static class TelemetryVariableValueTypeExtensions
 
         if (valueType == TelemetryVariableValueType.Int)
         {
-            return typeof(T) == typeof(int);
+            var typeArg = typeof(T);
+
+            if (typeArg.IsEnum)
+            {
+                return Unsafe.SizeOf<T>() == Unsafe.SizeOf<int>();
+            }
+
+            return typeArg == typeof(int);
         }
 
         if (valueType == TelemetryVariableValueType.Float)

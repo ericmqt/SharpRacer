@@ -118,7 +118,7 @@ public class TelemetryVariableInitializationException : Exception
     {
         ArgumentNullException.ThrowIfNull(variableType);
 
-        if (variableValueType == TelemetryVariableValueType.Bitfield && Unsafe.SizeOf<TValue>() != Unsafe.SizeOf<int>())
+        if (variableValueType == TelemetryVariableValueType.Bitfield && Unsafe.SizeOf<TValue>() > Unsafe.SizeOf<int>())
         {
             throw new TelemetryVariableInitializationException(
                 FormatMessage(
