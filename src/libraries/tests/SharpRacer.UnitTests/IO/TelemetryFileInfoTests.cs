@@ -46,6 +46,8 @@ public class TelemetryFileInfoTests
         Assert.Equal(sessionStart, fileInfo.SessionStart);
         Assert.Equal(sessionEnd, fileInfo.SessionEnd);
         Assert.Equal(fileInfo.FileName, fileInfo.FileInfo.FullName);
+
+        File.Delete(fileName);
     }
 
     [Fact]
@@ -63,6 +65,47 @@ public class TelemetryFileInfoTests
         File.Delete(fileName);
 
         Assert.Throws<FileNotFoundException>(() => new TelemetryFileInfo(fileName));
+    }
+
+    [Fact]
+    public void CreateReaderTest()
+    {
+        TelemetryVariableHeader intVarHeader = default;
+        TelemetryVariableHeader float3ArrayVarHeader = default;
+        string sessionInfo = "Test session info";
+        var sessionStart = new DateTimeOffset(2023, 9, 22, 14, 30, 12, TimeSpan.FromHours(-5));
+        var sessionDuration = TimeSpan.FromMinutes(19);
+        var sessionEnd = sessionStart.Add(sessionDuration);
+
+        var fileBuilder = TelemetryFileBuilder.Create(
+            varBuilder =>
+            {
+                varBuilder.AddScalarVariable("Foo", TelemetryVariableValueType.Int, "test", "Description", out intVarHeader);
+
+                varBuilder.AddArrayVariable("Bar", TelemetryVariableValueType.Float, 3, "float/s", "Float array", out float3ArrayVarHeader);
+            })
+            .SetSessionInfo(sessionInfo, 1)
+            .SetSessionStartAndDuration(sessionStart, sessionDuration)
+            .AddDataFrame(
+                frame =>
+                {
+                    frame.Write<int>(intVarHeader, 12);
+                    frame.WriteArray<float>(float3ArrayVarHeader, [1.0f, 2.0f, 3.0f]);
+                });
+
+        // Write the file
+        var fileName = Path.GetTempFileName();
+
+        fileBuilder.Write(fileName, out var writtenHeader);
+
+        var fileInfo = new TelemetryFileInfo(fileName);
+
+        using (var reader = fileInfo.CreateReader())
+        {
+            Assert.NotNull(reader);
+        }
+
+        File.Delete(fileName);
     }
 
     [Fact]
@@ -110,6 +153,8 @@ public class TelemetryFileInfoTests
         Assert.True(fooVariableActivated);
         Assert.True(barVariableActivated);
         Assert.False(bazVariableActivated);
+
+        File.Delete(fileName);
 
         void onFooVariableActivated(TelemetryVariableInfo variableInfo)
         {

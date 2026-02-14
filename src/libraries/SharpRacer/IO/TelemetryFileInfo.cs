@@ -77,6 +77,15 @@ public class TelemetryFileInfo : ITelemetryVariableInfoProvider
     /// </summary>
     public DateTimeOffset SessionStart { get; }
 
+    /// <summary>
+    /// Creates a <see cref="TelemetryFileReader"/> for the telemetry file.
+    /// </summary>
+    /// <returns>A <see cref="TelemetryFileReader"/> for the telemetry file.</returns>
+    public TelemetryFileReader CreateReader()
+    {
+        return new TelemetryFileReader(FileName);
+    }
+
     /// <inheritdoc />
     public void NotifyTelemetryVariableActivated(string variableName, Action<TelemetryVariableInfo> callback)
     {
