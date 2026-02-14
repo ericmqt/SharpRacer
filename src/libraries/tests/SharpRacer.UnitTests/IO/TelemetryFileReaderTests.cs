@@ -2,10 +2,10 @@
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using SharpRacer.Interop;
-using SharpRacer.IO;
+using SharpRacer.Telemetry;
 using SharpRacer.Telemetry.TestUtilities;
 
-namespace SharpRacer.Telemetry;
+namespace SharpRacer.IO;
 
 public class TelemetryFileReaderTests
 {
