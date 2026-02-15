@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.3675" branch-rate="0.3626" version="1.9" timestamp="1768862595" lines-covered="2175" lines-valid="5918" branches-covered="669" branches-valid="1845">
+<coverage line-rate="0.3711" branch-rate="0.36700000000000005" version="1.9" timestamp="1771181564" lines-covered="2214" lines-valid="5966" branches-covered="683" branches-valid="1861">
   <sources>
     <source>\</source>
   </sources>
   <packages>
-    <package name="SharpRacer" line-rate="0" branch-rate="0" complexity="1768">
+    <package name="SharpRacer" line-rate="0" branch-rate="0" complexity="1771">
       <classes>
         <class name="System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute" filename="/_/artifacts/obj/SharpRacer/release/Microsoft.Windows.CsWin32/Microsoft.Windows.CsWin32.SourceGenerator/Windows.Win32.OverloadResolutionPriorityAttribute.g.cs" line-rate="0" branch-rate="1" complexity="2">
           <methods>
@@ -2286,7 +2286,7 @@
             <line number="85" hits="0" branch="False" />
           </lines>
         </class>
-        <class name="SharpRacer.Telemetry.TelemetryVariableValueTypeExtensions" filename="D:\a\SharpRacer\SharpRacer\src\libraries\SharpRacer\Telemetry\Extensions\TelemetryVariableValueTypeExtensions.cs" line-rate="0" branch-rate="0" complexity="19">
+        <class name="SharpRacer.Telemetry.TelemetryVariableValueTypeExtensions" filename="D:\a\SharpRacer\SharpRacer\src\libraries\SharpRacer\Telemetry\Extensions\TelemetryVariableValueTypeExtensions.cs" line-rate="0" branch-rate="0" complexity="21">
           <methods>
             <method name="GetSize" signature="(SharpRacer.Telemetry.TelemetryVariableValueType)" line-rate="0" branch-rate="0" complexity="7">
               <lines>
@@ -2307,7 +2307,7 @@
                 <line number="19" hits="0" branch="False" />
               </lines>
             </method>
-            <method name="IsCompatibleValueTypeArgument" signature="(SharpRacer.Telemetry.TelemetryVariableValueType)" line-rate="0" branch-rate="0" complexity="12">
+            <method name="IsCompatibleValueTypeArgument" signature="(SharpRacer.Telemetry.TelemetryVariableValueType)" line-rate="0" branch-rate="0" complexity="14">
               <lines>
                 <line number="25" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
@@ -2317,35 +2317,42 @@
                 <line number="27" hits="0" branch="False" />
                 <line number="30" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
-                    <condition number="19" type="jump" coverage="0%" />
+                    <condition number="22" type="jump" coverage="0%" />
                   </conditions>
                 </line>
                 <line number="32" hits="0" branch="False" />
                 <line number="35" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
-                    <condition number="48" type="jump" coverage="0%" />
+                    <condition number="51" type="jump" coverage="0%" />
                   </conditions>
                 </line>
                 <line number="37" hits="0" branch="False" />
                 <line number="40" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
-                    <condition number="78" type="jump" coverage="0%" />
+                    <condition number="81" type="jump" coverage="0%" />
                   </conditions>
                 </line>
                 <line number="42" hits="0" branch="False" />
-                <line number="45" hits="0" branch="True" condition-coverage="0% (0/2)">
+                <line number="44" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
-                    <condition number="108" type="jump" coverage="0%" />
+                    <condition number="100" type="jump" coverage="0%" />
                   </conditions>
                 </line>
-                <line number="47" hits="0" branch="False" />
-                <line number="50" hits="0" branch="True" condition-coverage="0% (0/2)">
+                <line number="46" hits="0" branch="False" />
+                <line number="49" hits="0" branch="False" />
+                <line number="52" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
-                    <condition number="138" type="jump" coverage="0%" />
+                    <condition number="134" type="jump" coverage="0%" />
                   </conditions>
                 </line>
-                <line number="52" hits="0" branch="False" />
-                <line number="55" hits="0" branch="False" />
+                <line number="54" hits="0" branch="False" />
+                <line number="57" hits="0" branch="True" condition-coverage="0% (0/2)">
+                  <conditions>
+                    <condition number="164" type="jump" coverage="0%" />
+                  </conditions>
+                </line>
+                <line number="59" hits="0" branch="False" />
+                <line number="62" hits="0" branch="False" />
               </lines>
             </method>
           </methods>
@@ -2373,35 +2380,42 @@
             <line number="27" hits="0" branch="False" />
             <line number="30" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
-                <condition number="19" type="jump" coverage="0%" />
+                <condition number="22" type="jump" coverage="0%" />
               </conditions>
             </line>
             <line number="32" hits="0" branch="False" />
             <line number="35" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
-                <condition number="48" type="jump" coverage="0%" />
+                <condition number="51" type="jump" coverage="0%" />
               </conditions>
             </line>
             <line number="37" hits="0" branch="False" />
             <line number="40" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
-                <condition number="78" type="jump" coverage="0%" />
+                <condition number="81" type="jump" coverage="0%" />
               </conditions>
             </line>
             <line number="42" hits="0" branch="False" />
-            <line number="45" hits="0" branch="True" condition-coverage="0% (0/2)">
+            <line number="44" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
-                <condition number="108" type="jump" coverage="0%" />
+                <condition number="100" type="jump" coverage="0%" />
               </conditions>
             </line>
-            <line number="47" hits="0" branch="False" />
-            <line number="50" hits="0" branch="True" condition-coverage="0% (0/2)">
+            <line number="46" hits="0" branch="False" />
+            <line number="49" hits="0" branch="False" />
+            <line number="52" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
-                <condition number="138" type="jump" coverage="0%" />
+                <condition number="134" type="jump" coverage="0%" />
               </conditions>
             </line>
-            <line number="52" hits="0" branch="False" />
-            <line number="55" hits="0" branch="False" />
+            <line number="54" hits="0" branch="False" />
+            <line number="57" hits="0" branch="True" condition-coverage="0% (0/2)">
+              <conditions>
+                <condition number="164" type="jump" coverage="0%" />
+              </conditions>
+            </line>
+            <line number="59" hits="0" branch="False" />
+            <line number="62" hits="0" branch="False" />
           </lines>
         </class>
         <class name="SharpRacer.Telemetry.GenerateTelemetryVariablesContextAttribute" filename="D:\a\SharpRacer\SharpRacer\src\libraries\SharpRacer\Telemetry\GenerateTelemetryVariablesContextAttribute.cs" line-rate="0" branch-rate="1" complexity="3">
@@ -3920,7 +3934,7 @@
             <line number="128" hits="0" branch="False" />
           </lines>
         </class>
-        <class name="SharpRacer.IO.TelemetryFileInfo" filename="D:\a\SharpRacer\SharpRacer\src\libraries\SharpRacer\IO\TelemetryFileInfo.cs" line-rate="0" branch-rate="0" complexity="12">
+        <class name="SharpRacer.IO.TelemetryFileInfo" filename="D:\a\SharpRacer\SharpRacer\src\libraries\SharpRacer\IO\TelemetryFileInfo.cs" line-rate="0" branch-rate="0" complexity="13">
           <methods>
             <method name="get_Variables" signature="()" line-rate="0" branch-rate="1" complexity="1">
               <lines>
@@ -3952,17 +3966,22 @@
                 <line number="78" hits="0" branch="False" />
               </lines>
             </method>
+            <method name="CreateReader" signature="()" line-rate="0" branch-rate="1" complexity="1">
+              <lines>
+                <line number="86" hits="0" branch="False" />
+              </lines>
+            </method>
             <method name="NotifyTelemetryVariableActivated" signature="(System.String,System.Action`1&lt;SharpRacer.Telemetry.TelemetryVariableInfo&gt;)" line-rate="0" branch-rate="0" complexity="2">
               <lines>
-                <line number="83" hits="0" branch="False" />
-                <line number="84" hits="0" branch="False" />
-                <line number="86" hits="0" branch="True" condition-coverage="0% (0/2)">
+                <line number="92" hits="0" branch="False" />
+                <line number="93" hits="0" branch="False" />
+                <line number="95" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
                     <condition number="36" type="jump" coverage="0%" />
                   </conditions>
                 </line>
-                <line number="88" hits="0" branch="False" />
-                <line number="90" hits="0" branch="False" />
+                <line number="97" hits="0" branch="False" />
+                <line number="99" hits="0" branch="False" />
               </lines>
             </method>
             <method name=".ctor" signature="(System.String)" line-rate="0" branch-rate="0" complexity="4">
@@ -4001,15 +4020,16 @@
             <line number="68" hits="0" branch="False" />
             <line number="73" hits="0" branch="False" />
             <line number="78" hits="0" branch="False" />
-            <line number="83" hits="0" branch="False" />
-            <line number="84" hits="0" branch="False" />
-            <line number="86" hits="0" branch="True" condition-coverage="0% (0/2)">
+            <line number="86" hits="0" branch="False" />
+            <line number="92" hits="0" branch="False" />
+            <line number="93" hits="0" branch="False" />
+            <line number="95" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
                 <condition number="36" type="jump" coverage="0%" />
               </conditions>
             </line>
-            <line number="88" hits="0" branch="False" />
-            <line number="90" hits="0" branch="False" />
+            <line number="97" hits="0" branch="False" />
+            <line number="99" hits="0" branch="False" />
             <line number="21" hits="0" branch="False" />
             <line number="23" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
@@ -14568,7 +14588,7 @@
         </class>
       </classes>
     </package>
-    <package name="SharpRacer.SourceGenerators" line-rate="0.7723" branch-rate="0.7964" complexity="1255">
+    <package name="SharpRacer.SourceGenerators" line-rate="0.7741" branch-rate="0.7997" complexity="1270">
       <classes>
         <class name="SharpRacer.SourceGenerators.AnalyzerConfigOptionsExtensions" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\Extensions\AnalyzerConfigOptionsExtensions.cs" line-rate="1" branch-rate="1" complexity="2">
           <methods>
@@ -15260,12 +15280,12 @@
           <methods>
             <method name="get_ToolName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="15" hits="45" branch="False" />
+                <line number="15" hits="43" branch="False" />
               </lines>
             </method>
             <method name="get_ToolVersion" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="16" hits="45" branch="False" />
+                <line number="16" hits="43" branch="False" />
               </lines>
             </method>
             <method name="Initialize" signature="(Microsoft.CodeAnalysis.IncrementalGeneratorInitializationContext)" line-rate="0" branch-rate="0" complexity="2">
@@ -15390,8 +15410,8 @@
             </method>
           </methods>
           <lines>
-            <line number="15" hits="45" branch="False" />
-            <line number="16" hits="45" branch="False" />
+            <line number="15" hits="43" branch="False" />
+            <line number="16" hits="43" branch="False" />
             <line number="20" hits="0" branch="False" />
             <line number="23" hits="0" branch="False" />
             <line number="25" hits="0" branch="False" />
@@ -16868,69 +16888,127 @@
             <line number="14" hits="1" branch="False" />
           </lines>
         </class>
-        <class name="SharpRacer.SourceGenerators.TelemetryVariables.Syntax.VariableContextSyntaxFactory" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\TelemetryVariables\Syntax\VariableContextSyntaxFactory.cs" line-rate="1" branch-rate="1" complexity="6">
+        <class name="SharpRacer.SourceGenerators.TelemetryVariables.Syntax.VariableContextSyntaxFactory" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\TelemetryVariables\Syntax\VariableContextSyntaxFactory.cs" line-rate="0.9333" branch-rate="1" complexity="19">
           <methods>
-            <method name="Constructor" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextClassModel&amp;)" line-rate="1" branch-rate="1" complexity="2">
+            <method name="Constructor" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextClassModel&amp;)" line-rate="1" branch-rate="1" complexity="8">
               <lines>
                 <line number="15" hits="7" branch="False" />
                 <line number="17" hits="7" branch="False" />
                 <line number="18" hits="7" branch="False" />
-                <line number="20" hits="7" branch="False" />
-                <line number="21" hits="7" branch="False" />
-                <line number="22" hits="7" branch="False" />
-                <line number="23" hits="7" branch="False" />
-                <line number="25" hits="30" branch="True" condition-coverage="100% (2/2)">
+                <line number="22" hits="14" branch="False" />
+                <line number="24" hits="7" branch="False" />
+                <line number="25" hits="7" branch="False" />
+                <line number="26" hits="7" branch="False" />
+                <line number="27" hits="7" branch="False" />
+                <line number="29" hits="30" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
-                    <condition number="110" type="jump" coverage="100%" />
+                    <condition number="238" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="27" hits="8" branch="False" />
-                <line number="29" hits="8" branch="False" />
-                <line number="32" hits="7" branch="False" />
-                <line number="33" hits="7" branch="False" />
-                <line number="34" hits="7" branch="False" />
-                <line number="35" hits="7" branch="False" />
-                <line number="36" hits="7" branch="False" />
-              </lines>
-            </method>
-            <method name="EnumerateVariablesMethod" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextClassModel&amp;)" line-rate="1" branch-rate="1" complexity="1">
-              <lines>
-                <line number="41" hits="7" branch="False" />
-                <line number="43" hits="7" branch="False" />
-                <line number="44" hits="7" branch="False" />
-                <line number="45" hits="7" branch="False" />
-                <line number="47" hits="7" branch="False" />
+                <line number="31" hits="8" branch="False" />
+                <line number="33" hits="8" branch="True" condition-coverage="100% (4/4)">
+                  <conditions>
+                    <condition number="134" type="jump" coverage="100%" />
+                    <condition number="154" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="35" hits="3" branch="False" />
+                <line number="36" hits="3" branch="False" />
+                <line number="37" hits="3" branch="False" />
+                <line number="38" hits="3" branch="False" />
+                <line number="41" hits="8" branch="False" />
+                <line number="42" hits="8" branch="False" />
+                <line number="43" hits="8" branch="False" />
+                <line number="44" hits="8" branch="False" />
+                <line number="46" hits="8" branch="False" />
                 <line number="48" hits="8" branch="False" />
-                <line number="49" hits="7" branch="False" />
                 <line number="51" hits="7" branch="False" />
-                <line number="52" hits="7" branch="False" />
-                <line number="53" hits="7" branch="False" />
-                <line number="54" hits="7" branch="False" />
-                <line number="55" hits="7" branch="False" />
+                <line number="53" hits="7" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="249" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="55" hits="3" branch="False" />
+                <line number="56" hits="3" branch="False" />
+                <line number="57" hits="3" branch="False" />
+                <line number="58" hits="3" branch="False" />
+                <line number="59" hits="3" branch="False" />
+                <line number="60" hits="3" branch="False" />
+                <line number="63" hits="7" branch="False" />
+                <line number="64" hits="7" branch="False" />
+                <line number="65" hits="7" branch="False" />
+                <line number="66" hits="7" branch="False" />
+                <line number="67" hits="7" branch="False" />
               </lines>
             </method>
-            <method name="InitializeVariableProperty" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel&amp;,Microsoft.CodeAnalysis.CSharp.Syntax.IdentifierNameSyntax)" line-rate="1" branch-rate="1" complexity="1">
+            <method name="EnumerateVariablesMethod" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextClassModel&amp;)" line-rate="1" branch-rate="1" complexity="8">
               <lines>
-                <line number="62" hits="8" branch="False" />
-                <line number="63" hits="8" branch="False" />
-                <line number="64" hits="8" branch="False" />
-                <line number="65" hits="8" branch="False" />
-                <line number="67" hits="8" branch="False" />
+                <line number="72" hits="14" branch="False" />
+                <line number="74" hits="7" branch="False" />
+                <line number="76" hits="7" branch="False" />
+                <line number="77" hits="7" branch="False" />
+                <line number="78" hits="7" branch="False" />
+                <line number="80" hits="7" branch="False" />
+                <line number="82" hits="30" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="227" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="84" hits="8" branch="False" />
+                <line number="86" hits="8" branch="True" condition-coverage="100% (4/4)">
+                  <conditions>
+                    <condition number="140" type="jump" coverage="100%" />
+                    <condition number="160" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="88" hits="3" branch="False" />
+                <line number="89" hits="3" branch="False" />
+                <line number="90" hits="3" branch="False" />
+                <line number="91" hits="3" branch="False" />
+                <line number="92" hits="3" branch="False" />
+                <line number="93" hits="3" branch="False" />
+                <line number="96" hits="8" branch="False" />
+                <line number="99" hits="7" branch="False" />
+                <line number="101" hits="7" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="238" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="103" hits="3" branch="False" />
+                <line number="104" hits="3" branch="False" />
+                <line number="105" hits="3" branch="False" />
+                <line number="106" hits="3" branch="False" />
+                <line number="107" hits="3" branch="False" />
+                <line number="108" hits="3" branch="False" />
+                <line number="111" hits="7" branch="False" />
+                <line number="112" hits="7" branch="False" />
+                <line number="113" hits="7" branch="False" />
+                <line number="114" hits="7" branch="False" />
+                <line number="115" hits="7" branch="False" />
+              </lines>
+            </method>
+            <method name="InitializeVariableProperty" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel&amp;,Microsoft.CodeAnalysis.CSharp.Syntax.IdentifierNameSyntax)" line-rate="0" branch-rate="1" complexity="1">
+              <lines>
+                <line number="122" hits="0" branch="False" />
+                <line number="123" hits="0" branch="False" />
+                <line number="124" hits="0" branch="False" />
+                <line number="125" hits="0" branch="False" />
+                <line number="127" hits="0" branch="False" />
               </lines>
             </method>
             <method name="VariablePropertyDeclaration" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel&amp;)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="72" hits="8" branch="False" />
-                <line number="73" hits="8" branch="False" />
-                <line number="74" hits="8" branch="False" />
+                <line number="132" hits="8" branch="False" />
+                <line number="133" hits="8" branch="False" />
+                <line number="134" hits="8" branch="False" />
               </lines>
             </method>
             <method name="VariablePropertyDeclarationXmlDocumentation" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel&amp;)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="79" hits="8" branch="False" />
-                <line number="81" hits="8" branch="False" />
-                <line number="82" hits="8" branch="False" />
-                <line number="83" hits="8" branch="False" />
+                <line number="139" hits="8" branch="False" />
+                <line number="141" hits="8" branch="False" />
+                <line number="142" hits="8" branch="False" />
+                <line number="143" hits="8" branch="False" />
               </lines>
             </method>
           </methods>
@@ -16938,46 +17016,104 @@
             <line number="15" hits="7" branch="False" />
             <line number="17" hits="7" branch="False" />
             <line number="18" hits="7" branch="False" />
-            <line number="20" hits="7" branch="False" />
-            <line number="21" hits="7" branch="False" />
-            <line number="22" hits="7" branch="False" />
-            <line number="23" hits="7" branch="False" />
-            <line number="25" hits="30" branch="True" condition-coverage="100% (2/2)">
+            <line number="22" hits="14" branch="False" />
+            <line number="24" hits="7" branch="False" />
+            <line number="25" hits="7" branch="False" />
+            <line number="26" hits="7" branch="False" />
+            <line number="27" hits="7" branch="False" />
+            <line number="29" hits="30" branch="True" condition-coverage="100% (2/2)">
               <conditions>
-                <condition number="110" type="jump" coverage="100%" />
+                <condition number="238" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="27" hits="8" branch="False" />
-            <line number="29" hits="8" branch="False" />
-            <line number="32" hits="7" branch="False" />
-            <line number="33" hits="7" branch="False" />
-            <line number="34" hits="7" branch="False" />
-            <line number="35" hits="7" branch="False" />
-            <line number="36" hits="7" branch="False" />
-            <line number="41" hits="7" branch="False" />
-            <line number="43" hits="7" branch="False" />
-            <line number="44" hits="7" branch="False" />
-            <line number="45" hits="7" branch="False" />
-            <line number="47" hits="7" branch="False" />
+            <line number="31" hits="8" branch="False" />
+            <line number="33" hits="8" branch="True" condition-coverage="100% (4/4)">
+              <conditions>
+                <condition number="134" type="jump" coverage="100%" />
+                <condition number="154" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="35" hits="3" branch="False" />
+            <line number="36" hits="3" branch="False" />
+            <line number="37" hits="3" branch="False" />
+            <line number="38" hits="3" branch="False" />
+            <line number="41" hits="8" branch="False" />
+            <line number="42" hits="8" branch="False" />
+            <line number="43" hits="8" branch="False" />
+            <line number="44" hits="8" branch="False" />
+            <line number="46" hits="8" branch="False" />
             <line number="48" hits="8" branch="False" />
-            <line number="49" hits="7" branch="False" />
             <line number="51" hits="7" branch="False" />
-            <line number="52" hits="7" branch="False" />
-            <line number="53" hits="7" branch="False" />
-            <line number="54" hits="7" branch="False" />
-            <line number="55" hits="7" branch="False" />
-            <line number="62" hits="8" branch="False" />
-            <line number="63" hits="8" branch="False" />
-            <line number="64" hits="8" branch="False" />
-            <line number="65" hits="8" branch="False" />
-            <line number="67" hits="8" branch="False" />
-            <line number="72" hits="8" branch="False" />
-            <line number="73" hits="8" branch="False" />
-            <line number="74" hits="8" branch="False" />
-            <line number="79" hits="8" branch="False" />
-            <line number="81" hits="8" branch="False" />
-            <line number="82" hits="8" branch="False" />
-            <line number="83" hits="8" branch="False" />
+            <line number="53" hits="7" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="249" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="55" hits="3" branch="False" />
+            <line number="56" hits="3" branch="False" />
+            <line number="57" hits="3" branch="False" />
+            <line number="58" hits="3" branch="False" />
+            <line number="59" hits="3" branch="False" />
+            <line number="60" hits="3" branch="False" />
+            <line number="63" hits="7" branch="False" />
+            <line number="64" hits="7" branch="False" />
+            <line number="65" hits="7" branch="False" />
+            <line number="66" hits="7" branch="False" />
+            <line number="67" hits="7" branch="False" />
+            <line number="72" hits="14" branch="False" />
+            <line number="74" hits="7" branch="False" />
+            <line number="76" hits="7" branch="False" />
+            <line number="77" hits="7" branch="False" />
+            <line number="78" hits="7" branch="False" />
+            <line number="80" hits="7" branch="False" />
+            <line number="82" hits="30" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="227" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="84" hits="8" branch="False" />
+            <line number="86" hits="8" branch="True" condition-coverage="100% (4/4)">
+              <conditions>
+                <condition number="140" type="jump" coverage="100%" />
+                <condition number="160" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="88" hits="3" branch="False" />
+            <line number="89" hits="3" branch="False" />
+            <line number="90" hits="3" branch="False" />
+            <line number="91" hits="3" branch="False" />
+            <line number="92" hits="3" branch="False" />
+            <line number="93" hits="3" branch="False" />
+            <line number="96" hits="8" branch="False" />
+            <line number="99" hits="7" branch="False" />
+            <line number="101" hits="7" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="238" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="103" hits="3" branch="False" />
+            <line number="104" hits="3" branch="False" />
+            <line number="105" hits="3" branch="False" />
+            <line number="106" hits="3" branch="False" />
+            <line number="107" hits="3" branch="False" />
+            <line number="108" hits="3" branch="False" />
+            <line number="111" hits="7" branch="False" />
+            <line number="112" hits="7" branch="False" />
+            <line number="113" hits="7" branch="False" />
+            <line number="114" hits="7" branch="False" />
+            <line number="115" hits="7" branch="False" />
+            <line number="122" hits="0" branch="False" />
+            <line number="123" hits="0" branch="False" />
+            <line number="124" hits="0" branch="False" />
+            <line number="125" hits="0" branch="False" />
+            <line number="127" hits="0" branch="False" />
+            <line number="132" hits="8" branch="False" />
+            <line number="133" hits="8" branch="False" />
+            <line number="134" hits="8" branch="False" />
+            <line number="139" hits="8" branch="False" />
+            <line number="141" hits="8" branch="False" />
+            <line number="142" hits="8" branch="False" />
+            <line number="143" hits="8" branch="False" />
           </lines>
         </class>
         <class name="SharpRacer.SourceGenerators.TelemetryVariables.Syntax.VariableValueTypes" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\TelemetryVariables\Syntax\VariableValueTypes.cs" line-rate="1" branch-rate="1" complexity="93">
@@ -20610,52 +20746,52 @@
           <methods>
             <method name="get_DeprecatedBy" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="57" hits="1291" branch="False" />
+                <line number="57" hits="1307" branch="False" />
               </lines>
             </method>
             <method name="get_Description" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="58" hits="1251" branch="False" />
+                <line number="58" hits="1263" branch="False" />
               </lines>
             </method>
             <method name="get_IsDeprecated" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="59" hits="789" branch="False" />
+                <line number="59" hits="815" branch="False" />
               </lines>
             </method>
             <method name="get_IsTimeSliceArray" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="60" hits="752" branch="False" />
+                <line number="60" hits="764" branch="False" />
               </lines>
             </method>
             <method name="get_JsonLocation" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="63" hits="716" branch="False" />
+                <line number="63" hits="728" branch="False" />
               </lines>
             </method>
             <method name="get_JsonSpan" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="66" hits="691" branch="False" />
+                <line number="66" hits="703" branch="False" />
               </lines>
             </method>
             <method name="get_Name" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="68" hits="782" branch="False" />
+                <line number="68" hits="794" branch="False" />
               </lines>
             </method>
             <method name="get_ValueCount" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="69" hits="684" branch="False" />
+                <line number="69" hits="696" branch="False" />
               </lines>
             </method>
             <method name="get_ValueType" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="70" hits="659" branch="False" />
+                <line number="70" hits="671" branch="False" />
               </lines>
             </method>
             <method name="get_ValueUnit" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="71" hits="632" branch="False" />
+                <line number="71" hits="644" branch="False" />
               </lines>
             </method>
             <method name="WithJsonLocation" signature="(Microsoft.CodeAnalysis.Location)" line-rate="1" branch-rate="1" complexity="1">
@@ -20699,7 +20835,7 @@
             </method>
             <method name="Equals" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo)" line-rate="1" branch-rate="1" complexity="18">
               <lines>
-                <line number="110" hits="593" branch="True" condition-coverage="100% (18/18)">
+                <line number="110" hits="601" branch="True" condition-coverage="100% (18/18)">
                   <conditions>
                     <condition number="23" type="jump" coverage="100%" />
                     <condition number="51" type="jump" coverage="100%" />
@@ -20712,15 +20848,15 @@
                     <condition number="182" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="111" hits="593" branch="False" />
-                <line number="112" hits="593" branch="False" />
-                <line number="113" hits="593" branch="False" />
-                <line number="114" hits="593" branch="False" />
-                <line number="115" hits="593" branch="False" />
-                <line number="116" hits="593" branch="False" />
-                <line number="117" hits="593" branch="False" />
-                <line number="118" hits="593" branch="False" />
-                <line number="119" hits="593" branch="False" />
+                <line number="111" hits="601" branch="False" />
+                <line number="112" hits="601" branch="False" />
+                <line number="113" hits="601" branch="False" />
+                <line number="114" hits="601" branch="False" />
+                <line number="115" hits="601" branch="False" />
+                <line number="116" hits="601" branch="False" />
+                <line number="117" hits="601" branch="False" />
+                <line number="118" hits="601" branch="False" />
+                <line number="119" hits="601" branch="False" />
               </lines>
             </method>
             <method name="GetHashCode" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -20741,7 +20877,7 @@
             </method>
             <method name="op_Equality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo,SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="143" hits="543" branch="False" />
+                <line number="143" hits="551" branch="False" />
               </lines>
             </method>
             <method name="op_Inequality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo,SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo)" line-rate="1" branch-rate="1" complexity="1">
@@ -20781,16 +20917,16 @@
             </method>
           </methods>
           <lines>
-            <line number="57" hits="1291" branch="False" />
-            <line number="58" hits="1251" branch="False" />
-            <line number="59" hits="789" branch="False" />
-            <line number="60" hits="752" branch="False" />
-            <line number="63" hits="716" branch="False" />
-            <line number="66" hits="691" branch="False" />
-            <line number="68" hits="782" branch="False" />
-            <line number="69" hits="684" branch="False" />
-            <line number="70" hits="659" branch="False" />
-            <line number="71" hits="632" branch="False" />
+            <line number="57" hits="1307" branch="False" />
+            <line number="58" hits="1263" branch="False" />
+            <line number="59" hits="815" branch="False" />
+            <line number="60" hits="764" branch="False" />
+            <line number="63" hits="728" branch="False" />
+            <line number="66" hits="703" branch="False" />
+            <line number="68" hits="794" branch="False" />
+            <line number="69" hits="696" branch="False" />
+            <line number="70" hits="671" branch="False" />
+            <line number="71" hits="644" branch="False" />
             <line number="75" hits="7" branch="False" />
             <line number="76" hits="7" branch="False" />
             <line number="77" hits="7" branch="False" />
@@ -20818,7 +20954,7 @@
                 <condition number="6" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="110" hits="593" branch="True" condition-coverage="100% (18/18)">
+            <line number="110" hits="601" branch="True" condition-coverage="100% (18/18)">
               <conditions>
                 <condition number="23" type="jump" coverage="100%" />
                 <condition number="51" type="jump" coverage="100%" />
@@ -20831,15 +20967,15 @@
                 <condition number="182" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="111" hits="593" branch="False" />
-            <line number="112" hits="593" branch="False" />
-            <line number="113" hits="593" branch="False" />
-            <line number="114" hits="593" branch="False" />
-            <line number="115" hits="593" branch="False" />
-            <line number="116" hits="593" branch="False" />
-            <line number="117" hits="593" branch="False" />
-            <line number="118" hits="593" branch="False" />
-            <line number="119" hits="593" branch="False" />
+            <line number="111" hits="601" branch="False" />
+            <line number="112" hits="601" branch="False" />
+            <line number="113" hits="601" branch="False" />
+            <line number="114" hits="601" branch="False" />
+            <line number="115" hits="601" branch="False" />
+            <line number="116" hits="601" branch="False" />
+            <line number="117" hits="601" branch="False" />
+            <line number="118" hits="601" branch="False" />
+            <line number="119" hits="601" branch="False" />
             <line number="124" hits="75" branch="False" />
             <line number="126" hits="75" branch="False" />
             <line number="127" hits="75" branch="False" />
@@ -20852,7 +20988,7 @@
             <line number="135" hits="75" branch="False" />
             <line number="136" hits="75" branch="False" />
             <line number="138" hits="75" branch="False" />
-            <line number="143" hits="543" branch="False" />
+            <line number="143" hits="551" branch="False" />
             <line number="148" hits="184" branch="False" />
             <line number="20" hits="21" branch="False" />
             <line number="21" hits="21" branch="False" />
@@ -21262,27 +21398,27 @@
           <methods>
             <method name="get_ClassName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="47" hits="526" branch="False" />
+                <line number="47" hits="538" branch="False" />
               </lines>
             </method>
             <method name="get_Name" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="48" hits="566" branch="False" />
+                <line number="48" hits="578" branch="False" />
               </lines>
             </method>
             <method name="get_ValueLocation" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="49" hits="572" branch="False" />
+                <line number="49" hits="584" branch="False" />
               </lines>
             </method>
             <method name="get_VariableKey" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="50" hits="713" branch="False" />
+                <line number="50" hits="725" branch="False" />
               </lines>
             </method>
             <method name="get_VariableKeyLocation" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="51" hits="595" branch="False" />
+                <line number="51" hits="607" branch="False" />
               </lines>
             </method>
             <method name="Equals" signature="(System.Object)" line-rate="1" branch-rate="1" complexity="2">
@@ -21296,7 +21432,7 @@
             </method>
             <method name="Equals" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptions)" line-rate="1" branch-rate="1" complexity="8">
               <lines>
-                <line number="60" hits="319" branch="True" condition-coverage="100% (8/8)">
+                <line number="60" hits="325" branch="True" condition-coverage="100% (8/8)">
                   <conditions>
                     <condition number="23" type="jump" coverage="100%" />
                     <condition number="43" type="jump" coverage="100%" />
@@ -21304,10 +21440,10 @@
                     <condition number="88" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="61" hits="319" branch="False" />
-                <line number="62" hits="319" branch="False" />
-                <line number="63" hits="319" branch="False" />
-                <line number="64" hits="319" branch="False" />
+                <line number="61" hits="325" branch="False" />
+                <line number="62" hits="325" branch="False" />
+                <line number="63" hits="325" branch="False" />
+                <line number="64" hits="325" branch="False" />
               </lines>
             </method>
             <method name="GetHashCode" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -21323,7 +21459,7 @@
             </method>
             <method name="op_Equality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptions,SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptions)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="82" hits="285" branch="False" />
+                <line number="82" hits="291" branch="False" />
               </lines>
             </method>
             <method name="op_Inequality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptions,SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptions)" line-rate="1" branch-rate="1" complexity="1">
@@ -21377,17 +21513,17 @@
             </method>
           </methods>
           <lines>
-            <line number="47" hits="526" branch="False" />
-            <line number="48" hits="566" branch="False" />
-            <line number="49" hits="572" branch="False" />
-            <line number="50" hits="713" branch="False" />
-            <line number="51" hits="595" branch="False" />
+            <line number="47" hits="538" branch="False" />
+            <line number="48" hits="578" branch="False" />
+            <line number="49" hits="584" branch="False" />
+            <line number="50" hits="725" branch="False" />
+            <line number="51" hits="607" branch="False" />
             <line number="55" hits="17" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="6" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="60" hits="319" branch="True" condition-coverage="100% (8/8)">
+            <line number="60" hits="325" branch="True" condition-coverage="100% (8/8)">
               <conditions>
                 <condition number="23" type="jump" coverage="100%" />
                 <condition number="43" type="jump" coverage="100%" />
@@ -21395,10 +21531,10 @@
                 <condition number="88" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="61" hits="319" branch="False" />
-            <line number="62" hits="319" branch="False" />
-            <line number="63" hits="319" branch="False" />
-            <line number="64" hits="319" branch="False" />
+            <line number="61" hits="325" branch="False" />
+            <line number="62" hits="325" branch="False" />
+            <line number="63" hits="325" branch="False" />
+            <line number="64" hits="325" branch="False" />
             <line number="69" hits="67" branch="False" />
             <line number="71" hits="67" branch="False" />
             <line number="72" hits="67" branch="False" />
@@ -21406,7 +21542,7 @@
             <line number="74" hits="67" branch="False" />
             <line number="75" hits="67" branch="False" />
             <line number="77" hits="67" branch="False" />
-            <line number="82" hits="285" branch="False" />
+            <line number="82" hits="291" branch="False" />
             <line number="87" hits="38" branch="False" />
             <line number="10" hits="40" branch="True" condition-coverage="100% (2/2)">
               <conditions>
@@ -21958,7 +22094,7 @@
             </method>
             <method name="get_Variables" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="26" hits="134" branch="False" />
+                <line number="26" hits="156" branch="False" />
               </lines>
             </method>
             <method name="ClassIdentifier" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -22041,7 +22177,7 @@
           <lines>
             <line number="24" hits="174" branch="False" />
             <line number="25" hits="117" branch="False" />
-            <line number="26" hits="134" branch="False" />
+            <line number="26" hits="156" branch="False" />
             <line number="30" hits="8" branch="False" />
             <line number="35" hits="1" branch="False" />
             <line number="40" hits="13" branch="True" condition-coverage="100% (2/2)">
@@ -22088,7 +22224,7 @@
           <methods>
             <method name="get_DescriptorReference" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="25" hits="217" branch="False" />
+                <line number="25" hits="229" branch="False" />
               </lines>
             </method>
             <method name="get_IsArray" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -22098,22 +22234,22 @@
             </method>
             <method name="get_PropertyName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="27" hits="333" branch="False" />
+                <line number="27" hits="345" branch="False" />
               </lines>
             </method>
             <method name="get_PropertyXmlSummary" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="28" hits="286" branch="False" />
+                <line number="28" hits="298" branch="False" />
               </lines>
             </method>
             <method name="get_VariableClassReference" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="29" hits="292" branch="False" />
+                <line number="29" hits="304" branch="False" />
               </lines>
             </method>
             <method name="get_VariableModel" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="30" hits="423" branch="False" />
+                <line number="30" hits="453" branch="False" />
               </lines>
             </method>
             <method name="PropertyIdentifier" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -22184,25 +22320,25 @@
             </method>
             <method name="Equals" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel)" line-rate="1" branch-rate="1" complexity="16">
               <lines>
-                <line number="99" hits="163" branch="True" condition-coverage="100% (2/2)">
+                <line number="99" hits="171" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="18" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="101" hits="27" branch="False" />
-                <line number="104" hits="136" branch="True" condition-coverage="100% (2/2)">
+                <line number="101" hits="29" branch="False" />
+                <line number="104" hits="142" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="45" type="jump" coverage="100%" />
                   </conditions>
                 </line>
                 <line number="106" hits="12" branch="False" />
-                <line number="109" hits="124" branch="True" condition-coverage="100% (2/2)">
+                <line number="109" hits="130" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="72" type="jump" coverage="100%" />
                   </conditions>
                 </line>
                 <line number="111" hits="12" branch="False" />
-                <line number="114" hits="112" branch="True" condition-coverage="100% (10/10)">
+                <line number="114" hits="118" branch="True" condition-coverage="100% (10/10)">
                   <conditions>
                     <condition number="105" type="jump" coverage="100%" />
                     <condition number="117" type="jump" coverage="100%" />
@@ -22211,7 +22347,7 @@
                     <condition number="183" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="115" hits="112" branch="False" />
+                <line number="115" hits="118" branch="False" />
               </lines>
             </method>
             <method name="GetHashCode" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -22227,7 +22363,7 @@
             </method>
             <method name="op_Equality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="133" hits="48" branch="False" />
+                <line number="133" hits="56" branch="False" />
               </lines>
             </method>
             <method name="op_Inequality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.ContextVariableModel)" line-rate="1" branch-rate="1" complexity="1">
@@ -22247,12 +22383,12 @@
             </method>
           </methods>
           <lines>
-            <line number="25" hits="217" branch="False" />
+            <line number="25" hits="229" branch="False" />
             <line number="26" hits="14" branch="False" />
-            <line number="27" hits="333" branch="False" />
-            <line number="28" hits="286" branch="False" />
-            <line number="29" hits="292" branch="False" />
-            <line number="30" hits="423" branch="False" />
+            <line number="27" hits="345" branch="False" />
+            <line number="28" hits="298" branch="False" />
+            <line number="29" hits="304" branch="False" />
+            <line number="30" hits="453" branch="False" />
             <line number="34" hits="9" branch="False" />
             <line number="39" hits="17" branch="False" />
             <line number="44" hits="14" branch="True" condition-coverage="100% (2/2)">
@@ -22299,25 +22435,25 @@
                 <condition number="6" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="99" hits="163" branch="True" condition-coverage="100% (2/2)">
+            <line number="99" hits="171" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="18" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="101" hits="27" branch="False" />
-            <line number="104" hits="136" branch="True" condition-coverage="100% (2/2)">
+            <line number="101" hits="29" branch="False" />
+            <line number="104" hits="142" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="45" type="jump" coverage="100%" />
               </conditions>
             </line>
             <line number="106" hits="12" branch="False" />
-            <line number="109" hits="124" branch="True" condition-coverage="100% (2/2)">
+            <line number="109" hits="130" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="72" type="jump" coverage="100%" />
               </conditions>
             </line>
             <line number="111" hits="12" branch="False" />
-            <line number="114" hits="112" branch="True" condition-coverage="100% (10/10)">
+            <line number="114" hits="118" branch="True" condition-coverage="100% (10/10)">
               <conditions>
                 <condition number="105" type="jump" coverage="100%" />
                 <condition number="117" type="jump" coverage="100%" />
@@ -22326,7 +22462,7 @@
                 <condition number="183" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="115" hits="112" branch="False" />
+            <line number="115" hits="118" branch="False" />
             <line number="120" hits="28" branch="False" />
             <line number="122" hits="28" branch="False" />
             <line number="123" hits="28" branch="False" />
@@ -22334,7 +22470,7 @@
             <line number="125" hits="28" branch="False" />
             <line number="126" hits="28" branch="False" />
             <line number="128" hits="28" branch="False" />
-            <line number="133" hits="48" branch="False" />
+            <line number="133" hits="56" branch="False" />
             <line number="138" hits="55" branch="False" />
             <line number="17" hits="65" branch="False" />
             <line number="19" hits="65" branch="False" />
@@ -22912,22 +23048,22 @@
           <methods>
             <method name="get_DescriptorClassNamespace" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="45" hits="241" branch="False" />
+                <line number="45" hits="253" branch="False" />
               </lines>
             </method>
             <method name="get_DescriptorClassName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="46" hits="217" branch="False" />
+                <line number="46" hits="229" branch="False" />
               </lines>
             </method>
             <method name="get_PropertyName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="47" hits="289" branch="False" />
+                <line number="47" hits="301" branch="False" />
               </lines>
             </method>
             <method name="get_VariableName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="48" hits="378" branch="False" />
+                <line number="48" hits="390" branch="False" />
               </lines>
             </method>
             <method name="StaticPropertyMemberAccess" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -22950,16 +23086,16 @@
             </method>
             <method name="Equals" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyReference)" line-rate="1" branch-rate="1" complexity="6">
               <lines>
-                <line number="67" hits="171" branch="True" condition-coverage="100% (6/6)">
+                <line number="67" hits="177" branch="True" condition-coverage="100% (6/6)">
                   <conditions>
                     <condition number="23" type="jump" coverage="100%" />
                     <condition number="48" type="jump" coverage="100%" />
                     <condition number="73" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="68" hits="171" branch="False" />
-                <line number="69" hits="171" branch="False" />
-                <line number="70" hits="171" branch="False" />
+                <line number="68" hits="177" branch="False" />
+                <line number="69" hits="177" branch="False" />
+                <line number="70" hits="177" branch="False" />
               </lines>
             </method>
             <method name="GetHashCode" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -22974,7 +23110,7 @@
             </method>
             <method name="op_Equality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyReference,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyReference)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="87" hits="120" branch="False" />
+                <line number="87" hits="126" branch="False" />
               </lines>
             </method>
             <method name="op_Inequality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyReference,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.DescriptorPropertyReference)" line-rate="1" branch-rate="1" complexity="1">
@@ -23038,10 +23174,10 @@
             </method>
           </methods>
           <lines>
-            <line number="45" hits="241" branch="False" />
-            <line number="46" hits="217" branch="False" />
-            <line number="47" hits="289" branch="False" />
-            <line number="48" hits="378" branch="False" />
+            <line number="45" hits="253" branch="False" />
+            <line number="46" hits="229" branch="False" />
+            <line number="47" hits="301" branch="False" />
+            <line number="48" hits="390" branch="False" />
             <line number="52" hits="7" branch="False" />
             <line number="54" hits="7" branch="False" />
             <line number="55" hits="7" branch="False" />
@@ -23052,23 +23188,23 @@
                 <condition number="6" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="67" hits="171" branch="True" condition-coverage="100% (6/6)">
+            <line number="67" hits="177" branch="True" condition-coverage="100% (6/6)">
               <conditions>
                 <condition number="23" type="jump" coverage="100%" />
                 <condition number="48" type="jump" coverage="100%" />
                 <condition number="73" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="68" hits="171" branch="False" />
-            <line number="69" hits="171" branch="False" />
-            <line number="70" hits="171" branch="False" />
+            <line number="68" hits="177" branch="False" />
+            <line number="69" hits="177" branch="False" />
+            <line number="70" hits="177" branch="False" />
             <line number="75" hits="34" branch="False" />
             <line number="77" hits="34" branch="False" />
             <line number="78" hits="34" branch="False" />
             <line number="79" hits="34" branch="False" />
             <line number="80" hits="34" branch="False" />
             <line number="82" hits="34" branch="False" />
-            <line number="87" hits="120" branch="False" />
+            <line number="87" hits="126" branch="False" />
             <line number="92" hits="24" branch="False" />
             <line number="10" hits="3" branch="True" condition-coverage="100% (2/2)">
               <conditions>
@@ -23610,17 +23746,17 @@
           <methods>
             <method name="get_ClassName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="23" hits="210" branch="False" />
+                <line number="23" hits="222" branch="False" />
               </lines>
             </method>
             <method name="get_ClassNamespace" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="24" hits="186" branch="False" />
+                <line number="24" hits="198" branch="False" />
               </lines>
             </method>
             <method name="get_VariableName" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="25" hits="243" branch="False" />
+                <line number="25" hits="255" branch="False" />
               </lines>
             </method>
             <method name="ConstructorInvocation" signature="(Microsoft.CodeAnalysis.CSharp.Syntax.IdentifierNameSyntax)" line-rate="1" branch-rate="1" complexity="1">
@@ -23645,14 +23781,14 @@
             </method>
             <method name="Equals" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableClassReference)" line-rate="1" branch-rate="1" complexity="4">
               <lines>
-                <line number="45" hits="110" branch="True" condition-coverage="100% (4/4)">
+                <line number="45" hits="116" branch="True" condition-coverage="100% (4/4)">
                   <conditions>
                     <condition number="23" type="jump" coverage="100%" />
                     <condition number="48" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="46" hits="110" branch="False" />
-                <line number="47" hits="110" branch="False" />
+                <line number="46" hits="116" branch="False" />
+                <line number="47" hits="116" branch="False" />
               </lines>
             </method>
             <method name="GetHashCode" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -23666,7 +23802,7 @@
             </method>
             <method name="op_Equality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableClassReference,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableClassReference)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="63" hits="76" branch="False" />
+                <line number="63" hits="82" branch="False" />
               </lines>
             </method>
             <method name="op_Inequality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableClassReference,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableClassReference)" line-rate="1" branch-rate="1" complexity="1">
@@ -23702,9 +23838,9 @@
             </method>
           </methods>
           <lines>
-            <line number="23" hits="210" branch="False" />
-            <line number="24" hits="186" branch="False" />
-            <line number="25" hits="243" branch="False" />
+            <line number="23" hits="222" branch="False" />
+            <line number="24" hits="198" branch="False" />
+            <line number="25" hits="255" branch="False" />
             <line number="29" hits="7" branch="False" />
             <line number="30" hits="7" branch="False" />
             <line number="35" hits="14" branch="False" />
@@ -23713,20 +23849,20 @@
                 <condition number="6" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="45" hits="110" branch="True" condition-coverage="100% (4/4)">
+            <line number="45" hits="116" branch="True" condition-coverage="100% (4/4)">
               <conditions>
                 <condition number="23" type="jump" coverage="100%" />
                 <condition number="48" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="46" hits="110" branch="False" />
-            <line number="47" hits="110" branch="False" />
+            <line number="46" hits="116" branch="False" />
+            <line number="47" hits="116" branch="False" />
             <line number="52" hits="22" branch="False" />
             <line number="54" hits="22" branch="False" />
             <line number="55" hits="22" branch="False" />
             <line number="56" hits="22" branch="False" />
             <line number="58" hits="22" branch="False" />
-            <line number="63" hits="76" branch="False" />
+            <line number="63" hits="82" branch="False" />
             <line number="68" hits="16" branch="False" />
             <line number="10" hits="38" branch="True" condition-coverage="100% (2/2)">
               <conditions>
@@ -23766,12 +23902,12 @@
             </method>
             <method name="get_IsDeprecated" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="21" hits="13" branch="False" />
+                <line number="21" hits="27" branch="False" />
               </lines>
             </method>
             <method name="get_Options" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="22" hits="477" branch="False" />
+                <line number="22" hits="489" branch="False" />
               </lines>
             </method>
             <method name="get_ValueCount" signature="()" line-rate="1" branch-rate="1" complexity="1">
@@ -23822,7 +23958,7 @@
             </method>
             <method name="Equals" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableModel)" line-rate="1" branch-rate="1" complexity="2">
               <lines>
-                <line number="52" hits="306" branch="True" condition-coverage="100% (2/2)">
+                <line number="52" hits="314" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="17" type="jump" coverage="100%" />
                   </conditions>
@@ -23844,7 +23980,7 @@
             </method>
             <method name="op_Inequality" signature="(SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableModel,SharpRacer.SourceGenerators.TelemetryVariables.GeneratorModels.VariableModel)" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="72" hits="216" branch="False" />
+                <line number="72" hits="224" branch="False" />
               </lines>
             </method>
             <method name=".ctor" signature="(SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableInfo,SharpRacer.SourceGenerators.TelemetryVariables.InputModels.VariableOptions)" line-rate="1" branch-rate="1" complexity="2">
@@ -23864,8 +24000,8 @@
           <lines>
             <line number="19" hits="7" branch="False" />
             <line number="20" hits="7" branch="False" />
-            <line number="21" hits="13" branch="False" />
-            <line number="22" hits="477" branch="False" />
+            <line number="21" hits="27" branch="False" />
+            <line number="22" hits="489" branch="False" />
             <line number="23" hits="80" branch="False" />
             <line number="24" hits="79" branch="False" />
             <line number="25" hits="76" branch="False" />
@@ -23884,7 +24020,7 @@
                 <condition number="6" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="52" hits="306" branch="True" condition-coverage="100% (2/2)">
+            <line number="52" hits="314" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="17" type="jump" coverage="100%" />
               </conditions>
@@ -23894,7 +24030,7 @@
             <line number="60" hits="51" branch="False" />
             <line number="62" hits="51" branch="False" />
             <line number="67" hits="67" branch="False" />
-            <line number="72" hits="216" branch="False" />
+            <line number="72" hits="224" branch="False" />
             <line number="12" hits="136" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="16" type="jump" coverage="100%" />
@@ -24768,7 +24904,7 @@
             <line number="43" hits="13" branch="False" />
           </lines>
         </class>
-        <class name="SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\Syntax\SyntaxFactoryHelpers.cs" line-rate="0.7866" branch-rate="0.6666" complexity="10">
+        <class name="SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\Syntax\SyntaxFactoryHelpers.cs" line-rate="0.8072" branch-rate="0.6666" complexity="12">
           <methods>
             <method name="GeneratedCodeAttribute" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
@@ -24858,31 +24994,47 @@
                 <line number="131" hits="0" branch="False" />
               </lines>
             </method>
+            <method name="PragmaWarningDisable" signature="(System.String,System.String,System.Boolean)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="136" hits="4" branch="False" />
+                <line number="138" hits="4" branch="False" />
+                <line number="140" hits="4" branch="False" />
+                <line number="141" hits="4" branch="False" />
+              </lines>
+            </method>
+            <method name="PragmaWarningRestore" signature="(System.String,System.String,System.Boolean)" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="146" hits="10" branch="False" />
+                <line number="148" hits="10" branch="False" />
+                <line number="150" hits="10" branch="False" />
+                <line number="151" hits="10" branch="False" />
+              </lines>
+            </method>
             <method name="StaticMemberAccessGlobalQualified" signature="(SharpRacer.SourceGenerators.TypeIdentifier,Microsoft.CodeAnalysis.CSharp.Syntax.SimpleNameSyntax)" line-rate="1" branch-rate="1" complexity="2">
               <lines>
-                <line number="138" hits="9" branch="False" />
-                <line number="139" hits="9" branch="False" />
-                <line number="140" hits="9" branch="False" />
-                <line number="141" hits="9" branch="False" />
-                <line number="142" hits="9" branch="False" />
-                <line number="144" hits="9" branch="False" />
-                <line number="145" hits="9" branch="False" />
-                <line number="146" hits="9" branch="False" />
-                <line number="147" hits="9" branch="False" />
-                <line number="148" hits="9" branch="False" />
-                <line number="150" hits="36" branch="True" condition-coverage="100% (2/2)">
-                  <conditions>
-                    <condition number="185" type="jump" coverage="100%" />
-                  </conditions>
-                </line>
-                <line number="152" hits="9" branch="False" />
-                <line number="153" hits="9" branch="False" />
-                <line number="154" hits="9" branch="False" />
-                <line number="155" hits="9" branch="False" />
                 <line number="158" hits="9" branch="False" />
                 <line number="159" hits="9" branch="False" />
                 <line number="160" hits="9" branch="False" />
                 <line number="161" hits="9" branch="False" />
+                <line number="162" hits="9" branch="False" />
+                <line number="164" hits="9" branch="False" />
+                <line number="165" hits="9" branch="False" />
+                <line number="166" hits="9" branch="False" />
+                <line number="167" hits="9" branch="False" />
+                <line number="168" hits="9" branch="False" />
+                <line number="170" hits="36" branch="True" condition-coverage="100% (2/2)">
+                  <conditions>
+                    <condition number="185" type="jump" coverage="100%" />
+                  </conditions>
+                </line>
+                <line number="172" hits="9" branch="False" />
+                <line number="173" hits="9" branch="False" />
+                <line number="174" hits="9" branch="False" />
+                <line number="175" hits="9" branch="False" />
+                <line number="178" hits="9" branch="False" />
+                <line number="179" hits="9" branch="False" />
+                <line number="180" hits="9" branch="False" />
+                <line number="181" hits="9" branch="False" />
               </lines>
             </method>
           </methods>
@@ -24951,29 +25103,37 @@
             <line number="128" hits="0" branch="False" />
             <line number="130" hits="0" branch="False" />
             <line number="131" hits="0" branch="False" />
-            <line number="138" hits="9" branch="False" />
-            <line number="139" hits="9" branch="False" />
-            <line number="140" hits="9" branch="False" />
-            <line number="141" hits="9" branch="False" />
-            <line number="142" hits="9" branch="False" />
-            <line number="144" hits="9" branch="False" />
-            <line number="145" hits="9" branch="False" />
-            <line number="146" hits="9" branch="False" />
-            <line number="147" hits="9" branch="False" />
-            <line number="148" hits="9" branch="False" />
-            <line number="150" hits="36" branch="True" condition-coverage="100% (2/2)">
-              <conditions>
-                <condition number="185" type="jump" coverage="100%" />
-              </conditions>
-            </line>
-            <line number="152" hits="9" branch="False" />
-            <line number="153" hits="9" branch="False" />
-            <line number="154" hits="9" branch="False" />
-            <line number="155" hits="9" branch="False" />
+            <line number="136" hits="4" branch="False" />
+            <line number="138" hits="4" branch="False" />
+            <line number="140" hits="4" branch="False" />
+            <line number="141" hits="4" branch="False" />
+            <line number="146" hits="10" branch="False" />
+            <line number="148" hits="10" branch="False" />
+            <line number="150" hits="10" branch="False" />
+            <line number="151" hits="10" branch="False" />
             <line number="158" hits="9" branch="False" />
             <line number="159" hits="9" branch="False" />
             <line number="160" hits="9" branch="False" />
             <line number="161" hits="9" branch="False" />
+            <line number="162" hits="9" branch="False" />
+            <line number="164" hits="9" branch="False" />
+            <line number="165" hits="9" branch="False" />
+            <line number="166" hits="9" branch="False" />
+            <line number="167" hits="9" branch="False" />
+            <line number="168" hits="9" branch="False" />
+            <line number="170" hits="36" branch="True" condition-coverage="100% (2/2)">
+              <conditions>
+                <condition number="185" type="jump" coverage="100%" />
+              </conditions>
+            </line>
+            <line number="172" hits="9" branch="False" />
+            <line number="173" hits="9" branch="False" />
+            <line number="174" hits="9" branch="False" />
+            <line number="175" hits="9" branch="False" />
+            <line number="178" hits="9" branch="False" />
+            <line number="179" hits="9" branch="False" />
+            <line number="180" hits="9" branch="False" />
+            <line number="181" hits="9" branch="False" />
           </lines>
         </class>
         <class name="SharpRacer.SourceGenerators.Syntax.SyntaxFactoryHelpers/&lt;ModifiersFromAccessibility&gt;d__2" filename="D:\a\SharpRacer\SharpRacer\src\generators\SharpRacer.SourceGenerators\Syntax\SyntaxFactoryHelpers.cs" line-rate="1" branch-rate="1" complexity="10">
