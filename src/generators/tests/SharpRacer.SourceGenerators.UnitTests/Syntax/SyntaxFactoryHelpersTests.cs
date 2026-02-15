@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.Syntax;
+
 public class SyntaxFactoryHelpersTests
 {
     [Fact]
@@ -98,5 +99,27 @@ public class SyntaxFactoryHelpersTests
     {
         string identifier = null!;
         Assert.Throws<ArgumentException>(() => SyntaxFactoryHelpers.NullCheck(identifier));
+    }
+
+    [Fact]
+    public void PragmaWarningDisable_Test()
+    {
+        var result = SyntaxFactoryHelpers.PragmaWarningDisable("XX1234", "// This is a test.", true);
+
+        var resultStr = result.NormalizeWhitespace(eol: "\r\n").ToFullString();
+        var expected = "#pragma warning disable XX1234 // This is a test.\r\n\r\n";
+
+        Assert.Equal(expected, resultStr);
+    }
+
+    [Fact]
+    public void PragmaWarningRestore_Test()
+    {
+        var result = SyntaxFactoryHelpers.PragmaWarningRestore("XX1234", "// This is a test.", true);
+
+        var resultStr = result.NormalizeWhitespace(eol: "\r\n").ToFullString();
+        var expected = "#pragma warning restore XX1234 // This is a test.\r\n\r\n";
+
+        Assert.Equal(expected, resultStr);
     }
 }

@@ -17,6 +17,10 @@ internal static class VariableContextSyntaxFactory
         var variableInfoProviderParameter = Parameter(Identifier(variableInfoProviderParameterName))
             .WithType(SharpRacerTypes.ITelemetryVariableInfoProvider(TypeNameFormat.GlobalQualified));
 
+        // Disable CS0618 when deprecated variables are included. Must be disabled on first property assignment and restored on ctor close
+        // brace to ensure our syntax tree matches exactly how Roslyn will parse it.
+        var containsDeprecatedVariables = model.Variables.Any(x => x.VariableModel.IsDeprecated);
+
         var bodyStatements = new List<StatementSyntax>()
         {
             NullCheck(IdentifierName(variableInfoProviderParameterName), TypeNameFormat.Qualified)
@@ -24,33 +28,89 @@ internal static class VariableContextSyntaxFactory
 
         foreach (var variable in model.Variables)
         {
-            var initStatement = InitializeVariableProperty(in variable, IdentifierName(variableInfoProviderParameterName));
+            var propertyIdentifier = variable.PropertyIdentifierName();
+
+            if (containsDeprecatedVariables && variable == model.Variables.First())
+            {
+                propertyIdentifier = propertyIdentifier.WithLeadingTrivia(
+                    TriviaList(
+                        Trivia(PragmaWarningDisable("CS0618", "// Type or member is obsolete", true)))
+                    );
+            }
+
+            var assignmentExpr = AssignmentExpression(
+                SyntaxKind.SimpleAssignmentExpression,
+                propertyIdentifier,
+                variable.PropertyObjectCreationExpression(IdentifierName(variableInfoProviderParameterName)));
+
+            var initStatement = ExpressionStatement(assignmentExpr);
 
             bodyStatements.Add(initStatement);
+        }
+
+        var bodyBlock = Block(bodyStatements);
+
+        if (containsDeprecatedVariables)
+        {
+            bodyBlock = bodyBlock.WithCloseBraceToken(
+                Token(
+                    TriviaList(Trivia(PragmaWarningRestore("CS0618", "// Type or member is obsolete", true))),
+                    SyntaxKind.CloseBraceToken,
+                    TriviaList())
+                );
         }
 
         return ConstructorDeclaration(model.ClassIdentifier())
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
             .WithParameterList(ParameterList(SingletonSeparatedList(variableInfoProviderParameter)))
-            .WithBody(Block(bodyStatements))
+            .WithBody(bodyBlock)
             .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))));
     }
 
     public static MethodDeclarationSyntax EnumerateVariablesMethod(ref readonly ContextClassModel model)
     {
+        var containsDeprecatedVariables = model.Variables.Any(x => x.VariableModel.IsDeprecated);
+
         var variableType = SharpRacerIdentifiers.ITelemetryVariable.ToTypeSyntax(TypeNameFormat.GlobalQualified);
 
         var returnType = SystemIdentifiers.IEnumerable_T.ToGenericTypeSyntax(
             TypeArgumentList(SingletonSeparatedList<TypeSyntax>(variableType)),
             TypeNameFormat.Qualified);
 
-        var yieldReturnStatements = model.Variables
-            .Select(x => YieldStatement(SyntaxKind.YieldReturnStatement, x.PropertyIdentifierName()))
-            .ToList();
+        var yieldReturnStatements = new List<YieldStatementSyntax>();
+
+        foreach (var variable in model.Variables)
+        {
+            var yieldReturnStatement = YieldStatement(SyntaxKind.YieldReturnStatement, variable.PropertyIdentifierName());
+
+            if (containsDeprecatedVariables && variable == model.Variables.First())
+            {
+                yieldReturnStatement = yieldReturnStatement.WithYieldKeyword(
+                    Token(
+                        TriviaList(Trivia(PragmaWarningRestore("CS0618", "// Type or member is obsolete", true))),
+                        SyntaxKind.YieldKeyword,
+                        TriviaList())
+                    );
+            }
+
+            yieldReturnStatements.Add(yieldReturnStatement);
+        }
+
+        var methodBodyBlock = Block(yieldReturnStatements);
+
+        if (containsDeprecatedVariables)
+        {
+            methodBodyBlock = methodBodyBlock.WithCloseBraceToken(
+                Token(
+                    TriviaList(Trivia(PragmaWarningRestore("CS0618", "// Type or member is obsolete", true))),
+                    SyntaxKind.CloseBraceToken,
+                    TriviaList())
+                );
+        }
 
         return MethodDeclaration(returnType, "EnumerateVariables")
             .WithModifiers(TokenList(Token(SyntaxKind.PublicKeyword)))
-            .WithBody(Block(yieldReturnStatements))
+            .WithBody(methodBodyBlock)
             .WithAttributeLists(SingletonList(AttributeList(SingletonSeparatedList(GeneratedCodeAttribute()))))
             .WithLeadingTrivia(Trivia(XmlDocumentationFactory.InheritDoc()));
     }

@@ -154,6 +154,8 @@ public class ContextClassGeneratorTests
         var compilationUnit = ContextClassGenerator.Create(ref model1, default);
         Assert.NotNull(compilationUnit);
 
+        var cuStr = compilationUnit.NormalizeWhitespace().ToFullString();
+
         var expectedCompilationUnit = SyntaxAssert.ParseSyntaxTree(Create_VariableClasses_ContainsDeprecatedVariableTest_Source()).GetCompilationUnitRoot();
 
         SyntaxAssert.StructuralEquivalent(expectedCompilationUnit, compilationUnit);
@@ -361,16 +363,20 @@ namespace TestAssembly.Variables
 {{
     partial class MyContext
     {{
-        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""SharpRacer.SourceGenerators"", ""1.0.0.0"")]
         public MyContext(global::SharpRacer.Telemetry.ITelemetryVariableInfoProvider variableInfoProvider)
         {{
             if (variableInfoProvider is null)
             {{
                 throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
-            
+
+#pragma warning disable CS0618 // Type or member is obsolete
+
             Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
             TestEx = new global::MyApp.Variables.TestExVariable(variableInfoProvider);
+#pragma warning restore CS0618 // Type or member is obsolete
+
         }}
 
         /// <summary>
@@ -384,11 +390,15 @@ namespace TestAssembly.Variables
         public global::MyApp.Variables.TestExVariable TestEx {{ get; }}
 
         /// <inheritdoc/>
-        [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
+        [System.CodeDom.Compiler.GeneratedCodeAttribute(""SharpRacer.SourceGenerators"", ""1.0.0.0"")]
         public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.ITelemetryVariable> EnumerateVariables()
         {{
+#pragma warning restore CS0618 // Type or member is obsolete
+
             yield return Test;
             yield return TestEx;
+#pragma warning restore CS0618 // Type or member is obsolete
+
         }}
     }}
 }}";
@@ -407,7 +417,11 @@ namespace TestAssembly.Variables
                 throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
             
+#pragma warning disable CS0618 // Type or member is obsolete
+
             Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
+#pragma warning restore CS0618 // Type or member is obsolete
+
         }}
 
         /// <summary>
@@ -420,7 +434,11 @@ namespace TestAssembly.Variables
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
         public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.ITelemetryVariable> EnumerateVariables()
         {{
+#pragma warning restore CS0618 // Type or member is obsolete
+
             yield return Test;
+#pragma warning restore CS0618 // Type or member is obsolete
+
         }}
     }}
 }}";
@@ -439,7 +457,11 @@ namespace TestAssembly.Variables
                 throw new System.ArgumentNullException(""variableInfoProvider"");
             }}
             
+#pragma warning disable CS0618 // Type or member is obsolete
+
             Test = new global::MyApp.Variables.TestVariable(variableInfoProvider);
+#pragma warning restore CS0618 // Type or member is obsolete
+
         }}
 
         /// <summary>
@@ -452,7 +474,11 @@ namespace TestAssembly.Variables
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
         public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.ITelemetryVariable> EnumerateVariables()
         {{
+#pragma warning restore CS0618 // Type or member is obsolete
+
             yield return Test;
+#pragma warning restore CS0618 // Type or member is obsolete
+
         }}
     }}
 }}";

@@ -131,6 +131,26 @@ internal static class SyntaxFactoryHelpers
             .WithArgumentList(argumentList);
     }
 
+    public static PragmaWarningDirectiveTriviaSyntax PragmaWarningDisable(string errorCode, string description, bool isActive)
+    {
+        var errorCodeIdentifier = IdentifierName(Identifier(TriviaList(), errorCode, TriviaList(Comment(description))));
+
+        var errorCodeList = SingletonSeparatedList<ExpressionSyntax>(errorCodeIdentifier);
+
+        return PragmaWarningDirectiveTrivia(Token(SyntaxKind.DisableKeyword), isActive)
+            .WithErrorCodes(errorCodeList);
+    }
+
+    public static PragmaWarningDirectiveTriviaSyntax PragmaWarningRestore(string errorCode, string description, bool isActive)
+    {
+        var errorCodeIdentifier = IdentifierName(Identifier(TriviaList(), errorCode, TriviaList(Comment(description))));
+
+        var errorCodeList = SingletonSeparatedList<ExpressionSyntax>(errorCodeIdentifier);
+
+        return PragmaWarningDirectiveTrivia(Token(SyntaxKind.RestoreKeyword), isActive)
+            .WithErrorCodes(errorCodeList);
+    }
+
     public static MemberAccessExpressionSyntax StaticMemberAccessGlobalQualified(
         TypeIdentifier typeIdentifier,
         SimpleNameSyntax memberIdentifier)
