@@ -393,7 +393,7 @@ namespace TestAssembly.Variables
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""SharpRacer.SourceGenerators"", ""1.0.0.0"")]
         public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.ITelemetryVariable> EnumerateVariables()
         {{
-#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
 
             yield return Test;
             yield return TestEx;
@@ -434,7 +434,7 @@ namespace TestAssembly.Variables
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
         public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.ITelemetryVariable> EnumerateVariables()
         {{
-#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
 
             yield return Test;
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -474,7 +474,7 @@ namespace TestAssembly.Variables
         [System.CodeDom.Compiler.GeneratedCodeAttribute(""{TelemetryVariablesGenerator.ToolName}"", ""{TelemetryVariablesGenerator.ToolVersion}"")]
         public System.Collections.Generic.IEnumerable<global::SharpRacer.Telemetry.ITelemetryVariable> EnumerateVariables()
         {{
-#pragma warning restore CS0618 // Type or member is obsolete
+#pragma warning disable CS0618 // Type or member is obsolete
 
             yield return Test;
 #pragma warning restore CS0618 // Type or member is obsolete

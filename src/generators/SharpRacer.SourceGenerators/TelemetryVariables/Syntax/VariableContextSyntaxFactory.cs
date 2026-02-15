@@ -87,7 +87,7 @@ internal static class VariableContextSyntaxFactory
             {
                 yieldReturnStatement = yieldReturnStatement.WithYieldKeyword(
                     Token(
-                        TriviaList(Trivia(PragmaWarningRestore("CS0618", "// Type or member is obsolete", true))),
+                        TriviaList(Trivia(PragmaWarningDisable("CS0618", "// Type or member is obsolete", true))),
                         SyntaxKind.YieldKeyword,
                         TriviaList())
                     );
