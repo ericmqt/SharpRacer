@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Enums;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Represents a single combination of <see cref="IncidentType"/> and <see cref="IncidentPenalty"/>.

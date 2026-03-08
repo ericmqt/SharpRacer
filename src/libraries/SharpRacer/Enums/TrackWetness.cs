@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Enums;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Defines the degree of wetness of the track.

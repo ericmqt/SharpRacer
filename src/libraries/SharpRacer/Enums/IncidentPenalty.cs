@@ -1,4 +1,4 @@
-﻿namespace SharpRacer.Enums;
+﻿namespace SharpRacer;
 
 /// <summary>
 /// Defines penalties applied to an incident.
