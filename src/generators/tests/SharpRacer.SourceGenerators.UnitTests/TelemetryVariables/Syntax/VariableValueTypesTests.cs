@@ -1,4 +1,5 @@
 ﻿namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+
 public class VariableValueTypesTests
 {
     [Fact]
@@ -19,6 +20,7 @@ public class VariableValueTypesTests
     [InlineData("irsdk_CarLeftRight", "SharpRacer.CarLeftRight")]
     [InlineData("irsdk_EngineWarnings", "SharpRacer.EngineWarnings")]
     [InlineData("irsdk_Flags", "SharpRacer.RacingFlags")]
+    [InlineData("irsdk_IncidentFlags", "SharpRacer.IncidentFlags")]
     [InlineData("irsdk_PaceFlags", "SharpRacer.PaceRacingFlags")]
     [InlineData("irsdk_PaceMode", "SharpRacer.PaceMode")]
     [InlineData("irsdk_PitSvFlags", "SharpRacer.PitServiceOptions")]
@@ -26,6 +28,7 @@ public class VariableValueTypesTests
     [InlineData("irsdk_SessionState", "SharpRacer.SessionState")]
     [InlineData("irsdk_TrkLoc", "SharpRacer.TrackLocationType")]
     [InlineData("irsdk_TrkSurf", "SharpRacer.TrackSurfaceType")]
+    [InlineData("irsdk_TrackWetness", "SharpRacer.TrackWetness")]
     public void Enumeration_Test(string variableUnit, string expected)
     {
         var enumType = VariableValueTypes.Enumeration(variableUnit, TypeNameFormat.Qualified);
@@ -39,6 +42,7 @@ public class VariableValueTypesTests
     [InlineData("irsdk_CarLeftRight", "SharpRacer.CarLeftRight")]
     [InlineData("irsdk_EngineWarnings", "SharpRacer.EngineWarnings")]
     [InlineData("irsdk_Flags", "SharpRacer.RacingFlags")]
+    [InlineData("irsdk_IncidentFlags", "SharpRacer.IncidentFlags")]
     [InlineData("irsdk_PaceFlags", "SharpRacer.PaceRacingFlags")]
     [InlineData("irsdk_PaceMode", "SharpRacer.PaceMode")]
     [InlineData("irsdk_PitSvFlags", "SharpRacer.PitServiceOptions")]
@@ -46,6 +50,7 @@ public class VariableValueTypesTests
     [InlineData("irsdk_SessionState", "SharpRacer.SessionState")]
     [InlineData("irsdk_TrkLoc", "SharpRacer.TrackLocationType")]
     [InlineData("irsdk_TrkSurf", "SharpRacer.TrackSurfaceType")]
+    [InlineData("irsdk_TrackWetness", "SharpRacer.TrackWetness")]
     [InlineData("FooBarNotARealEnumName", "int")]
     public void EnumerationOrInt_Test(string variableUnit, string expected)
     {

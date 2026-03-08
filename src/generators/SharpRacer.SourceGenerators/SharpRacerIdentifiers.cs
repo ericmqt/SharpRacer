@@ -24,6 +24,7 @@ public static class SharpRacerIdentifiers
         CameraState = SharpRacerNamespace.CreateType("CameraState");
         CarLeftRight = SharpRacerNamespace.CreateType("CarLeftRight");
         EngineWarnings = SharpRacerNamespace.CreateType("EngineWarnings");
+        IncidentFlags = SharpRacerNamespace.CreateType("IncidentFlags");
         PaceMode = SharpRacerNamespace.CreateType("PaceMode");
         PaceRacingFlags = SharpRacerNamespace.CreateType("PaceRacingFlags");
         PitServiceOptions = SharpRacerNamespace.CreateType("PitServiceOptions");
@@ -32,6 +33,7 @@ public static class SharpRacerIdentifiers
         SessionState = SharpRacerNamespace.CreateType("SessionState");
         TrackLocationType = SharpRacerNamespace.CreateType("TrackLocationType");
         TrackSurfaceType = SharpRacerNamespace.CreateType("TrackSurfaceType");
+        TrackWetness = SharpRacerNamespace.CreateType("TrackWetness");
     }
 
     public static NamespaceIdentifier SharpRacerNamespace { get; }
@@ -48,6 +50,7 @@ public static class SharpRacerIdentifiers
     public static TypeIdentifier ITelemetryVariablesContext { get; }
     public static TypeIdentifier ITelemetryVariableInfoProvider { get; }
     public static TypeIdentifier IScalarTelemetryVariable { get; }
+    public static TypeIdentifier IncidentFlags { get; }
     public static TypeIdentifier PaceMode { get; }
     public static TypeIdentifier PaceRacingFlags { get; }
     public static TypeIdentifier PitServiceOptions { get; }
@@ -57,6 +60,7 @@ public static class SharpRacerIdentifiers
     public static TypeIdentifier SessionState { get; }
     public static TypeIdentifier TrackLocationType { get; }
     public static TypeIdentifier TrackSurfaceType { get; }
+    public static TypeIdentifier TrackWetness { get; }
     public static TypeIdentifier TelemetryVariableDescriptor { get; }
     public static TypeIdentifier TelemetryVariableInfo { get; }
     public static TypeIdentifier TelemetryVariableInitializationException { get; }

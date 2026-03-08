@@ -2,6 +2,7 @@
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.Syntax;
+
 internal static class VariableValueTypes
 {
     public static TypeSyntax Bool() => ParseTypeName("bool");
@@ -23,6 +24,7 @@ internal static class VariableValueTypes
             BitfieldUnitNames.irsdk_CarLeftRight => SharpRacerTypes.CarLeftRight(typeNameFormat),
             BitfieldUnitNames.irsdk_EngineWarnings => SharpRacerTypes.EngineWarnings(typeNameFormat),
             BitfieldUnitNames.irsdk_Flags => SharpRacerTypes.RacingFlags(typeNameFormat),
+            BitfieldUnitNames.irsdk_IncidentFlags => SharpRacerTypes.IncidentFlags(typeNameFormat),
             BitfieldUnitNames.irsdk_PitSvFlags => SharpRacerTypes.PitServiceOptions(typeNameFormat),
 
             EnumerationUnitNames.irsdk_PaceFlags => SharpRacerTypes.PaceRacingFlags(typeNameFormat),
@@ -31,6 +33,7 @@ internal static class VariableValueTypes
             EnumerationUnitNames.irsdk_SessionState => SharpRacerTypes.SessionState(typeNameFormat),
             EnumerationUnitNames.irsdk_TrkLoc => SharpRacerTypes.TrackLocationType(typeNameFormat),
             EnumerationUnitNames.irsdk_TrkSurf => SharpRacerTypes.TrackSurfaceType(typeNameFormat),
+            EnumerationUnitNames.irsdk_TrackWetness => SharpRacerTypes.TrackWetness(typeNameFormat),
 
             _ => null
         };
@@ -44,12 +47,14 @@ internal static class VariableValueTypes
             BitfieldUnitNames.irsdk_CarLeftRight => SharpRacerTypes.CarLeftRight(typeNameFormat),
             BitfieldUnitNames.irsdk_EngineWarnings => SharpRacerTypes.EngineWarnings(typeNameFormat),
             BitfieldUnitNames.irsdk_Flags => SharpRacerTypes.RacingFlags(typeNameFormat),
+            BitfieldUnitNames.irsdk_IncidentFlags => SharpRacerTypes.IncidentFlags(typeNameFormat),
             BitfieldUnitNames.irsdk_PitSvFlags => SharpRacerTypes.PitServiceOptions(typeNameFormat),
 
             EnumerationUnitNames.irsdk_PaceFlags => SharpRacerTypes.PaceRacingFlags(typeNameFormat),
             EnumerationUnitNames.irsdk_PaceMode => SharpRacerTypes.PaceMode(typeNameFormat),
             EnumerationUnitNames.irsdk_PitSvStatus => SharpRacerTypes.PitServiceStatus(typeNameFormat),
             EnumerationUnitNames.irsdk_SessionState => SharpRacerTypes.SessionState(typeNameFormat),
+            EnumerationUnitNames.irsdk_TrackWetness => SharpRacerTypes.TrackWetness(typeNameFormat),
             EnumerationUnitNames.irsdk_TrkLoc => SharpRacerTypes.TrackLocationType(typeNameFormat),
             EnumerationUnitNames.irsdk_TrkSurf => SharpRacerTypes.TrackSurfaceType(typeNameFormat),
 
@@ -63,6 +68,7 @@ internal static class VariableValueTypes
         public const string irsdk_CarLeftRight = "irsdk_CarLeftRight";
         public const string irsdk_EngineWarnings = "irsdk_EngineWarnings";
         public const string irsdk_Flags = "irsdk_Flags";
+        public const string irsdk_IncidentFlags = "irsdk_IncidentFlags";
         public const string irsdk_PitSvFlags = "irsdk_PitSvFlags";
     }
 
@@ -72,6 +78,7 @@ internal static class VariableValueTypes
         public const string irsdk_PaceMode = "irsdk_PaceMode";
         public const string irsdk_PitSvStatus = "irsdk_PitSvStatus";
         public const string irsdk_SessionState = "irsdk_SessionState";
+        public const string irsdk_TrackWetness = "irsdk_TrackWetness";
         public const string irsdk_TrkLoc = "irsdk_TrkLoc";
         public const string irsdk_TrkSurf = "irsdk_TrkSurf";
     }

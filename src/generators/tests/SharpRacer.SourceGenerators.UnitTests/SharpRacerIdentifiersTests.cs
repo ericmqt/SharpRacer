@@ -38,6 +38,7 @@ public class SharpRacerIdentifiersTests
             { SharpRacerIdentifiers.ITelemetryVariablesContext, typeof(ITelemetryVariablesContext) },
             { SharpRacerIdentifiers.ITelemetryVariableInfoProvider, typeof(ITelemetryVariableInfoProvider) },
             { SharpRacerIdentifiers.IScalarTelemetryVariable, typeof(IScalarTelemetryVariable<>) },
+            { SharpRacerIdentifiers.IncidentFlags, typeof(IncidentFlags) },
             { SharpRacerIdentifiers.PaceMode, typeof(PaceMode) },
             { SharpRacerIdentifiers.PaceRacingFlags, typeof(PaceRacingFlags) },
             { SharpRacerIdentifiers.PitServiceOptions, typeof(PitServiceOptions) },
@@ -45,11 +46,12 @@ public class SharpRacerIdentifiersTests
             { SharpRacerIdentifiers.RacingFlags, typeof(RacingFlags) },
             { SharpRacerIdentifiers.ScalarTelemetryVariable, typeof(ScalarTelemetryVariable<>) },
             { SharpRacerIdentifiers.SessionState, typeof(SessionState) },
-            { SharpRacerIdentifiers.TrackLocationType, typeof(TrackLocationType) },
-            { SharpRacerIdentifiers.TrackSurfaceType, typeof(TrackSurfaceType) },
             { SharpRacerIdentifiers.TelemetryVariableDescriptor, typeof(TelemetryVariableDescriptor) },
             { SharpRacerIdentifiers.TelemetryVariableInfo, typeof(TelemetryVariableInfo) },
             { SharpRacerIdentifiers.TelemetryVariableInitializationException, typeof(TelemetryVariableInitializationException) },
-            { SharpRacerIdentifiers.TelemetryVariableValueType, typeof(TelemetryVariableValueType) }
+            { SharpRacerIdentifiers.TelemetryVariableValueType, typeof(TelemetryVariableValueType) },
+            { SharpRacerIdentifiers.TrackLocationType, typeof(TrackLocationType) },
+            { SharpRacerIdentifiers.TrackSurfaceType, typeof(TrackSurfaceType) },
+            { SharpRacerIdentifiers.TrackWetness, typeof(TrackWetness) },
         };
 }

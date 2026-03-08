@@ -41,6 +41,9 @@ internal static class SharpRacerTypes
             TypeArgumentList(SingletonSeparatedList(typeArgument)), typeNameFormat);
     }
 
+    public static TypeSyntax IncidentFlags(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+        => SharpRacerIdentifiers.IncidentFlags.ToTypeSyntax(typeNameFormat);
+
     public static TypeSyntax PaceMode(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
         => SharpRacerIdentifiers.PaceMode.ToTypeSyntax(typeNameFormat);
 
@@ -70,6 +73,9 @@ internal static class SharpRacerTypes
 
     public static TypeSyntax TrackSurfaceType(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
         => SharpRacerIdentifiers.TrackSurfaceType.ToTypeSyntax(typeNameFormat);
+
+    public static TypeSyntax TrackWetness(TypeNameFormat typeNameFormat = TypeNameFormat.Default)
+        => SharpRacerIdentifiers.TrackWetness.ToTypeSyntax(typeNameFormat);
 
     public static TypeSyntax TelemetryVariableTypeArgument(
         VariableValueType valueType,
