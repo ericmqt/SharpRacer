@@ -3,7 +3,7 @@
 /// <summary>
 /// Describes the active pacing mode.
 /// </summary>
-/// <remarks>See irsdk_PaceMode</remarks>
+/// <remarks>See irsdk_PaceMode in the iRacing SDK.</remarks>
 public enum PaceMode : uint
 {
     /// <summary>

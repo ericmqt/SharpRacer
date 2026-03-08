@@ -24,7 +24,7 @@ public enum TrackLocationType : int
     PitStall = 1,
 
     /// <summary>
-    /// Pit approach.
+    /// Pit approach. This is the lead-in to pit road as well as pit road itself.
     /// </summary>
     PitApproach = 2,
 

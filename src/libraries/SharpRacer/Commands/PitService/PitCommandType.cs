@@ -66,5 +66,10 @@ public enum PitCommandType : ushort
     /// <summary>
     /// Reset fuel pit service option by clearing the checkbox.
     /// </summary>
-    ResetFuel = 11
+    ResetFuel = 11,
+
+    /// <summary>
+    /// Change the tire compound type.
+    /// </summary>
+    ChangeTireCompound = 12
 }
