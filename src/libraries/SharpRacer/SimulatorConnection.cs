@@ -274,7 +274,18 @@ public sealed class SimulatorConnection : ISimulatorConnection, IOuterConnection
 
             if (disposing)
             {
+                // Cancel current and new waiters and raise Closed/StateChanged events if needed
                 _cancellationTokenSource.Cancel();
+
+                var state = (SimulatorConnectionState)Interlocked.CompareExchange(
+                    ref _connectionStateValue, (int)SimulatorConnectionState.None, (int)SimulatorConnectionState.None);
+
+                if (state != SimulatorConnectionState.None)
+                {
+                    SetState(SimulatorConnectionState.Closed);
+                }
+
+                // Dispose resources
                 _cancellationTokenSource.Dispose();
 
                 _innerConnection.Detach(this);
