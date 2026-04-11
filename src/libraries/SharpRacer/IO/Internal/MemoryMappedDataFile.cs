@@ -2,6 +2,7 @@
 using DotNext.IO.MemoryMappedFiles;
 
 namespace SharpRacer.IO.Internal;
+
 internal sealed class MemoryMappedDataFile : IMemoryMappedDataFile
 {
     private readonly IMappedMemory _mappedMemory;
@@ -34,7 +35,7 @@ internal sealed class MemoryMappedDataFile : IMemoryMappedDataFile
 
     public IConnectionDataSpanFactory CreateSpanFactory()
     {
-        return new ConnectionDataSpanFactory(_memoryMappedFile.CreateViewAccessor());
+        return new ConnectionDataSpanFactory(_memoryMappedFile.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read));
     }
 
     public void Dispose()
