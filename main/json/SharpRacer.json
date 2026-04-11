@@ -1,6 +1,6 @@
 {
   "summary": {
-    "generatedon": "2026-03-08T18:38:20Z",
+    "generatedon": "2026-04-11T16:56:22Z",
     "parser": "MultiReport (3x Cobertura)",
     "assemblies": 1,
     "classes": 108,
@@ -8,7 +8,7 @@
     "coveredlines": 2938,
     "uncoveredlines": 76,
     "coverablelines": 3014,
-    "totallines": 11567,
+    "totallines": 11568,
     "linecoverage": 97.4,
     "coveredbranches": 957,
     "totalbranches": 979,
@@ -19,7 +19,7 @@
  },
   "coverage": {
     "assemblies": [
-      { "name": "SharpRacer", "classes": 108, "coverage": 97.4, "coveredlines": 2938, "coverablelines": 3014, "totallines": 11567, "branchcoverage": 97.7, "coveredbranches": 957, "totalbranches": 979, "methodcoverage": 97.7, "coveredmethods": 923, "totalmethods": 944, "classesinassembly": [
+      { "name": "SharpRacer", "classes": 108, "coverage": 97.4, "coveredlines": 2938, "coverablelines": 3014, "totallines": 11568, "branchcoverage": 97.7, "coveredbranches": 957, "totalbranches": 979, "methodcoverage": 97.7, "coveredmethods": 923, "totalmethods": 944, "classesinassembly": [
         { "name": "SharpRacer.CarNumber", "coverage": 100, "coveredlines": 63, "coverablelines": 63, "totallines": 297, "branchcoverage": 100, "coveredbranches": 34, "totalbranches": 34, "methodcoverage": 100, "coveredmethods": 20, "totalmethods": 20 },
         { "name": "SharpRacer.Commands.Camera.CameraCommandClient", "coverage": 100, "coveredlines": 18, "coverablelines": 18, "totallines": 71, "branchcoverage": 100, "coveredbranches": 2, "totalbranches": 2, "methodcoverage": 100, "coveredmethods": 7, "totalmethods": 7 },
         { "name": "SharpRacer.Commands.Camera.SetCameraStateCommand", "coverage": 100, "coveredlines": 22, "coverablelines": 22, "totallines": 101, "branchcoverage": 100, "coveredbranches": 4, "totalbranches": 4, "methodcoverage": 100, "coveredmethods": 12, "totalmethods": 12 },
@@ -107,7 +107,7 @@
         { "name": "SharpRacer.IO.Internal.ConnectionDataSpanHandleToken", "coverage": 100, "coveredlines": 9, "coverablelines": 9, "totallines": 41, "branchcoverage": 100, "coveredbranches": 2, "totalbranches": 2, "methodcoverage": 100, "coveredmethods": 8, "totalmethods": 8 },
         { "name": "SharpRacer.IO.Internal.ConnectionDataSpanOwner", "coverage": 100, "coveredlines": 46, "coverablelines": 46, "totallines": 116, "branchcoverage": 100, "coveredbranches": 16, "totalbranches": 16, "methodcoverage": 100, "coveredmethods": 10, "totalmethods": 10 },
         { "name": "SharpRacer.IO.Internal.EmptyConnectionDataFile", "coverage": 100, "coveredlines": 12, "coverablelines": 12, "totallines": 36, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 100, "coveredmethods": 9, "totalmethods": 9 },
-        { "name": "SharpRacer.IO.Internal.MemoryMappedDataFile", "coverage": 0, "coveredlines": 0, "coverablelines": 18, "totallines": 61, "branchcoverage": 0, "coveredbranches": 0, "totalbranches": 4, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 6 },
+        { "name": "SharpRacer.IO.Internal.MemoryMappedDataFile", "coverage": 0, "coveredlines": 0, "coverablelines": 18, "totallines": 62, "branchcoverage": 0, "coveredbranches": 0, "totalbranches": 4, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 6 },
         { "name": "SharpRacer.IO.Internal.MemoryMappedDataFileFactory", "coverage": 0, "coveredlines": 0, "coverablelines": 3, "totallines": 24, "branchcoverage": null, "coveredbranches": 0, "totalbranches": 0, "methodcoverage": 0, "coveredmethods": 0, "totalmethods": 3 },
         { "name": "SharpRacer.IO.TelemetryBufferReader", "coverage": 97.6, "coveredlines": 41, "coverablelines": 42, "totallines": 184, "branchcoverage": 91.6, "coveredbranches": 11, "totalbranches": 12, "methodcoverage": 100, "coveredmethods": 12, "totalmethods": 12 },
         { "name": "SharpRacer.IO.TelemetryFile", "coverage": 100, "coveredlines": 33, "coverablelines": 33, "totallines": 130, "branchcoverage": 100, "coveredbranches": 26, "totalbranches": 26, "methodcoverage": 100, "coveredmethods": 5, "totalmethods": 5 },
