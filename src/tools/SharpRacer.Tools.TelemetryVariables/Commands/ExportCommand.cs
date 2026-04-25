@@ -7,13 +7,14 @@ using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOptions>, IConfigureDbContextCommand
+
+internal class ExportCommand : Command<ExportCommandHandler, ExportCommandOptions>, IConfigureDbContextCommand
 {
     public ExportCommand()
         : base(name: "export", description: "Exports telemetry variable information.")
     {
         // Arguments
-        OutputFileOrDirectoryArgument = new CliArgument<FileSystemInfo>("output-file-or-dir")
+        OutputFileOrDirectoryArgument = new Argument<FileSystemInfo>("output-file-or-dir")
         {
             Arity = new ArgumentArity(0, 1),
             DefaultValueFactory = _ => new DirectoryInfo(Environment.CurrentDirectory)
@@ -22,7 +23,7 @@ internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOpt
         OutputFileOrDirectoryArgument.AcceptLegalFilePathsOnly();
 
         // Options
-        DatabaseFileOption = new CliOption<FileInfo>("--database", ["--database", "-d"])
+        DatabaseFileOption = new Option<FileInfo>("--database", ["--database", "-d"])
         {
             Description = "The database file path.",
             Recursive = true,
@@ -31,12 +32,12 @@ internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOpt
 
         DatabaseFileOption.AcceptExistingOnly();
 
-        IncludeDeprecatedOption = new CliOption<bool>("--include-deprecated")
+        IncludeDeprecatedOption = new Option<bool>("--include-deprecated")
         {
             DefaultValueFactory = _ => false
         };
 
-        ExportVariablesOnlyOption = new CliOption<bool>("--variables-only") // TODO: Need a better name for this flag
+        ExportVariablesOnlyOption = new Option<bool>("--variables-only") // TODO: Need a better name for this flag
         {
             Description = "Export variables only.",
             DefaultValueFactory = _ => false
@@ -48,10 +49,10 @@ internal class ExportCommand : CliCommand<ExportCommandHandler, ExportCommandOpt
         Options.Add(ExportVariablesOnlyOption);
     }
 
-    public CliOption<FileInfo> DatabaseFileOption { get; }
-    public CliOption<bool> ExportVariablesOnlyOption { get; }
-    public CliOption<bool> IncludeDeprecatedOption { get; }
-    public CliArgument<FileSystemInfo> OutputFileOrDirectoryArgument { get; }
+    public Option<FileInfo> DatabaseFileOption { get; }
+    public Option<bool> ExportVariablesOnlyOption { get; }
+    public Option<bool> IncludeDeprecatedOption { get; }
+    public Argument<FileSystemInfo> OutputFileOrDirectoryArgument { get; }
 
     public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {

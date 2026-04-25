@@ -11,12 +11,12 @@ namespace SharpRacer.Tools.TelemetryVariables.Commands;
 
 [SupportedOSPlatform("windows")]
 internal sealed class ImportSimulatorCommand
-    : CliCommand<ImportSimulatorCommandHandler, ImportSimulatorCommandOptions>, IConfigureDbContextCommand
+    : Command<ImportSimulatorCommandHandler, ImportSimulatorCommandOptions>, IConfigureDbContextCommand
 {
     public ImportSimulatorCommand()
         : base("simulator", "Imports telemetry variables from a simulator session.")
     {
-        DatabaseFileOption = new CliOption<FileInfo>("--database", ["--database", "-d"])
+        DatabaseFileOption = new Option<FileInfo>("--database", ["--database", "-d"])
         {
             Description = "The database file path.",
             Required = true,
@@ -24,7 +24,7 @@ internal sealed class ImportSimulatorCommand
 
         DatabaseFileOption.AcceptExistingOnly();
 
-        WaitForConnectionOption = new CliOption<bool>("--wait", ["--wait", "-w"])
+        WaitForConnectionOption = new Option<bool>("--wait", ["--wait", "-w"])
         {
             DefaultValueFactory = _ => false,
             Description = "Wait for a connection to the simulator if it is not running instead of exiting immediately."
@@ -34,8 +34,8 @@ internal sealed class ImportSimulatorCommand
         Options.Add(WaitForConnectionOption);
     }
 
-    public CliOption<FileInfo> DatabaseFileOption { get; }
-    public CliOption<bool> WaitForConnectionOption { get; }
+    public Option<FileInfo> DatabaseFileOption { get; }
+    public Option<bool> WaitForConnectionOption { get; }
 
     public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {

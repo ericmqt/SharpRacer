@@ -7,14 +7,15 @@ using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class CreateDatabaseCommand : CliCommand<CreateDatabaseCommandHandler, CreateDatabaseCommandOptions>, IConfigureDbContextCommand
+
+internal class CreateDatabaseCommand : Command<CreateDatabaseCommandHandler, CreateDatabaseCommandOptions>, IConfigureDbContextCommand
 {
     private static readonly string _DefaultDatabaseFileName = "TelemetryVariables.db";
 
     public CreateDatabaseCommand()
         : base("create", "Creates a new telemetry variables database.")
     {
-        DatabaseFileArgument = new CliArgument<FileInfo?>("database-file")
+        DatabaseFileArgument = new Argument<FileInfo?>("database-file")
         {
             Arity = ArgumentArity.ZeroOrOne,
             Description = $"The path of the database file to create.",
@@ -27,7 +28,7 @@ internal class CreateDatabaseCommand : CliCommand<CreateDatabaseCommandHandler, 
         Arguments.Add(DatabaseFileArgument);
     }
 
-    public CliArgument<FileInfo?> DatabaseFileArgument { get; }
+    public Argument<FileInfo?> DatabaseFileArgument { get; }
 
     public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {
@@ -70,7 +71,7 @@ internal class CreateDatabaseCommand : CliCommand<CreateDatabaseCommandHandler, 
         return new FileInfo(Path.Combine(Environment.CurrentDirectory, _DefaultDatabaseFileName));
     }
 
-    private static void ValidateDatabaseFileDoesNotExist(CliArgument<FileInfo?> databaseFileArgument, ArgumentResult argumentResult)
+    private static void ValidateDatabaseFileDoesNotExist(Argument<FileInfo?> databaseFileArgument, ArgumentResult argumentResult)
     {
         var file = argumentResult.GetValue(databaseFileArgument);
 

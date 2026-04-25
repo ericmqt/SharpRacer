@@ -7,12 +7,13 @@ using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal sealed class ImportJsonCommand : CliCommand<ImportJsonCommandHandler, ImportJsonCommandOptions>, IConfigureDbContextCommand
+
+internal sealed class ImportJsonCommand : Command<ImportJsonCommandHandler, ImportJsonCommandOptions>, IConfigureDbContextCommand
 {
     public ImportJsonCommand()
         : base("json", "Imports telemetry variables from a JSON document exported by this tool.")
     {
-        DatabaseFileOption = new CliOption<FileInfo>("--database", ["--database", "-d"])
+        DatabaseFileOption = new Option<FileInfo>("--database", ["--database", "-d"])
         {
             Description = "The database file path.",
             Required = true,
@@ -20,7 +21,7 @@ internal sealed class ImportJsonCommand : CliCommand<ImportJsonCommandHandler, I
 
         DatabaseFileOption.AcceptExistingOnly();
 
-        InputFileArgument = new CliArgument<FileInfo>("input-file")
+        InputFileArgument = new Argument<FileInfo>("input-file")
         {
             Arity = ArgumentArity.ExactlyOne,
             Description = "Path to JSON-formatted variables database file."
@@ -31,8 +32,8 @@ internal sealed class ImportJsonCommand : CliCommand<ImportJsonCommandHandler, I
         Options.Add(DatabaseFileOption);
     }
 
-    public CliOption<FileInfo> DatabaseFileOption { get; }
-    public CliArgument<FileInfo> InputFileArgument { get; }
+    public Option<FileInfo> DatabaseFileOption { get; }
+    public Argument<FileInfo> InputFileArgument { get; }
 
     public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {

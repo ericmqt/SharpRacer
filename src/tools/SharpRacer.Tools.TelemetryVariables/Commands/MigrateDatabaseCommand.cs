@@ -6,12 +6,13 @@ using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class MigrateDatabaseCommand : CliCommand<MigrateDatabaseCommandHandler>, IConfigureDbContextCommand
+
+internal class MigrateDatabaseCommand : Command<MigrateDatabaseCommandHandler>, IConfigureDbContextCommand
 {
     public MigrateDatabaseCommand()
         : base("migrate", "Migrates a telemetry variables database schema to the latest version.")
     {
-        DatabaseFileArgument = new CliArgument<FileInfo>("database-file")
+        DatabaseFileArgument = new Argument<FileInfo>("database-file")
         {
             Arity = ArgumentArity.ExactlyOne,
             Description = $"The path of the database file to migrate.",
@@ -22,7 +23,7 @@ internal class MigrateDatabaseCommand : CliCommand<MigrateDatabaseCommandHandler
         Arguments.Add(DatabaseFileArgument);
     }
 
-    public CliArgument<FileInfo> DatabaseFileArgument { get; }
+    public Argument<FileInfo> DatabaseFileArgument { get; }
 
     public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {

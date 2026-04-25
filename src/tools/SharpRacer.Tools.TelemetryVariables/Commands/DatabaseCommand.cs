@@ -2,7 +2,8 @@
 using System.CommandLine.Help;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class DatabaseCommand : CliCommand
+
+internal class DatabaseCommand : Command
 {
     public DatabaseCommand()
         : base("database", "Contains database creation and migration commands.")

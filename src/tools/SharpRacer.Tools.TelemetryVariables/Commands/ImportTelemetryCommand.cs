@@ -7,13 +7,14 @@ using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Data;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
+
 internal sealed class ImportTelemetryCommand
-    : CliCommand<ImportTelemetryCommandHandler, ImportTelemetryCommandOptions>, IConfigureDbContextCommand
+    : Command<ImportTelemetryCommandHandler, ImportTelemetryCommandOptions>, IConfigureDbContextCommand
 {
     public ImportTelemetryCommand()
         : base("telemetry", "Imports telemetry variables from telemetry files (*.IBT).")
     {
-        DatabaseFileOption = new CliOption<FileInfo>("--database", ["--database", "-d"])
+        DatabaseFileOption = new Option<FileInfo>("--database", ["--database", "-d"])
         {
             Description = "The database file path.",
             Required = true,
@@ -21,23 +22,23 @@ internal sealed class ImportTelemetryCommand
 
         DatabaseFileOption.AcceptExistingOnly();
 
-        InputFileOrDirectoryArgument = new CliArgument<FileSystemInfo>("input-file-or-dir")
+        InputFileOrDirectoryArgument = new Argument<FileSystemInfo>("input-file-or-dir")
         {
             Arity = new ArgumentArity(0, 1),
             DefaultValueFactory = _ => ImportTelemetryCommandOptions.GetDefaultInputDirectory(),
             Description = "Input file name or directory. Defaults to iRacing telemetry folder."
         };
 
-        RecursiveOption = new CliOption<bool>("--recurse", ["--recurse", "-r"]);
+        RecursiveOption = new Option<bool>("--recurse", ["--recurse", "-r"]);
 
         Arguments.Add(InputFileOrDirectoryArgument);
         Options.Add(DatabaseFileOption);
         Options.Add(RecursiveOption);
     }
 
-    public CliOption<FileInfo> DatabaseFileOption { get; }
-    public CliArgument<FileSystemInfo> InputFileOrDirectoryArgument { get; }
-    public CliOption<bool> RecursiveOption { get; }
+    public Option<FileInfo> DatabaseFileOption { get; }
+    public Argument<FileSystemInfo> InputFileOrDirectoryArgument { get; }
+    public Option<bool> RecursiveOption { get; }
 
     public void ConfigureDbContext(DbContextOptionsBuilder builder, ParseResult parseResult, IServiceProvider serviceProvider)
     {

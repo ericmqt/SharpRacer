@@ -1,7 +1,5 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SharpRacer.Tools.TelemetryVariables.CommandLine;
 using SharpRacer.Tools.TelemetryVariables.Commands;
@@ -13,45 +11,39 @@ namespace SharpRacer.Tools.TelemetryVariables;
 
 internal class Program
 {
-    public static Task<int> Main(string[] args)
+    public static async Task<int> Main(string[] args)
     {
-        var rootCommand = new CliRootCommand("SharpRacer Telemetry Variables Manager");
+        // Parse command line
+        var rootCommand = new RootCommand("SharpRacer Telemetry Variables Manager");
 
         rootCommand.Subcommands.Add(new DatabaseCommand());
         rootCommand.Subcommands.Add(new ExportCommand());
         rootCommand.Subcommands.Add(new ImportCommand());
 
-        var cliConfig = new CliConfiguration(rootCommand)
-            .UseHost(_ => Host.CreateDefaultBuilder(args), ConfigureHost);
+        var parseResult = rootCommand.Parse(args);
 
-        return cliConfig.InvokeAsync(args);
+        // Configure dependency injection
+        var serviceCollection = new ServiceCollection();
+
+        ConfigureServices(serviceCollection, parseResult);
+
+        // Execute the command
+        using var serviceProvider = serviceCollection.BuildServiceProvider();
+
+        var invocationConfiguration = new DependencyInjectionInvocationConfiguration(serviceProvider);
+
+        return await parseResult.InvokeAsync(invocationConfiguration);
     }
 
-    private static void ConfigureHost(IHostBuilder host)
+    private static void ConfigureServices(IServiceCollection services, ParseResult parseResult)
     {
-        var parseResult = host.GetParseResult();
-
-        host.ConfigureLogging((ctx, logging) =>
+        services.AddLogging(builder =>
         {
-            logging.ClearProviders();
+            builder.ClearProviders();
+            builder.AddFilter("Microsoft", LogLevel.Warning);
 
-            logging.AddFilter("Microsoft", LogLevel.Warning);
-            logging.AddSimpleConsole();
-
+            builder.AddSimpleConsole();
         });
-
-        host.ConfigureServices(ConfigureServices);
-    }
-
-    private static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
-    {
-        // Data services
-        var parseResult = hostBuilderContext.GetParseResult();
-
-        if (parseResult.CommandResult.Command is IConfigureDbContextCommand dbContextCommand)
-        {
-            services.AddDbContext<TelemetryVariablesDbContext>((svc, db) => dbContextCommand.ConfigureDbContext(db, parseResult, svc));
-        }
 
         services.AddScoped<ICarStore, CarStore>();
         services.AddScoped<ICarVariableStore, CarVariableStore>();
@@ -59,5 +51,11 @@ internal class Program
 
         services.AddScoped<VariableImporter>();
         services.AddScoped<CarImporter>();
+
+        // Data services
+        if (parseResult.CommandResult.Command is IConfigureDbContextCommand dbContextCommand)
+        {
+            services.AddDbContext<TelemetryVariablesDbContext>((svc, db) => dbContextCommand.ConfigureDbContext(db, parseResult, svc));
+        }
     }
 }

@@ -2,7 +2,8 @@
 using System.CommandLine.Help;
 
 namespace SharpRacer.Tools.TelemetryVariables.Commands;
-internal class ImportCommand : CliCommand
+
+internal class ImportCommand : Command
 {
     public ImportCommand()
         : base("import", description: "Root command for telemetry variable import commands.")
