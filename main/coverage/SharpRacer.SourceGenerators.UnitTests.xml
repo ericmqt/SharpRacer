@@ -1,33 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.37170000000000003" branch-rate="0.37060000000000004" version="1.9" timestamp="1775926576" lines-covered="2224" lines-valid="5982" branches-covered="695" branches-valid="1875">
+<coverage line-rate="0.37200000000000005" branch-rate="0.37060000000000004" version="1.9" timestamp="1777134236" lines-covered="2224" lines-valid="5978" branches-covered="695" branches-valid="1875">
   <sources>
     <source>\</source>
   </sources>
   <packages>
-    <package name="SharpRacer" line-rate="0" branch-rate="0" complexity="1775">
+    <package name="SharpRacer" line-rate="0" branch-rate="0" complexity="1773">
       <classes>
-        <class name="System.Runtime.CompilerServices.OverloadResolutionPriorityAttribute" filename="/_/artifacts/obj/SharpRacer/release/Microsoft.Windows.CsWin32/Microsoft.Windows.CsWin32.SourceGenerator/Windows.Win32.OverloadResolutionPriorityAttribute.g.cs" line-rate="0" branch-rate="1" complexity="2">
-          <methods>
-            <method name="get_Priority" signature="()" line-rate="0" branch-rate="1" complexity="1">
-              <lines>
-                <line number="42" hits="0" branch="False" />
-              </lines>
-            </method>
-            <method name=".ctor" signature="(System.Int32)" line-rate="0" branch-rate="1" complexity="1">
-              <lines>
-                <line number="31" hits="0" branch="False" />
-                <line number="34" hits="0" branch="False" />
-                <line number="35" hits="0" branch="False" />
-              </lines>
-            </method>
-          </methods>
-          <lines>
-            <line number="42" hits="0" branch="False" />
-            <line number="31" hits="0" branch="False" />
-            <line number="34" hits="0" branch="False" />
-            <line number="35" hits="0" branch="False" />
-          </lines>
-        </class>
         <class name="Windows.Win32.PInvoke" filename="D:\a\SharpRacer\SharpRacer\src\libraries\SharpRacer\PInvoke.cs" line-rate="0" branch-rate="0" complexity="5">
           <methods>
             <method name="CreateEventAsSafeWaitHandle" signature="(System.Nullable`1&lt;Windows.Win32.Security.SECURITY_ATTRIBUTES&gt;,Windows.Win32.Foundation.BOOL,Windows.Win32.Foundation.BOOL,System.String)" line-rate="0" branch-rate="0" complexity="4">
