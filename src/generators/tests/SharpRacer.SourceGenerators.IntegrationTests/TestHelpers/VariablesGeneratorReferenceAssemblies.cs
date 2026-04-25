@@ -2,6 +2,7 @@
 using SharpRacer.Telemetry;
 
 namespace SharpRacer.SourceGenerators.TelemetryVariables.TestHelpers;
+
 internal static class VariablesGeneratorReferenceAssemblies
 {
     static VariablesGeneratorReferenceAssemblies()
@@ -9,7 +10,7 @@ internal static class VariablesGeneratorReferenceAssemblies
         var sharpRacerAssembly = typeof(GenerateTelemetryVariableDescriptorsAttribute).Assembly;
         SharpRacerLibrary = MetadataReference.CreateFromFile(sharpRacerAssembly.Location);
 
-        All = new List<MetadataReference>(Basic.Reference.Assemblies.Net80.References.All)
+        All = new List<MetadataReference>(Basic.Reference.Assemblies.Net100.References.All)
         {
             SharpRacerLibrary
         };
