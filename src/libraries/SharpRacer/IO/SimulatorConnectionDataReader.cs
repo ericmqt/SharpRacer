@@ -1,8 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using SharpRacer.Interop;
-using SharpRacer.IO;
 
-namespace SharpRacer;
+namespace SharpRacer.IO;
 
 internal class SimulatorConnectionDataReader : ISimulatorConnectionDataReader
 {

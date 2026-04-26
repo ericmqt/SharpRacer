@@ -1,6 +1,6 @@
 ﻿using SharpRacer.Interop;
 
-namespace SharpRacer;
+namespace SharpRacer.IO;
 
 /// <summary>
 /// Reads data from a simulator connection.
