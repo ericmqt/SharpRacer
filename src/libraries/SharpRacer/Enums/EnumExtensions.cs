@@ -1,7 +1,7 @@
 ﻿namespace SharpRacer;
 
 /// <summary>
-/// Provides extension methods for enumerations in the <see cref="SharpRacer.Enums"/> namespace.
+/// Provides extension methods for enumerations in the <see cref="SharpRacer"/> namespace.
 /// </summary>
 public static class EnumExtensions
 {

@@ -53,6 +53,10 @@ public readonly ref struct ConnectionDataSpanHandle : IDisposable
         Owner?.ReleaseSpanHandle(in this);
     }
 
+    /// <summary>
+    /// Implicitly converts a <see cref="ConnectionDataSpanHandle"/> to a read-only span of bytes.
+    /// </summary>
+    /// <param name="spanOwner"></param>
     public static implicit operator ReadOnlySpan<byte>(ConnectionDataSpanHandle spanOwner)
     {
         return spanOwner.Span;
